@@ -1,2 +1,5 @@
+export * from "./configuration.service";
+export * from "./display-value.service";
 export * from "./ipc-proxy.service";
-export * from "./service-container";
+export * from "./language.service";
+

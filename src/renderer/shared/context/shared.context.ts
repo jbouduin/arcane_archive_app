@@ -1,9 +1,13 @@
 import React from "react";
-import { IServiceContainer } from "./interface";
+import { IServiceContainer } from "./service-container";
 import { ConfigurationService } from "./implementation/configuration.service";
+import { LanguageService } from "./implementation/language.service";
+import { DisplayValueService } from "./implementation/display-value.service";
+
 
 const defaultServiceContainer: IServiceContainer = {
   configurationService: new ConfigurationService(),
+  displayValueService: new DisplayValueService(),
   ipcProxy: {
     logServerResponses: false,
     deleteData: function (path: string): Promise<number> {
@@ -21,7 +25,8 @@ const defaultServiceContainer: IServiceContainer = {
     patchData: function <T extends object, U extends object>(path: string, data: T): Promise<U> {
       throw new Error("IpcProxyService not initialized");
     }
-  }
+  },
+  languageService: new LanguageService()
 };
 
 export const ServiceContainerContext = React.createContext<IServiceContainer>(defaultServiceContainer);

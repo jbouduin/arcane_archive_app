@@ -50,8 +50,7 @@ export class IpcProxyService implements IIpcProxyService {
     };
     return window.ipc.data<never, T>("GET", request)
       .then(
-        (response: IpcResponse<T>) => {
-          console.log(JSON.stringify(response, null, 2));
+        (response: IpcResponse<T>) => {          
           if (response.status >= EIpcStatus.BadRequest) {
             return this.processIpcErrorResponse("GET", response);
           } else {

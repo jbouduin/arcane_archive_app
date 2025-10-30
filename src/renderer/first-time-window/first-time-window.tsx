@@ -1,14 +1,13 @@
 import { BlueprintProvider, FocusStyleManager, OverlayToaster, Position, ToastProps } from "@blueprintjs/core";
-import * as React from "react";
 import { createRoot } from "react-dom/client";
-import { ConfigurationDto } from "../../common/dto";
 import { ConfigurationViewModel } from "../shared/viewmodel";
-// import { FirstTimeView } from "./first-time-view/first-time-view";
 import { IServiceContainer } from "../shared/context";
 import { IpcProxyService } from "../shared/context/implementation/ipc-proxy.service";
 import { ServiceContainerContext } from "../shared/context";
 import { FirstTimeView } from "./first-time-view/first-time-view";
 import { ConfigurationService } from "../shared/context/implementation/configuration.service";
+import { LanguageService } from "../shared/context/implementation/language.service";
+import { DisplayValueService } from "../shared/context/implementation/display-value.service";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -38,6 +37,8 @@ void (async () => {
 
       if (configurationViewmodel) {
         const serviceContainer: IServiceContainer = {
+          languageService: new LanguageService(),
+          displayValueService: new DisplayValueService(),
           configurationService: configurationService,
           ipcProxy: ipcProxyService
         };

@@ -4,6 +4,10 @@ import { IpcProxyService } from "../shared/context/implementation/ipc-proxy.serv
 import { IServiceContainer } from "../shared/context";
 import { ServiceContainerContext } from "../shared/context/shared.context";
 import { ConfigurationService } from "../shared/context/implementation/configuration.service";
+import { LanguageService } from "../shared/context/implementation/language.service";
+import { LanguageDto } from "../shared/dto/language.dto";
+import * as React from "react";
+import { DisplayValueService } from "../shared/context/implementation/display-value.service";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -24,10 +28,16 @@ void (async () => {
   const configurationService = new ConfigurationService();
   await configurationService.initialize(ipcProxyService)
     .then(
-      () => {
-        const container = document.getElementById("root")!;
+      async () => {
+        const languageService = new LanguageService();
+        await languageService.initialize(configurationService.configuration.apiConfiguration);
+        const displayValueService = new DisplayValueService();
+        await displayValueService.initialize(configurationService.configuration.apiConfiguration);
+        const container = document.getElementById("root")!;        
         const root = createRoot(container);
         const serviceContainer: IServiceContainer = {
+          languageService: languageService,
+          displayValueService: displayValueService,
           configurationService: configurationService,
           ipcProxy: ipcProxyService
         };
@@ -38,6 +48,9 @@ void (async () => {
             <PortalProvider>
               <ServiceContainerContext.Provider value={serviceContainer}>
                 <H1>here we go</H1>this is a paragraph
+                <pre>
+                  {JSON.stringify(Object.fromEntries(languageService.languages), null, 2)}
+                </pre>                
                 {/* <MainWindowDesktop toastCall={toastCall} /> */}
               </ServiceContainerContext.Provider>
             </PortalProvider>
@@ -46,3 +59,4 @@ void (async () => {
       }
     );
 })();
+

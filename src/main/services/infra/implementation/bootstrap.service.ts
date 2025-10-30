@@ -39,8 +39,7 @@ export class BootstrapService implements IBootstrapService {
     });
 
     void splashWindow.on("ready-to-show", () => {
-      if (settingsService.isFirstUsage) {
-        console.log("creating first time window")
+      if (settingsService.isFirstUsage) {        
         const firsTimeWindow = windowsService.createFirstTimeWindow();
         firsTimeWindow.on("closed", () => {
           if (settingsService.isFirstUsage) {

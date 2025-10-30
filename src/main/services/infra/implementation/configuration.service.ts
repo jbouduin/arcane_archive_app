@@ -5,6 +5,7 @@ import { ConfigurationDto, RendererConfigurationDto } from "../../../../common/d
 import { BaseService, IResult } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
 import { IConfigurationService, ILogService, IResultFactory } from "../interface";
+import { ApiConfigurationDto } from "../../../../common/dto/infra/api-configuration.dto";
 
 
 @singleton()
@@ -89,6 +90,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   //#region Auxiliary factory default methods ---------------------------------
   private createFactoryDefault(): ConfigurationDto {
     const result: ConfigurationDto = {
+      apiConfiguration: this.createApiConfigurationFactoryDefault(),
       dataConfiguration: {
         rootDataDirectory: join(this.homeDirectory, "mtg-collection-manager"),
         cacheDirectory: join(this.appDirectory, ".cache"),
@@ -98,7 +100,17 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     };
     return result;
   }
-
+  
+  private createApiConfigurationFactoryDefault(): ApiConfigurationDto {
+    const result: ApiConfigurationDto = {
+      scryfallApiRoot: "https://api.scryfall.com",
+      scryfallCardBackRoot: "https://backs.scryfall.io",
+      // Scryfall api requests 50-100 ms between calls, let's give it some slack
+      scryfallMinimumRequestTimeout: 60,
+      mtgCollectionApiRoot: "http://localhost:5403/api/public"
+    };
+    return result;
+  }
 //   private createScryFallFactoryDefault(): IScryfallConfigurationDto {
 //     const endpoints: Record<ScryfallEndpoint, string> = {
 //       bulk: "bulk-data",
@@ -112,8 +124,8 @@ export class ConfigurationService extends BaseService implements IConfigurationS
 //     };
 
 //     const result: IScryfallConfigurationDto = {
-//       cardBackRoot: "https://backs.scryfall.io",
-//       scryfallApiRoot: "https://api.scryfall.com",
+//       cardBackRoot: ,
+//       scryfallApiRoot: ,
 //       scryfallEndpoints: endpoints,
 
 //       // Scryfall api requests 50-100 ms between calls, let's give it some slack
