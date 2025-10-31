@@ -1,18 +1,17 @@
-import { app, BrowserWindow, dialog, ipcMain, IpcMainEvent, IpcMainInvokeEvent, nativeTheme } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, IpcMainInvokeEvent, nativeTheme } from "electron";
 import { homedir } from "os";
 import { container, injectable } from "tsyringe";
 // import { IpcChannel } from "../../../../common/ipc";
 // import { MigrationDi } from "../../../database/migrations/migrations.di";
 // import { ICardRepository } from "../../../database/repo/interfaces";
-import { INFRASTRUCTURE } from "../../service.tokens";
-import { IBootstrapService, IConfigurationService,  IRouterService,  IWindowsService } from "../interface";
-import { IRouter } from "../../base";
 import { IpcChannel, IpcRequest } from "../../../../common/ipc";
-
+import { IRouter } from "../../base";
+import { INFRASTRUCTURE } from "../../service.tokens";
+import { IBootstrapService, IConfigurationService, IRouterService, IWindowsService } from "../interface";
 
 @injectable()
 export class BootstrapService implements IBootstrapService {
-  //#region IBootstrapService methods -----------------------------------------
+  // #region IBootstrapService methods ----------------------------------------
   public async boot(): Promise<void> {
     const windowsService: IWindowsService = container.resolve(INFRASTRUCTURE.WindowsService);
     const rootRouterService: IRouterService = container.resolve(INFRASTRUCTURE.RouterService);
@@ -39,7 +38,7 @@ export class BootstrapService implements IBootstrapService {
     });
 
     void splashWindow.on("ready-to-show", () => {
-      if (settingsService.isFirstUsage) {        
+      if (settingsService.isFirstUsage) {
         const firsTimeWindow = windowsService.createFirstTimeWindow();
         firsTimeWindow.on("closed", () => {
           if (settingsService.isFirstUsage) {
@@ -54,11 +53,11 @@ export class BootstrapService implements IBootstrapService {
     });
     return Promise.resolve();
   }
-  //#endregion
+  // #endregion
 
-  //#region helper methods ----------------------------------------------------
-  private async preboot(configurationService: IConfigurationService , routerService: IRouterService
-): Promise<void> {
+  // #region helper methods ---------------------------------------------------
+  private async preboot(configurationService: IConfigurationService, routerService: IRouterService
+  ): Promise<void> {
     configurationService.loadSettings(app.getAppPath(), homedir(), nativeTheme.shouldUseDarkColors);
     container.resolveAll<IRouter>(INFRASTRUCTURE.Router).forEach((svc: IRouter) => svc.setRoutes(routerService));
     routerService.logRoutes();
@@ -102,32 +101,32 @@ export class BootstrapService implements IBootstrapService {
     //       .synchronize(syncParam, splashWindow.webContents);
     //   })
     //   .then(() => splashWindow.webContents.send("splash", "loading main program"));
-    splashWindow.webContents.send("splash", "loading main program")
+    splashWindow.webContents.send("splash", "loading main program");
   }
 
-  private registerIpcChannel(channel: IpcChannel, routerService: IRouterService) {    
+  private registerIpcChannel(channel: IpcChannel, routerService: IRouterService) {
     ipcMain.handle(
       channel,
       (event: IpcMainInvokeEvent, ...args: Array<unknown>) => routerService.routeRequest(channel, event.sender, args[0] as IpcRequest<unknown>)
     );
   }
 
-//   private firstUseSyncParam(): ISyncParamDto {
-//     const result: ISyncParamDto = {
-//       cardImageStatusToSync: [],
-//       bulkSyncUrl: undefined,
-//       cardSelectionToSync: [],
-//       cardSetCodeToSyncCardsFor: undefined,
-//       cardSyncType: "none",
-//       catalogTypesToSync: Object.keys(ECatalogType) as Array<CatalogType>,
-//       changedImageStatusAction: undefined,
-//       oracleId: undefined,
-//       rulingSyncType: "none",
-//       syncCardSymbols: true,
-//       syncCardSets: true,
-//       syncCardsSyncedBeforeNumber: 0,
-//       syncCardsSyncedBeforeUnit: undefined
-//     };
-//     return result;
-//   }
+  //   private firstUseSyncParam(): ISyncParamDto {
+  //     const result: ISyncParamDto = {
+  //       cardImageStatusToSync: [],
+  //       bulkSyncUrl: undefined,
+  //       cardSelectionToSync: [],
+  //       cardSetCodeToSyncCardsFor: undefined,
+  //       cardSyncType: "none",
+  //       catalogTypesToSync: Object.keys(ECatalogType) as Array<CatalogType>,
+  //       changedImageStatusAction: undefined,
+  //       oracleId: undefined,
+  //       rulingSyncType: "none",
+  //       syncCardSymbols: true,
+  //       syncCardSets: true,
+  //       syncCardsSyncedBeforeNumber: 0,
+  //       syncCardsSyncedBeforeUnit: undefined
+  //     };
+  //     return result;
+  //   }
 }

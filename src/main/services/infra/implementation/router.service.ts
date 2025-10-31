@@ -9,15 +9,15 @@ import { ILogService, IResultFactory, IRouterService } from "../interface";
 
 @singleton()
 export class RouterService extends BaseRouter implements IRouterService {
-  //#region Private properties: routes ----------------------------------------
+  // #region Private properties: routes ---------------------------------------
   private readonly deleteRoutes: Map<string, RouteCallback>;
   private readonly getRoutes: Map<string, RouteCallback>;
   private readonly patchRoutes: Map<string, RouteCallback>;
   private readonly postRoutes: Map<string, RouteCallback>;
   private readonly putRoutes: Map<string, RouteCallback>;
-  //#endregion
+  // #endregion
 
-  //#region Constructor & C° --------------------------------------------------
+  // #region Constructor & C° -------------------------------------------------
   public constructor(
     @inject(INFRASTRUCTURE.LogService) logService: ILogService,
     @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory
@@ -29,9 +29,9 @@ export class RouterService extends BaseRouter implements IRouterService {
     this.postRoutes = new Map<string, RouteCallback>();
     this.putRoutes = new Map<string, RouteCallback>();
   }
-  //#endregion
+  // #endregion
 
-  //#region IRouterService methods --------------------------------------------
+  // #region IRouterService methods -------------------------------------------
   public logRoutes(): void {
     this.logService.info("Main", `registered ${this.deleteRoutes.size} DELETE routes`);
     this.deleteRoutes.forEach((_value: RouteCallback, key: string) => this.logService.debug("Main", `-  DELETE ${key}`));
@@ -101,9 +101,9 @@ export class RouterService extends BaseRouter implements IRouterService {
     }
     return result;
   }
-  //#endregion
+  // #endregion
 
-  //#region private helper methods --------------------------------------------
+  // #region private helper methods -------------------------------------------
   private route(
     requestType: IpcChannel,
     sender: WebContents,
@@ -128,13 +128,14 @@ export class RouterService extends BaseRouter implements IRouterService {
 
         if (isObject(matchResult2)) {
           this.logService.debug("Main", `Route found: ${requestType} ${matchedKey}`);
-          const routedRequest : RoutedRequest<unknown> = {
-          route : matchedKey,
-          sender : sender,
-          path : matchResult2.path,
-          params : matchResult2.params as Record<string, string>,
-          data : request.data,
-          queryParams : {}};
+          const routedRequest: RoutedRequest<unknown> = {
+            route: matchedKey,
+            sender: sender,
+            path: matchResult2.path,
+            params: matchResult2.params as Record<string, string>,
+            data: request.data,
+            queryParams: {}
+          };
           if (splittedPath.length > 1) {
             const queryParts = splittedPath[1].split("&");
             queryParts.forEach((part: string) => {
@@ -150,8 +151,7 @@ export class RouterService extends BaseRouter implements IRouterService {
               .catch((err: unknown) => {
                 this.logService.error("Main", `Error executing ${requestType} ${request.path}`, err);
                 return this.resultFactory.createExceptionResult(err);
-              });          
-            
+              });
           } else {
             result = this.resultFactory.createNotFoundResultPromise(request.path);
           }
@@ -166,8 +166,8 @@ export class RouterService extends BaseRouter implements IRouterService {
     } catch (err) {
       this.logService.error("Main", `Error routing ${requestType} ${request.path}`, err);
       result = this.resultFactory.createExceptionResultPromise(err);
-    }    
+    }
     return result;
   }
-  //#endregion
+  // #endregion
 }

@@ -3,15 +3,15 @@ import * as React from "react";
 import { SplashContentState } from "./splash-content.state";
 
 export function SplashContent() {
-  //#region State -------------------------------------------------------------
+  // #region State ------------------------------------------------------------
   const initialState: SplashContentState = {
     label: "Loading",
     currentProgress: 1
   };
   const [state, setState] = React.useState(initialState);
-  //#endregion
+  // #endregion
 
-  //#region Main --------------------------------------------------------------
+  // #region Rendering --------------------------------------------------------
   window.ipc.onProgress((status) => {
     setState({ label: status });
   });
@@ -22,5 +22,5 @@ export function SplashContent() {
       <ProgressBar animate={true} intent="primary" value={state.currentProgress} />
     </div>
   );
-  //#endregion
+  // #endregion
 }

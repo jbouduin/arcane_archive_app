@@ -2,8 +2,6 @@ import { AlertProps } from "@blueprintjs/core";
 import { LanguageDto } from "../../../dto";
 import { RendererConfigurationDto } from "../../../../../common/dto";
 
-
-
 export interface BaseDesktopState {
   alertProps: AlertProps | null;
   // cardConditions: Array<ICardConditionDto>;

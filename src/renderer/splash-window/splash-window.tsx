@@ -12,10 +12,9 @@ void (async () => {
   await import("./splash-window.css");
   const container = document.getElementById("root")!;
   const root = createRoot(container);
-  /* eslint-disable @stylistic/function-paren-newline */
   root.render(
-    <BlueprintProvider>      
-       <SplashContent /> 
+    <BlueprintProvider>
+      <SplashContent />
     </BlueprintProvider>
   );
 })();

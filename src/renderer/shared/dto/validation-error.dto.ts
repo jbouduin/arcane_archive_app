@@ -3,4 +3,4 @@ export type ValidationErrorDto = {
   errorMessage: string;
   errorCode: string;
   severity: string;
-}
+};

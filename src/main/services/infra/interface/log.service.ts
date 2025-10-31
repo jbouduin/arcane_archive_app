@@ -1,4 +1,4 @@
-export type LogSource = "Main" | "Renderer"; 
+export type LogSource = "Main" | "Renderer";
 
 export interface ILogService {
   info(source: LogSource, message: string, ...args: Array<unknown>): void;

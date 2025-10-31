@@ -4,14 +4,13 @@ import { INFRASTRUCTURE } from "../../service.tokens";
 import { ILogService, IResultFactory, IRouterService } from "../interface";
 import { IAssetService } from "../interface/asset.service";
 
-
 @singleton()
 export class AssetRouter extends BaseRouter implements IRouter {
-  //#region Private fields ----------------------------------------------------
+  // #region private fields ---------------------------------------------------
   private readonly assetService: IAssetService;
-  //#endregion
+  // #endregion
 
-  //#region Constructor -------------------------------------------------------
+  // #region Constructor ------------------------------------------------------
   public constructor(
     @inject(INFRASTRUCTURE.LogService) logService: ILogService,
     @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory,
@@ -20,17 +19,17 @@ export class AssetRouter extends BaseRouter implements IRouter {
     super(logService, resultFactory);
     this.assetService = assetService;
   }
-  //#endregion
+  // #endregion
 
-  //#region IRouteDestinationService methods ----------------------------------
+  // #region IRouteDestinationService methods ---------------------------------
   public setRoutes(router: IRouterService): void {
     router.registerGetRoute("/asset", this.asset.bind(this) as RouteCallback);
   }
-  //#endregion
+  // #endregion
 
-  //#region private methods ---------------------------------------------------
+  // #region private methods --------------------------------------------------
   public asset(request: RoutedRequest<void>): Promise<IResult<string>> {
     return this.assetService.getAsset(request.queryParams["path"]);
   }
-  //#endregion
+  // #endregion
 }

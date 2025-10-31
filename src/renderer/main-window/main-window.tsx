@@ -32,7 +32,7 @@ void (async () => {
         await languageService.initialize(configurationService.configuration.apiConfiguration);
         const displayValueService = new DisplayValueService();
         await displayValueService.initialize(configurationService.configuration.apiConfiguration);
-        const container = document.getElementById("root")!;        
+        const container = document.getElementById("root")!;
         const root = createRoot(container);
         const serviceContainer: IServiceContainer = {
           languageService: languageService,
@@ -41,11 +41,10 @@ void (async () => {
           ipcProxy: ipcProxyService
         };
 
-        /* eslint-disable @stylistic/function-paren-newline */
         root.render(
           <OverlaysProvider>
             <PortalProvider>
-              <ServiceContainerContext.Provider value={serviceContainer}>                
+              <ServiceContainerContext.Provider value={serviceContainer}>
                 <MainWindowDesktop toastCall={toastCall} />
               </ServiceContainerContext.Provider>
             </PortalProvider>
@@ -54,4 +53,3 @@ void (async () => {
       }
     );
 })();
-

@@ -7,14 +7,14 @@ import { MtgViewTreeConfigurationViewmodel } from "./mtg-view-tree-configuration
 import { DataConfigurationViewmodel } from "./data-configuration.viewmodel";
 
 export class ConfigurationViewModel extends BaseViewmodel<ConfigurationDto> {
-  //#region private fields ----------------------------------------------------
+  // #region private fields ---------------------------------------------------
   // private _syncParamViewmodel: SyncParamViewmodel;
   private _databaseViewTreeConfigurationViewmodel: MtgViewTreeConfigurationViewmodel;
   private _dataConfigurationViewmodel: DataConfigurationViewmodel;
   private readonly _isFirstUse: boolean;
-  //#endregion
+  // #endregion
 
-  //#region Auxiliary getters -------------------------------------------------
+  // #region Auxiliary getters ------------------------------------------------
   public override get hasChanges(): boolean {
     return this._isFirstUse || super.hasChanges;
   }
@@ -22,9 +22,9 @@ export class ConfigurationViewModel extends BaseViewmodel<ConfigurationDto> {
   public get isFirstUse(): boolean {
     return this._isFirstUse;
   }
-  //#endregion
+  // #endregion
 
-  //#region Getters/Setters ---------------------------------------------------
+  // #region Getters/Setters --------------------------------------------------
   public get theme(): string {
     return this._dto.rendererConfiguration.useDarkTheme ? Classes.DARK : "";
   }
@@ -55,9 +55,9 @@ export class ConfigurationViewModel extends BaseViewmodel<ConfigurationDto> {
     this._dataConfigurationViewmodel = value;
     this._dto.dataConfiguration = value.dto;
   }
-  //#endregion
+  // #endregion
 
-  //#region Constructor & C° --------------------------------------------------
+  // #region Constructor & C° -------------------------------------------------
   public constructor(dtoConfiguration: ConfigurationDto, isFirstUse: boolean) {
     super(dtoConfiguration);
     this._isFirstUse = isFirstUse;
@@ -65,5 +65,5 @@ export class ConfigurationViewModel extends BaseViewmodel<ConfigurationDto> {
     this._databaseViewTreeConfigurationViewmodel = new MtgViewTreeConfigurationViewmodel(dtoConfiguration.rendererConfiguration.mtgSetTreeViewConfiguration);
     this._dataConfigurationViewmodel = new DataConfigurationViewmodel(dtoConfiguration.dataConfiguration);
   }
-  //#endregion
+  // #endregion
 }

@@ -7,49 +7,45 @@ import { EButtonBarButtonType } from "./button-bar-button-type.enum";
 import { ButtonBarProps } from "./button-bar.props";
 import { ButtonBarState } from "./button-bar.state";
 
-
-/*
- * TODO active view white, inactive views mute
- * TODO click on active view collapses the treeview
- */
+// TODO active view white, inactive views mute
 export function ButtonBar(props: ButtonBarProps) {
-  //#region State -----------------------------------------------------------------------
+  // #region State ----------------------------------------------------------------------
   const initialState: ButtonBarState = { syncDialogOpen: false, settingsDialogOpen: false };
-  const [state, setState] = React.useState<ButtonBarState>(initialState);
-  //#endregion
+  const [_state, setState] = React.useState<ButtonBarState>(initialState);
+  // #endregion
 
-  //#region Context ---------------------------------------------------------------------
-  const serviceContainer = React.useContext<IServiceContainer>(ServiceContainerContext);
+  // #region Context --------------------------------------------------------------------
+  const _serviceContainer = React.useContext<IServiceContainer>(ServiceContainerContext);
   // const overlayContext = React.useContext<IOverlayContext>(OverlayContext);
-  //#endregion
+  // #endregion
 
-  //#region Event handling --------------------------------------------------------------
+  // #region Event handling -------------------------------------------------------------
   // function startSync(syncParam: ISyncParamDto): void {
-    // overlayContext.showSplashScreen();
-    // setState(initialState);
-    // void ipcProxyService
-    //   .postData<ISyncParamDto, never>("/mtg-sync", syncParam)
-    //   .then(
-    //     () => {
-    //       if (syncParam.syncCardSets || syncParam.syncCardSymbols) {
-    //         const afterSplashScreenClose = new Array<AfterSplashScreenClose>();
-    //         if (syncParam.syncCardSets) {
-    //           afterSplashScreenClose.push("CardSets");
-    //         }
-    //         if (syncParam.syncCardSymbols) {
-    //           afterSplashScreenClose.push("CardSymbols");
-    //         }
-    //         overlayContext.hideSplashScreen(afterSplashScreenClose);
-    //       } else {
-    //         overlayContext.hideSplashScreen(null);
-    //       }
-    //     },
-    //     () => overlayContext.hideSplashScreen(null)
-    //   );
+  // overlayContext.showSplashScreen();
+  // setState(initialState);
+  // void ipcProxyService
+  //   .postData<ISyncParamDto, never>("/mtg-sync", syncParam)
+  //   .then(
+  //     () => {
+  //       if (syncParam.syncCardSets || syncParam.syncCardSymbols) {
+  //         const afterSplashScreenClose = new Array<AfterSplashScreenClose>();
+  //         if (syncParam.syncCardSets) {
+  //           afterSplashScreenClose.push("CardSets");
+  //         }
+  //         if (syncParam.syncCardSymbols) {
+  //           afterSplashScreenClose.push("CardSymbols");
+  //         }
+  //         overlayContext.hideSplashScreen(afterSplashScreenClose);
+  //       } else {
+  //         overlayContext.hideSplashScreen(null);
+  //       }
+  //     },
+  //     () => overlayContext.hideSplashScreen(null)
+  //   );
   // }
-  //#endregion
+  // #endregion
 
-  //#region Main --------------------------------------------------------------
+  // #region Rendering --------------------------------------------------------
   return (
     <>
       <div className="button-bar">
@@ -85,7 +81,7 @@ export function ButtonBar(props: ButtonBarProps) {
         </ButtonGroup>
       </div>
       {/* {
-        state.settingsDialogOpen &&        
+        state.settingsDialogOpen &&
         <SettingsDialog
           afterSave={(saved: IConfigurationDto) => {
             props.afterSaveSettings(saved);
@@ -116,5 +112,5 @@ export function ButtonBar(props: ButtonBarProps) {
       </Menu>
     );
   }
-  //#endregion
+  // #endregion
 }

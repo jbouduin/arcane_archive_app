@@ -4,25 +4,24 @@ import { ConfigurationService } from "./implementation/configuration.service";
 import { LanguageService } from "./implementation/language.service";
 import { DisplayValueService } from "./implementation/display-value.service";
 
-
 const defaultServiceContainer: IServiceContainer = {
   configurationService: new ConfigurationService(),
   displayValueService: new DisplayValueService(),
   ipcProxy: {
     logServerResponses: false,
-    deleteData: function (path: string): Promise<number> {
+    deleteData: function (_path: string): Promise<number> {
       throw new Error("IpcProxyService not initialized");
     },
-    getData: function <T extends object | string>(path: string): Promise<T> {
+    getData: function <T extends object | string>(_path: string): Promise<T> {
       throw new Error("IpcProxyService not initialized");
     },
-    postData: function <T extends object, U extends object>(path: string, data: T): Promise<U> {
+    postData: function <T extends object, U extends object>(_path: string, _data: T): Promise<U> {
       throw new Error("IpcProxyService not initialized");
     },
-    putData: function <T extends object, U extends object>(path: string, data: T): Promise<U> {
+    putData: function <T extends object, U extends object>(_path: string, _data: T): Promise<U> {
       throw new Error("IpcProxyService not initialized");
     },
-    patchData: function <T extends object, U extends object>(path: string, data: T): Promise<U> {
+    patchData: function <T extends object, U extends object>(_path: string, _data: T): Promise<U> {
       throw new Error("IpcProxyService not initialized");
     }
   },

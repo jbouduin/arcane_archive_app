@@ -5,25 +5,24 @@ import { IServiceContainer, ServiceContainerContext } from "../../../../shared/c
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
 import { ButtonBarButtonProps } from "./button-bar-button.props";
 
-
 export function ButtonBarButton(props: ButtonBarButtonProps) {
-  //#region State -------------------------------------------------------------
+  // #region State ------------------------------------------------------------
   const [svg, setSvg] = React.useState<string | undefined>(undefined);
-  //#endregion
+  // #endregion
 
-  //#region Context ---------------------------------------------------------------------
+  // #region Context --------------------------------------------------------------------
   const serviceContainer = React.useContext<IServiceContainer>(ServiceContainerContext);
-  //#endregion
+  // #endregion
 
-  //#region Event handling ----------------------------------------------------
+  // #region Event handling ---------------------------------------------------
   function onButtonClick(): void {
     if (props.onButtonClick && props.desktopView) {
       props.onButtonClick(props.desktopView);
     }
   }
-  //#endregion
+  // #endregion
 
-  //#region Effect ------------------------------------------------------------
+  // #region Effect -----------------------------------------------------------
   React.useEffect(
     () => {
       void serviceContainer.ipcProxy.getData<string>(`/asset?path=${props.assetPath}`)
@@ -34,9 +33,9 @@ export function ButtonBarButton(props: ButtonBarButtonProps) {
     },
     [props.assetPath]
   );
-  //#endregion
+  // #endregion
 
-  //#region Main --------------------------------------------------------------
+  // #region Rendering --------------------------------------------------------
   return (
     <>
       {
@@ -44,9 +43,9 @@ export function ButtonBarButton(props: ButtonBarButtonProps) {
       }
     </>
   );
-  //#endregion
+  // #endregion
 
-  //#region Auxiliary render methods ------------------------------------------
+  // #region Auxiliary render methods -----------------------------------------
   function renderButton(): React.JSX.Element {
     if (props.buttonType == EButtonBarButtonType.TooltipButton) {
       return renderToolTipButton();
@@ -98,5 +97,5 @@ export function ButtonBarButton(props: ButtonBarButtonProps) {
       </Tooltip>
     );
   }
-  //#endregion
+  // #endregion
 }

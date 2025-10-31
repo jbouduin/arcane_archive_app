@@ -11,18 +11,18 @@ import { ConfigurationDto } from "../../../common/dto";
 import { noop } from "lodash";
 
 export function FirstTimeView(props: FirstTimeViewProps) {
-  //#region State -------------------------------------------------------------
-  const [configuration, setConfiguration] = React.useState<ConfigurationViewModel>();
-  //#endregion
+  // #region State ------------------------------------------------------------
+  const [_configuration, setConfiguration] = React.useState<ConfigurationViewModel>();
+  // #endregion
 
-  //#region Effect ------------------------------------------------------------
+  // #region Effect -----------------------------------------------------------
   React.useEffect(
     () => setConfiguration(props.configuration),
     [props.configuration]
   );
-  //#endregion
+  // #endregion
 
-  //#region Rendering ---------------------------------------------------------
+  // #region Rendering --------------------------------------------------------
   return (
     <Card className={classNames(props.className, "desktop-wrapper")} compact={true}>
       <Section compact={true}>
@@ -55,7 +55,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
                     Cancel
                   </Button>
                 </DialogFooter>
-              </>              
+              </>
             )
           }
         </ServiceContainerContext.Consumer>
@@ -63,5 +63,5 @@ export function FirstTimeView(props: FirstTimeViewProps) {
     </Card>
 
   );
-  //#endregion
+  // #endregion
 }

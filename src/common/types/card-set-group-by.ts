@@ -1,6 +1,1 @@
-export type CardSetGroupBy =
-  "none" |
-  "parent" |
-  "block" |
-  "setType";
-  
+export type CardSetGroupBy = "none" | "parent" | "block" | "setType";

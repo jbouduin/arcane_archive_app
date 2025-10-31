@@ -8,14 +8,12 @@ import { ButtonBar } from "./button-bar/button-bar";
 import { EDesktopView } from "./desktop-view.enum";
 import { MainWindowDesktopProps } from "./main-window-desktop.props";
 
-
-
 export function MainWindowDesktop(props: MainWindowDesktopProps) {
-  //#region State -------------------------------------------------------------
+  // #region State ------------------------------------------------------------
   const [desktopView, setDesktopView] = React.useState<EDesktopView>(EDesktopView.Library);
-  //#endregion
+  // #endregion
 
-  //#region rendering ---------------------------------------------------------
+  // #region Rendering --------------------------------------------------------
   return (
     <BaseDesktop
       desktopContent={(props: DesktopContentProps) => desktopContent(props)}
@@ -23,7 +21,7 @@ export function MainWindowDesktop(props: MainWindowDesktopProps) {
     />
   );
 
-  function desktopContent(contentProps: DesktopContentProps): React.JSX.Element {    
+  function desktopContent(contentProps: DesktopContentProps): React.JSX.Element {
     return (
       <>
         <ButtonBar
@@ -49,5 +47,5 @@ export function MainWindowDesktop(props: MainWindowDesktopProps) {
       </>
     );
   }
-  //#endregion
+  // #endregion
 }

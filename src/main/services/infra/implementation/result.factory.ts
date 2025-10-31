@@ -6,17 +6,17 @@ import { ILogService, IResultFactory } from "../interface";
 
 @injectable()
 export class ResultFactory implements IResultFactory {
-  //#region Private fields ----------------------------------------------------
+  // #region private fields ---------------------------------------------------
   private readonly logService: ILogService;
-  //#endregion
+  // #endregion
 
-  //#region Constructor & C° --------------------------------------------------
+  // #region Constructor & C° -------------------------------------------------
   public constructor(@inject(INFRASTRUCTURE.LogService) logService: ILogService) {
     this.logService = logService;
   }
-  //#endregion
+  // #endregion
 
-  //#region IResultFactory methods --------------------------------------------
+  // #region IResultFactory methods -------------------------------------------
   public createExceptionResult<T>(error: unknown): IResult<T> {
     let message: string;
 
@@ -89,5 +89,5 @@ export class ResultFactory implements IResultFactory {
   public createSuccessResultPromise<T>(data: T): Promise<IResult<T>> {
     return Promise.resolve(this.createSuccessResult(data));
   }
-  //#endregion
+  // #endregion
 }

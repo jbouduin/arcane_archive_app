@@ -7,4 +7,4 @@ export type RoutedRequest<T> = {
   route: string;
   sender: WebContents;
   data: T;
-}
+};

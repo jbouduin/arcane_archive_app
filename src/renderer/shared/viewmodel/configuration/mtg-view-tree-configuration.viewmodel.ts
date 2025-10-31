@@ -3,11 +3,11 @@ import { CardSetGroupBy, CardSetSort } from "../../../../common/types";
 import { BaseViewmodel } from "../base.viewmodel";
 
 export class MtgViewTreeConfigurationViewmodel extends BaseViewmodel<MtgSetTreeViewConfigurationDto> {
-  //#region public fields -----------------------------------------------------
+  // #region public fields ----------------------------------------------------
   public cardSetFilterValue: string | null;
-  //#endregion
+  // #endregion
 
-  //#region Getters/Setters ---------------------------------------------------
+  // #region Getters/Setters --------------------------------------------------
   public get cardSetSort(): CardSetSort {
     return this._dto.cardSetSort;
   }
@@ -27,16 +27,16 @@ export class MtgViewTreeConfigurationViewmodel extends BaseViewmodel<MtgSetTreeV
   public get cardSetTypeFilter(): Array<string> {
     return this._dto.cardSetTypeFilter;
   }
-  //#endregion
+  // #endregion
 
-  //#region Constructor -------------------------------------------------------
+  // #region Constructor ------------------------------------------------------
   public constructor(dtoConfiguration: MtgSetTreeViewConfigurationDto) {
     super(dtoConfiguration);
     this.cardSetFilterValue = null;
   }
-  //#endregion
+  // #endregion
 
-  //#region Public methods ----------------------------------------------------
+  // #region Public methods ---------------------------------------------------
   public toggleCardSetFilterType(cardSetType: string): void {
     const indexOfType = this._dto.cardSetTypeFilter.indexOf(cardSetType);
     if (indexOfType >= 0) {
@@ -47,5 +47,5 @@ export class MtgViewTreeConfigurationViewmodel extends BaseViewmodel<MtgSetTreeV
     }
     this.cardSetFilterValue = null;
   }
-  //#endregion
+  // #endregion
 }

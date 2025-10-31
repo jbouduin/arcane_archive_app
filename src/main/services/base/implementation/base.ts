@@ -1,17 +1,15 @@
 import { ILogService, IResultFactory } from "../../infra/interface";
 
 export abstract class Base {
-  //#region protected fields --------------------------------------------------
+  // #region protected fields -------------------------------------------------
   protected readonly logService: ILogService;
   protected readonly resultFactory: IResultFactory;
-  //#endregion
+  // #endregion
 
-  //#region Constructor & C° --------------------------------------------------
+  // #region Constructor & C° -------------------------------------------------
   public constructor(logService: ILogService, resultFactory: IResultFactory) {
     this.logService = logService;
     this.resultFactory = resultFactory;
   }
-  //#endregion
+  // #endregion
 }
-
-

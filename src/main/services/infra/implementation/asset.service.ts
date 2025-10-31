@@ -7,19 +7,19 @@ import { inject, injectable } from "tsyringe";
 
 @injectable()
 export class AssetService implements IAssetService {
-  //#region Private fields ----------------------------------------------------
+  // #region private fields ---------------------------------------------------
   private readonly resultFactory: IResultFactory;
-  //#endregion
+  // #endregion
 
-  //#region Constructor -------------------------------------------------------
+  // #region Constructor ------------------------------------------------------
   public constructor(
     @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory
   ) {
     this.resultFactory = resultFactory;
   }
-  //#endregion
+  // #endregion
 
-  //#region IAssetService Members ---------------------------------------------
+  // #region IAssetService Members --------------------------------------------
   public async getAsset(path: string): Promise<IResult<string>> {
     if (existsSync(path)) {
       try {
@@ -31,5 +31,5 @@ export class AssetService implements IAssetService {
       return this.resultFactory.createNotFoundResultPromise<string>(path);
     }
   }
-  //#endregion
+  // #endregion
 }

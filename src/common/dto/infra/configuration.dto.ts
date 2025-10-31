@@ -6,4 +6,4 @@ export type ConfigurationDto = {
   apiConfiguration: ApiConfigurationDto;
   dataConfiguration: DataConfigurationDto;
   rendererConfiguration: RendererConfigurationDto;
-}
+};

@@ -1,9 +1,7 @@
-
 import { SvgProviderProps } from "./svg-renderer.props";
 
-
 export function SvgRenderer(props: SvgProviderProps) {
-  //#region Rendering ---------------------------------------------------------
+  // #region Rendering --------------------------------------------------------
   const start = props.svg.indexOf(">");
   const end = props.svg.indexOf("</svg");
   const path = props.svg.substring(start + 1, end);
@@ -21,5 +19,5 @@ export function SvgRenderer(props: SvgProviderProps) {
       width={props.width ?? 16}
     />
   );
-  //#endregion
+  // #endregion
 }

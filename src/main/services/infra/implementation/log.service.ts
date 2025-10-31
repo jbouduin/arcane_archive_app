@@ -5,7 +5,7 @@ import { ILogService } from "../interface/log.service";
 
 @singleton()
 export class LogService implements ILogService {
-  //#region ILogService methods -----------------------------------------------
+  // #region ILogService methods ----------------------------------------------
   public info(source: LogSource, message: string, ...args: Array<unknown>): void {
     console.log(`[${source}] `.concat(message), ...args);
   }
@@ -21,5 +21,5 @@ export class LogService implements ILogService {
   public debug(source: LogSource, message: string, ...args: Array<unknown>): void {
     console.debug(`[${source}] `.concat(message), ...args);
   }
-  //#endregion
+  // #endregion
 }

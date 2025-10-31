@@ -14,7 +14,7 @@ import { AssetRouter, ConfigurationRouter } from "./routers";
 
 export class InfraDi {
   public static register() {
-    //#region Services --------------------------------------------------------
+    // #region Services -------------------------------------------------------
     container.register<IAssetService>(INFRASTRUCTURE.AssetService, { useClass: AssetService }, { lifecycle: Lifecycle.Singleton });
     container.register<IBootstrapService>(INFRASTRUCTURE.BootstrapService, { useClass: BootstrapService });
     container.register<IConfigurationService>(INFRASTRUCTURE.ConfigurationService, { useClass: ConfigurationService }, { lifecycle: Lifecycle.Singleton });
@@ -22,11 +22,11 @@ export class InfraDi {
     container.register<IResultFactory>(INFRASTRUCTURE.ResultFactory, { useClass: ResultFactory }, { lifecycle: Lifecycle.Singleton });
     container.register<IRouterService>(INFRASTRUCTURE.RouterService, { useClass: RouterService }, { lifecycle: Lifecycle.Singleton });
     container.register<IWindowsService>(INFRASTRUCTURE.WindowsService, { useClass: WindowsService }, { lifecycle: Lifecycle.Singleton });
-    //#endregion
+    // #endregion
 
-    //#region Routers ---------------------------------------------------------
+    // #region Routers --------------------------------------------------------
     container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: AssetRouter }, { lifecycle: Lifecycle.Singleton });
     container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: ConfigurationRouter }, { lifecycle: Lifecycle.Singleton });
-    //#endregion
+    // #endregion
   }
 }

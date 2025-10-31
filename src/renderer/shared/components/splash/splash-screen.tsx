@@ -3,7 +3,6 @@ import classNames from "classnames";
 import { BaseDialogProps } from "../base/base-dialog";
 import { SplashContent } from "./splash-content";
 
-
 export function SplashScreen(props: BaseDialogProps) {
   return (
     <Dialog

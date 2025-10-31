@@ -1,1 +1,0 @@
-export * from "./mtg-set-tree-configuration.dto";

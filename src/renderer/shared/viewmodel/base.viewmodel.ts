@@ -1,14 +1,12 @@
 import { cloneDeep, isEqual } from "lodash";
 
 export abstract class BaseViewmodel<T extends object> {
-  //#region protected fields ----------------------------------------------------
+  // #region protected fields -------------------------------------------------
   protected _dto: T;
   protected readonly _org: T;
-  //#endregion
+  // #endregion
 
-  //#endregion
-
-  //#region Auxiliary getters -------------------------------------------------
+  // #region Auxiliary getters ------------------------------------------------
   public get dto(): Readonly<T> {
     return this._dto;
   }
@@ -16,18 +14,18 @@ export abstract class BaseViewmodel<T extends object> {
   public get hasChanges(): boolean {
     return !isEqual(this._dto, this._org);
   }
-  //#endregion
+  // #endregion
 
-  //#region Constructor -------------------------------------------------------
+  // #region Constructor ------------------------------------------------------
   public constructor(dto: T) {
     this._dto = dto;
     this._org = cloneDeep(dto);
   }
-  //#endregion
+  // #endregion
 
-  //#region Public methods ----------------------------------------------------
+  // #region Public methods ---------------------------------------------------
   public cancelChanges(): void {
     this._dto = cloneDeep(this._org);
   }
-  //#endregion
+  // #endregion
 }

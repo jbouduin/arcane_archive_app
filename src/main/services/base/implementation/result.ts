@@ -1,25 +1,24 @@
 import { EIpcStatus } from "../../../../common/ipc";
 import { IResult } from "../interface";
 
-
 export class Result<T> implements IResult<T> {
-  //#region IResult fields ----------------------------------------------------
+  // #region IResult fields ---------------------------------------------------
   public readonly status: EIpcStatus;
   public data!: T;
   public message?: string;
-  //#endregion
+  // #endregion
 
-  //#region Constructor & C° --------------------------------------------------
+  // #region Constructor & C° -------------------------------------------------
   public constructor(status: EIpcStatus, data: T | null, message?: string) {
     this.status = status;
-    if (data != null){
-    this.data = data;
-  }
+    if (data != null) {
+      this.data = data;
+    }
     this.message = message;
-  }  
-  //#endregion
+  }
+  // #endregion
 
-  //#region IResult methods ---------------------------------------------------
+  // #region IResult methods --------------------------------------------------
   public cast<U>(data: U): IResult<U> {
     return new Result<U>(this.status, data, this.message);
   }
@@ -50,7 +49,7 @@ export class Result<T> implements IResult<T> {
   public convert<U>(onSuccess: (r: T) => U, onFailure?: (r: T) => U): IResult<U> {
     let result: Result<U>;
     if (this.status < EIpcStatus.BadRequest || !onFailure) {
-      result = new Result<U>(this.status, onSuccess(this.data), this.message);      
+      result = new Result<U>(this.status, onSuccess(this.data), this.message);
     } else {
       result = new Result<U>(this.status, onFailure(this.data), this.message);
     }
@@ -86,5 +85,5 @@ export class Result<T> implements IResult<T> {
     }
     return this;
   }
-  //#endregion
+  // #endregion
 }

@@ -2,7 +2,7 @@ import { DataConfigurationDto } from "../../../../common/dto";
 import { BaseViewmodel } from "../base.viewmodel";
 
 export class DataConfigurationViewmodel extends BaseViewmodel<DataConfigurationDto> {
-  //#region Getters/Setters ---------------------------------------------------
+  // #region Getters/Setters --------------------------------------------------
   public get cacheDirectory(): string {
     return this._dto.cacheDirectory;
   }
@@ -26,11 +26,11 @@ export class DataConfigurationViewmodel extends BaseViewmodel<DataConfigurationD
   public set rootDataDirectory(value: string) {
     this._dto.rootDataDirectory = value;
   }
-  //#endregion
+  // #endregion
 
-  //#region Constructor & C° --------------------------------------------------
+  // #region Constructor & C° -------------------------------------------------
   public constructor(dtoDataConfiguration: DataConfigurationDto) {
     super(dtoDataConfiguration);
   }
-  //#endregion
+  // #endregion
 }

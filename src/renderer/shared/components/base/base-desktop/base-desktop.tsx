@@ -9,7 +9,7 @@ import { BaseDesktopProps } from "./base-desktop.props";
 import { BaseDesktopState } from "./base-desktop.state";
 
 export function BaseDesktop(props: BaseDesktopProps) {
-  //#region State -------------------------------------------------------------
+  // #region State ------------------------------------------------------------
   const initialState: BaseDesktopState = {
     alertProps: null,
     initialized: true,
@@ -24,46 +24,51 @@ export function BaseDesktop(props: BaseDesktopProps) {
     themeClassName: Classes.DARK
   };
   const [desktopState, setDesktopState] = React.useState<BaseDesktopState>(initialState);
-  //#endregion
+  // #endregion
 
-  //#region Event handling ----------------------------------------------------
+  // #region Event handling ---------------------------------------------------
   function onConfigurationChanged(saved: ConfigurationDto): void {
     const newState = cloneDeep(desktopState);
     newState.rendererConfiguration = saved.rendererConfiguration;
     newState.themeClassName = saved.rendererConfiguration.useDarkTheme ? Classes.DARK : "";
     setDesktopState(newState);
   }
-  //#endregion
-  
-  //#region Rendering ---------------------------------------------------------
+  // #endregion
+
+  // #region Rendering --------------------------------------------------------
   return (
     <>
-      {desktopState.initialized &&
-        <div>
-          <Card className={classNames(desktopState.themeClassName, "desktop-wrapper")}>
+      {
+        desktopState.initialized &&
+        (
+          <div>
+            <Card className={classNames(desktopState.themeClassName, "desktop-wrapper")}>
+              {
+                props.desktopContent({
+                  className: desktopState.themeClassName,
+                  onConfigurationChanged: (newConfiguration: ConfigurationDto) => onConfigurationChanged(newConfiguration)
+                })
+              }
+            </Card>
             {
-              props.desktopContent({
-                className: desktopState.themeClassName,
-                onConfigurationChanged: (newConfiguration: ConfigurationDto) => onConfigurationChanged(newConfiguration)
-              })
+              desktopState.splashScreenOpen &&
+              (
+                <SplashScreen
+                  {...props}
+                  className={desktopState.themeClassName}
+                  isOpen={desktopState.splashScreenOpen}
+                  onDialogClose={noop}
+                />
+              )
             }
-          </Card>
-          {
-            desktopState.splashScreenOpen &&
-            <SplashScreen
-              {...props}
-              className={desktopState.themeClassName}
-              isOpen={desktopState.splashScreenOpen}
-              onDialogClose={noop}
-            />
-          }
-          {
-            desktopState.alertProps &&
-            <Alert {...desktopState.alertProps} isOpen={true} />
-          }
-        </div>
+            {
+              desktopState.alertProps &&
+              <Alert {...desktopState.alertProps} isOpen={true} />
+            }
+          </div>
+        )
       }
     </>
-  )
-  //#endregion
+  );
+  // #endregion
 }

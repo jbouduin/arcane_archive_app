@@ -1,4 +1,4 @@
-import { MtgSetTreeViewConfigurationDto } from "../mtg";
+import { MtgSetTreeViewConfigurationDto } from "../library";
 
 export type RendererConfigurationDto = {
   useDarkTheme: boolean;
@@ -17,4 +17,4 @@ export type RendererConfigurationDto = {
    *   one column per condition per foil/non-foil
    *   display order: foil first or non-foil first
    */
-}
+};

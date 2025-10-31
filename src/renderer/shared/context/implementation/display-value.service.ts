@@ -1,19 +1,19 @@
 import { ApiConfigurationDto } from "../../../../common/dto/infra";
-import { DISPLAY_VALUE_DICTIONARY_KEYS, DisplayValueDictionaryKey, ResultDto } from "../../dto";
+import { DISPLAY_VALUE_DICTIONARY_KEYS, DisplayValueDictionaryKey } from "../../dto";
 import { IDisplayValueService } from "../interface";
 
-export class DisplayValueService implements IDisplayValueService {  
-  //#region Private fields ----------------------------------------------------
-  private dictionary: Map<DisplayValueDictionaryKey, Map<string, string>>;  
-  //#endregion
+export class DisplayValueService implements IDisplayValueService {
+  // #region private fields ---------------------------------------------------
+  private dictionary: Map<DisplayValueDictionaryKey, Map<string, string>>;
+  // #endregion
 
-  //#region Constructor -------------------------------------------------------
+  // #region Constructor ------------------------------------------------------
   public constructor() {
-    this.dictionary = new Map<DisplayValueDictionaryKey, Map<string, string>>;
+    this.dictionary = new Map<DisplayValueDictionaryKey, Map<string, string>>();
   }
-  //#endregion
+  // #endregion
 
-  //#region IDisplayValueService Members --------------------------------------
+  // #region IDisplayValueService Members -------------------------------------
   public getDisplayValue(key: DisplayValueDictionaryKey, value: string): string {
     let result: string | undefined;
     const values: Map<string, string> | undefined = this.dictionary.get(key);
@@ -40,5 +40,5 @@ export class DisplayValueService implements IDisplayValueService {
         }
       );
   }
-  //#endregion
+  // #endregion
 }

@@ -3,27 +3,27 @@ import { EIpcStatus, IpcChannel, IpcRequest, IpcResponse } from "../../../../com
 import { IIpcProxyService } from "../interface";
 
 export class IpcProxyService implements IIpcProxyService {
-  //#region Private fields ----------------------------------------------------
+  // #region private fields ---------------------------------------------------
   private showToast: (props: ToastProps, key?: string) => void;
   private deleteRequestCounter = 0;
   private getRequestCounter = 0;
   private patchRequestCounter = 0;
   private postRequestCounter = 0;
   private putRequestCounter = 0;
-  //#endregion
+  // #endregion
 
-  //#region Public fields -----------------------------------------------------
+  // #region Public fields ----------------------------------------------------
   public logServerResponses: boolean;
-  //#endregion
+  // #endregion
 
-  //#region Constructor & C° --------------------------------------------------
+  // #region Constructor & C° -------------------------------------------------
   public constructor(showToast: (props: ToastProps, key?: string) => void) {
     this.showToast = showToast;
     this.logServerResponses = false;
   }
-  //#endregion
+  // #endregion
 
-  //#region IPC-proxy methods -------------------------------------------------
+  // #region IPC-proxy methods ------------------------------------------------
   public deleteData(path: string): Promise<number> {
     const request: IpcRequest<never> = {
       id: ++this.deleteRequestCounter,
@@ -50,7 +50,7 @@ export class IpcProxyService implements IIpcProxyService {
     };
     return window.ipc.data<never, T>("GET", request)
       .then(
-        (response: IpcResponse<T>) => {          
+        (response: IpcResponse<T>) => {
           if (response.status >= EIpcStatus.BadRequest) {
             return this.processIpcErrorResponse("GET", response);
           } else {
@@ -67,7 +67,7 @@ export class IpcProxyService implements IIpcProxyService {
       path: path,
       data: data
     };
-    return window.ipc.data<T,U>("POST", request)
+    return window.ipc.data<T, U>("POST", request)
       .then(
         (response: IpcResponse<U>) => {
           if (response.status >= EIpcStatus.BadRequest) {
@@ -86,7 +86,7 @@ export class IpcProxyService implements IIpcProxyService {
       path: path,
       data: data
     };
-    return window.ipc.data<T,U>("PUT", request)
+    return window.ipc.data<T, U>("PUT", request)
       .then(
         (response: IpcResponse<U>) => {
           if (response.status >= EIpcStatus.BadRequest) {
@@ -105,7 +105,7 @@ export class IpcProxyService implements IIpcProxyService {
       path: path,
       data: data
     };
-    return window.ipc.data<T,U>("PATCH", request)
+    return window.ipc.data<T, U>("PATCH", request)
       .then(
         (response: IpcResponse<U>) => {
           if (response.status >= EIpcStatus.BadRequest) {
@@ -117,9 +117,9 @@ export class IpcProxyService implements IIpcProxyService {
         (reason: Error) => this.processIpcRejection("PATCH", reason)
       );
   }
-  //#endregion
+  // #endregion
 
-  //#region Auxiliary methods -------------------------------------------------
+  // #region Auxiliary methods ------------------------------------------------
   private processIpcErrorResponse<T>(channel: IpcChannel, response: IpcResponse<T>): Promise<never> {
     let errorMessage: string | undefined = undefined;
     switch (response.status) {
@@ -189,5 +189,5 @@ export class IpcProxyService implements IIpcProxyService {
     );
     return Promise.reject<T>(reason);
   }
-  //#endregion
+  // #endregion
 }

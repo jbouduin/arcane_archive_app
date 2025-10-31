@@ -1,13 +1,12 @@
-import { app, BrowserWindow, ipcMain, session } from "electron";
+import { app, BrowserWindow, session } from "electron";
 import { existsSync } from "fs";
 import { join } from "path";
 import "reflect-metadata";
 import { container } from "tsyringe";
 import { updateElectronApp } from "update-electron-app/dist";
+import { IBootstrapService, IWindowsService } from "./services/infra/interface";
 import { INFRASTRUCTURE } from "./services/service.tokens";
 import { ServicesDI } from "./services/services.di";
-import { IBootstrapService, IWindowsService } from "./services/infra/interface";
-
 
 // check for updates
 updateElectronApp();

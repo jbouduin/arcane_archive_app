@@ -42,7 +42,6 @@ void (async () => {
           configurationService: configurationService,
           ipcProxy: ipcProxyService
         };
-        /* eslint-disable @stylistic/function-paren-newline */
         root.render(
           <BlueprintProvider>
             <ServiceContainerContext.Provider value={serviceContainer}>

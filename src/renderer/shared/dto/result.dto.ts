@@ -6,4 +6,4 @@ export type ResultDto<T> = {
   status: string;
   successMessage: string;
   validationErrors: Array<ValidationErrorDto>;
-} 
+};

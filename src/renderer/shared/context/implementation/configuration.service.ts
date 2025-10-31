@@ -4,16 +4,16 @@ import { IIpcProxyService } from "../interface";
 import { IConfigurationService } from "../interface";
 
 export class ConfigurationService implements IConfigurationService {
-  //#region Private fields ----------------------------------------------------
+  // #region private fields ---------------------------------------------------
   private ipcProxy!: IIpcProxyService;
   private _configuration!: ConfigurationDto;
-  //#endregion
+  // #endregion
 
-  //#region Constructor -------------------------------------------------------
+  // #region Constructor ------------------------------------------------------
   public constructor() { }
-  //#endregion
+  // #endregion
 
-  //#region IConfiguration Members --------------------------------------------
+  // #region IConfiguration Members -------------------------------------------
   public get configuration(): ConfigurationDto {
     return this._configuration;
   }
@@ -40,10 +40,10 @@ export class ConfigurationService implements IConfigurationService {
       .then(
         (saved: ConfigurationDto) => {
           this._configuration = saved;
-          return saved
+          return saved;
         },
         () => configuration
       );
   }
-  //#endregion
+  // #endregion
 }

@@ -1,2 +1,2 @@
 export * from "./infra";
-export * from "./mtg";
+export * from "./library";

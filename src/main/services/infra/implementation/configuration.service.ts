@@ -7,19 +7,18 @@ import { INFRASTRUCTURE } from "../../service.tokens";
 import { IConfigurationService, ILogService, IResultFactory } from "../interface";
 import { ApiConfigurationDto } from "../../../../common/dto/infra/api-configuration.dto";
 
-
 @singleton()
 export class ConfigurationService extends BaseService implements IConfigurationService {
-  //#region Private fields ----------------------------------------------------
+  // #region private fields ---------------------------------------------------
   private configFilePath!: string;
   private appDirectory!: string;
   private homeDirectory!: string;
   private useDarkTheme!: boolean;
   private _configuration!: ConfigurationDto;
   private _isFirstUsage!: boolean;
-  //#endregion
+  // #endregion
 
-  //#region IConfigurationService properties ----------------------------------
+  // #region IConfigurationService properties ---------------------------------
   public get configuration(): ConfigurationDto {
     return this._configuration;
   }
@@ -34,18 +33,18 @@ export class ConfigurationService extends BaseService implements IConfigurationS
       this._configuration.dataConfiguration.databaseName
     );
   }
-  //#endregion
+  // #endregion
 
-  //#region Constructor & C° --------------------------------------------------
+  // #region Constructor & C° -------------------------------------------------
   public constructor(
     @inject(INFRASTRUCTURE.LogService) logService: ILogService,
     @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory
   ) {
     super(logService, resultFactory);
   }
-  //#endregion
+  // #endregion
 
-  //#region ISettingsService methods ------------------------------------------
+  // #region IConfigurationService methods ------------------------------------
   public loadSettings(appDirectory: string, homeDirectory: string, useDarkTheme: boolean): void {
     this.appDirectory = appDirectory;
     this.homeDirectory = homeDirectory;
@@ -59,10 +58,10 @@ export class ConfigurationService extends BaseService implements IConfigurationS
       this._isFirstUsage = true;
     }
   }
-  //#endregion
+  // #endregion
 
-  //#region Route callbacks ---------------------------------------------------
-  public getSettings(): Promise<IResult<ConfigurationDto>> {        
+  // #region Route callbacks --------------------------------------------------
+  public getSettings(): Promise<IResult<ConfigurationDto>> {
     return this.resultFactory.createSuccessResultPromise(this._configuration);
   }
 
@@ -85,9 +84,9 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     this._isFirstUsage = false;
     return this.resultFactory.createSuccessResultPromise<ConfigurationDto>(configuration);
   }
-  //#endregion
+  // #endregion
 
-  //#region Auxiliary factory default methods ---------------------------------
+  // #region Auxiliary factory default methods --------------------------------
   private createFactoryDefault(): ConfigurationDto {
     const result: ConfigurationDto = {
       apiConfiguration: this.createApiConfigurationFactoryDefault(),
@@ -100,7 +99,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     };
     return result;
   }
-  
+
   private createApiConfigurationFactoryDefault(): ApiConfigurationDto {
     const result: ApiConfigurationDto = {
       scryfallApiRoot: "https://api.scryfall.com",
@@ -111,50 +110,50 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     };
     return result;
   }
-//   private createScryFallFactoryDefault(): IScryfallConfigurationDto {
-//     const endpoints: Record<ScryfallEndpoint, string> = {
-//       bulk: "bulk-data",
-//       cards: "card/:id",
-//       cardSet: "sets",
-//       cardSymbol: "symbology",
-//       catalog: "catalog",
-//       collection: "cards/collection",
-//       ruling: "cards/:id/rulings",
-//       search: "cards/search"
-//     };
+  //   private createScryFallFactoryDefault(): IScryfallConfigurationDto {
+  //     const endpoints: Record<ScryfallEndpoint, string> = {
+  //       bulk: "bulk-data",
+  //       cards: "card/:id",
+  //       cardSet: "sets",
+  //       cardSymbol: "symbology",
+  //       catalog: "catalog",
+  //       collection: "cards/collection",
+  //       ruling: "cards/:id/rulings",
+  //       search: "cards/search"
+  //     };
 
-//     const result: IScryfallConfigurationDto = {
-//       cardBackRoot: ,
-//       scryfallApiRoot: ,
-//       scryfallEndpoints: endpoints,
+  //     const result: IScryfallConfigurationDto = {
+  //       cardBackRoot: ,
+  //       scryfallApiRoot: ,
+  //       scryfallEndpoints: endpoints,
 
-//       // Scryfall api requests 50-100 ms between calls, let's give it some slack
-//       minimumRequestTimeout: 60,
-//       dumpRetrievedData: false,
-//       // Scryfall api allows up to 75 per collection
-//       collectionChunkSize: 50
-//     };
-//     return result;
-//   }
+  //       // Scryfall api requests 50-100 ms between calls, let's give it some slack
+  //       minimumRequestTimeout: 60,
+  //       dumpRetrievedData: false,
+  //       // Scryfall api allows up to 75 per collection
+  //       collectionChunkSize: 50
+  //     };
+  //     return result;
+  //   }
 
-//   private createSyncAtStartupFactoryDefault(): ISyncParamDto {
-//     const result: ISyncParamDto = {
-//       catalogTypesToSync: [],
-//       bulkSyncUrl: undefined,
-//       syncCardSymbols: false,
-//       syncCardSets: false,
-//       rulingSyncType: "none",
-//       cardSyncType: "none",
-//       cardSelectionToSync: [],
-//       cardImageStatusToSync: [],
-//       syncCardsSyncedBeforeNumber: 0,
-//       syncCardsSyncedBeforeUnit: undefined,
-//       cardSetCodeToSyncCardsFor: undefined,
-//       changedImageStatusAction: "delete",
-//       oracleId: undefined
-//     };
-//     return result;
-//   }
+  //   private createSyncAtStartupFactoryDefault(): ISyncParamDto {
+  //     const result: ISyncParamDto = {
+  //       catalogTypesToSync: [],
+  //       bulkSyncUrl: undefined,
+  //       syncCardSymbols: false,
+  //       syncCardSets: false,
+  //       rulingSyncType: "none",
+  //       cardSyncType: "none",
+  //       cardSelectionToSync: [],
+  //       cardImageStatusToSync: [],
+  //       syncCardsSyncedBeforeNumber: 0,
+  //       syncCardsSyncedBeforeUnit: undefined,
+  //       cardSetCodeToSyncCardsFor: undefined,
+  //       changedImageStatusAction: "delete",
+  //       oracleId: undefined
+  //     };
+  //     return result;
+  //   }
 
   private createRendererConfigurationFactoryDefault(useDarkTheme: boolean): RendererConfigurationDto {
     const result: RendererConfigurationDto = {
@@ -175,13 +174,13 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     };
     return result;
   }
-  //#endregion
+  // #endregion
 
-  //#region Auxiliary validation related methods ------------------------------
+  // #region Auxiliary validation related methods -----------------------------
   private createDirectoryIfNotExists(directory: string): void {
     if (!existsSync(directory)) {
       mkdirSync(directory, { recursive: true });
     }
   }
-  //#endregion
+  // #endregion
 }

@@ -2,7 +2,6 @@ import { WebContents } from "electron";
 import { IpcChannel, IpcRequest } from "../../../../common/ipc";
 import { DeleteRouteCallback, IResult, RouteCallback } from "../../base";
 
-
 export interface IRouterService {
   logRoutes(): void;
   registerDeleteRoute(path: string, callback: DeleteRouteCallback): void;
