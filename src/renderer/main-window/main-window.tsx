@@ -1,13 +1,12 @@
-import { FocusStyleManager, H1, OverlaysProvider, OverlayToaster, PortalProvider, Position, ToastProps } from "@blueprintjs/core";
+import { FocusStyleManager, OverlaysProvider, OverlayToaster, PortalProvider, Position, ToastProps } from "@blueprintjs/core";
 import { createRoot } from "react-dom/client";
-import { IpcProxyService } from "../shared/context/implementation/ipc-proxy.service";
 import { IServiceContainer } from "../shared/context";
-import { ServiceContainerContext } from "../shared/context/shared.context";
 import { ConfigurationService } from "../shared/context/implementation/configuration.service";
-import { LanguageService } from "../shared/context/implementation/language.service";
-import { LanguageDto } from "../shared/dto/language.dto";
-import * as React from "react";
 import { DisplayValueService } from "../shared/context/implementation/display-value.service";
+import { IpcProxyService } from "../shared/context/implementation/ipc-proxy.service";
+import { LanguageService } from "../shared/context/implementation/language.service";
+import { ServiceContainerContext } from "../shared/context/shared.context";
+import { MainWindowDesktop } from "./components/desktop/main-window-desktop";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -46,12 +45,8 @@ void (async () => {
         root.render(
           <OverlaysProvider>
             <PortalProvider>
-              <ServiceContainerContext.Provider value={serviceContainer}>
-                <H1>here we go</H1>this is a paragraph
-                <pre>
-                  {JSON.stringify(Object.fromEntries(languageService.languages), null, 2)}
-                </pre>                
-                {/* <MainWindowDesktop toastCall={toastCall} /> */}
+              <ServiceContainerContext.Provider value={serviceContainer}>                
+                <MainWindowDesktop toastCall={toastCall} />
               </ServiceContainerContext.Provider>
             </PortalProvider>
           </OverlaysProvider>

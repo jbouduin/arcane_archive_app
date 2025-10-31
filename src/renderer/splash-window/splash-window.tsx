@@ -1,8 +1,6 @@
-import * as React from "react";
 import { BlueprintProvider, FocusStyleManager } from "@blueprintjs/core";
 import { createRoot } from "react-dom/client";
-// import { SplashContent } from "../shared/components/splash";
-
+import { SplashContent } from "../shared/components/splash";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -16,9 +14,8 @@ void (async () => {
   const root = createRoot(container);
   /* eslint-disable @stylistic/function-paren-newline */
   root.render(
-    <BlueprintProvider>
-      <p>text</p>
-      {/* <SplashContent /> */}
+    <BlueprintProvider>      
+       <SplashContent /> 
     </BlueprintProvider>
   );
 })();

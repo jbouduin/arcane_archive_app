@@ -49,8 +49,6 @@ void app.whenReady().then(async () => {
   }
 });
 
-// TODO ipcMain.handle("ping", (_event: Electron.IpcMainEvent, ..._args: Array<unknown>) => Promise.resolve("pong"));
-
 /*
  * Quit when all windows are closed, except on macOS. There, it"s common
  * for applications and their menu bar to stay active until the user quits

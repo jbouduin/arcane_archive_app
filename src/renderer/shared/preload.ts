@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { IpcChannel, IpcRequest, IpcResponse } from "../../common/ipc";
 
-// define
+
 const versions = {
   node: () => process.versions.node,
   chrome: () => process.versions.chrome,
@@ -10,9 +10,10 @@ const versions = {
 
 const ipc = {
   // Renderer to Main
-  data: <T,U>(channel: IpcChannel, request: IpcRequest<T>) => {
-    const r = ipcRenderer.invoke(channel, request);    
-    return r as Promise<IpcResponse<U>>},
+  data: <T, U>(channel: IpcChannel, request: IpcRequest<T>) => {
+    const r = ipcRenderer.invoke(channel, request);
+    return r as Promise<IpcResponse<U>>
+  },
   // FEATURE extended progress reporting with two progress bars
   onProgress: (callback: (status: string) => void) => {
     // to avoid memory leaks and as only the splash screen is listening to it

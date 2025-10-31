@@ -24,6 +24,9 @@ export const rendererConfig: Configuration = {
   module: {
     rules,
   },
+  devServer: {
+    hot: false
+  },
   plugins,
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],

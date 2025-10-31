@@ -46,7 +46,7 @@
 } */
 
 
-.bp5-tab-panel.left-panel-tab-panel {
+.bp6-tab-panel.left-panel-tab-panel {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -77,6 +77,6 @@
   height: 100%;
 }
 
-.bp5-tree-root:last-child {
+.bp6-tree-root:last-child {
   margin-bottom: 10px;
 }

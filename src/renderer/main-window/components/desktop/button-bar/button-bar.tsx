@@ -1,0 +1,120 @@
+import { ButtonGroup, Menu, MenuItem } from "@blueprintjs/core";
+import * as React from "react";
+import { IServiceContainer, ServiceContainerContext } from "../../../../shared/context";
+import { EDesktopView } from "../desktop-view.enum";
+import { ButtonBarButton } from "./button-bar-button";
+import { EButtonBarButtonType } from "./button-bar-button-type.enum";
+import { ButtonBarProps } from "./button-bar.props";
+import { ButtonBarState } from "./button-bar.state";
+
+
+/*
+ * TODO active view white, inactive views mute
+ * TODO click on active view collapses the treeview
+ */
+export function ButtonBar(props: ButtonBarProps) {
+  //#region State -----------------------------------------------------------------------
+  const initialState: ButtonBarState = { syncDialogOpen: false, settingsDialogOpen: false };
+  const [state, setState] = React.useState<ButtonBarState>(initialState);
+  //#endregion
+
+  //#region Context ---------------------------------------------------------------------
+  const serviceContainer = React.useContext<IServiceContainer>(ServiceContainerContext);
+  // const overlayContext = React.useContext<IOverlayContext>(OverlayContext);
+  //#endregion
+
+  //#region Event handling --------------------------------------------------------------
+  // function startSync(syncParam: ISyncParamDto): void {
+    // overlayContext.showSplashScreen();
+    // setState(initialState);
+    // void ipcProxyService
+    //   .postData<ISyncParamDto, never>("/mtg-sync", syncParam)
+    //   .then(
+    //     () => {
+    //       if (syncParam.syncCardSets || syncParam.syncCardSymbols) {
+    //         const afterSplashScreenClose = new Array<AfterSplashScreenClose>();
+    //         if (syncParam.syncCardSets) {
+    //           afterSplashScreenClose.push("CardSets");
+    //         }
+    //         if (syncParam.syncCardSymbols) {
+    //           afterSplashScreenClose.push("CardSymbols");
+    //         }
+    //         overlayContext.hideSplashScreen(afterSplashScreenClose);
+    //       } else {
+    //         overlayContext.hideSplashScreen(null);
+    //       }
+    //     },
+    //     () => overlayContext.hideSplashScreen(null)
+    //   );
+  // }
+  //#endregion
+
+  //#region Main --------------------------------------------------------------
+  return (
+    <>
+      <div className="button-bar">
+        <ButtonGroup variant="minimal" vertical={true}>
+          <ButtonBarButton
+            assetPath="assets/img/mtg.svg"
+            buttonType={EButtonBarButtonType.TooltipButton}
+            desktopView={EDesktopView.Library}
+            onButtonClick={(desktopView: EDesktopView) => props.onDesktopViewSelectionClick(desktopView)}
+            tooltip={<span>Magic the Gathering Database</span>}
+          />
+          <ButtonBarButton
+            assetPath="assets/img/collection.svg"
+            buttonType={EButtonBarButtonType.TooltipButton}
+            desktopView={EDesktopView.Collection}
+            onButtonClick={(desktopView: EDesktopView) => props.onDesktopViewSelectionClick(desktopView)}
+            tooltip={<span>Collections</span>}
+          />
+          <ButtonBarButton
+            assetPath="assets/img/deck.svg"
+            buttonType={EButtonBarButtonType.TooltipButton}
+            desktopView={EDesktopView.Deck}
+            onButtonClick={(desktopView: EDesktopView) => props.onDesktopViewSelectionClick(desktopView)}
+            tooltip={<span>Decks</span>}
+          />
+        </ButtonGroup>
+        <ButtonGroup variant="minimal" vertical={true}>
+          <ButtonBarButton
+            assetPath="assets/img/settings.svg"
+            buttonType={EButtonBarButtonType.MenuButton}
+            menu={renderMenu()}
+          />
+        </ButtonGroup>
+      </div>
+      {/* {
+        state.settingsDialogOpen &&        
+        <SettingsDialog
+          afterSave={(saved: IConfigurationDto) => {
+            props.afterSaveSettings(saved);
+            setState(initialState);
+          }}
+          className={props.className}
+          isOpen={state.settingsDialogOpen}
+          onDialogClose={() => setState(initialState)}
+        />
+      } */}
+      {/* {
+        state.syncDialogOpen &&
+        <SyncDialog
+          className={props.className}
+          isOpen={state.syncDialogOpen}
+          onDialogClose={() => setState(initialState)}
+          onOkClick={startSync}
+        />
+      } */}
+    </>
+  );
+
+  function renderMenu(): React.JSX.Element {
+    return (
+      <Menu size="small">
+        <MenuItem onClick={() => setState({ syncDialogOpen: false, settingsDialogOpen: true })} text="Settings" />
+        <MenuItem onClick={() => setState({ syncDialogOpen: true, settingsDialogOpen: false })} text="Synchronize" />
+      </Menu>
+    );
+  }
+  //#endregion
+}
