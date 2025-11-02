@@ -11,7 +11,7 @@ rules.push({
   use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
 });
 
-const assets = ['img', "icons"]; // asset directories
+const assets = ['img', "icons", "keyrune"]; // asset directories
 assets.forEach((dir: string) =>
   plugins.push(new CopyWebpackPlugin({patterns: [
     {

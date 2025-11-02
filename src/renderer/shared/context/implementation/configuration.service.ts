@@ -1,7 +1,5 @@
-import { noop } from "lodash";
 import { ConfigurationDto, RendererConfigurationDto } from "../../../../common/dto";
-import { IIpcProxyService } from "../interface";
-import { IConfigurationService } from "../interface";
+import { IConfigurationService, IIpcProxyService } from "../interface";
 
 export class ConfigurationService implements IConfigurationService {
   // #region private fields ---------------------------------------------------
@@ -22,15 +20,15 @@ export class ConfigurationService implements IConfigurationService {
     return this._configuration.rendererConfiguration;
   }
 
-  public initialize(ipcProxy: IIpcProxyService): Promise<void> {
+  public initialize(ipcProxy: IIpcProxyService): Promise<ConfigurationDto> {
     this.ipcProxy = ipcProxy;
     return this.ipcProxy.getData<ConfigurationDto>("/configuration")
       .then(
         (configuration: ConfigurationDto) => {
           this._configuration = configuration;
           ipcProxy.logServerResponses = configuration.rendererConfiguration.logServerResponses;
-        },
-        noop
+          return configuration;
+        }
       );
   }
 

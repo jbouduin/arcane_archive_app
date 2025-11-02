@@ -17,19 +17,18 @@ export class BootstrapService implements IBootstrapService {
     const rootRouterService: IRouterService = container.resolve(INFRASTRUCTURE.RouterService);
     const settingsService: IConfigurationService = container.resolve(INFRASTRUCTURE.ConfigurationService);
 
+    ipcMain.handle("show-main-window", () => {
+      windowsService.mainWindow.show();
+      if (!splashWindow.isDestroyed()) {
+        splashWindow.close();
+      }
+    });
+
     await this.preboot(settingsService, rootRouterService);
     const splashWindow = windowsService.createSplashWindow();
+    windowsService.createMainWindow();
     splashWindow.on("show", () => {
       void this.bootFunction(splashWindow)
-        .then(() => {
-          windowsService.createMainWindow();
-          windowsService.mainWindow.on("ready-to-show", () => {
-            windowsService.mainWindow.show();
-            if (!splashWindow.isDestroyed()) {
-              splashWindow.close();
-            }
-          });
-        })
         .catch((reason: Error) => {
           splashWindow.hide();
           dialog.showErrorBox(`Error:" ${reason.message}`, reason.stack || "");
@@ -56,8 +55,7 @@ export class BootstrapService implements IBootstrapService {
   // #endregion
 
   // #region helper methods ---------------------------------------------------
-  private async preboot(configurationService: IConfigurationService, routerService: IRouterService
-  ): Promise<void> {
+  private async preboot(configurationService: IConfigurationService, routerService: IRouterService): Promise<void> {
     configurationService.loadSettings(app.getAppPath(), homedir(), nativeTheme.shouldUseDarkColors);
     container.resolveAll<IRouter>(INFRASTRUCTURE.Router).forEach((svc: IRouter) => svc.setRoutes(routerService));
     routerService.logRoutes();
@@ -110,23 +108,4 @@ export class BootstrapService implements IBootstrapService {
       (event: IpcMainInvokeEvent, ...args: Array<unknown>) => routerService.routeRequest(channel, event.sender, args[0] as IpcRequest<unknown>)
     );
   }
-
-  //   private firstUseSyncParam(): ISyncParamDto {
-  //     const result: ISyncParamDto = {
-  //       cardImageStatusToSync: [],
-  //       bulkSyncUrl: undefined,
-  //       cardSelectionToSync: [],
-  //       cardSetCodeToSyncCardsFor: undefined,
-  //       cardSyncType: "none",
-  //       catalogTypesToSync: Object.keys(ECatalogType) as Array<CatalogType>,
-  //       changedImageStatusAction: undefined,
-  //       oracleId: undefined,
-  //       rulingSyncType: "none",
-  //       syncCardSymbols: true,
-  //       syncCardSets: true,
-  //       syncCardsSyncedBeforeNumber: 0,
-  //       syncCardsSyncedBeforeUnit: undefined
-  //     };
-  //     return result;
-  //   }
 }

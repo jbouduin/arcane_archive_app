@@ -4,6 +4,7 @@ import { IIpcProxyService } from "./ipc-proxy.service";
 export interface IConfigurationService {
   readonly configuration: ConfigurationDto;
   readonly rendererConfiguration: RendererConfigurationDto;
-  initialize(ipcProx: IIpcProxyService): Promise<void>;
+
+  initialize(ipcProx: IIpcProxyService): Promise<ConfigurationDto>;
   saveConfiguration(configuration: ConfigurationDto): Promise<ConfigurationDto>;
 }

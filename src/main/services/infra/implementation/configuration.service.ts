@@ -163,12 +163,12 @@ export class ConfigurationService extends BaseService implements IConfigurationS
         cardSetSort: "releaseDateDescending",
         cardSetGroupBy: "parent",
         cardSetTypeFilter: [
-          "core",
-          "expansion",
-          "token",
-          "starter",
-          "duel_deck",
-          "promo"
+          "CORE",
+          "EXPANSION",
+          "TOKEN",
+          "STARTER",
+          "DUEL_DECK",
+          "PROMO"
         ]
       }
     };

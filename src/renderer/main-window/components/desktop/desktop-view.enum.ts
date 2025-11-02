@@ -1,5 +1,5 @@
 export enum EDesktopView {
-  Library,
+  Library = 1,
   Collection,
   Deck
 }

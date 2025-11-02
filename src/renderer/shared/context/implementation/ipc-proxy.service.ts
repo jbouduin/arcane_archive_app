@@ -4,7 +4,7 @@ import { IIpcProxyService } from "../interface";
 
 export class IpcProxyService implements IIpcProxyService {
   // #region private fields ---------------------------------------------------
-  private showToast: (props: ToastProps, key?: string) => void;
+  private showToast!: (props: ToastProps, key?: string) => void;
   private deleteRequestCounter = 0;
   private getRequestCounter = 0;
   private patchRequestCounter = 0;
@@ -17,11 +17,14 @@ export class IpcProxyService implements IIpcProxyService {
   // #endregion
 
   // #region Constructor & C° -------------------------------------------------
-  public constructor(showToast: (props: ToastProps, key?: string) => void) {
-    this.showToast = showToast;
+  public constructor() {
     this.logServerResponses = false;
   }
   // #endregion
+
+  public initialize(showToast: (props: ToastProps, key?: string) => void): void {
+    this.showToast = showToast;
+  }
 
   // #region IPC-proxy methods ------------------------------------------------
   public deleteData(path: string): Promise<number> {
@@ -116,6 +119,10 @@ export class IpcProxyService implements IIpcProxyService {
         },
         (reason: Error) => this.processIpcRejection("PATCH", reason)
       );
+  }
+
+  public showMainWindow(): void {
+    void window.ipc.showMainWindow();
   }
   // #endregion
 

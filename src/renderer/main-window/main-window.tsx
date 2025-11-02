@@ -1,10 +1,6 @@
-import { FocusStyleManager, OverlaysProvider, OverlayToaster, PortalProvider, Position, ToastProps } from "@blueprintjs/core";
+import { FocusStyleManager, H1, OverlaysProvider, OverlayToaster, PortalProvider, Position, ToastProps } from "@blueprintjs/core";
 import { createRoot } from "react-dom/client";
-import { IServiceContainer } from "../shared/context";
-import { ConfigurationService } from "../shared/context/implementation/configuration.service";
-import { DisplayValueService } from "../shared/context/implementation/display-value.service";
-import { IpcProxyService } from "../shared/context/implementation/ipc-proxy.service";
-import { LanguageService } from "../shared/context/implementation/language.service";
+import { ServiceContainer } from "../shared/context/implementation/service.container";
 import { ServiceContainerContext } from "../shared/context/shared.context";
 import { MainWindowDesktop } from "./components/desktop/main-window-desktop";
 
@@ -23,24 +19,12 @@ void (async () => {
     }
   );
   const toastCall = (props: ToastProps, key?: string) => appToaster.show(props, key);
-  const ipcProxyService = new IpcProxyService(toastCall);
-  const configurationService = new ConfigurationService();
-  await configurationService.initialize(ipcProxyService)
+  const serviceContainer = new ServiceContainer();
+  const container = document.getElementById("root")!;
+  const root = createRoot(container);
+  serviceContainer.initialize(toastCall)
     .then(
-      async () => {
-        const languageService = new LanguageService();
-        await languageService.initialize(configurationService.configuration.apiConfiguration);
-        const displayValueService = new DisplayValueService();
-        await displayValueService.initialize(configurationService.configuration.apiConfiguration);
-        const container = document.getElementById("root")!;
-        const root = createRoot(container);
-        const serviceContainer: IServiceContainer = {
-          languageService: languageService,
-          displayValueService: displayValueService,
-          configurationService: configurationService,
-          ipcProxy: ipcProxyService
-        };
-
+      () => {
         root.render(
           <OverlaysProvider>
             <PortalProvider>
@@ -50,6 +34,15 @@ void (async () => {
             </PortalProvider>
           </OverlaysProvider>
         );
+      },
+      (reason: unknown) => {
+        root.render(
+          <>
+            <H1>Error initializing</H1>
+            {reason}
+          </>
+        );
       }
-    );
+    )
+    .then(() => serviceContainer.ipcProxy.showMainWindow());
 })();
