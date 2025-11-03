@@ -91,6 +91,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     const result: ConfigurationDto = {
       apiConfiguration: this.createApiConfigurationFactoryDefault(),
       dataConfiguration: {
+        refreshCacheAtStartup: false,
         rootDataDirectory: join(this.homeDirectory, "mtg-collection-manager"),
         cacheDirectory: join(this.appDirectory, ".cache"),
         databaseName: "magic-db.sqlite"

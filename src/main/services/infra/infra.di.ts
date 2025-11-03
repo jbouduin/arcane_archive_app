@@ -10,10 +10,10 @@ import { RouterService } from "./implementation/router.service";
 import { WindowsService } from "./implementation/windows.service";
 import { IBootstrapService, IConfigurationService, ILogService, IResultFactory, IRouterService, IWindowsService } from "./interface";
 import { IAssetService } from "./interface/asset.service";
-import { AssetRouter, ConfigurationRouter } from "./routers";
+import { AssetRouter, ConfigurationRouter } from "./router";
 
 export class InfraDi {
-  public static register() {
+  public static register(): void {
     // #region Services -------------------------------------------------------
     container.register<IAssetService>(INFRASTRUCTURE.AssetService, { useClass: AssetService }, { lifecycle: Lifecycle.Singleton });
     container.register<IBootstrapService>(INFRASTRUCTURE.BootstrapService, { useClass: BootstrapService });

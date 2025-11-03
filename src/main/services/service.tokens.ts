@@ -1,3 +1,10 @@
+export const API = Object.freeze(
+  {
+    MtgCollectionClient: "MrgCollectionClient",
+    ScryfallClient: "ScryfallClient"
+  }
+);
+
 export const INFRASTRUCTURE = Object.freeze(
   {
     AssetService: "AssetService",
@@ -10,5 +17,11 @@ export const INFRASTRUCTURE = Object.freeze(
     RouterService: "RouterService",
     Router: "Router",
     WindowsService: "WindowsService"
+  }
+);
+
+export const LIBRARY = Object.freeze(
+  {
+    CardSymbolService: "CardSymbolServiceS"
   }
 );

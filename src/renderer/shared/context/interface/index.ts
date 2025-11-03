@@ -1,3 +1,5 @@
+export * from "./card-symbol.service";
+export * from "./color.service";
 export * from "./configuration.service";
 export * from "./display-value.service";
 export * from "./ipc-proxy.service";

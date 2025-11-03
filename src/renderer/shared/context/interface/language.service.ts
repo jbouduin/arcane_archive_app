@@ -2,6 +2,8 @@ import { ApiConfigurationDto } from "../../../../common/dto/infra/api-configurat
 import { LanguageDto } from "../../dto/language.dto";
 
 export interface ILanguageService {
-  readonly languages: Readonly<Map<string, LanguageDto>>;
+  readonly allLanguages: Readonly<Array<LanguageDto>>;
+
+  getLanguage(language: string): LanguageDto | undefined;
   initialize(apiConfiguration: ApiConfigurationDto): Promise<void>;
 }

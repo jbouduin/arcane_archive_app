@@ -6,8 +6,10 @@ import { container, injectable } from "tsyringe";
 // import { ICardRepository } from "../../../database/repo/interfaces";
 import { IpcChannel, IpcRequest } from "../../../../common/ipc";
 import { IRouter } from "../../base";
-import { INFRASTRUCTURE } from "../../service.tokens";
-import { IBootstrapService, IConfigurationService, IRouterService, IWindowsService } from "../interface";
+import { INFRASTRUCTURE, LIBRARY } from "../../service.tokens";
+import { IBootstrapService, IConfigurationService, ILogService, IRouterService, IWindowsService } from "../interface";
+import { ICardSymbolService } from "../../library/interface";
+import { DataConfigurationDto } from "../../../../common/dto";
 
 @injectable()
 export class BootstrapService implements IBootstrapService {
@@ -15,7 +17,8 @@ export class BootstrapService implements IBootstrapService {
   public async boot(): Promise<void> {
     const windowsService: IWindowsService = container.resolve(INFRASTRUCTURE.WindowsService);
     const rootRouterService: IRouterService = container.resolve(INFRASTRUCTURE.RouterService);
-    const settingsService: IConfigurationService = container.resolve(INFRASTRUCTURE.ConfigurationService);
+    const configurationService: IConfigurationService = container.resolve(INFRASTRUCTURE.ConfigurationService);
+    const logService: ILogService = container.resolve(INFRASTRUCTURE.LogService);
 
     ipcMain.handle("show-main-window", () => {
       windowsService.mainWindow.show();
@@ -24,12 +27,13 @@ export class BootstrapService implements IBootstrapService {
       }
     });
 
-    await this.preboot(settingsService, rootRouterService);
     const splashWindow = windowsService.createSplashWindow();
-    windowsService.createMainWindow();
+    await this.preboot(configurationService, rootRouterService);
     splashWindow.on("show", () => {
-      void this.bootFunction(splashWindow)
+      void this.bootFunction(splashWindow, configurationService.configuration.dataConfiguration)
+        .then(() => windowsService.createMainWindow())
         .catch((reason: Error) => {
+          logService.error("Main", "Error in boot function: " + reason.message, reason);
           splashWindow.hide();
           dialog.showErrorBox(`Error:" ${reason.message}`, reason.stack || "");
           app.exit();
@@ -37,10 +41,10 @@ export class BootstrapService implements IBootstrapService {
     });
 
     void splashWindow.on("ready-to-show", () => {
-      if (settingsService.isFirstUsage) {
+      if (configurationService.isFirstUsage) {
         const firsTimeWindow = windowsService.createFirstTimeWindow();
         firsTimeWindow.on("closed", () => {
-          if (settingsService.isFirstUsage) {
+          if (configurationService.isFirstUsage) {
             app.quit();
           } else {
             splashWindow.show();
@@ -79,8 +83,9 @@ export class BootstrapService implements IBootstrapService {
     return Promise.resolve();
   }
 
-  private async bootFunction(splashWindow: BrowserWindow): Promise<void> {
-    splashWindow.webContents.send("splash", "Initializing");
+  private async bootFunction(splashWindow: BrowserWindow, dataConfiguration: DataConfigurationDto): Promise<void> {
+    const callback = (label: string) => splashWindow.webContents.send("splash", label);
+    callback("Initializing");
     // const migrationContainer = MigrationDi.registerMigrations();
     // await container.resolve<IDatabaseService>(INFRASTRUCTURE.DatabaseService)
     //   .migrateToLatest(
@@ -99,7 +104,11 @@ export class BootstrapService implements IBootstrapService {
     //       .synchronize(syncParam, splashWindow.webContents);
     //   })
     //   .then(() => splashWindow.webContents.send("splash", "loading main program"));
-    splashWindow.webContents.send("splash", "loading main program");
+    if (dataConfiguration.refreshCacheAtStartup) {
+      callback("Caching cardsymbols");
+      await container.resolve<ICardSymbolService>(LIBRARY.CardSymbolService).cacheImages(callback);
+    }
+    callback("Loading main program");
   }
 
   private registerIpcChannel(channel: IpcChannel, routerService: IRouterService) {

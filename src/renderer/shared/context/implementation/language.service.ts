@@ -1,34 +1,35 @@
 import { ApiConfigurationDto } from "../../../../common/dto/infra";
-import { LanguageDto, ResultDto } from "../../dto";
+import { ResultDto } from "../../../../common/dto/mtg-collection";
+import { LanguageDto } from "../../dto";
 import { ILanguageService } from "../interface";
 
 export class LanguageService implements ILanguageService {
   // #region private fields ---------------------------------------------------
-  private _languages: Map<string, LanguageDto>;
+  private languageMap: Map<string, LanguageDto>;
   // #endregion
 
   // #region Constructor ------------------------------------------------------
   public constructor() {
-    this._languages = new Map<string, LanguageDto>();
+    this.languageMap = new Map<string, LanguageDto>();
   }
   // #endregion
 
   // #region ILanguageService Members -----------------------------------------
-  public get languages(): Readonly<Map<string, LanguageDto>> {
-    return this._languages;
+  public get allLanguages(): Readonly<Array<LanguageDto>> {
+    return Array.of(...this.languageMap.values());
   }
 
-  public initialize(apiConfiguration: ApiConfigurationDto): Promise<void> {
-    return fetch(apiConfiguration.mtgCollectionApiRoot + "/languages/mtg")
-      .then(
-        async (response: Response) => {
-          const allLanguages: ResultDto<Array<LanguageDto>> = (await response.json()) as ResultDto<Array<LanguageDto>>;
-          allLanguages
-            .data
-            .sort((a: LanguageDto, b: LanguageDto) => a.sequence - b.sequence)
-            .forEach((language: LanguageDto) => this._languages.set(language.language, language));
-        }
-      );
+  public getLanguage(language: string): LanguageDto | undefined {
+    return this.languageMap.get(language)!;
+  }
+
+  public async initialize(apiConfiguration: ApiConfigurationDto): Promise<void> {
+    const response = await fetch(apiConfiguration.mtgCollectionApiRoot + "/languages/mtg");
+    const allLanguages: ResultDto<Array<LanguageDto>> = (await response.json()) as ResultDto<Array<LanguageDto>>;
+    allLanguages
+      .data
+      .sort((a: LanguageDto, b: LanguageDto) => a.sequence - b.sequence)
+      .forEach((language: LanguageDto) => this.languageMap.set(language.language, language));
   }
   // #endregion
 }

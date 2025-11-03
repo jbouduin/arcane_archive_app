@@ -1,0 +1,18 @@
+import { container, Lifecycle } from "tsyringe";
+import { IRouter } from "../base";
+import { INFRASTRUCTURE, LIBRARY } from "../service.tokens";
+import { CardSymbolService } from "./implementation/card-symbol.service";
+import { ICardSymbolService } from "./interface";
+import { CardSymbolRouter } from "./router";
+
+export class LibraryDi {
+  public static register(): void {
+    // #region Services -------------------------------------------------------
+    container.register<ICardSymbolService>(LIBRARY.CardSymbolService, { useClass: CardSymbolService });
+    // #endregion
+
+    // #region Routers --------------------------------------------------------
+    container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: CardSymbolRouter }, { lifecycle: Lifecycle.Singleton });
+    // #endregion
+  }
+}

@@ -1,15 +1,26 @@
 import { ToastProps } from "@blueprintjs/core";
-import { IConfigurationService, IDisplayValueService, IIpcProxyService, ILanguageService } from ".";
+import { IColorService, IConfigurationService, IDisplayValueService, IIpcProxyService, ILanguageService } from ".";
 import { ConfigurationDto as _ConfigurationDto } from "../../../../common/dto";
 import { LanguageDto as _LanguageDto, MtgSetDto as _MtgSetDto } from "../../dto";
+import { ICardSymbolService } from "./card-symbol.service";
 import { IMtgSetService } from "./mtg-set.service";
 import { IViewmodelFactoryService } from "./viewmodel-factory.service";
 
 export interface IServiceContainer {
   /**
-   * Proxy to use Ipc Channels. Processes the response and displays a toast in case of error response.
+   * Service that caches the card symbol svg's
    */
-  readonly ipcProxy: IIpcProxyService;
+  readonly cardSymbolService: ICardSymbolService;
+
+  /**
+   * Service that caches ColorDtos
+   */
+  readonly colorService: IColorService;
+
+  /**
+   * Service that caches the {@link _ConfigurationDto ConfigurationDto}
+   */
+  readonly configurationService: IConfigurationService;
 
   /**
    * Dictionaries with display values for enums.
@@ -17,9 +28,9 @@ export interface IServiceContainer {
   readonly displayValueService: IDisplayValueService;
 
   /**
-   * Service that caches the {@link _ConfigurationDto ConfigurationDto}
+   * Proxy to use Ipc Channels. Processes the response and displays a toast in case of error response.
    */
-  readonly configurationService: IConfigurationService;
+  readonly ipcProxy: IIpcProxyService;
 
   /**
    * Service that caches all available {@link _MtgSetDto MtgSetDto}

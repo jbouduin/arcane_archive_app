@@ -1,6 +1,8 @@
 import { BlueprintProvider, FocusStyleManager, OverlayToaster, Position, ToastProps } from "@blueprintjs/core";
 import { createRoot } from "react-dom/client";
 import { IServiceContainer, ServiceContainerContext } from "../shared/context";
+import { CardSymbolService } from "../shared/context/implementation/card-symbol.service";
+import { ColorService } from "../shared/context/implementation/color.service";
 import { ConfigurationService } from "../shared/context/implementation/configuration.service";
 import { DisplayValueService } from "../shared/context/implementation/display-value.service";
 import { IpcProxyService } from "../shared/context/implementation/ipc-proxy.service";
@@ -39,10 +41,12 @@ void (async () => {
 
       if (configurationViewmodel) {
         const serviceContainer: IServiceContainer = {
-          languageService: new LanguageService(),
-          displayValueService: new DisplayValueService(),
+          cardSymbolService: new CardSymbolService(),
+          colorService: new ColorService(),
           configurationService: configurationService,
+          displayValueService: new DisplayValueService(),
           ipcProxy: ipcProxyService,
+          languageService: new LanguageService(),
           mtgSetService: new MtgSetService(),
           viewmodelFactoryService: new ViewmodelFactoryService(),
           initialize: function (_showToast: (props: ToastProps, key?: string) => void): Promise<void> {

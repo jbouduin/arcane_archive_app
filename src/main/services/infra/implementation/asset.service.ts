@@ -1,21 +1,18 @@
 import { existsSync, readFileSync } from "fs";
-import { IResult } from "../../base";
+import { BaseService, IResult } from "../../base";
 import { IAssetService } from "../interface/asset.service";
-import { IResultFactory } from "../interface";
+import { ILogService, IResultFactory } from "../interface";
 import { INFRASTRUCTURE } from "../../service.tokens";
 import { inject, injectable } from "tsyringe";
 
 @injectable()
-export class AssetService implements IAssetService {
-  // #region private fields ---------------------------------------------------
-  private readonly resultFactory: IResultFactory;
-  // #endregion
-
+export class AssetService extends BaseService implements IAssetService {
   // #region Constructor ------------------------------------------------------
   public constructor(
+    @inject(INFRASTRUCTURE.LogService) logService: ILogService,
     @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory
   ) {
-    this.resultFactory = resultFactory;
+    super(logService, resultFactory);
   }
   // #endregion
 
