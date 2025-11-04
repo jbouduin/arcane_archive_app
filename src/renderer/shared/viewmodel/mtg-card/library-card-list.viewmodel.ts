@@ -1,9 +1,11 @@
 import { IColorService, IDisplayValueService, ILanguageService, IMtgSetService } from "../../context";
-import { LanguageDto, MtgLibraryCardListDto } from "../../dto";
+import { LanguageDto, LibraryCardListDto } from "../../dto";
 import { ColorDto } from "../../dto/color.dto";
+import { AbstractCardViewmodel } from "./abstract-card.viewmodel";
 
-export class MtgLibraryCardListViewmodel {
+export class LibraryCardListViewmodel extends AbstractCardViewmodel {
   // #region public fields Members --------------------------------------------
+  public readonly cardId: number;
   public readonly setName: string;
   public readonly setKeyruneCode: string;
   public readonly cardName: string;
@@ -27,7 +29,9 @@ export class MtgLibraryCardListViewmodel {
     displayValueService: IDisplayValueService,
     languageService: ILanguageService,
     mtgSetService: IMtgSetService,
-    dto: MtgLibraryCardListDto) {
+    dto: LibraryCardListDto) {
+    super();
+    this.cardId = dto.id;
     const mtgSet = mtgSetService.getSetById(dto.mtgSetId);
     this.setName = mtgSet?.name["ENGLISH"] || "Unknown set";
     this.setKeyruneCode = mtgSet?.keyruneCode || "DEFAULT";
@@ -35,7 +39,7 @@ export class MtgLibraryCardListViewmodel {
     this.convertedManaCost = dto.convertedManaCost;
     this.collectorNumber = dto.collectorNumber;
     this.collectorNumberSortValue = isNaN(Number(dto.collectorNumber)) ? dto.collectorNumber : dto.collectorNumber.padStart(4, "0");
-    const identityColors = dto.colorIdentity
+    const identityColors = dto.colorIdentities
       .map((color: string) => colorService.getColor(color))
       .filter((color: ColorDto | undefined) => color != undefined)
       .sort((a: ColorDto, b: ColorDto) => a.sequence - b.sequence);
@@ -57,35 +61,6 @@ export class MtgLibraryCardListViewmodel {
       .sort((a: LanguageDto, b: LanguageDto) => a.sequence - b.sequence)
       .map((lng: LanguageDto) => lng.buttonText)
       .join(", ");
-  }
-  // #endregion
-
-  // #region Auxiliary Methods ------------------------------------------------
-  private calculateCardManaCost(manacosts: Array<string>): Array<string> {
-    const result = new Array<string>();
-    manacosts.forEach((cost: string, idx: number) => {
-      if (idx > 0) {
-        result.push("//");
-      }
-      result.push(...this.convertManaCost(cost));
-    });
-    if (result.length == 1 && result[0] == "//") {
-      result.pop();
-    } else if (result[0] == "//") {
-      result.splice(0, 0, "-");
-    } else if (result[result.length - 1] == "//") {
-      result.push("-");
-    }
-    return result;
-  }
-
-  private convertManaCost(manaCost: string): Array<string> {
-    const splittedCellValue = manaCost.split("}");
-    splittedCellValue.pop();
-    return splittedCellValue.map((s: string, i: number) => {
-      /* es-lint-disable-next-line @stylistic/operator-linebreak */
-      return i < splittedCellValue.length ? s + "}" : s;
-    });
   }
   // #endregion
 }

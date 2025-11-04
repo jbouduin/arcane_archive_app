@@ -130,3 +130,7 @@ img.rotate-180 {
     flex-flow: row;
     justify-content: flex-end;
 }
+
+.bp6-dark .ss-common {
+  color: white !important;
+}

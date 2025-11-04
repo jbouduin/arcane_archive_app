@@ -2,14 +2,14 @@ import React from "react";
 import { useServices } from "../../../../hooks/use-services";
 import { BaseLookupResult, GenericTextColumn, IBaseColumn } from "../../../../shared/components/base/base-table";
 import { CardSetColumn, CardTableView, CollectiorNumberColumn, ColorIdentityColumn, ManaCostColumn } from "../../../../shared/components/card-table-view";
-import { MtgLibraryCardListViewmodel } from "../../../../shared/viewmodel/mtg-card";
+import { LibraryCardListViewmodel } from "../../../../shared/viewmodel/mtg-card";
 import { LibraryViewCenterProps } from "./library-view-center.props";
-import { MtgLibraryCardListDto } from "../../../../shared/dto";
+import { LibraryCardListDto } from "../../../../shared/dto";
 import { ResultDto } from "../../../../../common/dto/mtg-collection";
 
 export function LibraryViewCenter(props: LibraryViewCenterProps) {
   // #region State ------------------------------------------------------------
-  const [cards, setCards] = React.useState<Array<MtgLibraryCardListViewmodel>>(new Array<MtgLibraryCardListViewmodel>());
+  const [cards, setCards] = React.useState<Array<LibraryCardListViewmodel>>(new Array<LibraryCardListViewmodel>());
   const [sortedIndexMap, setSortedIndexMap] = React.useState<Array<number>>(new Array<number>());
   // #endregion
 
@@ -22,8 +22,8 @@ export function LibraryViewCenter(props: LibraryViewCenterProps) {
     () => {
       void fetch(serviceContainer.configurationService.configuration.apiConfiguration.mtgCollectionApiRoot + "/card/list?pageNumber=1")
         .then(async (response: Response) => {
-          const result: ResultDto<Array<MtgLibraryCardListDto>> = (await response.json()) as ResultDto<Array<MtgLibraryCardListDto>>;
-          setCards(result.data.map((c: MtgLibraryCardListDto) => serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getMtgCardListViewmodel(c)));
+          const result: ResultDto<Array<LibraryCardListDto>> = (await response.json()) as ResultDto<Array<LibraryCardListDto>>;
+          setCards(result.data.map((c: LibraryCardListDto) => serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getMtgCardListViewmodel(c)));
         });
     },
     [props.selectedSets]
@@ -33,70 +33,70 @@ export function LibraryViewCenter(props: LibraryViewCenterProps) {
   // #region Memo --------------------------------------------------------------
   const sortableColumnDefinitions = React.useMemo(
     () => {
-      const result = new Array<IBaseColumn<MtgLibraryCardListViewmodel, BaseLookupResult>>();
+      const result = new Array<IBaseColumn<LibraryCardListViewmodel, BaseLookupResult>>();
       let columNumber = 0;
-      result.push(new CollectiorNumberColumn<MtgLibraryCardListViewmodel>(
+      result.push(new CollectiorNumberColumn<LibraryCardListViewmodel>(
         columNumber++,
         "Number",
-        (card: MtgLibraryCardListViewmodel) => {
+        (card: LibraryCardListViewmodel) => {
           return { defaultSortColumn: card.collectorNumberSortValue, displayValue: card.collectorNumber };
         }
       ));
-      result.push(new GenericTextColumn<MtgLibraryCardListViewmodel>(
+      result.push(new GenericTextColumn<LibraryCardListViewmodel>(
         columNumber++,
         "Rarity",
-        (card: MtgLibraryCardListViewmodel) => {
+        (card: LibraryCardListViewmodel) => {
           return { defaultSortColumn: card.collectorNumberSortValue, textValue: card.rarityDisplayValue };
         }
       ));
-      result.push(new GenericTextColumn<MtgLibraryCardListViewmodel>(
+      result.push(new GenericTextColumn<LibraryCardListViewmodel>(
         columNumber++,
         "Name",
-        (card: MtgLibraryCardListViewmodel) => {
+        (card: LibraryCardListViewmodel) => {
           return { defaultSortColumn: card.collectorNumberSortValue, textValue: card.cardName };
         }
       ));
-      result.push(new GenericTextColumn<MtgLibraryCardListViewmodel>(
+      result.push(new GenericTextColumn<LibraryCardListViewmodel>(
         columNumber++,
         "Type",
-        (card: MtgLibraryCardListViewmodel) => {
+        (card: LibraryCardListViewmodel) => {
           return { defaultSortColumn: card.collectorNumberSortValue, textValue: card.type };
         }
       ));
-      result.push(new ManaCostColumn<MtgLibraryCardListViewmodel>(
+      result.push(new ManaCostColumn<LibraryCardListViewmodel>(
         columNumber++,
         "Mana cost",
-        (card: MtgLibraryCardListViewmodel) => {
+        (card: LibraryCardListViewmodel) => {
           return { defaultSortColumn: card.collectorNumberSortValue, convertedManaCost: card.convertedManaCost, symbols: card.manaCost };
         }
       ));
-      result.push(new CardSetColumn<MtgLibraryCardListViewmodel>(
+      result.push(new CardSetColumn<LibraryCardListViewmodel>(
         columNumber++,
         "Set",
-        (card: MtgLibraryCardListViewmodel) => {
+        (card: LibraryCardListViewmodel) => {
           return {
             defaultSortColumn: card.collectorNumberSortValue, cardSetName: card.setName, keyruneCode: card.setKeyruneCode, rarity: card.rarity
           };
         }
       ));
-      result.push(new GenericTextColumn<MtgLibraryCardListViewmodel>(
+      result.push(new GenericTextColumn<LibraryCardListViewmodel>(
         columNumber++,
         "Power",
-        (card: MtgLibraryCardListViewmodel) => {
+        (card: LibraryCardListViewmodel) => {
           return { defaultSortColumn: card.collectorNumberSortValue, textValue: card.power };
         }
       ));
-      result.push(new GenericTextColumn<MtgLibraryCardListViewmodel>(
+      result.push(new GenericTextColumn<LibraryCardListViewmodel>(
         columNumber++,
         "Thoughness",
-        (card: MtgLibraryCardListViewmodel) => {
+        (card: LibraryCardListViewmodel) => {
           return { defaultSortColumn: card.collectorNumberSortValue, textValue: card.thoughness };
         }
       ));
-      result.push(new ColorIdentityColumn<MtgLibraryCardListViewmodel>(
+      result.push(new ColorIdentityColumn<LibraryCardListViewmodel>(
         columNumber++,
         "CI",
-        (card: MtgLibraryCardListViewmodel) => {
+        (card: LibraryCardListViewmodel) => {
           return {
             defaultSortColumn: card.collectorNumberSortValue,
             colorIdentitySortValue: card.colorIdentitySortValue,
@@ -104,10 +104,10 @@ export function LibraryViewCenter(props: LibraryViewCenterProps) {
           };
         }
       ));
-      result.push(new GenericTextColumn<MtgLibraryCardListViewmodel>(
+      result.push(new GenericTextColumn<LibraryCardListViewmodel>(
         columNumber++,
         "Languages",
-        (card: MtgLibraryCardListViewmodel) => {
+        (card: LibraryCardListViewmodel) => {
           return { defaultSortColumn: card.collectorNumberSortValue, textValue: card.languages };
         }
       ));
@@ -120,14 +120,13 @@ export function LibraryViewCenter(props: LibraryViewCenterProps) {
   // #region Rendering --------------------------------------------------------
   return (
     <div>
-      <CardTableView<MtgLibraryCardListViewmodel>
+      <CardTableView<LibraryCardListViewmodel>
         // bodyContextMenuRenderer={(context: MenuContext) => contextMenu(context)}
         data={cards}
         onColumnSorted={(changedSortedIndexMap: Array<number>) => setSortedIndexMap(changedSortedIndexMap)}
         onDataSelected={
-          (cards?: Array<MtgLibraryCardListViewmodel>) => {
-            // eslint-disable-next-line no-console
-            console.log(cards);
+          (cards?: Array<LibraryCardListViewmodel>) => {
+            props.onCardSelected(cards && cards.length > 0 ? cards[0].cardId : null);
           }
         }
         sortableColumnDefinitions={sortableColumnDefinitions}

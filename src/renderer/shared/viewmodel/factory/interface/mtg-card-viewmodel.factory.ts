@@ -1,6 +1,7 @@
-import { MtgLibraryCardListDto } from "../../../dto";
-import { MtgLibraryCardListViewmodel } from "../../mtg-card/mtg-library-card-list.viewmodel";
+import { LibraryCardDto, LibraryCardListDto } from "../../../dto";
+import { LibraryCardViewmodel, LibraryCardListViewmodel } from "../../mtg-card";
 
 export interface IMtgCardViewmodelFactory {
-  getMtgCardListViewmodel(dto: MtgLibraryCardListDto): MtgLibraryCardListViewmodel;
+  getMtgCardListViewmodel(dto: LibraryCardListDto): LibraryCardListViewmodel;
+  getMtgCardDetailViewmodel(dto: LibraryCardDto): LibraryCardViewmodel;
 }

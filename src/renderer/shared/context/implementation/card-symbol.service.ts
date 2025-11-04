@@ -12,6 +12,10 @@ export class CardSymbolService implements ICardSymbolService {
   // #endregion
 
   // #region ICardSymbolService Members ---------------------------------------
+  public getAllCardSymbols(): Readonly<Map<string, string>> {
+    return this.cardSymbols;
+  }
+
   public getCardSymbolsSvg(cardSymbol: string): string | undefined {
     return this.cardSymbols.get(cardSymbol);
   }

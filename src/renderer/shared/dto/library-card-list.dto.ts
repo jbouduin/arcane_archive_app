@@ -1,6 +1,7 @@
 import { MasterDataDto } from "../../../common/dto/mtg-collection";
 
-export type MtgLibraryCardListDto = MasterDataDto<string> & {
+export type LibraryCardListDto = MasterDataDto<string> & {
+  id: number;
   mtgSetId: number;
   cardName: string;
   convertedManaCost: number;
@@ -10,6 +11,6 @@ export type MtgLibraryCardListDto = MasterDataDto<string> & {
   manaCost: Array<string>;
   power: string;
   thoughness: string;
-  colorIdentity: Array<string>;
+  colorIdentities: Array<string>;
   languages: Array<string>;
 };

@@ -1,7 +1,10 @@
-import { H1, Props } from "@blueprintjs/core";
+import { CardDetailView } from "../../../../shared/components/card-detail-view/card-detail-view";
+import { LibraryViewRightProps } from "./library-view-right.props";
 
-export function LibraryViewRight(_props: Props) {
+export function LibraryViewRight(props: LibraryViewRightProps) {
+  // #region Rendering --------------------------------------------------------
   return (
-    <H1>Right</H1>
+    <CardDetailView cardId={props.cardId} showOtherLanguages={true} />
   );
-}
+  // #endregion
+};
