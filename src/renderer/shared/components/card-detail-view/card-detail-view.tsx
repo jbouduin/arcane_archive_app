@@ -1,4 +1,4 @@
-import { Section, SectionCard } from "@blueprintjs/core";
+import { H5, Section, SectionCard, Tab, Tabs } from "@blueprintjs/core";
 import React from "react";
 import { ResultDto } from "../../../../common/dto/mtg-collection";
 import { useServices } from "../../../hooks/use-services";
@@ -12,6 +12,7 @@ import { CardfaceView } from "./cardface-view/cardface-view";
 import { LanguageButtonBar } from "./language-button-bar/language-button-bar";
 import { CardImageView } from "./card-image-view/card-image-view";
 import { ScryfallLanguageMap } from "../../types";
+import { LegalitiesView } from "./legalities-view/legalities-view";
 
 export function CardDetailView(props: CardDetailViewProps) {
   // #region State ------------------------------------------------------------
@@ -56,6 +57,7 @@ export function CardDetailView(props: CardDetailViewProps) {
             <div style={{ minWidth: "410px" }}>
               {renderTopSection(cardViewmodel)}
               {renderFacesSection(cardViewmodel)}
+              {renderMoreSection(cardViewmodel)}
             </div>
           </>
         )
@@ -113,6 +115,58 @@ export function CardDetailView(props: CardDetailViewProps) {
       result = new Array<React.JSX.Element>();
     }
     return result;
+  }
+
+  function renderMoreSection(card: LibraryCardViewmodel): React.JSX.Element {
+    return (
+      <Section
+        collapsible={true}
+        compact={true}
+        title={<div><H5 style={{ marginBottom: "0px" }}>More</H5></div>}
+      >
+        <SectionCard className="card-view-section-card">
+          <Tabs
+            animate={true}
+            defaultSelectedTabId="Legality"
+            id="card-detail-tabs"
+            renderActiveTabPanelOnly={true}
+          >
+            <Tab
+              id="Legality"
+              key="legality"
+              panel={
+                (
+                  <LegalitiesView
+                    legalities={card.legalities}
+                    setCode={card.setCode}
+                    collectorNumber={card.collectorNumber}
+                  />
+                )
+              }
+              title="Legality"
+            />
+            <Tab
+              id="Rulings"
+              key="rulings"
+              // panel={<CardRulingsView oracleId={cardViewState.card.oracleId} />}
+              title="Rulings"
+            />
+            {/* <Tab
+              id="Owned"
+              key="owned"
+              // panel={<CardOwnerShipView cardId={cardViewState.card.cardId} className={props.className} collectionId={props.collectionId} />}
+              title="Ownership"
+            /> */}
+            <Tab
+              id="All prints"
+              key="all-prints"
+              // panel={<CardAllPrints cardId={cardViewState.card.cardId} oracleId={cardViewState.card.oracleId} />}
+              title="All prints"
+            />
+          </Tabs>
+        </SectionCard>
+      </Section>
+    );
   }
   // #endregion
 }

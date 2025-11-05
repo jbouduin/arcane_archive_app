@@ -16,7 +16,7 @@ export function LanguageButtonBar(props: LanguageButtonBarProps) {
 
   // #region Rendering --------------------------------------------------------
   return (
-    <ButtonGroup className="language-button-bar" minimal={true}>
+    <ButtonGroup className="language-button-bar" variant="minimal">
       {
         props.cardLanguages.map((language: string) => {
           const languageDef = serviceContainer.languageService.getLanguage(language);

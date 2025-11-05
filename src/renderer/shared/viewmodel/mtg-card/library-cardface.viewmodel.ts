@@ -14,9 +14,9 @@ export class LibraryCardfaceViewmodel extends AbstractCardViewmodel {
   public readonly toughness: string;
   public readonly faceLanguageId: number;
   public readonly flavorText: string;
-  public readonly name: string;
-  public readonly typeLine: string;
-  public readonly text: string;
+  public readonly printedName: string;
+  public readonly printedTypeLine: string;
+  public readonly printedText: string;
   public readonly imageUri: string | undefined;
   // #endregion
 
@@ -33,9 +33,9 @@ export class LibraryCardfaceViewmodel extends AbstractCardViewmodel {
     const faceLanguageDto = dto.cardfaceLanguages.find((fld: LibraryCardfaceLanguageDto) => fld.language == language)!;
     this.faceLanguageId = faceLanguageDto.id;
     this.flavorText = faceLanguageDto.flavorText;
-    this.name = faceLanguageDto.name;
-    this.typeLine = faceLanguageDto.typeLine;
-    this.text = faceLanguageDto.text;
+    this.printedName = faceLanguageDto.name;
+    this.printedTypeLine = faceLanguageDto.typeLine;
+    this.printedText = faceLanguageDto.text;
     this.imageUri = faceLanguageDto.externalReferences
       .find((extRef: LibraryExternalReferenceDto) => extRef.source == "SCRYFALL" && extRef.detail == "LARGE")
       ?.value;

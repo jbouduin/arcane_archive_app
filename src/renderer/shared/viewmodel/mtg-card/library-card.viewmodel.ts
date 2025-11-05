@@ -1,5 +1,5 @@
 import { IColorService, IDisplayValueService, ILanguageService, IMtgSetService } from "../../context";
-import { LanguageDto, LibraryCardDto } from "../../dto";
+import { LanguageDto, LibraryCardDto, LibraryLegality } from "../../dto";
 import { CardLayout } from "../../types/card-layout";
 import { ColorDto } from "../../dto/color.dto";
 import { LibraryCardLanguageDto } from "../../dto/library-card-language.dto";
@@ -25,6 +25,7 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
   public readonly manaCost: Array<string>;
   public readonly typeline: string;
   public readonly cardLanguages: Map<string, LibraryCardLanguageViewmodel>;
+  public readonly legalities: Map<string, string>;
   // #endregion
 
   // #region Constructor ------------------------------------------------------
@@ -72,8 +73,12 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
     this.cardLanguages = this.createCardLanguageViewmodels(dto);
     const firstLanguage = this.cardLanguages.values().next().value!;
     this.typeline = Array.of(...firstLanguage.cardfaces.values())
-      .map((lcfvm: LibraryCardfaceViewmodel) => lcfvm.typeLine)
+      .map((lcfvm: LibraryCardfaceViewmodel) => lcfvm.printedTypeLine)
       .join(" // ");
+    this.legalities = new Map<string, string>();
+    dto.legalities.forEach((l: LibraryLegality) => {
+      this.legalities.set(displayValueService.getDisplayValue("gameFormat", l.gameFormat), displayValueService.getDisplayValue("legality", l.legality));
+    });
   }
   // #endregion
 

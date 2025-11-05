@@ -20,7 +20,7 @@ export function LibraryViewCenter(props: LibraryViewCenterProps) {
   // #region Effects ----------------------------------------------------------
   React.useEffect(
     () => {
-      void fetch(serviceContainer.configurationService.configuration.apiConfiguration.mtgCollectionApiRoot + "/card/list?pageNumber=1")
+      void fetch(serviceContainer.configurationService.configuration.apiConfiguration.mtgCollectionApiRoot + "/card/list?pageNumber=0")
         .then(async (response: Response) => {
           const result: ResultDto<Array<LibraryCardListDto>> = (await response.json()) as ResultDto<Array<LibraryCardListDto>>;
           setCards(result.data.map((c: LibraryCardListDto) => serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getMtgCardListViewmodel(c)));
