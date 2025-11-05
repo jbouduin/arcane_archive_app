@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, IpcMainInvokeEvent, nativeTheme } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, IpcMainInvokeEvent, nativeTheme, protocol } from "electron";
 import { homedir } from "os";
 import { container, injectable } from "tsyringe";
 // import { IpcChannel } from "../../../../common/ipc";
@@ -8,7 +8,7 @@ import { IpcChannel, IpcRequest } from "../../../../common/ipc";
 import { IRouter } from "../../base";
 import { INFRASTRUCTURE, LIBRARY } from "../../service.tokens";
 import { IBootstrapService, IConfigurationService, ILogService, IRouterService, IWindowsService } from "../interface";
-import { ICardSymbolService } from "../../library/interface";
+import { ICardImageService, ICardSymbolService } from "../../library/interface";
 import { DataConfigurationDto } from "../../../../common/dto";
 
 @injectable()
@@ -68,17 +68,11 @@ export class BootstrapService implements IBootstrapService {
     this.registerIpcChannel("PATCH", routerService);
     this.registerIpcChannel("POST", routerService);
     this.registerIpcChannel("PUT", routerService);
-    // protocol.handle("cached-image", async (request: Request): Promise<Response> => {
-    //   const requestedUrl = new URL(request.url);
-    //   return container.resolve<ICardRepository>(REPOSITORIES.CardRepository)
-    //     .getCardImageData(requestedUrl.hostname)
-    //     .then((data: IResult<IMtgCardImageDataDto>) => {
-    //       data.data.imageType = requestedUrl.searchParams.get("size") as ImageSize;
-    //       data.data.side = requestedUrl.searchParams.get("side") as CardSide;
-    //       const cacheService = container.resolve<IImageCacheService>(INFRASTRUCTURE.ImageCacheService);
-    //       return cacheService.getCardImage(data.data);
-    //     });
-    // });
+    protocol.handle("cached-image", async (request: Request): Promise<Response> => {
+      return container
+        .resolve<ICardImageService>(LIBRARY.CardImageService)
+        .getImage(new URL(request.url));
+    });
 
     return Promise.resolve();
   }

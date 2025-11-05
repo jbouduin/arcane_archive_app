@@ -1,5 +1,5 @@
 import { ApiConfigurationDto } from "../../../../common/dto/infra";
-import { DISPLAY_VALUE_DICTIONARY_KEYS, DisplayValueDictionaryKey } from "../../dto";
+import { DISPLAY_VALUE_DICTIONARY_KEYS, DisplayValueDictionaryKey } from "../../types";
 import { IDisplayValueService } from "../interface";
 
 export class DisplayValueService implements IDisplayValueService {

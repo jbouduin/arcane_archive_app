@@ -1,4 +1,5 @@
 import { LibraryCardfaceLanguageDto } from "./library-cardface-language.dto";
+import { LibraryExternalReferenceDto } from "./library-external-reference.dto";
 
 export type LibraryCardfaceDto = {
   id: number;
@@ -9,5 +10,6 @@ export type LibraryCardfaceDto = {
   oracleId: string;
   power: string;
   toughness: string;
+  externalReferences: Array<LibraryExternalReferenceDto>;
   cardfaceLanguages: Array<LibraryCardfaceLanguageDto>;
 };

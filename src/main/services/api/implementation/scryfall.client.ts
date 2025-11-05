@@ -54,6 +54,7 @@ export class ScryfallClient extends BaseService implements IScryfallClient {
     try {
       const result = await fetch(uri);
       this.logService.debug("Main", `retrieved ${uri} -> status: ${result.status}`);
+      // LATER if not 200 reject
       resolve(result);
     } catch (error) {
       reject(error);

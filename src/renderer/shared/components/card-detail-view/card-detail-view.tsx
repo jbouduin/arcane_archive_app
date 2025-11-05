@@ -10,6 +10,8 @@ import { CardDetailViewProps } from "./card-detail-view.props";
 import { CardHeaderView } from "./card-header-view/card-header-view";
 import { CardfaceView } from "./cardface-view/cardface-view";
 import { LanguageButtonBar } from "./language-button-bar/language-button-bar";
+import { CardImageView } from "./card-image-view/card-image-view";
+import { ScryfallLanguageMap } from "../../types";
 
 export function CardDetailView(props: CardDetailViewProps) {
   // #region State ------------------------------------------------------------
@@ -83,10 +85,13 @@ export function CardDetailView(props: CardDetailViewProps) {
             </SectionCard>
           )
         }
-        {/* <CardImageView
-          cardId={cardViewState.card?.cardId}
-          cardLayout={cardViewState.card?.cardLayout}
-        /> */}
+        <CardImageView
+          cardLayout={card.layout}
+          cardBackId={card.cardBackId}
+          setCode={card.setCode}
+          collectorNumber={card.collectorNumber}
+          scryfallLanguage={ScryfallLanguageMap.get(currentLanguage) || "en"}
+        />
       </Section>
     );
   }

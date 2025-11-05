@@ -13,5 +13,5 @@ export const DISPLAY_VALUE_DICTIONARY_KEYS: DisplayValueDictionaryKey[] = [
   "rarity",
   "scryfallImageStauts",
   "securityStamp",
-  "setType",
+  "setType"
 ];

@@ -22,6 +22,7 @@ export const INFRASTRUCTURE = Object.freeze(
 
 export const LIBRARY = Object.freeze(
   {
+    CardImageService: "CardImageService",
     CardSymbolService: "CardSymbolServiceS"
   }
 );

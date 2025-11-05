@@ -1,3 +1,4 @@
+import { LibraryExternalReferenceDto } from "../../dto";
 import { LibraryCardfaceLanguageDto } from "../../dto/library-cardface-language.dto";
 import { LibraryCardfaceDto } from "../../dto/library-cardface.dto";
 import { AbstractCardViewmodel } from "./abstract-card.viewmodel";
@@ -16,6 +17,7 @@ export class LibraryCardfaceViewmodel extends AbstractCardViewmodel {
   public readonly name: string;
   public readonly typeLine: string;
   public readonly text: string;
+  public readonly imageUri: string | undefined;
   // #endregion
 
   // #region Constructor ------------------------------------------------------
@@ -34,6 +36,9 @@ export class LibraryCardfaceViewmodel extends AbstractCardViewmodel {
     this.name = faceLanguageDto.name;
     this.typeLine = faceLanguageDto.typeLine;
     this.text = faceLanguageDto.text;
+    this.imageUri = faceLanguageDto.externalReferences
+      .find((extRef: LibraryExternalReferenceDto) => extRef.source == "SCRYFALL" && extRef.detail == "LARGE")
+      ?.value;
   }
   // #endregion
 }

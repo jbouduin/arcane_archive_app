@@ -1,5 +1,6 @@
 import { IColorService, IDisplayValueService, ILanguageService, IMtgSetService } from "../../context";
 import { LanguageDto, LibraryCardDto } from "../../dto";
+import { CardLayout } from "../../types/card-layout";
 import { ColorDto } from "../../dto/color.dto";
 import { LibraryCardLanguageDto } from "../../dto/library-card-language.dto";
 import { LibraryCardfaceDto } from "../../dto/library-cardface.dto";
@@ -8,16 +9,19 @@ import { LibraryCardLanguageViewmodel } from "./library-card-language.viewmodel"
 import { LibraryCardfaceViewmodel } from "./library-cardface.viewmodel";
 
 export class LibraryCardViewmodel extends AbstractCardViewmodel {
-  // #region Fields Members ---------------------------------------------------
+  // #region Fields -----------------------------------------------------------
   public readonly id: number;
   public readonly code: string;
   public readonly cardName: string;
+  public readonly cardBackId: string | null;
+  public readonly setCode: string;
   public readonly setKeyruneCode: string;
   public readonly collectorNumber: string;
   public readonly colorIdentity: Array<string>;
   public readonly languages: Array<string>;
   public readonly displayLanguages: Array<string>;
   public readonly rarity: string;
+  public readonly layout: CardLayout;
   public readonly manaCost: Array<string>;
   public readonly typeline: string;
   public readonly cardLanguages: Map<string, LibraryCardLanguageViewmodel>;
@@ -42,7 +46,9 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
     this.id = dto.id;
     this.code = dto.code;
     this.cardName = dto.cardName;
+    this.cardBackId = dto.cardBackId;
     const mtgSet = mtgSetService.getSetById(dto.mtgSetId);
+    this.setCode = mtgSet?.code || "";
     this.setKeyruneCode = mtgSet?.keyruneCode || "DEFAULT";
     this.collectorNumber = dto.collectorNumber;
     this.colorIdentity = dto.colorIdentities
@@ -61,6 +67,7 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
         this.displayLanguages.push(lngDto?.buttonText ?? lng);
       });
     this.rarity = dto.rarity;
+    this.layout = dto.layout;
     this.manaCost = this.convertManaCost(dto.cardfaces.map((cardface: LibraryCardfaceDto) => cardface.manaCost).join("//"));
     this.cardLanguages = this.createCardLanguageViewmodels(dto);
     const firstLanguage = this.cardLanguages.values().next().value!;
