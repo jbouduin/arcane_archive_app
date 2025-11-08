@@ -8,11 +8,12 @@ import { LibraryCardfaceViewmodel } from "../../viewmodel/mtg-card/library-cardf
 import { CardSymbolRenderer } from "../card-symbol-renderer";
 import { CardDetailViewProps } from "./card-detail-view.props";
 import { CardHeaderView } from "./card-header-view/card-header-view";
-import { CardfaceView } from "./cardface-view/cardface-view";
+import { CardfaceView } from "./card-face-view/cardface-view";
 import { LanguageButtonBar } from "./language-button-bar/language-button-bar";
 import { CardImageView } from "./card-image-view/card-image-view";
 import { ScryfallLanguageMap } from "../../types";
 import { LegalitiesView } from "./legalities-view/legalities-view";
+import { RulingsView } from "./rulings-view/rulings-view";
 
 export function CardDetailView(props: CardDetailViewProps) {
   // #region State ------------------------------------------------------------
@@ -102,12 +103,11 @@ export function CardDetailView(props: CardDetailViewProps) {
     let result: Array<React.JSX.Element>;
     const languageViewModel = card.cardLanguages.get(currentLanguage);
     if (languageViewModel) {
-      result = Array.of(...languageViewModel.cardfaces.values()).map((face: LibraryCardfaceViewmodel) => {
+      result = Array.of(...languageViewModel.cardfaces.values()).map((face: LibraryCardfaceViewmodel, idx: number) => {
         return (
           <CardfaceView
             cardface={face}
-            key="face0"
-          // oracle={cardViewState.card.getOracle(0) ?? cardViewState.card.getCardface(0).oracle}
+            key={"face-" + idx.toString()}
           />
         );
       });
@@ -148,7 +148,7 @@ export function CardDetailView(props: CardDetailViewProps) {
             <Tab
               id="Rulings"
               key="rulings"
-              // panel={<CardRulingsView oracleId={cardViewState.card.oracleId} />}
+              panel={<RulingsView oracleId={card.oracleId} />}
               title="Rulings"
             />
             {/* <Tab
@@ -157,12 +157,12 @@ export function CardDetailView(props: CardDetailViewProps) {
               // panel={<CardOwnerShipView cardId={cardViewState.card.cardId} className={props.className} collectionId={props.collectionId} />}
               title="Ownership"
             /> */}
-            <Tab
+            {/* <Tab
               id="All prints"
               key="all-prints"
               // panel={<CardAllPrints cardId={cardViewState.card.cardId} oracleId={cardViewState.card.oracleId} />}
               title="All prints"
-            />
+            /> */}
           </Tabs>
         </SectionCard>
       </Section>

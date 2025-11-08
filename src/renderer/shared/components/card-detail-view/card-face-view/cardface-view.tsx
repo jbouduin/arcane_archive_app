@@ -30,7 +30,7 @@ export function CardfaceView(props: CardfaceViewProps) {
           props.cardface.flavorText &&
           (
             <div>
-              <p className={classNames("bp5-divider", "ruling-divider")} />
+              <p className={classNames("bp6-divider", "ruling-divider")} />
               <p><i>{props.cardface.flavorText}</i></p>
             </div>
           )

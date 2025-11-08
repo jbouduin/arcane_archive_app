@@ -5,4 +5,5 @@ export * from "./library-cardface-language.dto";
 export * from "./library-cardface.dto";
 export * from "./library-external-reference.dto";
 export * from "./library-legality";
+export * from "./library-ruling.dto";
 export * from "./mtg-set.dto";

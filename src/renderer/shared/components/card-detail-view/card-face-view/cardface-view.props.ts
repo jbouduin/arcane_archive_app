@@ -3,5 +3,4 @@ import { LibraryCardfaceViewmodel } from "../../../viewmodel/mtg-card/library-ca
 
 export interface CardfaceViewProps extends Props {
   cardface: LibraryCardfaceViewmodel;
-  // oracle: OracleViewmodel;
 }

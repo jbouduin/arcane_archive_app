@@ -26,6 +26,7 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
   public readonly typeline: string;
   public readonly cardLanguages: Map<string, LibraryCardLanguageViewmodel>;
   public readonly legalities: Map<string, string>;
+  public readonly oracleId: string;
   // #endregion
 
   // #region Constructor ------------------------------------------------------
@@ -79,6 +80,7 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
     dto.legalities.forEach((l: LibraryLegality) => {
       this.legalities.set(displayValueService.getDisplayValue("gameFormat", l.gameFormat), displayValueService.getDisplayValue("legality", l.legality));
     });
+    this.oracleId = dto.cardfaces[0].oracleId;
   }
   // #endregion
 
