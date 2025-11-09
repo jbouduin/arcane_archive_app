@@ -11,6 +11,7 @@ import { MtgSetService } from "../shared/context/implementation/mtg-set.service"
 import { ViewmodelFactoryService } from "../shared/context/implementation/viewmodel-factory.service";
 import { ConfigurationViewModel } from "../shared/viewmodel";
 import { FirstTimeView } from "./first-time-view/first-time-view";
+import { CollectionManagerProxyService } from "../shared/context/implementation/collection-manage-proxy.service";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -42,6 +43,7 @@ void (async () => {
       if (configurationViewmodel) {
         const serviceContainer: IServiceContainer = {
           cardSymbolService: new CardSymbolService(),
+          collectionManagerProxy: new CollectionManagerProxyService(),
           colorService: new ColorService(),
           configurationService: configurationService,
           displayValueService: new DisplayValueService(),

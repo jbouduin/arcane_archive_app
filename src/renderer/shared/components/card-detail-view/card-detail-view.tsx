@@ -1,17 +1,16 @@
 import { H5, Section, SectionCard, Tab, Tabs } from "@blueprintjs/core";
 import React from "react";
-import { ResultDto } from "../../../../common/dto/mtg-collection";
 import { useServices } from "../../../hooks/use-services";
 import { LibraryCardDto } from "../../dto";
+import { ScryfallLanguageMap } from "../../types";
 import { LibraryCardViewmodel } from "../../viewmodel/mtg-card";
 import { LibraryCardfaceViewmodel } from "../../viewmodel/mtg-card/library-cardface.viewmodel";
 import { CardSymbolRenderer } from "../card-symbol-renderer";
 import { CardDetailViewProps } from "./card-detail-view.props";
-import { CardHeaderView } from "./card-header-view/card-header-view";
 import { CardfaceView } from "./card-face-view/cardface-view";
-import { LanguageButtonBar } from "./language-button-bar/language-button-bar";
+import { CardHeaderView } from "./card-header-view/card-header-view";
 import { CardImageView } from "./card-image-view/card-image-view";
-import { ScryfallLanguageMap } from "../../types";
+import { LanguageButtonBar } from "./language-button-bar/language-button-bar";
 import { LegalitiesView } from "./legalities-view/legalities-view";
 import { RulingsView } from "./rulings-view/rulings-view";
 
@@ -29,19 +28,15 @@ export function CardDetailView(props: CardDetailViewProps) {
   React.useEffect(
     () => {
       if (props.cardId) {
-        void fetch(serviceContainer.configurationService.configuration.apiConfiguration.mtgCollectionApiRoot + "/card/" + props.cardId)
+        void serviceContainer.collectionManagerProxy.getData<LibraryCardDto>("/card/" + props.cardId)
           .then(
-            async (response: Response) => {
-              if (response.status == 200) {
-                const dto: ResultDto<LibraryCardDto> = (await response.json()) as ResultDto<LibraryCardDto>;
-                const viewmodel: LibraryCardViewmodel = serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getMtgCardDetailViewmodel(dto.data);
-                setCardviewmodel(viewmodel);
-                setCurrentLanguage(viewmodel.languages[0]);
-              } else {
-                setCardviewmodel(null);
-              }
+            (dto: LibraryCardDto) => {
+              const viewmodel: LibraryCardViewmodel = serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getMtgCardDetailViewmodel(dto);
+              setCardviewmodel(viewmodel);
+              setCurrentLanguage(viewmodel.languages[0]);
             },
-            (_r: unknown) => setCardviewmodel(null));
+            () => setCardviewmodel(null)
+          );
       }
     },
     [props.cardId]

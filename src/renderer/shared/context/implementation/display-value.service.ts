@@ -1,6 +1,6 @@
-import { ApiConfigurationDto } from "../../../../common/dto/infra";
+import { noop } from "lodash";
 import { DISPLAY_VALUE_DICTIONARY_KEYS, DisplayValueDictionaryKey } from "../../types";
-import { IDisplayValueService } from "../interface";
+import { ICollectionManagerProxyService, IDisplayValueService } from "../interface";
 
 export class DisplayValueService implements IDisplayValueService {
   // #region private fields ---------------------------------------------------
@@ -23,21 +23,21 @@ export class DisplayValueService implements IDisplayValueService {
     return result || "[" + value + "]";
   }
 
-  public initialize(apiConfiguration: ApiConfigurationDto): Promise<void> {
-    return fetch(apiConfiguration.mtgCollectionApiRoot + "/dictionary")
+  public initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void> {
+    return collectionManagerProxy.getData("/dictionary")
       .then(
-        async (response: Response) => {
-          const rawData = await response.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (data: any) => {
           const dictData = new Map<DisplayValueDictionaryKey, Map<string, string>>();
-
           DISPLAY_VALUE_DICTIONARY_KEYS.forEach((key) => {
-            const entry = rawData.data[key];
+            const entry = data[key];
             if (entry) {
               dictData.set(key, new Map(Object.entries(entry)));
             }
           });
           this.dictionary = dictData;
-        }
+        },
+        noop
       );
   }
   // #endregion

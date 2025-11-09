@@ -1,6 +1,6 @@
-import { ApiConfigurationDto } from "../../../../common/dto";
-import { ResultDto } from "../../../../common/dto/mtg-collection";
+import { noop } from "lodash";
 import { MtgSetDto } from "../../dto/mtg-set.dto";
+import { ICollectionManagerProxyService } from "../interface";
 import { IMtgSetService } from "../interface/mtg-set.service";
 
 export class MtgSetService implements IMtgSetService {
@@ -23,10 +23,12 @@ export class MtgSetService implements IMtgSetService {
     return this.setMap.get(id);
   }
 
-  public async initialize(apiConfiguration: ApiConfigurationDto): Promise<void> {
-    const response = await fetch(apiConfiguration.mtgCollectionApiRoot + "/mtg-set");
-    const result: ResultDto<Array<MtgSetDto>> = await response.json();
-    result.data.forEach((set: MtgSetDto) => this.setMap.set(set.id, set));
+  public async initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void> {
+    return collectionManagerProxy.getData<Array<MtgSetDto>>("/mtg-set")
+      .then(
+        (data: Array<MtgSetDto>) => data.forEach((set: MtgSetDto) => this.setMap.set(set.id, set)),
+        noop
+      );
   }
   // #endregion
 };

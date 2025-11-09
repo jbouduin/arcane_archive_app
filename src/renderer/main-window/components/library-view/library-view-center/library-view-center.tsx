@@ -2,10 +2,9 @@ import React from "react";
 import { useServices } from "../../../../hooks/use-services";
 import { BaseLookupResult, GenericTextColumn, IBaseColumn } from "../../../../shared/components/base/base-table";
 import { CardSetColumn, CardTableView, CollectiorNumberColumn, ColorIdentityColumn, ManaCostColumn } from "../../../../shared/components/card-table-view";
+import { LibraryCardListDto } from "../../../../shared/dto";
 import { LibraryCardListViewmodel } from "../../../../shared/viewmodel/mtg-card";
 import { LibraryViewCenterProps } from "./library-view-center.props";
-import { LibraryCardListDto } from "../../../../shared/dto";
-import { ResultDto } from "../../../../../common/dto/mtg-collection";
 
 export function LibraryViewCenter(props: LibraryViewCenterProps) {
   // #region State ------------------------------------------------------------
@@ -20,11 +19,11 @@ export function LibraryViewCenter(props: LibraryViewCenterProps) {
   // #region Effects ----------------------------------------------------------
   React.useEffect(
     () => {
-      void fetch(serviceContainer.configurationService.configuration.apiConfiguration.mtgCollectionApiRoot + "/card/list?pageNumber=0")
-        .then(async (response: Response) => {
-          const result: ResultDto<Array<LibraryCardListDto>> = (await response.json()) as ResultDto<Array<LibraryCardListDto>>;
-          setCards(result.data.map((c: LibraryCardListDto) => serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getMtgCardListViewmodel(c)));
-        });
+      void serviceContainer.collectionManagerProxy.getData<Array<LibraryCardListDto>>("/card/list?pageNumber=0")
+        .then(
+          (data: Array<LibraryCardListDto>) => setCards(data.map((c: LibraryCardListDto) => serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getMtgCardListViewmodel(c))),
+          () => new Array<LibraryCardListViewmodel>())
+        .then(() => setSortedIndexMap(new Array<number>()));
     },
     [props.selectedSets]
   );

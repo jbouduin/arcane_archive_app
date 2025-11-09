@@ -1,5 +1,5 @@
 import { ToastProps } from "@blueprintjs/core";
-import { IColorService, IConfigurationService, IDisplayValueService, IIpcProxyService, ILanguageService } from ".";
+import { ICollectionManagerProxyService, IColorService, IConfigurationService, IDisplayValueService, IIpcProxyService, ILanguageService } from ".";
 import { ConfigurationDto as _ConfigurationDto } from "../../../../common/dto";
 import { LanguageDto as _LanguageDto, MtgSetDto as _MtgSetDto } from "../../dto";
 import { ICardSymbolService } from "./card-symbol.service";
@@ -11,6 +11,11 @@ export interface IServiceContainer {
    * Service that caches the card symbol svg's
    */
   readonly cardSymbolService: ICardSymbolService;
+
+  /**
+   * Collection Manager back end proxy
+   */
+  readonly collectionManagerProxy: ICollectionManagerProxyService;
 
   /**
    * Service that caches ColorDtos

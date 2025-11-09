@@ -1,9 +1,9 @@
-import { ApiConfigurationDto } from "../../../../common/dto/infra/api-configuration.dto";
 import { LanguageDto } from "../../dto/language.dto";
+import { ICollectionManagerProxyService } from "./collection-manage-proxy.service";
 
 export interface ILanguageService {
   readonly allLanguages: Readonly<Array<LanguageDto>>;
 
   getLanguage(language: string): LanguageDto | undefined;
-  initialize(apiConfiguration: ApiConfigurationDto): Promise<void>;
+  initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void>;
 }

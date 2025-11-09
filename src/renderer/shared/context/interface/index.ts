@@ -1,4 +1,5 @@
 export * from "./card-symbol.service";
+export * from "./collection-manage-proxy.service";
 export * from "./color.service";
 export * from "./configuration.service";
 export * from "./display-value.service";

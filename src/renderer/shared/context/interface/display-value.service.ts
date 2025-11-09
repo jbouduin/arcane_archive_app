@@ -1,7 +1,7 @@
-import { ApiConfigurationDto } from "../../../../common/dto/infra/api-configuration.dto";
 import { DisplayValueDictionaryKey } from "../../types";
+import { ICollectionManagerProxyService } from "./collection-manage-proxy.service";
 
 export interface IDisplayValueService {
   getDisplayValue(key: DisplayValueDictionaryKey, value: string): string;
-  initialize(apiConfiguration: ApiConfigurationDto): Promise<void>;
+  initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void>;
 }

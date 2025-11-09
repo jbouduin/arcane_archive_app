@@ -128,6 +128,10 @@ export class IpcProxyService implements IIpcProxyService {
 
   // #region Auxiliary methods ------------------------------------------------
   private processIpcErrorResponse<T>(channel: IpcChannel, response: IpcResponse<T>): Promise<never> {
+    if (this.logServerResponses) {
+      // eslint-disable-next-line no-console
+      console.log(response);
+    }
     let errorMessage: string | undefined = undefined;
     switch (response.status) {
       case EIpcStatus.BadRequest:
@@ -185,6 +189,10 @@ export class IpcProxyService implements IIpcProxyService {
   }
 
   private processIpcRejection<T>(channel: IpcChannel, reason: Error): Promise<T> {
+    if (this.logServerResponses) {
+      // eslint-disable-next-line no-console
+      console.log(reason);
+    }
     void this.showToast(
       {
         message: reason.message ?? "Some error occurred",

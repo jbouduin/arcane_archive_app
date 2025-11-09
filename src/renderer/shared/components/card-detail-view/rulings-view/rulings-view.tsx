@@ -1,12 +1,12 @@
 import { Classes, SectionCard } from "@blueprintjs/core";
 import classNames from "classnames";
+import { noop } from "lodash";
 import * as React from "react";
 import { useServices } from "../../../../hooks/use-services";
 import { LibraryRulingDto } from "../../../dto";
+import { LibraryRulingViewmodel } from "../../../viewmodel/mtg-card";
 import { compareClassNameProp } from "../../util";
 import { RulingsViewProps } from "./rulings-view.props";
-import { ResultDto } from "../../../../../common/dto/mtg-collection";
-import { LibraryRulingViewmodel } from "../../../viewmodel/mtg-card";
 
 export const RulingsView = React.memo(
   (props: RulingsViewProps) => {
@@ -21,11 +21,11 @@ export const RulingsView = React.memo(
     // #region Effects --------------------------------------------------------
     React.useEffect(
       () => {
-        void fetch(serviceContainer.configurationService.configuration.apiConfiguration.mtgCollectionApiRoot + "/ruling/" + props.oracleId)
-          .then(async (response: Response) => {
-            const result: ResultDto<Array<LibraryRulingDto>> = (await response.json()) as ResultDto<Array<LibraryRulingDto>>;
-            setRulings(serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getRulingsViewmodel(result.data));
-          });
+        void serviceContainer.collectionManagerProxy.getData<Array<LibraryRulingDto>>("/ruling/" + props.oracleId)
+          .then(
+            (data: Array<LibraryRulingDto>) => setRulings(serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getRulingsViewmodel(data)),
+            noop
+          );
       },
       [props.oracleId]
     );

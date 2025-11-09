@@ -1,7 +1,6 @@
-import { ApiConfigurationDto } from "../../../../common/dto";
-import { ResultDto } from "../../../../common/dto/mtg-collection";
+import { noop } from "lodash";
 import { ColorDto } from "../../dto/color.dto";
-import { IColorService } from "../interface";
+import { ICollectionManagerProxyService, IColorService } from "../interface";
 
 export class ColorService implements IColorService {
   // #region Private fields ---------------------------------------------------
@@ -18,13 +17,14 @@ export class ColorService implements IColorService {
     return this.colorMap.get(colorCode);
   }
 
-  public async initialize(apiConfiguration: ApiConfigurationDto): Promise<void> {
-    const response = await fetch(apiConfiguration.mtgCollectionApiRoot + "/color");
-    const allLanguages: ResultDto<Array<ColorDto>> = (await response.json()) as ResultDto<Array<ColorDto>>;
-    allLanguages
-      .data
-      .sort((a: ColorDto, b: ColorDto) => a.sequence - b.sequence)
-      .forEach((color: ColorDto) => this.colorMap.set(color.code, color));
+  public initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void> {
+    return collectionManagerProxy.getData<Array<ColorDto>>("/color")
+      .then(
+        (allColors: Array<ColorDto>) => allColors
+          .sort((a: ColorDto, b: ColorDto) => a.sequence - b.sequence)
+          .forEach((color: ColorDto) => this.colorMap.set(color.code, color)),
+        noop
+      );
   }
   // #endregion
 }
