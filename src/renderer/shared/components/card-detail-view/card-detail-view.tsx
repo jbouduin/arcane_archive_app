@@ -86,7 +86,7 @@ export function CardDetailView(props: CardDetailViewProps) {
         <CardImageView
           cardLayout={card.layout}
           cardBackId={card.cardBackId}
-          setCode={card.setCode}
+          setCode={card.layout != "TOKEN" ? card.setCode : card.tokenSetCode}
           collectorNumber={card.collectorNumber}
           scryfallLanguage={ScryfallLanguageMap.get(currentLanguage) || "en"}
         />

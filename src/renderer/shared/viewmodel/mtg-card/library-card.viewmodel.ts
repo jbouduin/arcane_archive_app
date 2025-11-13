@@ -15,6 +15,7 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
   public readonly cardName: string;
   public readonly cardBackId: string | null;
   public readonly setCode: string;
+  public readonly tokenSetCode: string;
   public readonly setKeyruneCode: string;
   public readonly collectorNumber: string;
   public readonly colorIdentity: Array<string>;
@@ -51,6 +52,7 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
     this.cardBackId = dto.cardBackId;
     const mtgSet = mtgSetService.getSetById(dto.mtgSetId);
     this.setCode = mtgSet?.code || "";
+    this.tokenSetCode = mtgSet?.tokenSetCode || "";
     this.setKeyruneCode = mtgSet?.keyruneCode || "DEFAULT";
     this.collectorNumber = dto.collectorNumber;
     this.colorIdentity = dto.colorIdentities

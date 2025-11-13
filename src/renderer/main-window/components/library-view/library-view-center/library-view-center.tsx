@@ -18,7 +18,7 @@ export function LibraryViewCenter(props: LibraryViewCenterProps) {
   const [queryResult, setQueryResult] = React.useState<QueryResultDto<LibraryCardListDto>>(initialQueryResult);
   const [sortedIndexMap, setSortedIndexMap] = React.useState<Array<number>>(new Array<number>());
   // #endregion
-  // setCards(queryResult.resultList.map((c: LibraryCardListDto) => serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getMtgCardListViewmodel(c))
+
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
@@ -30,8 +30,8 @@ export function LibraryViewCenter(props: LibraryViewCenterProps) {
         .then(
           (queryResult: QueryResultDto<LibraryCardListDto>) => setQueryResult(queryResult),
           () => setQueryResult(initialQueryResult)
-        )
-        .then(() => setSortedIndexMap(new Array<number>()));
+        );
+      // .then(() => setSortedIndexMap(new Array<number>()));
     },
     [props.cardQuery]
   );

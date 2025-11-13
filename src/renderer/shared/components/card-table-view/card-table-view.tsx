@@ -41,11 +41,11 @@ export function CardTableView<T>(props: BaseTableViewProps<T>) {
     sortedIndexMap.sort((a: number, b: number) => {
       return comparator(props.data[a], props.data[b]);
     });
-    props.onClientColumnSort(sortedIndexMap);
+    props.onClientColumnSort!(sortedIndexMap);
   }
 
   function serverSortColumn(columnName: CardSortField, direction: SortDirection) {
-    props.onServerColumnSort(columnName, direction);
+    props.onServerColumnSort!(columnName, direction);
   }
   // #endregion
 }
