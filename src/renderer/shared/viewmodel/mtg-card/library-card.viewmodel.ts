@@ -60,7 +60,6 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
       .map((color: ColorDto) => color.manaSymbol);
     this.displayLanguages = new Array<string>();
     this.languages = new Array<string>();
-    this.languages = new Array<string>();
     dto.cardLanguages
       .map((cardLanguage: LibraryCardLanguageDto) => cardLanguage.language)
       .forEach((lng: string) => {
@@ -70,7 +69,7 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
       });
     this.rarity = dto.rarity;
     this.layout = dto.layout;
-    this.manaCost = this.convertManaCost(dto.cardfaces.map((cardface: LibraryCardfaceDto) => cardface.manaCost).join("//"));
+    this.manaCost = this.calculateCardManaCost(dto.cardfaces.map((cardface: LibraryCardfaceDto) => cardface.manaCost));
     this.cardLanguages = this.createCardLanguageViewmodels(dto);
     const firstLanguage = this.cardLanguages.values().next().value!;
     this.typeline = Array.of(...firstLanguage.cardfaces.values())

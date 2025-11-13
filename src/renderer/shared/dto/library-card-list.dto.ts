@@ -10,7 +10,10 @@ export type LibraryCardListDto = MasterDataDto<string> & {
   type: string;
   manaCost: Array<string>;
   power: string;
-  thoughness: string;
+  toughness: string;
   colorIdentities: Array<string>;
   languages: Array<string>;
+  collectorNumberSortValue: string;
+  colorIdentitiesSortValue: string;
+  raritySortValue: number;
 };

@@ -134,3 +134,23 @@ img.rotate-180 {
 .bp6-dark .ss-common {
   color: white !important;
 }
+
+.mosaic-tile-content-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.mosaic-root {
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+}
+
+.mosaic-tile {
+  margin: 0px;
+}
+
+.paging-view {
+  flex: 0 1 auto;
+}

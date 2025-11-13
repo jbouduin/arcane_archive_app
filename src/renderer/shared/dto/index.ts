@@ -1,3 +1,4 @@
+export * from "./card-query-params.dto";
 export * from "./language.dto";
 export * from "./library-card-list.dto";
 export * from "./library-card.dto";
@@ -7,3 +8,4 @@ export * from "./library-external-reference.dto";
 export * from "./library-legality";
 export * from "./library-ruling.dto";
 export * from "./mtg-set.dto";
+export * from "./query-result.dto";

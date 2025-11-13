@@ -1,6 +1,7 @@
 import { ToastProps } from "@blueprintjs/core";
 import { ConfigurationDto } from "../../../../common/dto";
 import { ResultDto, ValidationErrorDto } from "../../../../common/dto/mtg-collection";
+import { CardQueryParamsDto, LibraryCardListDto, QueryResultDto } from "../../dto";
 import { ICollectionManagerProxyService } from "../interface";
 
 export class CollectionManagerProxyService implements ICollectionManagerProxyService {
@@ -19,6 +20,25 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
   // #region ICollectionManagerProxyService Members ---------------------------
   public get logServerResponses(): boolean {
     return this._logServerResponses;
+  }
+
+  public getCards(cardQuery: CardQueryParamsDto): Promise<QueryResultDto<LibraryCardListDto>> {
+    const path = "/card/list";
+    const params = new URLSearchParams();
+    cardQuery.selectedSets?.forEach((setId: number) => params.append("set", setId.toString()));
+    if (params.size > 0) {
+      params.append("pn", cardQuery.pageNumber.toString());
+      params.append("ps", cardQuery.pageSize.toString());
+      params.append("sort", `${cardQuery.sortField}:${cardQuery.sortDirection}`);
+      return this.getData<QueryResultDto<LibraryCardListDto>>(path + "?" + params.toString());
+    } else {
+      return Promise.resolve({
+        currentPageNumber: 0,
+        currentPageSize: 100,
+        hasMore: false,
+        resultList: new Array<LibraryCardListDto>()
+      });
+    }
   }
 
   public async getData<T extends object>(path: string): Promise<T> {

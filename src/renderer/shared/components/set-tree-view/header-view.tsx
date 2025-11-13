@@ -177,7 +177,7 @@ function headerView(props: HeaderViewProps) {
           {buildTypeFilterMenuItem("FROM_THE_VAULT")}
           {buildTypeFilterMenuItem("FUNNY")}
           {buildTypeFilterMenuItem("MASTERPIECE")}
-          {buildTypeFilterMenuItem("MASERS")}
+          {buildTypeFilterMenuItem("MASTERS")}
           {buildTypeFilterMenuItem("MEMORABILIA")}
           {buildTypeFilterMenuItem("MINIGAME")}
           {buildTypeFilterMenuItem("PLANECHASE")}

@@ -1,8 +1,13 @@
 import { Props } from "@blueprintjs/core";
-import { MtgSetTreeViewmodel } from "../../../../shared/viewmodel";
+import { CardQueryParamsDto } from "../../../../shared/dto";
+import { SortDirection } from "../../../../shared/components/base/base-table";
+import { CardSortField } from "../../../../shared/types";
 
 export interface LibraryViewCenterProps extends Props {
-  selectedSets: Array<MtgSetTreeViewmodel>;
+  cardQuery: CardQueryParamsDto;
 
   onCardSelected: (cardId: number | null) => void;
+  onCurrentPageChanged: (newPage: number) => void;
+  onCurrentPageSizeChanged: (newPageSize: number) => void;
+  onSortChanged: (columnName: CardSortField, sortDirection: SortDirection) => void;
 }

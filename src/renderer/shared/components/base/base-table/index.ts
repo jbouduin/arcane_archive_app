@@ -3,5 +3,7 @@ export * from "./base-lookup-result";
 export * from "./base-table-view.props";
 export * from "./generic-text-column";
 export * from "./generic-text-lookup-result";
+export * from "./paging-view";
+export * from "./paging-view.props";
 export * from "./types";
 export * from "./utils";

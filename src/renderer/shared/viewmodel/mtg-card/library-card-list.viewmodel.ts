@@ -16,10 +16,11 @@ export class LibraryCardListViewmodel extends AbstractCardViewmodel {
   public readonly colorIdentitySortValue: string;
   public readonly rarity: string;
   public readonly rarityDisplayValue: string;
+  public readonly raritySortValue: number;
   public readonly type: string;
   public readonly manaCost: Array<string>;
   public readonly power: string;
-  public readonly thoughness: string;
+  public readonly toughness: string;
   public readonly languages: string;
   // #endregion
 
@@ -38,23 +39,20 @@ export class LibraryCardListViewmodel extends AbstractCardViewmodel {
     this.cardName = dto.cardName;
     this.convertedManaCost = dto.convertedManaCost;
     this.collectorNumber = dto.collectorNumber;
-    this.collectorNumberSortValue = isNaN(Number(dto.collectorNumber)) ? dto.collectorNumber : dto.collectorNumber.padStart(4, "0");
+    this.collectorNumberSortValue = dto.collectorNumberSortValue;
     const identityColors = dto.colorIdentities
       .map((color: string) => colorService.getColor(color))
       .filter((color: ColorDto | undefined) => color != undefined)
       .sort((a: ColorDto, b: ColorDto) => a.sequence - b.sequence);
     this.colorIdentity = identityColors.map((color: ColorDto) => color.manaSymbol);
-    let colorIdentitySortValue = "";
-    identityColors.forEach((color: ColorDto) => {
-      colorIdentitySortValue = colorIdentitySortValue + color.sequence.toString().padStart(2, "0");
-    });
-    this.colorIdentitySortValue = colorIdentitySortValue;
+    this.colorIdentitySortValue = dto.colorIdentitiesSortValue;
     this.rarity = dto.rarity;
     this.rarityDisplayValue = displayValueService.getDisplayValue("rarity", dto.rarity);
+    this.raritySortValue = dto.raritySortValue;
     this.type = dto.type;
     this.manaCost = this.calculateCardManaCost(dto.manaCost);
     this.power = dto.power;
-    this.thoughness = dto.thoughness;
+    this.toughness = dto.toughness;
     this.languages = dto.languages
       .map((lng: string) => languageService.getLanguage(lng))
       .filter((lng: LanguageDto | undefined) => lng != undefined)
