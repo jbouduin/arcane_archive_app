@@ -11,8 +11,8 @@ export function selectedRegionTransformToRowSelection(region: Region): Region {
 export function onDataSelected<T>(
   selectedRegions: Array<Region>,
   data: Array<T>,
-  sortedIndexMap: Array<number>,
-  callback: (selected: Array<T>) => void
+  callback: (selected: Array<T>) => void,
+  sortedIndexMap?: Array<number>,
 ): void {
   const selectedData = new Array<T>();
   selectedRegions
@@ -21,12 +21,16 @@ export function onDataSelected<T>(
       const firstRow = region.rows![0];
       const lastRow = region.rows![1];
       for (let cnt = firstRow; cnt <= lastRow; cnt++) {
-        let rowIndex = cnt;
-        const sortedRowIndex = sortedIndexMap[rowIndex];
-        if (sortedRowIndex != null) {
-          rowIndex = sortedRowIndex;
+        if (sortedIndexMap) {
+          let rowIndex = cnt;
+          const sortedRowIndex = sortedIndexMap[rowIndex];
+          if (sortedRowIndex != null) {
+            rowIndex = sortedRowIndex;
+          }
+          selectedData.push(data[rowIndex]);
+        } else {
+          selectedData.push(data[cnt]);
         }
-        selectedData.push(data[rowIndex]);
       }
     });
   callback(selectedData);

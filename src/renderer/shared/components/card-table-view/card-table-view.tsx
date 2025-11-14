@@ -2,18 +2,18 @@ import { Region, SelectionModes, Table2, Utils } from "@blueprintjs/table";
 import { CardSortField } from "../../types";
 import { BaseLookupResult, BaseTableViewProps, IBaseColumn, onDataSelected, selectedRegionTransformToRowSelection, SortDirection, SortType } from "../base/base-table";
 
-// TODO if props.data changes clear the selected region -> be carefull: that makes the selected region stuff controlled
+// LATER if props.data changes clear the selected region -> be carefull: that makes the selected region stuff controlled
 export function CardTableView<T>(props: BaseTableViewProps<T>) {
   // #region Rendering --------------------------------------------------------
   return (
     <div className="cards-table-wrapper">
       <Table2
         bodyContextMenuRenderer={props.bodyContextMenuRenderer}
-        // BUG it looks like not all cells are re-rendered when required. e.g. Mana Cost, Rarity (all non standard text columns ???)
+        // LATER it looks like not all cells are re-rendered when required. e.g. Mana Cost, Rarity (all non standard text columns ???)
         cellRendererDependencies={[props.data, props.sortedIndexMap]}
         children={getTableChildren(props.sortableColumnDefinitions, props.sortType)}
         numRows={props.data?.length ?? 0}
-        onSelection={(selectedRegions: Array<Region>) => onDataSelected(selectedRegions, props.data, props.sortedIndexMap, (selected: Array<T>) => props.onDataSelected(selected))}
+        onSelection={(selectedRegions: Array<Region>) => onDataSelected(selectedRegions, props.data, (selected: Array<T>) => props.onDataSelected(selected), props.sortedIndexMap)}
         selectedRegionTransform={(region: Region) => selectedRegionTransformToRowSelection(region)}
         selectionModes={SelectionModes.ROWS_AND_CELLS}
       />
@@ -29,9 +29,11 @@ export function CardTableView<T>(props: BaseTableViewProps<T>) {
 
   // #region Auxiliary methods ------------------------------------------------
   function getCellData<U>(rowIndex: number, valueCallBack: (row: T) => U): U {
-    const sortedRowIndex = props.sortedIndexMap[rowIndex];
-    if (sortedRowIndex != null) {
-      rowIndex = sortedRowIndex;
+    if (props.sortedIndexMap) {
+      const sortedRowIndex = props.sortedIndexMap[rowIndex];
+      if (sortedRowIndex != null) {
+        rowIndex = sortedRowIndex;
+      }
     }
     return valueCallBack(props.data[rowIndex]);
   }

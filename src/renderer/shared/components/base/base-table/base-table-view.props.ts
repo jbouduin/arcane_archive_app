@@ -8,7 +8,7 @@ import { SortDirection, SortType } from "./types";
 export interface BaseTableViewProps<T> extends Props {
   data: Array<T>;
   sortableColumnDefinitions: Array<IBaseColumn<T, BaseLookupResult>>;
-  sortedIndexMap: Array<number>;
+  sortedIndexMap?: Array<number>;
   sortType: SortType;
 
   bodyContextMenuRenderer?: ContextMenuRenderer;

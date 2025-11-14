@@ -1,6 +1,6 @@
 import { Props } from "@blueprintjs/core";
-import { CardQueryParamsDto } from "../../../../shared/dto";
+import { MtgSetTreeViewmodel } from "../../../../shared/viewmodel";
 
 export interface LibraryViewLeftProps extends Props {
-  onSelectionChanged: (selection: CardQueryParamsDto) => void;
+  onSelectionChanged: (sets: Array<MtgSetTreeViewmodel>) => void;
 }

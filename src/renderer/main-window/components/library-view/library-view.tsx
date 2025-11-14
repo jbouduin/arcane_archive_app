@@ -5,9 +5,9 @@ import { LibraryViewCenter } from "./library-view-center/library-view-center";
 import { LibraryViewLeft } from "./library-view-left/library-view-left";
 import { LibraryViewRight } from "./library-view-right/library-view-right";
 import { LibraryViewProps } from "./library-view.props";
-import { cloneDeep } from "lodash";
 import { SortDirection } from "../../../shared/components/base/base-table";
 import { CardSortField } from "../../../shared/types";
+import { MtgSetTreeViewmodel } from "../../../shared/viewmodel";
 
 export function LibraryView(props: LibraryViewProps) {
   // #region State ------------------------------------------------------------
@@ -27,43 +27,23 @@ export function LibraryView(props: LibraryViewProps) {
   // #endregion
 
   // #region Memo -------------------------------------------------------------
-  const renderTile = React.useCallback((id: string) => ELEMENT_MAP[id], [cardQueryDto, selectedCard]);
+  const renderTile = React.useCallback((id: string) => elementMap[id], [cardQueryDto, selectedCard]);
   // #endregion
 
-  function currentPageChanged(newPage: number): void {
-    const newCardQueryDto = cloneDeep(cardQueryDto);
-    newCardQueryDto.pageNumber = newPage;
-    setCardQueryDto(newCardQueryDto);
-  }
-
-  function pageSizeChanged(newPageSize: number): void {
-    const newCardQueryDto = cloneDeep(cardQueryDto);
-    newCardQueryDto.pageNumber = 0;
-    newCardQueryDto.pageSize = newPageSize;
-    setCardQueryDto(newCardQueryDto);
-  }
-
-  function onSortChanged(columnName: CardSortField, sortDirection: SortDirection): void {
-    const newCardQueryDto = cloneDeep(cardQueryDto);
-    newCardQueryDto.sortField = columnName;
-    newCardQueryDto.sortDirection = sortDirection;
-    setCardQueryDto(newCardQueryDto);
-  }
-
   // #region Rendering --------------------------------------------------------
-  const ELEMENT_MAP: { [viewId: string]: React.JSX.Element; } = {
-    a: <LibraryViewLeft onSelectionChanged={(selection: CardQueryParamsDto) => setCardQueryDto(selection)} />,
+  const elementMap: { [viewId: string]: React.JSX.Element; } = React.useMemo(() => ({
+    a: <LibraryViewLeft onSelectionChanged={(selection: Array<MtgSetTreeViewmodel>) => setCardQueryDto(prev => ({ ...prev, selectedSets: selection.map((set: MtgSetTreeViewmodel) => set.id) }))} />,
     b: (
       <LibraryViewCenter
         cardQuery={cardQueryDto}
-        onCardSelected={(cardId: number | null) => setSelectedCard(cardId)}
-        onCurrentPageChanged={(newPage: number) => currentPageChanged(newPage)}
-        onCurrentPageSizeChanged={(newPageSize: number) => pageSizeChanged(newPageSize)}
-        onSortChanged={(columnName: CardSortField, sortDirection: SortDirection) => onSortChanged(columnName, sortDirection)}
+        onCardSelected={setSelectedCard}
+        onCurrentPageChanged={(newPage: number) => setCardQueryDto(prev => ({ ...prev, pageNumber: newPage }))}
+        onCurrentPageSizeChanged={(newPageSize: number) => setCardQueryDto(prev => ({ ...prev, pageNumber: 0, pageSize: newPageSize }))}
+        onSortChanged={(fieldName: CardSortField, direction: SortDirection) => setCardQueryDto(prev => ({ ...prev, pageNumber: 0, sortField: fieldName, sortDirection: direction }))}
       />
     ),
     c: <LibraryViewRight cardId={selectedCard} />,
-  };
+  }), [cardQueryDto, selectedCard]);
 
   return (
     <Mosaic
