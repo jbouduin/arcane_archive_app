@@ -7,14 +7,14 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
   // #region Private fields ---------------------------------------------------
   private _selectedAbilities: Array<SelectOption<string>>;
   private _selectedActions: Array<SelectOption<string>>;
-  private _selectedCardColors: Array<ColorDto>;
+  private _selectedCardColors: Array<SelectOption<ColorDto>>;
   private _selectedCardNames: Array<SelectOption<string>>;
-  private _selectedIdentityColors: Array<ColorDto>;
+  private _selectedIdentityColors: Array<SelectOption<ColorDto>>;
   private _selectedGameFormats: Array<SelectOption<string>>;
   private _selectedPowers: Array<SelectOption<string>>;
-  private _selectedProducedManaColors: Array<ColorDto>;
+  private _selectedProducedManaColors: Array<SelectOption<ColorDto>>;
   private _selectedRarities: Array<SelectOption<string>>;
-  private _selectedSets: Array<MtgSetDto>;
+  private _selectedSets: Array<SelectOption<MtgSetDto>>;
   private _selectedSubTypes: Array<SelectOption<string>>;
   private _selectedSuperTypes: Array<SelectOption<string>>;
   private _selectedToughnesses: Array<SelectOption<string>>;
@@ -30,7 +30,7 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
     return this._selectedActions;
   }
 
-  public get selectedCardColors(): Array<ColorDto> {
+  public get selectedCardColors(): Array<SelectOption<ColorDto>> {
     return this._selectedCardColors;
   }
 
@@ -38,11 +38,11 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
     return this._selectedCardNames;
   }
 
-  public get selectedIdentityColors(): Array<ColorDto> {
+  public get selectedIdentityColors(): Array<SelectOption<ColorDto>> {
     return this._selectedIdentityColors;
   }
 
-  public get selectedProducedManaColors(): Array<ColorDto> {
+  public get selectedProducedManaColors(): Array<SelectOption<ColorDto>> {
     return this._selectedProducedManaColors;
   }
 
@@ -58,7 +58,7 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
     return this._selectedRarities;
   }
 
-  public get selectedSets(): Array<MtgSetDto> {
+  public get selectedSets(): Array<SelectOption<MtgSetDto>> {
     return this._selectedSets;
   }
 
@@ -84,13 +84,13 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
     super(initial);
     this._selectedAbilities = new Array<SelectOption<string>>();
     this._selectedActions = new Array<SelectOption<string>>();
-    this._selectedSets = new Array<MtgSetDto>();
-    this._selectedCardColors = new Array<ColorDto>();
+    this._selectedSets = new Array<SelectOption<MtgSetDto>>();
+    this._selectedCardColors = new Array<SelectOption<ColorDto>>();
     this._selectedCardNames = new Array<SelectOption<string>>();
     this._selectedGameFormats = new Array<SelectOption<string>>();
-    this._selectedIdentityColors = new Array<ColorDto>();
+    this._selectedIdentityColors = new Array<SelectOption<ColorDto>>();
     this._selectedPowers = new Array<SelectOption<string>>();
-    this._selectedProducedManaColors = new Array<ColorDto>();
+    this._selectedProducedManaColors = new Array<SelectOption<ColorDto>>();
     this._selectedRarities = new Array<SelectOption<string>>();
     this._selectedSubTypes = new Array<SelectOption<string>>();
     this._selectedSuperTypes = new Array<SelectOption<string>>();
@@ -100,47 +100,56 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
   // #endregion
 
   // #region CardColors -------------------------------------------------------
-  public addColor(type: ColorType, color: ColorDto): void {
+  public addColor(type: ColorType, color: SelectOption<ColorDto>): void {
     switch (type) {
       case "card":
-        this._dto.selectedCardColors.push(color);
-        this._selectedCardColors.push(color);
-        this._selectedCardColors.sort((a: ColorDto, b: ColorDto) => a.sequence - b.sequence);
+        this.addSelectOption(
+          this._dto.selectedCardColors,
+          this._selectedCardColors,
+          color,
+          (a: SelectOption<ColorDto>, b: SelectOption<ColorDto>) => a.value.sequence - b.value.sequence
+        );
         break;
       case "identity":
-        this._dto.selectedIdentityColors.push(color);
-        this._selectedIdentityColors.push(color);
-        this._selectedIdentityColors.sort((a: ColorDto, b: ColorDto) => a.sequence - b.sequence);
+        this.addSelectOption(
+          this._dto.selectedIdentityColors,
+          this._selectedIdentityColors,
+          color,
+          (a: SelectOption<ColorDto>, b: SelectOption<ColorDto>) => a.value.sequence - b.value.sequence
+        );
         break;
       case "produced_mana":
-        this._dto.selectedProducedManaColors.push(color);
-        this._selectedProducedManaColors.push(color);
-        this._selectedProducedManaColors.sort((a: ColorDto, b: ColorDto) => a.sequence - b.sequence);
+        this.addSelectOption(
+          this._dto.selectedProducedManaColors,
+          this._selectedProducedManaColors,
+          color,
+          (a: SelectOption<ColorDto>, b: SelectOption<ColorDto>) => a.value.sequence - b.value.sequence
+        );
         break;
     }
   }
 
-  public removeColor(type: ColorType, color: ColorDto): void {
+  public removeColor(type: ColorType, color: SelectOption<ColorDto>): void {
     switch (type) {
       case "card": {
-        let idx = this._dto.selectedCardColors.indexOf(color);
-        this._dto.selectedCardColors.splice(idx, 1);
-        idx = this._selectedCardColors.findIndex((c: ColorDto) => c.id == color.id);
-        this._selectedCardColors.splice(idx, 1);
+        this.removeSelectOption(
+          this._dto.selectedCardColors,
+          this._selectedCardColors,
+          color);
         break;
       }
       case "identity": {
-        let idx = this._dto.selectedIdentityColors.indexOf(color);
-        this._dto.selectedIdentityColors.splice(idx, 1);
-        idx = this._selectedIdentityColors.findIndex((c: ColorDto) => c.id == color.id);
-        this._selectedIdentityColors.splice(idx, 1);
+        this.removeSelectOption(
+          this._dto.selectedIdentityColors,
+          this._selectedIdentityColors,
+          color);
         break;
       }
       case "produced_mana": {
-        let idx = this._dto.selectedProducedManaColors.indexOf(color);
-        this._dto.selectedProducedManaColors.splice(idx, 1);
-        idx = this._selectedProducedManaColors.findIndex((c: ColorDto) => c.id == color.id);
-        this._selectedProducedManaColors.splice(idx, 1);
+        this.removeSelectOption(
+          this._dto.selectedProducedManaColors,
+          this._selectedProducedManaColors,
+          color);
         break;
       }
     }
@@ -149,16 +158,13 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
   public clearColorSelection(type: ColorType): void {
     switch (type) {
       case "card":
-        this._dto.selectedCardColors.splice(0);
-        this._selectedCardColors.splice(0);
+        this.clearSelection(this._dto.selectedCardColors, this._selectedCardColors);
         break;
       case "identity":
-        this._dto.selectedIdentityColors.splice(0);
-        this._selectedIdentityColors.splice(0);
+        this.clearSelection(this._dto.selectedIdentityColors, this._selectedIdentityColors);
         break;
       case "produced_mana":
-        this._dto.selectedProducedManaColors.splice(0);
-        this._selectedProducedManaColors.splice(0);
+        this.clearSelection(this._dto.selectedProducedManaColors, this._selectedProducedManaColors);
         break;
     }
   }
@@ -235,17 +241,12 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
   // #endregion
 
   // #region Card set ---------------------------------------------------------
-  public addCardSet(cardSet: MtgSetDto): void {
-    this._dto.selectedSets.push(cardSet.id);
-    this._selectedSets.push(cardSet);
-    this.selectedSets.sort((a: MtgSetDto, b: MtgSetDto) => a.name["ENGLISH"].localeCompare(b.name["ENGLISH"]));
+  public addCardSet(cardSet: SelectOption<MtgSetDto>): void {
+    this.addSelectOption(this._dto.selectedSets, this._selectedSets, cardSet);
   }
 
-  public removeCardSet(cardSet: MtgSetDto): void {
-    let idx = this._dto.selectedSets.indexOf(cardSet.id);
-    this._dto.selectedSets.splice(idx, 1);
-    idx = this._selectedSets.findIndex((cs: MtgSetDto) => cs.id == cardSet.id);
-    this._selectedSets.splice(idx, 1);
+  public removeCardSet(cardSet: SelectOption<MtgSetDto>): void {
+    this.removeSelectOption(this._dto.selectedSets, this._selectedSets, cardSet);
   }
 
   public clearCardSetSelection(): void {
@@ -332,20 +333,28 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
   // #endregion
 
   // #region Auxiliary Methods ------------------------------------------------
-  private addSelectOption(dtoArray: Array<string>, viewModelArray: Array<SelectOption<string>>, option: SelectOption<string>): void {
+  private addSelectOption<T>(
+    dtoArray: Array<T>,
+    viewModelArray: Array<SelectOption<T>>,
+    option: SelectOption<T>,
+    sort?: (a: SelectOption<T>, b: SelectOption<T>) => number): void {
     dtoArray.push(option.value);
     viewModelArray.push(option);
-    viewModelArray.sort((a: SelectOption<string>, b: SelectOption<string>) => a.label.localeCompare(b.label));
+    if (sort) {
+      viewModelArray.sort(sort);
+    } else {
+      viewModelArray.sort((a: SelectOption<T>, b: SelectOption<T>) => a.label.localeCompare(b.label));
+    }
   }
 
-  private removeSelectOption(dtoArray: Array<string>, viewModelArray: Array<SelectOption<string>>, option: SelectOption<string>): void {
+  private removeSelectOption<T>(dtoArray: Array<T>, viewModelArray: Array<SelectOption<T>>, option: SelectOption<T>): void {
     let idx = dtoArray.indexOf(option.value);
     dtoArray.splice(idx, 1);
-    idx = viewModelArray.findIndex((so: SelectOption<string>) => so.value == option.value);
+    idx = viewModelArray.findIndex((so: SelectOption<T>) => so.value == option.value);
     viewModelArray.splice(idx, 1);
   }
 
-  private clearSelection(dtoArray: Array<string>, viewModelArray: Array<SelectOption<string>>): void {
+  private clearSelection<T>(dtoArray: Array<T>, viewModelArray: Array<SelectOption<T>>): void {
     dtoArray.splice(0);
     viewModelArray.splice(0);
   }

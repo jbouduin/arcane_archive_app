@@ -1,7 +1,7 @@
 import { ToastProps } from "@blueprintjs/core";
 import { ConfigurationDto } from "../../../../common/dto";
 import { ResultDto, ValidationErrorDto } from "../../../../common/dto/mtg-collection";
-import { CardQueryParamsDto, ColorDto, LibraryCardListDto, QueryResultDto } from "../../dto";
+import { CardQueryParamsDto, ColorDto, LibraryCardListDto, MtgSetDto, QueryResultDto } from "../../dto";
 import { ICollectionManagerProxyService } from "../interface";
 
 export class CollectionManagerProxyService implements ICollectionManagerProxyService {
@@ -34,7 +34,10 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
     cardQuery.selectedPowers.forEach((power: string) => params.append("pw", power));
     cardQuery.selectedProducedManaColors.forEach((color: ColorDto) => params.append("pm", color.code));
     cardQuery.selectedRarities.forEach((rarity: string) => params.append("rar", rarity));
-    cardQuery.selectedSets.forEach((setId: number) => params.append("set", setId.toString()));
+    cardQuery.selectedSets.forEach((set: MtgSetDto) => params.append("set", set.id.toString()));
+    cardQuery.selectedSubTypes.forEach((type: string) => params.append("sub", type));
+    cardQuery.selectedSuperTypes.forEach((type: string) => params.append("sup", type));
+    cardQuery.selectedTypes.forEach((type: string) => params.append("ty", type));
     cardQuery.selectedToughnesses.forEach((toughness: string) => params.append("tn", toughness));
     // TODO  cardnames, and wordbank catalogs
     if (params.size > 0) {

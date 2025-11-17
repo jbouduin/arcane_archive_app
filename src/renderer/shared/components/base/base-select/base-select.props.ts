@@ -1,11 +1,14 @@
 import { Props } from "@blueprintjs/core";
 import { SelectOption } from "../../../types";
 
-export interface BaseSelectProps<T extends string> extends Props {
+export interface BaseSelectProps<T> extends Props {
   allItems: Array<SelectOption<T>>;
-  label: string;
+  formGroupLabel: string;
+  selectedItems: Array<SelectOption<T>>;
+
+  itemLabel?: (option: SelectOption<T>) => string;
   onClearOptions: () => void;
   onOptionAdded: (option: SelectOption<T>) => void;
   onOptionRemoved: (option: SelectOption<T>) => void;
-  selectedItems: Array<SelectOption<T>>;
+  preTextElement?: (option: SelectOption<T>) => React.ReactNode;
 }

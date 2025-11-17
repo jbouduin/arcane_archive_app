@@ -6,6 +6,9 @@ import { SelectOption } from "../../../types";
 import { HighlightText } from "../highlight-text/highlight-text";
 import { BaseServerSelectProps } from "./base-server-select.props";
 
+/**
+ * A multi select component that retrieves items from the server
+ */
 export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
   // #region State ------------------------------------------------------------
   const [items, setItems] = React.useState(new Array<SelectOption<T>>());
@@ -54,28 +57,28 @@ export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
 
   // #region Rendering --------------------------------------------------------
   return (
-    <FormGroup
-      key={props.keyString}
-      label={props.label}
-    >
-      <MultiSelect<SelectOption<T>>
-        initialContent={null}
-        // itemListPredicate={itemListPredicate}
-        itemPredicate={filterOption}
-        itemRenderer={(item: SelectOption<T>, itemProps: ItemRendererProps) => itemRenderer(item, itemProps)}
-        items={items}
+    <div className="layout-isolation">
+      <FormGroup
         key={props.keyString}
-        noResults={<MenuItem disabled={true} roleStructure="listoption" text="No results." />}
-        onClear={props.onClearSelectedItems}
-        onItemSelect={(item: SelectOption<T>) => onSelect(item)}
-        onQueryChange={onQueryChange}
-        onRemove={props.onItemRemoved}
-        popoverProps={{ matchTargetWidth: true, minimal: true }}
-        resetOnSelect={true}
-        selectedItems={props.selectedItems}
-        tagRenderer={tagRenderer}
-      />
-    </FormGroup>
+        label={props.label}
+      >
+        <MultiSelect<SelectOption<T>>
+          initialContent={null}
+          itemRenderer={(item: SelectOption<T>, itemProps: ItemRendererProps) => itemRenderer(item, itemProps)}
+          items={items}
+          key={props.keyString}
+          noResults={<MenuItem disabled={true} roleStructure="listoption" text="No results." />}
+          onClear={props.onClearSelectedItems}
+          onItemSelect={(item: SelectOption<T>) => onSelect(item)}
+          onQueryChange={onQueryChange}
+          onRemove={props.onItemRemoved}
+          popoverProps={{ matchTargetWidth: true, minimal: true }}
+          resetOnSelect={true}
+          selectedItems={props.selectedItems}
+          tagRenderer={tagRenderer}
+        />
+      </FormGroup>
+    </div>
   );
 
   function itemRenderer(item: SelectOption<T>, itemProps: ItemRendererProps): React.JSX.Element | null {
@@ -113,17 +116,6 @@ export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
   // #endregion
 
   // #region Auxiliary methods ------------------------------------------------
-  function filterOption(query: string, item: SelectOption<T>, _index?: number, exactMatch?: boolean): boolean {
-    const normalizedTitle = item.label.toLowerCase();
-    const normalizedQuery = query.toLowerCase();
-
-    if (exactMatch) {
-      return normalizedTitle === normalizedQuery;
-    } else {
-      return normalizedTitle.indexOf(normalizedQuery) >= 0;
-    }
-  }
-
   function onQueryChange(query: string, _event?: React.ChangeEvent<HTMLInputElement>): void {
     setQueryString(query);
   }

@@ -5,8 +5,6 @@ function escapeRegExpChars(text: string) {
   return text.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }
 
-// BUG if the toHighlight occurs multiple times in text, things got repeated
-// TODO check if we can return blueprint/text with children and intent for highlighted text
 export function HighlightText(props: HighlightTextProps): Array<React.ReactNode> {
   let lastIndex = 0;
   const words = props.toHighlight
@@ -19,6 +17,7 @@ export function HighlightText(props: HighlightTextProps): Array<React.ReactNode>
   const regexp = new RegExp(words.join("|"), "gi");
   const tokens = new Array<React.ReactNode>();
   let continueSearch = true;
+  let rest: string | undefined = undefined;
   while (continueSearch) {
     const match = regexp.exec(props.fullText);
     if (!match) {
@@ -31,11 +30,11 @@ export function HighlightText(props: HighlightTextProps): Array<React.ReactNode>
       }
       lastIndex = regexp.lastIndex;
       tokens.push(<b key={lastIndex}>{match[0]}</b>);
-      const rest = props.fullText.slice(lastIndex);
-      if (rest.length > 0) {
-        tokens.push(rest);
-      }
+      rest = props.fullText.slice(lastIndex);
     }
+  }
+  if (rest && rest.length > 0) {
+    tokens.push(rest);
   }
   return tokens;
 }

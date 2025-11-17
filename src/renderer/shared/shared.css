@@ -154,3 +154,8 @@ img.rotate-180 {
 .paging-view {
   flex: 0 1 auto;
 }
+
+.layout-isolation {
+  position: relative;
+  /* overflow: hidden; */
+}

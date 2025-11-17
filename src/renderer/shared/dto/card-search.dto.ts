@@ -1,4 +1,5 @@
 import { ColorDto } from "./color.dto";
+import { MtgSetDto } from "./mtg-set.dto";
 
 export type CardSearchDto = {
   selectedAbilities: Array<string>;
@@ -10,7 +11,7 @@ export type CardSearchDto = {
   selectedProducedManaColors: Array<ColorDto>;
   selectedPowers: Array<string>;
   selectedRarities: Array<string>;
-  selectedSets: Array<number>;
+  selectedSets: Array<MtgSetDto>;
   selectedSubTypes: Array<string>;
   selectedSuperTypes: Array<string>;
   selectedToughnesses: Array<string>;

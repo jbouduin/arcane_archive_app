@@ -1,14 +1,14 @@
 import React from "react";
 import { Mosaic, MosaicNode } from "react-mosaic-component";
-import { CardQueryParamsDto, ColorDto } from "../../../shared/dto";
+import { SortDirection } from "../../../shared/components/base/base-table";
+import { CardQueryParamsDto, ColorDto, MtgSetDto } from "../../../shared/dto";
+import { CardSearchDto } from "../../../shared/dto/card-search.dto";
+import { CardSortField } from "../../../shared/types";
+import { MtgSetTreeViewmodel } from "../../../shared/viewmodel";
 import { LibraryViewCenter } from "./library-view-center/library-view-center";
 import { LibraryViewLeft } from "./library-view-left/library-view-left";
 import { LibraryViewRight } from "./library-view-right/library-view-right";
 import { LibraryViewProps } from "./library-view.props";
-import { SortDirection } from "../../../shared/components/base/base-table";
-import { CardSortField } from "../../../shared/types";
-import { MtgSetTreeViewmodel } from "../../../shared/viewmodel";
-import { CardSearchDto } from "../../../shared/dto/card-search.dto";
 
 export function LibraryView(props: LibraryViewProps) {
   // #region State ------------------------------------------------------------
@@ -37,7 +37,7 @@ export function LibraryView(props: LibraryViewProps) {
       selectedProducedManaColors: new Array<ColorDto>(),
       selectedPowers: new Array<string>(),
       selectedRarities: new Array<string>(),
-      selectedSets: new Array<number>(),
+      selectedSets: new Array<MtgSetDto>(),
       selectedSubTypes: new Array<string>(),
       selectedSuperTypes: new Array<string>(),
       selectedToughnesses: new Array<string>(),
@@ -61,7 +61,7 @@ export function LibraryView(props: LibraryViewProps) {
         initialCardSearchDto={initialCardQueryParams}
         onSetSelectionChanged={
           (selection: Array<MtgSetTreeViewmodel>) =>
-            setCardQueryDto(prev => ({ ...prev, selectedSets: selection.map((set: MtgSetTreeViewmodel) => set.id) }))
+            setCardQueryDto(prev => ({ ...prev, selectedSets: selection.map((set: MtgSetTreeViewmodel) => set.dto) }))
         }
         onAdvancedSearch={(cardSearch: CardSearchDto) => setCardQueryDto(prev => (({ ...prev, ...cardSearch })))}
       />

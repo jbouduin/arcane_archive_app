@@ -1,5 +1,6 @@
 import { noop } from "lodash";
-import { ColorDto } from "../../dto/color.dto";
+import { ColorDto } from "../../dto";
+import { SelectOption } from "../../types";
 import { ICollectionManagerProxyService, IColorService } from "../interface";
 
 export class ColorService implements IColorService {
@@ -19,6 +20,12 @@ export class ColorService implements IColorService {
 
   public getColor(colorCode: string): ColorDto | undefined {
     return this.colorMap.get(colorCode);
+  }
+
+  public getSelectOptions(): Array<SelectOption<ColorDto>> {
+    return Array.of(...this.colorMap.values())
+      .filter((c: ColorDto) => c.code != "UNKNOWN")
+      .map((c: ColorDto) => ({ label: c.name["ENGLISH"], value: c }));
   }
 
   public initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void> {

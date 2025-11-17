@@ -1,4 +1,5 @@
 import { Button } from "@blueprintjs/core";
+import classNames from "classnames";
 import { cloneDeep } from "lodash";
 import React from "react";
 import { useServices } from "../../../hooks/use-services";
@@ -7,17 +8,33 @@ import { SelectOption } from "../../types";
 import { CardSearchViewmodel } from "../../viewmodel";
 import { BaseSelect } from "../base/base-select/base-select";
 import { BaseServerSelect } from "../base/base-server-select/base-server-select";
+import { CardSymbolRenderer } from "../card-symbol-renderer";
 import { CardSearchViewProps } from "./card-search-view.props";
-import { CardSetSelect } from "./card-set-select/card-set-select";
-import { ColorSelect } from "./color-select/color-select";
 
 export function CardSearchView(props: CardSearchViewProps) {
   // #region State ------------------------------------------------------------
   const [searchViewmodel, setSearchViewmodel] = React.useState<CardSearchViewmodel>(new CardSearchViewmodel(props.initialCardSearchDto));
+  // due to issues with ResizeObserver (errors!) when scrolling open drop downs out of view, we have to force the dropdown to be closed when scrolling.
+  // In order to do so, we use scrollVersion and use it to re-render the selects
+  const [scrollVersion, setScrollVersion] = React.useState(0);
   // #endregion
 
   // #region Context ----------------------------------------------------------
   const serviceContainer = useServices();
+  // #endregion
+
+  // #region Effects ----------------------------------------------------------
+  React.useEffect(
+    () => {
+      const container = document.querySelector(".left-panel-search-panel");
+      const handleScroll = () => {
+        setScrollVersion(v => v + 1); // triggers re-render
+      };
+      container?.addEventListener("scroll", handleScroll);
+      return () => container?.removeEventListener("scroll", handleScroll);
+    },
+    []
+  );
   // #endregion
 
   // #region Event handling ---------------------------------------------------
@@ -29,29 +46,48 @@ export function CardSearchView(props: CardSearchViewProps) {
   // #endregion
 
   // #region Memo -------------------------------------------------------------
-  const allCardSets = React.useMemo(() => serviceContainer.mtgSetService.allSets, []);
-  const allColors = React.useMemo(() => serviceContainer.colorService.allColors.filter((c: ColorDto) => c.code != "UNKNOWN"), []);
+  const allCardSets = React.useMemo(() => serviceContainer.mtgSetService.getSelectOptions(), []);
+  const allColors = React.useMemo(() => serviceContainer.colorService.getSelectOptions(), []);
   const allRarities = React.useMemo(() => serviceContainer.displayValueService.getSelectOptions("rarity"), []);
   const allFormats = React.useMemo(() => serviceContainer.displayValueService.getSelectOptions("gameFormat"), []);
   const allCardTypes = React.useMemo(() => serviceContainer.cardSearchParamService.cardTypes, []);
   const allSuperTypes = React.useMemo(() => serviceContainer.cardSearchParamService.cardSuperTypes, []);
   const allPowers = React.useMemo(() => serviceContainer.cardSearchParamService.powerValues, []);
   const allToughnesses = React.useMemo(() => serviceContainer.cardSearchParamService.toughnessValues, []);
+  const setImageRenderer = React.useCallback(
+    (option: SelectOption<MtgSetDto>) => (
+      <i
+        key={`icon-${option.value.keyruneCode}`}
+        className={classNames("tree-view-image", "ss", "ss-" + option.value.keyruneCode.toLowerCase())}
+      >
+      </i>
+    ),
+    []
+  );
+  const colorSymbolRenderer = React.useCallback(
+    (option: SelectOption<ColorDto>) => (
+      <CardSymbolRenderer cardSymbols={[option.value.manaSymbol]} className="mana-cost-image-in-text" />
+    ),
+    []
+  );
   // #endregion
 
   // #region Rendering --------------------------------------------------------
   return (
     <div className="left-panel-search-panel">
-      <CardSetSelect
-        allCardSets={allCardSets}
-        key="card-set-select"
+      <BaseSelect<MtgSetDto>
+        allItems={allCardSets}
+        key={`card-set-select-${scrollVersion}`}
+        formGroupLabel="Set"
+        selectedItems={searchViewmodel.selectedSets}
         onClearOptions={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearCardSetSelection())}
-        onOptionAdded={(cardSet: MtgSetDto) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addCardSet(cardSet))}
-        onOptionRemoved={(cardSet: MtgSetDto) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeCardSet(cardSet))}
-        selectedCardSets={searchViewmodel.selectedSets}
+        onOptionAdded={(item: SelectOption<MtgSetDto>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addCardSet(item))}
+        onOptionRemoved={(item: SelectOption<MtgSetDto>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeCardSet(item))}
+        preTextElement={setImageRenderer}
+        itemLabel={(option: SelectOption<MtgSetDto>) => option.value.code}
       />
       <BaseServerSelect<string>
-        key="card-name-select"
+        key={`card-name-select-${scrollVersion}`}
         keyString="card-name-select"
         label="Card name"
         selectedItems={searchViewmodel.selectedCardNames}
@@ -62,37 +98,40 @@ export function CardSearchView(props: CardSearchViewProps) {
         onItemRemoved={(item: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeCardName(item))}
         onClearSelectedItems={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearCardNameSelection())}
       />
-      <ColorSelect
-        allColors={allColors}
-        colorType="card"
-        label="Card color"
+      <BaseSelect<ColorDto>
+        key={`card-color-select-${scrollVersion}`}
+        allItems={allColors}
+        formGroupLabel="Card color"
         onClearOptions={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearColorSelection("card"))}
-        onOptionAdded={(color: ColorDto) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addColor("card", color))}
-        onOptionRemoved={(color: ColorDto) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeColor("card", color))}
-        selectedColors={searchViewmodel.selectedCardColors}
+        onOptionAdded={(color: SelectOption<ColorDto>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addColor("card", color))}
+        onOptionRemoved={(color: SelectOption<ColorDto>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeColor("card", color))}
+        selectedItems={searchViewmodel.selectedCardColors}
+        preTextElement={colorSymbolRenderer}
       />
-      <ColorSelect
-        allColors={allColors}
-        colorType="produced_mana"
-        label="Produced mana color"
+      <BaseSelect<ColorDto>
+        key={`produced-mana-color-select-${scrollVersion}`}
+        allItems={allColors}
+        formGroupLabel="Produced mana color"
         onClearOptions={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearColorSelection("produced_mana"))}
-        onOptionAdded={(color: ColorDto) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addColor("produced_mana", color))}
-        onOptionRemoved={(color: ColorDto) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeColor("produced_mana", color))}
-        selectedColors={searchViewmodel.selectedProducedManaColors}
+        onOptionAdded={(color: SelectOption<ColorDto>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addColor("produced_mana", color))}
+        onOptionRemoved={(color: SelectOption<ColorDto>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeColor("produced_mana", color))}
+        selectedItems={searchViewmodel.selectedProducedManaColors}
+        preTextElement={colorSymbolRenderer}
       />
-      <ColorSelect
-        allColors={allColors}
-        colorType="identity"
-        label="Identity color"
+      <BaseSelect<ColorDto>
+        key={`identity-color-select-${scrollVersion}`}
+        allItems={allColors}
+        formGroupLabel="Identity color"
         onClearOptions={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearColorSelection("identity"))}
-        onOptionAdded={(color: ColorDto) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addColor("identity", color))}
-        onOptionRemoved={(color: ColorDto) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeColor("identity", color))}
-        selectedColors={searchViewmodel.selectedIdentityColors}
+        onOptionAdded={(color: SelectOption<ColorDto>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addColor("identity", color))}
+        onOptionRemoved={(color: SelectOption<ColorDto>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeColor("identity", color))}
+        selectedItems={searchViewmodel.selectedIdentityColors}
+        preTextElement={colorSymbolRenderer}
       />
       <BaseSelect<string>
         allItems={allRarities}
-        key="rarity-select"
-        label="Rarity"
+        key={`rarity-select-${scrollVersion}`}
+        formGroupLabel="Rarity"
         onClearOptions={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearRaritiesSelection())}
         onOptionAdded={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addRarity(option))}
         onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeRarity(option))}
@@ -100,8 +139,8 @@ export function CardSearchView(props: CardSearchViewProps) {
       />
       <BaseSelect<string>
         allItems={allFormats}
-        key="game-format-select"
-        label="Game Format"
+        key={`game-format-select-${scrollVersion}`}
+        formGroupLabel="Game Format"
         onClearOptions={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearGameFormatSelection())}
         onOptionAdded={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addGameFormat(option))}
         onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeGameFormat(option))}
@@ -109,8 +148,8 @@ export function CardSearchView(props: CardSearchViewProps) {
       />
       <BaseSelect<string>
         allItems={allCardTypes}
-        key="card-type-select"
-        label="Card type"
+        key={`card-type-select-${scrollVersion}`}
+        formGroupLabel="Card type"
         onClearOptions={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearCardTypeSelection())}
         onOptionAdded={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addCardType(option))}
         onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeCardType(option))}
@@ -118,33 +157,15 @@ export function CardSearchView(props: CardSearchViewProps) {
       />
       <BaseSelect<string>
         allItems={allSuperTypes}
-        key="super-type-select"
-        label="Super-type"
+        key={`super-type-select-${scrollVersion}`}
+        formGroupLabel="Super-type"
         onClearOptions={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearSuperTypeSelection())}
         onOptionAdded={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addSuperType(option))}
         onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeSuperType(option))}
         selectedItems={searchViewmodel.selectedSuperTypes}
       />
-      <BaseSelect<string>
-        allItems={allPowers}
-        key="power-select"
-        label="Power"
-        onClearOptions={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearPowerSelection())}
-        onOptionAdded={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addPower(option))}
-        onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removePower(option))}
-        selectedItems={searchViewmodel.selectedPowers}
-      />
-      <BaseSelect<string>
-        allItems={allToughnesses}
-        key="toughness-select"
-        label="Toughness"
-        onClearOptions={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearToughnessSelection())}
-        onOptionAdded={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addToughness(option))}
-        onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeToughness(option))}
-        selectedItems={searchViewmodel.selectedToughnesses}
-      />
       <BaseServerSelect<string>
-        key="card-sub-type-select"
+        key={`card-sub-type-select-${scrollVersion}`}
         keyString="card-sub-type-select"
         label="Sub-type"
         selectedItems={searchViewmodel.selectedSubTypes}
@@ -155,8 +176,26 @@ export function CardSearchView(props: CardSearchViewProps) {
         onItemRemoved={(item: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeSubType(item))}
         onClearSelectedItems={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearSubTypeSelection())}
       />
+      <BaseSelect<string>
+        allItems={allPowers}
+        key={`power-select-${scrollVersion}`}
+        formGroupLabel="Power"
+        onClearOptions={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearPowerSelection())}
+        onOptionAdded={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addPower(option))}
+        onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removePower(option))}
+        selectedItems={searchViewmodel.selectedPowers}
+      />
+      <BaseSelect<string>
+        allItems={allToughnesses}
+        key={`toughness-select-${scrollVersion}`}
+        formGroupLabel="Toughness"
+        onClearOptions={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearToughnessSelection())}
+        onOptionAdded={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addToughness(option))}
+        onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeToughness(option))}
+        selectedItems={searchViewmodel.selectedToughnesses}
+      />
       <BaseServerSelect<string>
-        key="ability-key-word-select"
+        key={`ability-key-word-select-${scrollVersion}`}
         keyString="ability-key-word-select"
         label="Ability"
         selectedItems={searchViewmodel.selectedAbilities}
@@ -168,7 +207,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         onClearSelectedItems={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearAbilitySelection())}
       />
       <BaseServerSelect<string>
-        key="action-key-word-select"
+        key={`action-key-word-select-${scrollVersion}`}
         keyString="action-key-word-select"
         label="Action"
         selectedItems={searchViewmodel.selectedActions}

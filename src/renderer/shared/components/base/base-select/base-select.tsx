@@ -5,16 +5,11 @@ import { SelectOption } from "../../../types";
 import { HighlightText } from "../highlight-text/highlight-text";
 import { BaseSelectProps } from "./base-select.props";
 
-export function BaseSelect<T extends string>(props: BaseSelectProps<T>) {
+/**
+ * A multi select component that uses a static (cached) list of items
+ */
+export function BaseSelect<T>(props: BaseSelectProps<T>) {
   // #region Event handling ----------------------------------------------------
-  function onClear(): void {
-    props.onClearOptions();
-  }
-
-  function onRemove(item: SelectOption<T>): void {
-    props.onOptionRemoved(item);
-  }
-
   function onSelect(item: SelectOption<T>): void {
     const indexOfSelected = props.selectedItems.findIndex((value: SelectOption<T>) => value.value == item.value);
     if (indexOfSelected >= 0) {
@@ -27,26 +22,36 @@ export function BaseSelect<T extends string>(props: BaseSelectProps<T>) {
 
   // #region Rendering --------------------------------------------------------
   return (
-    <FormGroup
-      key={props.label}
-      label={props.label}
-    >
-      <MultiSelect<SelectOption<T>>
-        initialContent={null}
-        itemPredicate={filterOption}
-        itemRenderer={(item: SelectOption<T>, itemProps: ItemRendererProps) => itemRenderer(item, itemProps)}
-        items={props.allItems}
-        key={props.label}
-        noResults={<MenuItem disabled={true} roleStructure="listoption" text="No results." />}
-        onClear={() => onClear()}
-        onItemSelect={(item: SelectOption<T>) => onSelect(item)}
-        onRemove={(item: SelectOption<T>) => onRemove(item)}
-        popoverProps={{ matchTargetWidth: true, minimal: true }}
-        resetOnSelect={true}
-        selectedItems={props.selectedItems}
-        tagRenderer={(item: SelectOption<T>) => tagRenderer(item)}
-      />
-    </FormGroup>
+    <div className="layout-isolation">
+      <FormGroup
+        key={props.formGroupLabel}
+        label={props.formGroupLabel}
+      >
+        <MultiSelect<SelectOption<T>>
+          initialContent={null}
+          itemListPredicate={filterOptionList}
+          itemRenderer={(item: SelectOption<T>, itemProps: ItemRendererProps) => itemRenderer(item, itemProps)}
+          items={props.allItems}
+          key={props.formGroupLabel}
+          noResults={<MenuItem disabled={true} roleStructure="listoption" text="No results." />}
+          onClear={props.onClearOptions}
+          onItemSelect={(item: SelectOption<T>) => onSelect(item)}
+          onRemove={props.onOptionRemoved}
+          popoverProps={{
+            matchTargetWidth: true,
+            minimal: true,
+            modifiers: {
+              eventListeners: {
+                enabled: false
+              }
+            }
+          }}
+          resetOnSelect={true}
+          selectedItems={props.selectedItems}
+          tagRenderer={(item: SelectOption<T>) => tagRenderer(item)}
+        />
+      </FormGroup>
+    </div>
   );
 
   function itemRenderer(item: SelectOption<T>, itemProps: ItemRendererProps): React.JSX.Element | null {
@@ -57,7 +62,8 @@ export function BaseSelect<T extends string>(props: BaseSelectProps<T>) {
       <MenuItem
         active={itemProps.modifiers.active}
         disabled={itemProps.modifiers.disabled}
-        key={item.value}
+        key={item.label}
+        label={props.itemLabel?.(item)}
         onClick={itemProps.handleClick}
         onFocus={itemProps.handleFocus}
         ref={itemProps.ref}
@@ -65,7 +71,8 @@ export function BaseSelect<T extends string>(props: BaseSelectProps<T>) {
         selected={props.selectedItems.includes(item)}
         shouldDismissPopover={false}
         text={(
-          <div>
+          <div style={{ display: "flex" }}>
+            {props.preTextElement?.(item)}
             <HighlightText fullText={item.label} toHighlight={itemProps.query} />
           </div>
         )}
@@ -75,7 +82,8 @@ export function BaseSelect<T extends string>(props: BaseSelectProps<T>) {
 
   function tagRenderer(item: SelectOption<T>): React.ReactNode {
     return (
-      <div key={item.value}>
+      <div key={item.label} style={{ display: "flex" }}>
+        {props.preTextElement?.(item)}
         {item.label}
       </div>
     );
@@ -83,15 +91,11 @@ export function BaseSelect<T extends string>(props: BaseSelectProps<T>) {
   // #endregion
 
   // #region Auxiliary methods ------------------------------------------------
-  function filterOption(query: string, item: SelectOption<T>, index?: number, exactMatch?: boolean): boolean {
-    const normalizedTitle = item.label.toLowerCase();
+  function filterOptionList(query: string, items: Array<SelectOption<T>>): Array<SelectOption<T>> {
     const normalizedQuery = query.toLowerCase();
-
-    if (exactMatch) {
-      return normalizedTitle === normalizedQuery;
-    } else {
-      return normalizedTitle.indexOf(normalizedQuery) >= 0;
-    }
+    return items
+      .filter(item => item.label.toLowerCase().includes(normalizedQuery))
+      .slice(0, 20);
   }
   // #endregion
 }
