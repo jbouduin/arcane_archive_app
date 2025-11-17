@@ -1,4 +1,4 @@
-export type DisplayValueDictionaryKey = "colorType" | "frame" | "frameEffect" | "game" | "gameFormat" | "landType" | "layout" | "legality" | "promoType" | "rarity" | "scryfallImageStauts" | "securityStamp" | "setType";
+export type DisplayValueDictionaryKey = "colorType" | "frame" | "frameEffect" | "game" | "gameFormat" | "landType" | "layout" | "legality" | "promoType" | "rarity" | "scryfallImageStatus" | "securityStamp" | "setType";
 
 export const DISPLAY_VALUE_DICTIONARY_KEYS: DisplayValueDictionaryKey[] = [
   "colorType",
@@ -11,7 +11,7 @@ export const DISPLAY_VALUE_DICTIONARY_KEYS: DisplayValueDictionaryKey[] = [
   "legality",
   "promoType",
   "rarity",
-  "scryfallImageStauts",
+  "scryfallImageStatus",
   "securityStamp",
   "setType"
 ];

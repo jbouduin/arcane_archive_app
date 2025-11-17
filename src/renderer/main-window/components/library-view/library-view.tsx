@@ -1,6 +1,6 @@
 import React from "react";
 import { Mosaic, MosaicNode } from "react-mosaic-component";
-import { CardQueryParamsDto } from "../../../shared/dto";
+import { CardQueryParamsDto, ColorDto } from "../../../shared/dto";
 import { LibraryViewCenter } from "./library-view-center/library-view-center";
 import { LibraryViewLeft } from "./library-view-left/library-view-left";
 import { LibraryViewRight } from "./library-view-right/library-view-right";
@@ -8,6 +8,7 @@ import { LibraryViewProps } from "./library-view.props";
 import { SortDirection } from "../../../shared/components/base/base-table";
 import { CardSortField } from "../../../shared/types";
 import { MtgSetTreeViewmodel } from "../../../shared/viewmodel";
+import { CardSearchDto } from "../../../shared/dto/card-search.dto";
 
 export function LibraryView(props: LibraryViewProps) {
   // #region State ------------------------------------------------------------
@@ -21,8 +22,31 @@ export function LibraryView(props: LibraryViewProps) {
     },
     splitPercentage: 20,
   };
+  const initialCardQueryParams: CardQueryParamsDto = React.useMemo(
+    () => ({
+      pageNumber: 0,
+      pageSize: 100,
+      sortField: "collectorNumberSortValue",
+      sortDirection: "ASC",
+      selectedAbilities: new Array<string>(),
+      selectedActions: new Array<string>(),
+      selectedCardColors: new Array<ColorDto>(),
+      selectedCardNames: new Array<string>(),
+      selectedGameFormats: new Array<string>(),
+      selectedIdentityColors: new Array<ColorDto>(),
+      selectedProducedManaColors: new Array<ColorDto>(),
+      selectedPowers: new Array<string>(),
+      selectedRarities: new Array<string>(),
+      selectedSets: new Array<number>(),
+      selectedSubTypes: new Array<string>(),
+      selectedSuperTypes: new Array<string>(),
+      selectedToughnesses: new Array<string>(),
+      selectedTypes: new Array<string>()
+    }),
+    []
+  );
   const [mosaicLayout, setMosaicLayout] = React.useState<MosaicNode<string>>(initialLayout);
-  const [cardQueryDto, setCardQueryDto] = React.useState<CardQueryParamsDto>({ pageNumber: 0, pageSize: 100, sortField: "collectorNumberSortValue", sortDirection: "ASC" });
+  const [cardQueryDto, setCardQueryDto] = React.useState<CardQueryParamsDto>(initialCardQueryParams);
   const [selectedCard, setSelectedCard] = React.useState<number | null>(null);
   // #endregion
 
@@ -32,7 +56,16 @@ export function LibraryView(props: LibraryViewProps) {
 
   // #region Rendering --------------------------------------------------------
   const elementMap: { [viewId: string]: React.JSX.Element; } = React.useMemo(() => ({
-    a: <LibraryViewLeft onSelectionChanged={(selection: Array<MtgSetTreeViewmodel>) => setCardQueryDto(prev => ({ ...prev, selectedSets: selection.map((set: MtgSetTreeViewmodel) => set.id) }))} />,
+    a: (
+      <LibraryViewLeft
+        initialCardSearchDto={initialCardQueryParams}
+        onSetSelectionChanged={
+          (selection: Array<MtgSetTreeViewmodel>) =>
+            setCardQueryDto(prev => ({ ...prev, selectedSets: selection.map((set: MtgSetTreeViewmodel) => set.id) }))
+        }
+        onAdvancedSearch={(cardSearch: CardSearchDto) => setCardQueryDto(prev => (({ ...prev, ...cardSearch })))}
+      />
+    ),
     b: (
       <LibraryViewCenter
         cardQuery={cardQueryDto}

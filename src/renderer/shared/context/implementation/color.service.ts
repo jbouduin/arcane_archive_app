@@ -13,6 +13,10 @@ export class ColorService implements IColorService {
   }
 
   // #region IColorService Members --------------------------------------------
+  public get allColors(): Array<ColorDto> {
+    return Array.of(...this.colorMap.values());
+  }
+
   public getColor(colorCode: string): ColorDto | undefined {
     return this.colorMap.get(colorCode);
   }

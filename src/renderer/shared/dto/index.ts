@@ -1,4 +1,5 @@
 export * from "./card-query-params.dto";
+export * from "./color.dto";
 export * from "./language.dto";
 export * from "./library-card-list.dto";
 export * from "./library-card.dto";

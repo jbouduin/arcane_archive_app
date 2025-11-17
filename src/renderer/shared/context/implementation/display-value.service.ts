@@ -1,5 +1,5 @@
 import { noop } from "lodash";
-import { DISPLAY_VALUE_DICTIONARY_KEYS, DisplayValueDictionaryKey } from "../../types";
+import { DISPLAY_VALUE_DICTIONARY_KEYS, DisplayValueDictionaryKey, SelectOption } from "../../types";
 import { ICollectionManagerProxyService, IDisplayValueService } from "../interface";
 
 export class DisplayValueService implements IDisplayValueService {
@@ -23,16 +23,24 @@ export class DisplayValueService implements IDisplayValueService {
     return result || "[" + value + "]";
   }
 
+  public getSelectOptions(key: DisplayValueDictionaryKey): Array<SelectOption<string>> {
+    const result: Array<SelectOption<string>> = new Array<SelectOption<string>>();
+    this.dictionary.get(key)?.forEach((value: string, key: string) => result.push({ label: value, value: key }));
+    return result;
+  }
+
   public initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void> {
     return collectionManagerProxy.getData("/dictionary")
       .then(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (data: any) => {
           const dictData = new Map<DisplayValueDictionaryKey, Map<string, string>>();
           DISPLAY_VALUE_DICTIONARY_KEYS.forEach((key) => {
             const entry = data[key];
             if (entry) {
-              dictData.set(key, new Map(Object.entries(entry)));
+              // --- sort by display value ---
+              const asArray = Object.entries<string>(entry).sort((a, b) => a[1].localeCompare(b[1]));
+              dictData.set(key, new Map(asArray));
             }
           });
           this.dictionary = dictData;

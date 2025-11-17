@@ -12,6 +12,7 @@ import { ViewmodelFactoryService } from "../shared/context/implementation/viewmo
 import { ConfigurationViewModel } from "../shared/viewmodel";
 import { FirstTimeView } from "./first-time-view/first-time-view";
 import { CollectionManagerProxyService } from "../shared/context/implementation/collection-manage-proxy.service";
+import { CardSearchParamService } from "../shared/context/implementation/card-search-param.service";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -42,6 +43,7 @@ void (async () => {
 
       if (configurationViewmodel) {
         const serviceContainer: IServiceContainer = {
+          cardSearchParamService: new CardSearchParamService(),
           cardSymbolService: new CardSymbolService(),
           collectionManagerProxy: new CollectionManagerProxyService(),
           colorService: new ColorService(),

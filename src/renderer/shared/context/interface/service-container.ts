@@ -1,12 +1,22 @@
 import { ToastProps } from "@blueprintjs/core";
-import { ICollectionManagerProxyService, IColorService, IConfigurationService, IDisplayValueService, IIpcProxyService, ILanguageService } from ".";
 import { ConfigurationDto as _ConfigurationDto } from "../../../../common/dto";
 import { LanguageDto as _LanguageDto, MtgSetDto as _MtgSetDto } from "../../dto";
+import { ICardSearchParamService } from "./card-search-param.service";
 import { ICardSymbolService } from "./card-symbol.service";
+import { ICollectionManagerProxyService } from "./collection-manage-proxy.service";
+import { IColorService } from "./color.service";
+import { IConfigurationService } from "./configuration.service";
+import { IDisplayValueService } from "./display-value.service";
+import { IIpcProxyService } from "./ipc-proxy.service";
+import { ILanguageService } from "./language.service";
 import { IMtgSetService } from "./mtg-set.service";
 import { IViewmodelFactoryService } from "./viewmodel-factory.service";
 
 export interface IServiceContainer {
+  /**
+   * Service that caches card search params
+   */
+  readonly cardSearchParamService: ICardSearchParamService;
   /**
    * Service that caches the card symbol svg's
    */

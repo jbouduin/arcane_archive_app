@@ -5,7 +5,15 @@ import { CardQueryParamsDto, LibraryCardListDto, QueryResultDto } from "../../dt
 export interface ICollectionManagerProxyService {
   readonly logServerResponses: boolean;
 
+  /**
+   * Query cards
+   * @param cardQuery the query parameters
+   */
   getCards(cardQuery: CardQueryParamsDto): Promise<QueryResultDto<LibraryCardListDto>>;
+  /**
+   * Fetch data from backend
+   * @param path the path
+   */
   getData<T extends object>(path: string): Promise<T>;
   initialize(
     configuration: ConfigurationDto,

@@ -1,3 +1,4 @@
+export * from "./card-search-param.service";
 export * from "./card-symbol.service";
 export * from "./collection-manage-proxy.service";
 export * from "./color.service";

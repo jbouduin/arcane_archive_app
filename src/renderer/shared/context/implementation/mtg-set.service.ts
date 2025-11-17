@@ -15,7 +15,7 @@ export class MtgSetService implements IMtgSetService {
   // #endregion
 
   // #region IMtgSetService Members -------------------------------------------
-  public get allSets(): Readonly<Array<MtgSetDto>> {
+  public get allSets(): Array<MtgSetDto> {
     return Array.of(...this.setMap.values());
   }
 
