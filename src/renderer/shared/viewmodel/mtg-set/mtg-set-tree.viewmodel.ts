@@ -42,6 +42,9 @@ export class MtgSetTreeViewmodel implements IBaseTreeNodeViewmodel {
     return this._dto.keyruneCode;
   }
 
+  public get code(): string {
+    return this._dto.code;
+  }
   public get dto(): MtgSetDto {
     return this._dto;
   }

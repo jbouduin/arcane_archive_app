@@ -19,4 +19,5 @@ export interface ICollectionManagerProxyService {
     configuration: ConfigurationDto,
     showToast: (props: ToastProps, key?: string) => void
   ): void;
+  postData<Req extends object, Res extends object>(path: string, data: Req): Promise<Res>;
 }

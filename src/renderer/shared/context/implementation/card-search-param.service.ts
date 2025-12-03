@@ -38,10 +38,10 @@ export class CardSearchParamService implements ICardSearchParamService {
 
   public initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void> {
     return Promise.all([
-      collectionManagerProxy.getData<Array<string>>("card-super-type"),
-      collectionManagerProxy.getData<Array<string>>("card-type"),
-      collectionManagerProxy.getData<Array<string>>("catalog/POWERS/item"),
-      collectionManagerProxy.getData<Array<string>>("catalog/TOUGHNESSES/item")])
+      collectionManagerProxy.getData<Array<string>>("/public/card-super-type"),
+      collectionManagerProxy.getData<Array<string>>("/public/card-type"),
+      collectionManagerProxy.getData<Array<string>>("/public/catalog/POWERS/item"),
+      collectionManagerProxy.getData<Array<string>>("/public/catalog/TOUGHNESSES/item")])
       .then(
         (r: [Array<string>, Array<string>, Array<string>, Array<string>]) => {
           this._cardSuperTypes = r[0].sort().map((s: string) => ({ label: s, value: s }));

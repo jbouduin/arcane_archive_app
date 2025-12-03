@@ -10,3 +10,5 @@ export * from "./library-legality";
 export * from "./library-ruling.dto";
 export * from "./mtg-set.dto";
 export * from "./query-result.dto";
+export * from "./sync-param.dto";
+export * from "./sync-task-param.dto";

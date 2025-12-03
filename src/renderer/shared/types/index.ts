@@ -7,3 +7,5 @@ export * from "./external-reference-source";
 export * from "./rotation-class";
 export * from "./scryfall-language-map";
 export * from "./select-option";
+export * from "./sync-task-mode";
+export * from "./sync-task-target";

@@ -9,6 +9,7 @@ import { MtgSetTreeViewmodel } from "../../viewmodel/mtg-set/mtg-set-tree.viewmo
 import { BaseTreeView, BaseTreeViewProps } from "../base/base-tree-view";
 import { HeaderView } from "./header-view";
 import { SetTreeViewProps } from "./set-tree-view.props";
+import { SyncParamDto } from "../../dto";
 
 const Treeview = React.memo(
   BaseTreeView<MtgSetTreeViewmodel, MtgSetTreeConfigurationViewmodel>,
@@ -82,6 +83,23 @@ export function SetTreeView(props: SetTreeViewProps) {
     } else {
       return result;
     }
+  }
+
+  function synchronizeSet(setCode: string) {
+    const postData: SyncParamDto = {
+      tasks: [
+        {
+          target: "CARDS_OF_CARD_SET",
+          subTarget: setCode,
+          mode: "NORMAL",
+          dumpData: true
+        }
+      ],
+      allScryfallCatalogs: "SKIP",
+      allCardSets: "SKIP"
+    }
+    void serviceContainer.collectionManagerProxy.postData("/admin/synchronization/partial",postData)
+      // .then()
   }
   // #endregion
 
@@ -200,7 +218,7 @@ export function SetTreeView(props: SetTreeViewProps) {
                   onClick={
                     (e) => {
                       e.preventDefault();
-                      // synchronizeSet(cardSet.setCode);
+                      synchronizeSet(cardSet.code);
                     }
                   }
                   text="Synchronize cards"

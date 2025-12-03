@@ -23,7 +23,7 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
   }
 
   public getCards(cardQuery: CardQueryParamsDto): Promise<QueryResultDto<LibraryCardListDto>> {
-    const path = "/card/list";
+    const path = "/public/card/list";
     const params = new URLSearchParams();
     cardQuery.selectedAbilities.forEach((ability: string) => params.append("kw", ability));
     cardQuery.selectedActions.forEach((action: string) => params.append("kw", action));
@@ -77,6 +77,28 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
     this._logServerResponses = configuration.rendererConfiguration.logServerResponses;
     this.showToast = showToast;
     this.mtgCollectionApiRoot = configuration.apiConfiguration.mtgCollectionApiRoot;
+  }
+
+  public postData<Req extends object, Res extends object>(path: string, data: Req): Promise<Res> {
+    if (!path.startsWith("/")) {
+      path = "/" + path;
+    }
+    const headers = {
+      "accept": "application/json",
+      "Content-Type": "application/json"
+    };
+    return fetch(this.mtgCollectionApiRoot + path, { method: "POST", body: JSON.stringify(data), headers: headers })
+      .then(
+        async (response: Response) => {
+          const resultDto: ResultDto<Res> = (await response.json()) as ResultDto<Res>;
+          if (response.status >= 400) {
+            return this.processErrorResponse(path, resultDto);
+          } else {
+            return this.processSuccessResponse(path, resultDto);
+          }
+        },
+        (reason: Error) => this.processRejection(path, reason)
+      );
   }
   // #endregion
 

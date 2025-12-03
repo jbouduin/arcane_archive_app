@@ -35,7 +35,7 @@ export class CardSymbolService extends BaseService implements ICardSymbolService
   // #region ICardSymbolService Members ---------------------------------------
   public async getCardSymbolSvg(): Promise<IResult<Map<string, string>>> {
     const result = new Map<string, string>();
-    const cardSymbols = await this.mtgCollectionClient.getData<Array<CardSymbolDto>>("/card-symbol");
+    const cardSymbols = await this.mtgCollectionClient.getData<Array<CardSymbolDto>>("/public/card-symbol");
     cardSymbols.data.forEach((cardSymbol: CardSymbolDto) => {
       const pathToFile = this.calculatedSymbolFileName(cardSymbol);
       if (existsSync(pathToFile)) {
@@ -54,7 +54,7 @@ export class CardSymbolService extends BaseService implements ICardSymbolService
 
   public async cacheImages(_callBack: ProgressCallback): Promise<void> {
     this.checkCacheDirectory();
-    const cardSymbols = await this.mtgCollectionClient.getData<Array<CardSymbolDto>>("/card-symbol");
+    const cardSymbols = await this.mtgCollectionClient.getData<Array<CardSymbolDto>>("/public/card-symbol");
     await Promise.all(cardSymbols.data.map(async (cardSymbol: CardSymbolDto) => {
       const pathToFile = this.calculatedSymbolFileName(cardSymbol);
       await this.scryfallClient.fetchArrayBuffer(cardSymbol.svgUri)

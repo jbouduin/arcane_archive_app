@@ -28,7 +28,7 @@ export function CardDetailView(props: CardDetailViewProps) {
   React.useEffect(
     () => {
       if (props.cardId) {
-        void serviceContainer.collectionManagerProxy.getData<LibraryCardDto>("/card/" + props.cardId)
+        void serviceContainer.collectionManagerProxy.getData<LibraryCardDto>("/public/card/" + props.cardId)
           .then(
             (dto: LibraryCardDto) => {
               const viewmodel: LibraryCardViewmodel = serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getMtgCardDetailViewmodel(dto);

@@ -1,0 +1,1 @@
+export type SyncTaskMode = "NORMAL" | "FORCE" | "SKIP" | "DRY_RUN";

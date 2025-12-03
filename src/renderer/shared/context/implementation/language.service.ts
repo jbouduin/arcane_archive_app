@@ -23,7 +23,7 @@ export class LanguageService implements ILanguageService {
   }
 
   public initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void> {
-    return collectionManagerProxy.getData<Array<LanguageDto>>("/languages/mtg")
+    return collectionManagerProxy.getData<Array<LanguageDto>>("/public/languages/mtg")
       .then(
         (allLanguages: Array<LanguageDto>) => allLanguages
           .sort((a: LanguageDto, b: LanguageDto) => a.sequence - b.sequence)

@@ -91,7 +91,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         keyString="card-name-select"
         label="Card name"
         selectedItems={searchViewmodel.selectedCardNames}
-        serverBaseUrl="catalog/CARD_NAMES/item"
+        serverBaseUrl="/public/catalog/CARD_NAMES/item"
         itemSort={(a: string, b: string) => a.localeCompare(b)}
         itemLabel={(item: string) => item}
         onItemAdded={(item: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addCardName(item))}
@@ -169,7 +169,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         keyString="card-sub-type-select"
         label="Sub-type"
         selectedItems={searchViewmodel.selectedSubTypes}
-        serverBaseUrl="card-sub-type"
+        serverBaseUrl="/public/card-sub-type"
         itemSort={(a: string, b: string) => a.localeCompare(b)}
         itemLabel={(item: string) => item}
         onItemAdded={(item: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addSubType(item))}
@@ -199,7 +199,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         keyString="ability-key-word-select"
         label="Ability"
         selectedItems={searchViewmodel.selectedAbilities}
-        serverBaseUrl="catalog/KEYWORD_ABILITIES/item"
+        serverBaseUrl="/public/catalog/KEYWORD_ABILITIES/item"
         itemSort={(a: string, b: string) => a.localeCompare(b)}
         itemLabel={(item: string) => item}
         onItemAdded={(item: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addAbility(item))}
@@ -211,7 +211,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         keyString="action-key-word-select"
         label="Action"
         selectedItems={searchViewmodel.selectedActions}
-        serverBaseUrl="catalog/KEYWORD_ACTIONS/item"
+        serverBaseUrl="/public/catalog/KEYWORD_ACTIONS/item"
         itemSort={(a: string, b: string) => a.localeCompare(b)}
         itemLabel={(item: string) => item}
         onItemAdded={(item: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addAction(item))}

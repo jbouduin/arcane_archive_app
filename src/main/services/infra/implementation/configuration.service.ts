@@ -107,7 +107,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
       scryfallCardBackRoot: "https://backs.scryfall.io",
       // Scryfall api requests 50-100 ms between calls, let's give it some slack
       scryfallMinimumRequestTimeout: 60,
-      mtgCollectionApiRoot: "http://localhost:5403/api/public"
+      mtgCollectionApiRoot: "http://localhost:5403/api"
     };
     return result;
   }

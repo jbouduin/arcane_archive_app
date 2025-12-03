@@ -250,28 +250,21 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
   }
 
   public clearCardSetSelection(): void {
-    this._dto.selectedSets.splice(0);
-    this._selectedSets.splice(0);
+    this.clearSelection(this._dto.selectedSets, this._selectedSets);
   }
   // #endregion
 
   // #region Subtypes ---------------------------------------------------------
   public addSubType(subtype: SelectOption<string>): void {
-    this._dto.selectedSubTypes.push();
-    this._selectedSubTypes.push(subtype);
-    this._selectedSubTypes.sort();
+    this.addSelectOption(this._dto.selectedSubTypes, this._selectedSubTypes, subtype);
   }
 
   public removeSubType(subtype: SelectOption<string>): void {
-    let idx = this._dto.selectedSubTypes.findIndex((s: string) => s == subtype.label);
-    this._dto.selectedSubTypes.splice(idx, 1);
-    idx = this._selectedSubTypes.indexOf(subtype);
-    this._selectedSubTypes.splice(idx, 1);
+    this.removeSelectOption(this._dto.selectedSubTypes, this._selectedSubTypes, subtype);
   }
 
   public clearSubTypeSelection(): void {
-    this._dto.selectedSubTypes.splice(0);
-    this._selectedSubTypes.splice(0);
+    this.clearSelection(this._dto.selectedSubTypes, this._selectedSubTypes);
   }
   // #endregion
 

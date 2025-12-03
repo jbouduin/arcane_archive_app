@@ -31,7 +31,7 @@ export class MtgSetService implements IMtgSetService {
   }
 
   public async initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void> {
-    return collectionManagerProxy.getData<Array<MtgSetDto>>("/mtg-set")
+    return collectionManagerProxy.getData<Array<MtgSetDto>>("/public/mtg-set")
       .then(
         (data: Array<MtgSetDto>) => data.forEach((set: MtgSetDto) => this.setMap.set(set.id, set)),
         noop
