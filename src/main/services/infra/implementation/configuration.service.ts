@@ -107,54 +107,11 @@ export class ConfigurationService extends BaseService implements IConfigurationS
       scryfallCardBackRoot: "https://backs.scryfall.io",
       // Scryfall api requests 50-100 ms between calls, let's give it some slack
       scryfallMinimumRequestTimeout: 60,
-      mtgCollectionApiRoot: "http://localhost:5403/api"
+      authenticationApiRoot: "http://localhost:5401/api",
+      mtgCollectionApiRoot: "http://localhost:5402/api"
     };
     return result;
   }
-  //   private createScryFallFactoryDefault(): IScryfallConfigurationDto {
-  //     const endpoints: Record<ScryfallEndpoint, string> = {
-  //       bulk: "bulk-data",
-  //       cards: "card/:id",
-  //       cardSet: "sets",
-  //       cardSymbol: "symbology",
-  //       catalog: "catalog",
-  //       collection: "cards/collection",
-  //       ruling: "cards/:id/rulings",
-  //       search: "cards/search"
-  //     };
-
-  //     const result: IScryfallConfigurationDto = {
-  //       cardBackRoot: ,
-  //       scryfallApiRoot: ,
-  //       scryfallEndpoints: endpoints,
-
-  //       // Scryfall api requests 50-100 ms between calls, let's give it some slack
-  //       minimumRequestTimeout: 60,
-  //       dumpRetrievedData: false,
-  //       // Scryfall api allows up to 75 per collection
-  //       collectionChunkSize: 50
-  //     };
-  //     return result;
-  //   }
-
-  //   private createSyncAtStartupFactoryDefault(): ISyncParamDto {
-  //     const result: ISyncParamDto = {
-  //       catalogTypesToSync: [],
-  //       bulkSyncUrl: undefined,
-  //       syncCardSymbols: false,
-  //       syncCardSets: false,
-  //       rulingSyncType: "none",
-  //       cardSyncType: "none",
-  //       cardSelectionToSync: [],
-  //       cardImageStatusToSync: [],
-  //       syncCardsSyncedBeforeNumber: 0,
-  //       syncCardsSyncedBeforeUnit: undefined,
-  //       cardSetCodeToSyncCardsFor: undefined,
-  //       changedImageStatusAction: "delete",
-  //       oracleId: undefined
-  //     };
-  //     return result;
-  //   }
 
   private createRendererConfigurationFactoryDefault(useDarkTheme: boolean): RendererConfigurationDto {
     const result: RendererConfigurationDto = {

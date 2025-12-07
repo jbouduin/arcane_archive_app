@@ -1,6 +1,8 @@
 import { ToastProps } from "@blueprintjs/core";
 import { ConfigurationDto } from "../../../../common/dto";
 import { CardQueryParamsDto, LibraryCardListDto, QueryResultDto } from "../../dto";
+import { MtgServer } from "../../types";
+import { ISessionService } from "./session.service";
 
 export interface ICollectionManagerProxyService {
   readonly logServerResponses: boolean;
@@ -14,10 +16,11 @@ export interface ICollectionManagerProxyService {
    * Fetch data from backend
    * @param path the path
    */
-  getData<T extends object>(path: string): Promise<T>;
+  getData<T extends object>(server: MtgServer, path: string): Promise<T>;
   initialize(
+    sessionService: ISessionService,
     configuration: ConfigurationDto,
     showToast: (props: ToastProps, key?: string) => void
   ): void;
-  postData<Req extends object, Res extends object>(path: string, data: Req): Promise<Res>;
+  postData<Req extends object, Res extends object>(server: MtgServer, path: string, data: Req | null): Promise<Res>;
 }

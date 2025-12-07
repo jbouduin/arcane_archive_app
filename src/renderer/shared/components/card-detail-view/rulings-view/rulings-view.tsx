@@ -21,7 +21,7 @@ export const RulingsView = React.memo(
     // #region Effects --------------------------------------------------------
     React.useEffect(
       () => {
-        void serviceContainer.collectionManagerProxy.getData<Array<LibraryRulingDto>>("/public/ruling/" + props.oracleId)
+        void serviceContainer.collectionManagerProxy.getData<Array<LibraryRulingDto>>("library", "/public/ruling/" + props.oracleId)
           .then(
             (data: Array<LibraryRulingDto>) => setRulings(serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getRulingsViewmodel(data)),
             noop

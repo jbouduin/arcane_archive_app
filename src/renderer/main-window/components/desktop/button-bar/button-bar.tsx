@@ -1,48 +1,118 @@
-import { ButtonGroup, Menu, MenuItem } from "@blueprintjs/core";
+import { ButtonGroup, Menu, MenuItem, ToastProps } from "@blueprintjs/core";
+import { noop } from "lodash";
 import * as React from "react";
-import { IServiceContainer, ServiceContainerContext } from "../../../../shared/context";
+import { ResultDto } from "../../../../../common/dto/mtg-collection";
+import { useServices, useSession } from "../../../../hooks";
+import { BaseDialogBodyProps, BaseDialogProps } from "../../../../shared/components/base/base-dialog";
+import { LoginDialogBody } from "../../../../shared/components/dialogs/login-view/login-dialog-body";
+import { LoginDialogFooter } from "../../../../shared/components/dialogs/login-view/login-dialog-footer";
+import { ProfileDialogBody } from "../../../../shared/components/dialogs/profile-dialog/profile-dialog-body";
+import { ProfileDialogFooter } from "../../../../shared/components/dialogs/profile-dialog/profile-dialog-footer";
+import { SettingsDialogBody } from "../../../../shared/components/dialogs/settings-dialog/settings-dialog-body";
+import { SettingsDialogFooter } from "../../../../shared/components/dialogs/settings-dialog/settings-dialog-footer";
+import { LoginRequestDto } from "../../../../shared/dto";
+import { LoginViewmodel } from "../../../../shared/viewmodel";
 import { EDesktopView } from "../desktop-view.enum";
 import { ButtonBarButton } from "./button-bar-button";
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
 import { ButtonBarProps } from "./button-bar.props";
-import { ButtonBarState } from "./button-bar.state";
 
 // TODO active view white, inactive views mute
 export function ButtonBar(props: ButtonBarProps) {
-  // #region State ----------------------------------------------------------------------
-  const initialState: ButtonBarState = { syncDialogOpen: false, settingsDialogOpen: false };
-  const [_state, setState] = React.useState<ButtonBarState>(initialState);
-  // #endregion
-
-  // #region Context --------------------------------------------------------------------
-  const _serviceContainer = React.useContext<IServiceContainer>(ServiceContainerContext);
-  // const overlayContext = React.useContext<IOverlayContext>(OverlayContext);
+  // #region Hooks ------------------------------------------------------------
+  const { loggedIn } = useSession();
+  const serviceContainer = useServices();
   // #endregion
 
   // #region Event handling -------------------------------------------------------------
-  // function startSync(syncParam: ISyncParamDto): void {
-  // overlayContext.showSplashScreen();
-  // setState(initialState);
-  // void ipcProxyService
-  //   .postData<ISyncParamDto, never>("/mtg-sync", syncParam)
-  //   .then(
-  //     () => {
-  //       if (syncParam.syncCardSets || syncParam.syncCardSymbols) {
-  //         const afterSplashScreenClose = new Array<AfterSplashScreenClose>();
-  //         if (syncParam.syncCardSets) {
-  //           afterSplashScreenClose.push("CardSets");
-  //         }
-  //         if (syncParam.syncCardSymbols) {
-  //           afterSplashScreenClose.push("CardSymbols");
-  //         }
-  //         overlayContext.hideSplashScreen(afterSplashScreenClose);
-  //       } else {
-  //         overlayContext.hideSplashScreen(null);
-  //       }
-  //     },
-  //     () => overlayContext.hideSplashScreen(null)
-  //   );
-  // }
+  function loginClick(): void {
+    const loginDialogProps: BaseDialogProps<LoginRequestDto> = {
+      isOpen: true,
+      isCloseButtonShown: true,
+      canEscapeKeyClose: true,
+      canOutsideClickClose: false,
+      title: "Login",
+      viewmodel: new LoginViewmodel(
+        {
+          user: "sys_admi",
+          password: "sys_admin"
+        }
+      ),
+      bodyRenderer: (bodyProps: BaseDialogBodyProps<LoginRequestDto>) => {
+        return (<LoginDialogBody key="body" {...bodyProps} />);
+      },
+      footerRenderer: (footerProps: BaseDialogProps<LoginRequestDto>) => {
+        return (<LoginDialogFooter key="footer" {...footerProps} />);
+      },
+      onClose: () => serviceContainer.dialogService.closeDialog("login")
+    };
+    serviceContainer.dialogService.openDialog("login", loginDialogProps);
+  }
+
+  function logoutClick(): void {
+    serviceContainer.collectionManagerProxy
+      .postData<never, ResultDto<never>>("authentication", "/auth/logout", null)
+      .then(
+        (_r: ResultDto<never>) => serviceContainer.sessionService.setSessionData(null),
+        noop
+      );
+  }
+
+  function uiSettingsClick(): void {
+    const uiSettingsProps: BaseDialogProps<LoginRequestDto> = {
+      isOpen: true,
+      isCloseButtonShown: true,
+      canEscapeKeyClose: true,
+      canOutsideClickClose: false,
+      title: "UI Settings",
+      viewmodel: new LoginViewmodel(
+        {
+          user: "sys_admi",
+          password: "sys_admin"
+        }
+      ),
+      bodyRenderer: (bodyProps: BaseDialogBodyProps<LoginRequestDto>) => {
+        return (<SettingsDialogBody key="body" {...bodyProps} />);
+      },
+      footerRenderer: (footerProps: BaseDialogProps<LoginRequestDto>) => {
+        return (<SettingsDialogFooter key="footer" {...footerProps} />);
+      },
+      onClose: () => serviceContainer.dialogService.closeDialog("ui-settings")
+    };
+    serviceContainer.dialogService.openDialog("ui-settings", uiSettingsProps);
+  }
+
+  function profileClick(): void {
+    const profileProp: BaseDialogProps<LoginRequestDto> = {
+      isOpen: true,
+      isCloseButtonShown: true,
+      canEscapeKeyClose: true,
+      canOutsideClickClose: false,
+      title: "Profile",
+      viewmodel: new LoginViewmodel(
+        {
+          user: "sys_admi",
+          password: "sys_admin"
+        }
+      ),
+      bodyRenderer: (bodyProps: BaseDialogBodyProps<LoginRequestDto>) => {
+        return (<ProfileDialogBody key="body" {...bodyProps} />);
+      },
+      footerRenderer: (footerProps: BaseDialogProps<LoginRequestDto>) => {
+        return (<ProfileDialogFooter key="footer" {...footerProps} />);
+      },
+      onClose: () => serviceContainer.dialogService.closeDialog("profile")
+    };
+    serviceContainer.dialogService.openDialog("profile", profileProp);
+  }
+
+  function adminClick(): void {
+    const props: ToastProps = {
+      message: "Not implemented",
+      intent: "danger"
+    };
+    serviceContainer.dialogService.showToast(props, "admin not implemented");
+  }
   // #endregion
 
   // #region Rendering --------------------------------------------------------
@@ -73,42 +143,58 @@ export function ButtonBar(props: ButtonBarProps) {
           />
         </ButtonGroup>
         <ButtonGroup variant="minimal" vertical={true}>
+          {
+            loggedIn && (
+              <ButtonBarButton
+                assetPath="assets/img/logged-in.svg"
+                buttonType={EButtonBarButtonType.MenuButton}
+                menu={renderLoggedInMenu()}
+              />
+            )
+          }
+          {
+            !loggedIn && (
+              <ButtonBarButton
+                assetPath="assets/img/login.svg"
+                buttonType={EButtonBarButtonType.MenuButton}
+                menu={renderNotLoggedInMenu()}
+              />
+            )
+          }
           <ButtonBarButton
             assetPath="assets/img/settings.svg"
             buttonType={EButtonBarButtonType.MenuButton}
-            menu={renderMenu()}
+            menu={renderSettingsMenu()}
           />
         </ButtonGroup>
       </div>
-      {/* {
-        state.settingsDialogOpen &&
-        <SettingsDialog
-          afterSave={(saved: IConfigurationDto) => {
-            props.afterSaveSettings(saved);
-            setState(initialState);
-          }}
-          className={props.className}
-          isOpen={state.settingsDialogOpen}
-          onDialogClose={() => setState(initialState)}
-        />
-      } */}
-      {/* {
-        state.syncDialogOpen &&
-        <SyncDialog
-          className={props.className}
-          isOpen={state.syncDialogOpen}
-          onDialogClose={() => setState(initialState)}
-          onOkClick={startSync}
-        />
-      } */}
     </>
   );
 
-  function renderMenu(): React.JSX.Element {
+  function renderSettingsMenu(): React.JSX.Element {
     return (
       <Menu size="small">
-        <MenuItem onClick={() => setState({ syncDialogOpen: false, settingsDialogOpen: true })} text="Settings" />
-        <MenuItem onClick={() => setState({ syncDialogOpen: true, settingsDialogOpen: false })} text="Synchronize" />
+        <MenuItem onClick={uiSettingsClick} text="UI Settings" />
+        {
+          serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") &&
+          <MenuItem onClick={adminClick} text="Admin" />
+        }
+      </Menu>
+    );
+  }
+
+  function renderLoggedInMenu(): React.JSX.Element {
+    return (
+      <Menu size="small">
+        <MenuItem onClick={profileClick} text="User Profile" />
+        <MenuItem onClick={logoutClick} text="Log out" />
+      </Menu>
+    );
+  }
+  function renderNotLoggedInMenu(): React.JSX.Element {
+    return (
+      <Menu size="small">
+        <MenuItem onClick={loginClick} text="Log in" />
       </Menu>
     );
   }

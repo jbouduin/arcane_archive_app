@@ -1,10 +1,11 @@
 import { Props } from "@blueprintjs/core";
-import { SelectOption } from "../../../types";
+import { MtgServer, SelectOption } from "../../../types";
 
 export interface BaseServerSelectProps<T> extends Props {
   keyString: string;
   label: string;
   selectedItems: Array<SelectOption<T>>;
+  server: MtgServer;
   serverBaseUrl: string;
 
   itemSort?: (a: T, b: T) => number;

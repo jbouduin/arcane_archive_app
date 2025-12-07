@@ -1,6 +1,6 @@
 import { H5, Section, SectionCard, Tab, Tabs } from "@blueprintjs/core";
 import React from "react";
-import { useServices } from "../../../hooks/use-services";
+import { useServices } from "../../../hooks";
 import { LibraryCardDto } from "../../dto";
 import { ScryfallLanguageMap } from "../../types";
 import { LibraryCardViewmodel } from "../../viewmodel/mtg-card";
@@ -28,7 +28,7 @@ export function CardDetailView(props: CardDetailViewProps) {
   React.useEffect(
     () => {
       if (props.cardId) {
-        void serviceContainer.collectionManagerProxy.getData<LibraryCardDto>("/public/card/" + props.cardId)
+        void serviceContainer.collectionManagerProxy.getData<LibraryCardDto>("library", "/public/card/" + props.cardId)
           .then(
             (dto: LibraryCardDto) => {
               const viewmodel: LibraryCardViewmodel = serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getMtgCardDetailViewmodel(dto);

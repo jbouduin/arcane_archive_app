@@ -13,6 +13,8 @@ import { ConfigurationViewModel } from "../shared/viewmodel";
 import { FirstTimeView } from "./first-time-view/first-time-view";
 import { CollectionManagerProxyService } from "../shared/context/implementation/collection-manage-proxy.service";
 import { CardSearchParamService } from "../shared/context/implementation/card-search-param.service";
+import { DialogService } from "../shared/context/implementation/dialog.service";
+import { SessionService } from "../shared/context/implementation/session.service";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -48,10 +50,12 @@ void (async () => {
           collectionManagerProxy: new CollectionManagerProxyService(),
           colorService: new ColorService(),
           configurationService: configurationService,
+          dialogService: new DialogService(),
           displayValueService: new DisplayValueService(),
           ipcProxy: ipcProxyService,
           languageService: new LanguageService(),
           mtgSetService: new MtgSetService(),
+          sessionService: new SessionService(),
           viewmodelFactoryService: new ViewmodelFactoryService(),
           initialize: function (_showToast: (props: ToastProps, key?: string) => void): Promise<void> {
             throw new Error("Function not implemented.");

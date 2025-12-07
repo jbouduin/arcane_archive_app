@@ -2,18 +2,21 @@ import { ToastProps } from "@blueprintjs/core";
 import { ConfigurationDto } from "../../../../common/dto";
 import { ResultDto, ValidationErrorDto } from "../../../../common/dto/mtg-collection";
 import { CardQueryParamsDto, ColorDto, LibraryCardListDto, MtgSetDto, QueryResultDto } from "../../dto";
-import { ICollectionManagerProxyService } from "../interface";
+import { MtgServer } from "../../types";
+import { ICollectionManagerProxyService, ISessionService } from "../interface";
 
 export class CollectionManagerProxyService implements ICollectionManagerProxyService {
   // #region Private fields ---------------------------------------------------
   private _logServerResponses: boolean;
   private showToast!: (props: ToastProps, key?: string) => void;
-  private mtgCollectionApiRoot!: string;
+  private apiRoots: Map<MtgServer, string>;
+  private sessionService!: ISessionService;
   // #endregion
 
   // #region Constructor ------------------------------------------------------
   public constructor() {
     this._logServerResponses = false;
+    this.apiRoots = new Map<MtgServer, string>();
   }
   // #endregion
 
@@ -44,7 +47,7 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
       params.append("pn", cardQuery.pageNumber.toString());
       params.append("ps", cardQuery.pageSize.toString());
       params.append("sort", `${cardQuery.sortField}:${cardQuery.sortDirection}`);
-      return this.getData<QueryResultDto<LibraryCardListDto>>(path + "?" + params.toString());
+      return this.getData<QueryResultDto<LibraryCardListDto>>("library", path + "?" + params.toString());
     } else {
       return Promise.resolve({
         currentPageNumber: 0,
@@ -55,11 +58,11 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
     }
   }
 
-  public async getData<T extends object>(path: string): Promise<T> {
+  public async getData<T extends object>(server: MtgServer, path: string): Promise<T> {
     if (!path.startsWith("/")) {
       path = "/" + path;
     }
-    return fetch(this.mtgCollectionApiRoot + path)
+    return fetch(this.apiRoots.get(server) + path)
       .then(
         async (response: Response) => {
           const resultDto: ResultDto<T> = (await response.json()) as ResultDto<T>;
@@ -73,21 +76,33 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
       );
   }
 
-  public initialize(configuration: ConfigurationDto, showToast: (props: ToastProps, key?: string) => void): void {
+  public initialize(sessionService: ISessionService, configuration: ConfigurationDto, showToast: (props: ToastProps, key?: string) => void): void {
     this._logServerResponses = configuration.rendererConfiguration.logServerResponses;
     this.showToast = showToast;
-    this.mtgCollectionApiRoot = configuration.apiConfiguration.mtgCollectionApiRoot;
+    this.sessionService = sessionService;
+    this.apiRoots.set("library", configuration.apiConfiguration.mtgCollectionApiRoot);
+    this.apiRoots.set("authentication", configuration.apiConfiguration.authenticationApiRoot);
   }
 
-  public postData<Req extends object, Res extends object>(path: string, data: Req): Promise<Res> {
+  public postData<Req extends object, Res extends object>(server: MtgServer, path: string, data: Req | null): Promise<Res> {
     if (!path.startsWith("/")) {
       path = "/" + path;
     }
-    const headers = {
+    const headers: Record<string, string> = {
       "accept": "application/json",
       "Content-Type": "application/json"
     };
-    return fetch(this.mtgCollectionApiRoot + path, { method: "POST", body: JSON.stringify(data), headers: headers })
+    if (this.sessionService.jwt != null) {
+      headers["Authorization"] = "Bearer " + this.sessionService.jwt;
+    }
+
+    return fetch(
+      this.apiRoots.get(server) + path,
+      {
+        method: "POST",
+        body: (data != null) ? JSON.stringify(data) : null,
+        headers: headers
+      })
       .then(
         async (response: Response) => {
           const resultDto: ResultDto<Res> = (await response.json()) as ResultDto<Res>;
@@ -140,6 +155,7 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
       // eslint-disable-next-line no-console
       console.log(response);
     }
+
     let message: Array<string>;
     if (response.errors) {
       message = response.errors;

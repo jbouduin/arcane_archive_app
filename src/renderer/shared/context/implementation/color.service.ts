@@ -29,7 +29,7 @@ export class ColorService implements IColorService {
   }
 
   public initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void> {
-    return collectionManagerProxy.getData<Array<ColorDto>>("/public/color")
+    return collectionManagerProxy.getData<Array<ColorDto>>("library", "/public/color")
       .then(
         (allColors: Array<ColorDto>) => allColors
           .sort((a: ColorDto, b: ColorDto) => a.sequence - b.sequence)

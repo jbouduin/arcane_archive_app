@@ -1,0 +1,12 @@
+import { LoginResponseDto } from "../../dto";
+import { ApplicationRole } from "../../types";
+import { SessionChangeListener } from "../session-change-listener";
+
+export interface ISessionService {
+  readonly jwt: string | null;
+  readonly loggedIn: boolean;
+  readonly userName: string | null;
+  hasRole(role: ApplicationRole): boolean;
+  setSessionData(data: LoginResponseDto | null): void;
+  subscribe(listener: SessionChangeListener): () => void;
+};

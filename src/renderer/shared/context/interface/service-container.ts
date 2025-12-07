@@ -6,10 +6,12 @@ import { ICardSymbolService } from "./card-symbol.service";
 import { ICollectionManagerProxyService } from "./collection-manage-proxy.service";
 import { IColorService } from "./color.service";
 import { IConfigurationService } from "./configuration.service";
+import { IDialogService } from "./dialog.service";
 import { IDisplayValueService } from "./display-value.service";
 import { IIpcProxyService } from "./ipc-proxy.service";
 import { ILanguageService } from "./language.service";
 import { IMtgSetService } from "./mtg-set.service";
+import { ISessionService } from "./session.service";
 import { IViewmodelFactoryService } from "./viewmodel-factory.service";
 
 export interface IServiceContainer {
@@ -38,6 +40,11 @@ export interface IServiceContainer {
   readonly configurationService: IConfigurationService;
 
   /**
+   * Service that displays dialogs
+   */
+  readonly dialogService: IDialogService;
+
+  /**
    * Dictionaries with display values for enums.
    */
   readonly displayValueService: IDisplayValueService;
@@ -56,6 +63,11 @@ export interface IServiceContainer {
    * Service that caches all {@link _LanguageDto LanguageDto}
    */
   readonly languageService: ILanguageService;
+
+  /**
+   * Session service
+   */
+  readonly sessionService: ISessionService;
 
   /**
    * Service that provides viewmodel factories.

@@ -3,13 +3,13 @@ import classNames from "classnames";
 import { cloneDeep, isEqual, upperFirst } from "lodash";
 import React from "react";
 import { CardSetGroupBy, CardSetSort } from "../../../../common/types";
-import { useServices } from "../../../hooks/use-services";
+import { useServices } from "../../../hooks";
+import { SyncParamDto } from "../../dto";
 import { MtgSetTreeConfigurationViewmodel } from "../../viewmodel";
 import { MtgSetTreeViewmodel } from "../../viewmodel/mtg-set/mtg-set-tree.viewmodel";
 import { BaseTreeView, BaseTreeViewProps } from "../base/base-tree-view";
 import { HeaderView } from "./header-view";
 import { SetTreeViewProps } from "./set-tree-view.props";
-import { SyncParamDto } from "../../dto";
 
 const Treeview = React.memo(
   BaseTreeView<MtgSetTreeViewmodel, MtgSetTreeConfigurationViewmodel>,
@@ -97,9 +97,9 @@ export function SetTreeView(props: SetTreeViewProps) {
       ],
       allScryfallCatalogs: "SKIP",
       allCardSets: "SKIP"
-    }
-    void serviceContainer.collectionManagerProxy.postData("/admin/synchronization/partial",postData)
-      // .then()
+    };
+    void serviceContainer.collectionManagerProxy.postData("library", "/admin/synchronization/partial", postData);
+    // .then()
   }
   // #endregion
 
@@ -213,22 +213,27 @@ export function SetTreeView(props: SetTreeViewProps) {
           content={
             (
               <Menu key={`menu-${cardSet.id}`}>
-                <MenuItem
-                  key={`sync-${cardSet.id}`}
-                  onClick={
-                    (e) => {
-                      e.preventDefault();
-                      synchronizeSet(cardSet.code);
-                    }
-                  }
-                  text="Synchronize cards"
-                />
+                {
+                  serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") &&
+                  (
+                    <MenuItem
+                      key={`sync-${cardSet.id}`}
+                      onClick={
+                        (e) => {
+                          e.preventDefault();
+                          synchronizeSet(cardSet.code);
+                        }
+                      }
+                      text="Synchronize cards"
+                    />
+                  )
+                }
                 <MenuItem
                   key={`prop-${cardSet.id}`}
                   onClick={
                     (e) => {
                       e.preventDefault();
-                      // setSelectedCardSetForDialog(cardSet);
+                      // TODO show card set details dialog
                     }
                   }
                   text="Properties"

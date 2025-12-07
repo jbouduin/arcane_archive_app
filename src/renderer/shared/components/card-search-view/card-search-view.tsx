@@ -2,7 +2,7 @@ import { Button } from "@blueprintjs/core";
 import classNames from "classnames";
 import { cloneDeep } from "lodash";
 import React from "react";
-import { useServices } from "../../../hooks/use-services";
+import { useServices } from "../../../hooks";
 import { ColorDto, MtgSetDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { CardSearchViewmodel } from "../../viewmodel";
@@ -91,6 +91,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         keyString="card-name-select"
         label="Card name"
         selectedItems={searchViewmodel.selectedCardNames}
+        server="library"
         serverBaseUrl="/public/catalog/CARD_NAMES/item"
         itemSort={(a: string, b: string) => a.localeCompare(b)}
         itemLabel={(item: string) => item}
@@ -169,6 +170,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         keyString="card-sub-type-select"
         label="Sub-type"
         selectedItems={searchViewmodel.selectedSubTypes}
+        server="library"
         serverBaseUrl="/public/card-sub-type"
         itemSort={(a: string, b: string) => a.localeCompare(b)}
         itemLabel={(item: string) => item}
@@ -199,6 +201,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         keyString="ability-key-word-select"
         label="Ability"
         selectedItems={searchViewmodel.selectedAbilities}
+        server="library"
         serverBaseUrl="/public/catalog/KEYWORD_ABILITIES/item"
         itemSort={(a: string, b: string) => a.localeCompare(b)}
         itemLabel={(item: string) => item}
@@ -211,6 +214,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         keyString="action-key-word-select"
         label="Action"
         selectedItems={searchViewmodel.selectedActions}
+        server="library"
         serverBaseUrl="/public/catalog/KEYWORD_ACTIONS/item"
         itemSort={(a: string, b: string) => a.localeCompare(b)}
         itemLabel={(item: string) => item}

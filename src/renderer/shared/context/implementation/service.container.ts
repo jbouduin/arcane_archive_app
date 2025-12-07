@@ -1,5 +1,5 @@
 import { ToastProps } from "@blueprintjs/core";
-import { ICardSearchParamService, ICardSymbolService, ICollectionManagerProxyService, IColorService, IConfigurationService, IDisplayValueService, IIpcProxyService, ILanguageService, IMtgSetService, IServiceContainer, IViewmodelFactoryService } from "../interface";
+import { ICardSearchParamService, ICardSymbolService, ICollectionManagerProxyService, IColorService, IConfigurationService, IDialogService, IDisplayValueService, IIpcProxyService, ILanguageService, IMtgSetService, IServiceContainer, ISessionService, IViewmodelFactoryService } from "../interface";
 import { ConfigurationService } from "./configuration.service";
 import { DisplayValueService } from "./display-value.service";
 import { IpcProxyService } from "./ipc-proxy.service";
@@ -10,6 +10,8 @@ import { CardSymbolService } from "./card-symbol.service";
 import { ColorService } from "./color.service";
 import { CollectionManagerProxyService } from "./collection-manage-proxy.service";
 import { CardSearchParamService } from "./card-search-param.service";
+import { DialogService } from "./dialog.service";
+import { SessionService } from "./session.service";
 
 export class ServiceContainer implements IServiceContainer {
   // #region Private fields ---------------------------------------------------
@@ -19,9 +21,11 @@ export class ServiceContainer implements IServiceContainer {
   private _colorService: IColorService;
   private _configurationService: IConfigurationService;
   private _displayValueService: IDisplayValueService;
+  private _dialogService: IDialogService;
   private _ipcProxy: IIpcProxyService;
   private _languageService: ILanguageService;
   private _mtgSetService: IMtgSetService;
+  private _sessionService: ISessionService;
   private _viewmodelFactoryService: IViewmodelFactoryService;
   // #endregion
 
@@ -33,14 +37,16 @@ export class ServiceContainer implements IServiceContainer {
     this._colorService = new ColorService();
     this._configurationService = new ConfigurationService();
     this._displayValueService = new DisplayValueService();
+    this._dialogService = new DialogService();
     this._ipcProxy = new IpcProxyService();
     this._languageService = new LanguageService();
     this._mtgSetService = new MtgSetService();
+    this._sessionService = new SessionService();
     this._viewmodelFactoryService = new ViewmodelFactoryService();
   }
   // #endregion
 
-  // #region IServiceContainer Members ----------------------------------------
+  // #region IServiceContainer Members (getters) ------------------------------
   public get cardSearchParamService(): ICardSearchParamService {
     return this._cardSearchParamService;
   }
@@ -61,6 +67,10 @@ export class ServiceContainer implements IServiceContainer {
     return this._configurationService;
   }
 
+  public get dialogService(): IDialogService {
+    return this._dialogService;
+  }
+
   public get displayValueService(): IDisplayValueService {
     return this._displayValueService;
   }
@@ -77,15 +87,22 @@ export class ServiceContainer implements IServiceContainer {
     return this._mtgSetService;
   }
 
+  public get sessionService(): ISessionService {
+    return this._sessionService;
+  }
+
   public get viewmodelFactoryService(): IViewmodelFactoryService {
     return this._viewmodelFactoryService;
   }
+  // #endregion
 
+  // #region IServiceContainer Members (methods) ------------------------------
   public async initialize(showToast: (props: ToastProps, key?: string) => void): Promise<void> {
     this._ipcProxy.initialize(showToast);
 
     const configuration = await this._configurationService.initialize(this._ipcProxy);
-    this._collectionManagerProxy.initialize(configuration, showToast);
+    this._collectionManagerProxy.initialize(this.sessionService, configuration, showToast);
+    this._dialogService.initialize(showToast);
 
     await Promise.all([
       this._cardSearchParamService.initialize(this._collectionManagerProxy),

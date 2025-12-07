@@ -30,7 +30,7 @@ export class DisplayValueService implements IDisplayValueService {
   }
 
   public initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void> {
-    return collectionManagerProxy.getData("/public/dictionary")
+    return collectionManagerProxy.getData("library", "/public/dictionary")
       .then(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (data: any) => {

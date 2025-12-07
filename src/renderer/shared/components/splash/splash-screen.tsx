@@ -1,9 +1,9 @@
 import { Dialog } from "@blueprintjs/core";
 import classNames from "classnames";
-import { BaseDialogProps } from "../base/base-dialog";
 import { SplashContent } from "./splash-content";
+import { SplashScreenProps } from "./splash-screen.props";
 
-export function SplashScreen(props: BaseDialogProps) {
+export function SplashScreen(props: SplashScreenProps) {
   return (
     <Dialog
       canEscapeKeyClose={true}

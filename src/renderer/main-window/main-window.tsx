@@ -1,5 +1,7 @@
 import { FocusStyleManager, H1, OverlaysProvider, OverlayToaster, PortalProvider, Position, ToastProps } from "@blueprintjs/core";
 import { createRoot } from "react-dom/client";
+import { DialogRenderer } from "../shared/components/base/base-dialog/dialog-renderer";
+import { SessionProvider } from "../shared/components/session-provider";
 import { ServiceContainer } from "../shared/context/implementation/service.container";
 import { ServiceContainerContext } from "../shared/context/shared.context";
 import { MainWindowDesktop } from "./components/desktop/main-window-desktop";
@@ -29,7 +31,10 @@ void (async () => {
           <OverlaysProvider>
             <PortalProvider>
               <ServiceContainerContext.Provider value={serviceContainer}>
-                <MainWindowDesktop toastCall={toastCall} />
+                <SessionProvider>
+                  <MainWindowDesktop toastCall={toastCall} />
+                  <DialogRenderer dialogService={serviceContainer.dialogService} />
+                </SessionProvider>
               </ServiceContainerContext.Provider>
             </PortalProvider>
           </OverlaysProvider>

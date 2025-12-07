@@ -1,134 +1,134 @@
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-        Arial, sans-serif;
-    margin: auto;
-    font-size: small;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  margin: auto;
+  font-size: small;
 }
 
 #root {
-    max-height: 100vh;
-    overflow: hidden;
+  max-height: 100vh;
+  overflow: hidden;
 }
 
 .mana-cost-image-in-table {
-    margin-right: 3px;
-    margin-bottom: -2px
+  margin-right: 3px;
+  margin-bottom: -2px
 }
 
 .mana-cost-image-in-title {
-    margin-right: 3px;
-    margin-bottom: -3px
+  margin-right: 3px;
+  margin-bottom: -3px
 }
 
 .mana-cost-image-in-text {
-    margin-right: 3px;
-    margin-bottom: -3px
+  margin-right: 3px;
+  margin-bottom: -3px
 }
 
 .mana-cost-image-in-text:first-child {
-    margin-left: 3px
+  margin-left: 3px
 }
 
 .ruling-line-paragraph {
-    border-bottom-width: thin;
-    border-bottom-style: solid;
-    padding-bottom: 10px;
+  border-bottom-width: thin;
+  border-bottom-style: solid;
+  padding-bottom: 10px;
 }
 
 .card-view-wrapper {
-    height: 100vh;
-    overflow: auto;
+  height: 100vh;
+  overflow: auto;
 }
 
 .card-image {
-    display: block;
-    margin: auto;
-    max-height: 400px;
+  display: block;
+  margin: auto;
+  max-height: 400px;
 }
 
 .card-header-line-1 {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 img.rotate-90 {
-    transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 
 img.rotate-180 {
-    transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .ruling-divider {
-    margin-left: 0px;
-    margin-right: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
 }
 
 .rarity-rare {
-    color: gold;
+  color: gold;
 }
 
 .rarity-uncommon {
-    color: silver
+  color: silver
 }
 
 .rarity-mythic {
-    color: darkorange;
+  color: darkorange;
 }
 
 .card-view-section-card {
-    padding-top: 10px;
-    padding-left: 15px;
-    padding-right: 15px;
-    display: flex;
-    flex-direction: column;
+  padding-top: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  display: flex;
+  flex-direction: column;
 }
 
 .language-button-bar {
-    padding-left: 10px;
-    padding-right: 10px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .language-button-bar-button {
-    padding: 5px;
+  padding: 5px;
 }
 
 .left-panel-button-group {
-    flex: 0 1 auto;
+  flex: 0 1 auto;
 }
 
 .left-panel-tabs {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .splash-window {
-    width: 900px;
+  width: 900px;
 }
 
 .splash-wrapper {
-    background-image: url("/assets/img/Splash.webp");
-    background-size: cover;
-    max-height: 506px;
-    max-width: 900px;
-    padding: 20px;
-    padding-top: 375px;
-    color: white;
+  background-image: url("/assets/img/Splash.webp");
+  background-size: cover;
+  max-height: 506px;
+  max-width: 900px;
+  padding: 20px;
+  padding-top: 375px;
+  color: white;
 }
 
 .committable-input-wrapper {
-    display: flex;
-    flex-flow: column;
+  display: flex;
+  flex-flow: column;
 }
 
 .committable-input-buttons {
-    display: flex;
-    flex-flow: row;
-    justify-content: flex-end;
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-end;
 }
 
 .bp6-dark .ss-common {
@@ -158,4 +158,12 @@ img.rotate-180 {
 .layout-isolation {
   position: relative;
   /* overflow: hidden; */
+}
+
+.not-logged-in-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }

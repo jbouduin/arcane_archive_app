@@ -26,7 +26,7 @@ export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
         const timeOutId = setTimeout(
           () => {
             void serviceContainer.collectionManagerProxy
-              .getData<Array<T>>(`/${props.serverBaseUrl}?q=${queryString}`)
+              .getData<Array<T>>(props.server, `/${props.serverBaseUrl}?q=${queryString}`)
               .then(
                 (r: Array<T>) => {
                   const sorted = props.itemSort ? r.sort(props.itemSort) : r;

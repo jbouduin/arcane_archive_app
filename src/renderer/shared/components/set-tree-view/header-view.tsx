@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, IconName, InputGroup, Menu, MenuDivider, MenuItem, Popover } from "@blueprintjs/core";
 import { isEmpty, xor } from "lodash";
 import React from "react";
-import { useServices } from "../../../hooks/use-services";
+import { useServices } from "../../../hooks";
 import { IServiceContainer } from "../../context";
 import { compareClassNameProp } from "../util";
 import { HeaderViewProps } from "./header-view.props";
