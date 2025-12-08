@@ -7,6 +7,12 @@ export class MtgViewTreeConfigurationViewmodel extends BaseViewmodel<MtgSetTreeV
   public cardSetFilterValue: string | null;
   // #endregion
 
+  // #region BaseViewmodel Members ----------------------------------------------
+  public get isValid(): boolean {
+    return true;
+  }
+  // #endregion
+
   // #region Getters/Setters --------------------------------------------------
   public get cardSetSort(): CardSetSort {
     return this._dto.cardSetSort;

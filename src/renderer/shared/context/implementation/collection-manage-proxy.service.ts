@@ -58,7 +58,7 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
     }
   }
 
-  public async getData<T extends object>(server: MtgServer, path: string): Promise<T> {
+  public async getData<T extends object>(server: MtgServer, path: string, suppressSuccessMessage = true): Promise<T> {
     if (!path.startsWith("/")) {
       path = "/" + path;
     }
@@ -69,7 +69,7 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
           if (response.status >= 400) {
             return this.processErrorResponse(path, resultDto);
           } else {
-            return this.processSuccessResponse(path, resultDto);
+            return this.processSuccessResponse(path, resultDto, suppressSuccessMessage);
           }
         },
         (reason: Error) => this.processRejection(path, reason)
@@ -84,7 +84,7 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
     this.apiRoots.set("authentication", configuration.apiConfiguration.authenticationApiRoot);
   }
 
-  public postData<Req extends object, Res extends object>(server: MtgServer, path: string, data: Req | null): Promise<Res> {
+  public postData<Req extends object, Res extends object>(server: MtgServer, path: string, data: Req | null, suppressSuccessMessage: boolean): Promise<Res> {
     if (!path.startsWith("/")) {
       path = "/" + path;
     }
@@ -109,7 +109,7 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
           if (response.status >= 400) {
             return this.processErrorResponse(path, resultDto);
           } else {
-            return this.processSuccessResponse(path, resultDto);
+            return this.processSuccessResponse(path, resultDto, suppressSuccessMessage);
           }
         },
         (reason: Error) => this.processRejection(path, reason)
@@ -180,12 +180,12 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
    * @param resultDto the resultDto
    * @returns the data contained in the ResultDto
    */
-  private processSuccessResponse<T>(path: string, resultDto: ResultDto<T>): T {
+  private processSuccessResponse<T>(path: string, resultDto: ResultDto<T>, suppressSuccessMessage?: boolean): T {
     if (this.logServerResponses) {
       // eslint-disable-next-line no-console
       console.log(resultDto);
     }
-    if (resultDto.successMessage && resultDto.successMessage != "OK") {
+    if (resultDto.successMessage && !suppressSuccessMessage) {
       void this.showToast(
         {
           message: resultDto.successMessage,

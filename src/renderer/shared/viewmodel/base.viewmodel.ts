@@ -6,6 +6,10 @@ export abstract class BaseViewmodel<T extends object> {
   protected readonly _org: T;
   // #endregion
 
+  // #region Abstract Members -------------------------------------------------
+  public abstract get isValid(): boolean;
+  // #endregion
+
   // #region Auxiliary getters ------------------------------------------------
   public get dto(): Readonly<T> {
     return this._dto;

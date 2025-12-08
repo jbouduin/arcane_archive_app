@@ -1,7 +1,14 @@
 import { DataConfigurationDto } from "../../../../common/dto";
+import { stringsNotNullOrEmpty } from "../../components/util";
 import { BaseViewmodel } from "../base.viewmodel";
 
 export class DataConfigurationViewmodel extends BaseViewmodel<DataConfigurationDto> {
+  // #region BaseViewmodel Members ----------------------------------------------
+  public get isValid(): boolean {
+    return stringsNotNullOrEmpty(this._dto.cacheDirectory, this._dto.databaseName, this._dto.rootDataDirectory);
+  }
+  // #endregion
+
   // #region Getters/Setters --------------------------------------------------
   public get cacheDirectory(): string {
     return this._dto.cacheDirectory;

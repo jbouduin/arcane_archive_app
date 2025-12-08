@@ -16,11 +16,19 @@ export interface ICollectionManagerProxyService {
    * Fetch data from backend
    * @param path the path
    */
-  getData<T extends object>(server: MtgServer, path: string): Promise<T>;
+  getData<T extends object>(
+    server: MtgServer,
+    path: string,
+    supressSuccessMessage?: boolean): Promise<T>;
   initialize(
     sessionService: ISessionService,
     configuration: ConfigurationDto,
     showToast: (props: ToastProps, key?: string) => void
   ): void;
-  postData<Req extends object, Res extends object>(server: MtgServer, path: string, data: Req | null): Promise<Res>;
+  postData<Req extends object, Res extends object>(
+    server: MtgServer,
+    path: string,
+    data: Req | null,
+    supressSuccessMessage: boolean
+  ): Promise<Res>;
 }

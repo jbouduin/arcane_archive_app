@@ -1,17 +1,20 @@
 import { Classes } from "@blueprintjs/core";
-
 import { ConfigurationDto } from "../../../../common/dto";
 import { BaseViewmodel } from "../base.viewmodel";
-// import { SyncParamViewmodel } from "../sync-param/sync-param.viewmodel";
-import { MtgViewTreeConfigurationViewmodel } from "./mtg-view-tree-configuration.viewmodel";
 import { DataConfigurationViewmodel } from "./data-configuration.viewmodel";
+import { MtgViewTreeConfigurationViewmodel } from "./mtg-view-tree-configuration.viewmodel";
 
 export class ConfigurationViewModel extends BaseViewmodel<ConfigurationDto> {
   // #region private fields ---------------------------------------------------
-  // private _syncParamViewmodel: SyncParamViewmodel;
   private _databaseViewTreeConfigurationViewmodel: MtgViewTreeConfigurationViewmodel;
   private _dataConfigurationViewmodel: DataConfigurationViewmodel;
   private readonly _isFirstUse: boolean;
+  // #endregion
+
+  // #region BaseViewmodel Members ----------------------------------------------
+  public get isValid(): boolean {
+    return this._databaseViewTreeConfigurationViewmodel.isValid && this._dataConfigurationViewmodel.isValid;
+  }
   // #endregion
 
   // #region Auxiliary getters ------------------------------------------------
@@ -28,15 +31,6 @@ export class ConfigurationViewModel extends BaseViewmodel<ConfigurationDto> {
   public get theme(): string {
     return this._dto.rendererConfiguration.useDarkTheme ? Classes.DARK : "";
   }
-
-  // public get syncParamViewmodel(): SyncParamViewmodel {
-  //   return this._syncParamViewmodel;
-  // }
-
-  // public set syncParamViewmodel(value: SyncParamViewmodel) {
-  //   this._syncParamViewmodel = value;
-  //   this._dto.syncAtStartupConfiguration = value.dto;
-  // }
 
   public get databaseViewConfigurationViewmodel(): MtgViewTreeConfigurationViewmodel {
     return this._databaseViewTreeConfigurationViewmodel;
@@ -61,7 +55,6 @@ export class ConfigurationViewModel extends BaseViewmodel<ConfigurationDto> {
   public constructor(dtoConfiguration: ConfigurationDto, isFirstUse: boolean) {
     super(dtoConfiguration);
     this._isFirstUse = isFirstUse;
-    // this._syncParamViewmodel = new SyncParamViewmodel(dtoConfiguration.syncAtStartupConfiguration);
     this._databaseViewTreeConfigurationViewmodel = new MtgViewTreeConfigurationViewmodel(dtoConfiguration.rendererConfiguration.mtgSetTreeViewConfiguration);
     this._dataConfigurationViewmodel = new DataConfigurationViewmodel(dtoConfiguration.dataConfiguration);
   }

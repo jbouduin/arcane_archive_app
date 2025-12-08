@@ -2,7 +2,7 @@ import { Button, H4, Props } from "@blueprintjs/core";
 import { useServices } from "../../../hooks";
 import { LoginRequestDto, RegisterRequestDto } from "../../dto";
 import { LoginViewmodel, RegisterViewmodel } from "../../viewmodel";
-import { BaseDialogProps, BaseDialogBodyProps } from "../base/base-dialog";
+import { BaseDialogBodyProps, BaseDialogProps } from "../base/base-dialog";
 import { LoginDialogBody } from "../dialogs/login-view/login-dialog-body";
 import { LoginDialogFooter } from "../dialogs/login-view/login-dialog-footer";
 import { RegisterDialogBody } from "../dialogs/register-dialog/register-dialog-body";
@@ -32,10 +32,9 @@ export function NotLoggedInView(_props: Props) {
       },
       footerRenderer: (footerProps: BaseDialogProps<LoginRequestDto>) => {
         return (<LoginDialogFooter key="footer" {...footerProps} />);
-      },
-      onClose: () => serviceContainer.dialogService.closeDialog("login")
+      }
     };
-    serviceContainer.dialogService.openDialog("login", loginDialogProps);
+    serviceContainer.dialogService.openDialog(loginDialogProps);
   }
 
   function registerClick(): void {
@@ -60,10 +59,9 @@ export function NotLoggedInView(_props: Props) {
       },
       footerRenderer: (footerProps: BaseDialogProps<RegisterRequestDto>) => {
         return (<RegisterDialogFooter key="footer" {...footerProps} />);
-      },
-      onClose: () => serviceContainer.dialogService.closeDialog("register")
+      }
     };
-    serviceContainer.dialogService.openDialog("register", loginDialogProps);
+    serviceContainer.dialogService.openDialog(loginDialogProps);
   }
   // #endregion
 

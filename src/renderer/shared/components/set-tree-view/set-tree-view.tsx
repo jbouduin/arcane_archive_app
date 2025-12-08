@@ -98,7 +98,7 @@ export function SetTreeView(props: SetTreeViewProps) {
       allScryfallCatalogs: "SKIP",
       allCardSets: "SKIP"
     };
-    void serviceContainer.collectionManagerProxy.postData("library", "/admin/synchronization/partial", postData);
+    void serviceContainer.collectionManagerProxy.postData("library", "/admin/synchronization/partial", postData, true);
     // .then()
   }
   // #endregion

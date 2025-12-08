@@ -1,9 +1,3 @@
-import { Props } from "@blueprintjs/core";
+import { ValidatedInputProps } from "../validated-input/validated-input.props";
 
-export interface PasswordInputProps extends Props {
-  label?: string;
-  placeHolder?: string;
-  disabled?: boolean;
-  value: string;
-  passwordChanged: (newValue: string) => void;
-}
+export type PasswordInputProps = ValidatedInputProps;

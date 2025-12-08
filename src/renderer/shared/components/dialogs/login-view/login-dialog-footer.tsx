@@ -11,16 +11,17 @@ export function LoginDialogFooter(props: BaseDialogProps<LoginRequestDto>) {
 
   // #region Event handling ---------------------------------------------------
   function loginClick(e: React.MouseEvent<HTMLElement, MouseEvent>) {
-    serviceContainer.collectionManagerProxy.postData<LoginRequestDto, LoginResponseDto>("authentication", "/auth/login", props.viewmodel.dto)
-      .then(
-        (r: LoginResponseDto) => {
-          serviceContainer.sessionService.setSessionData(r);
-          if (props.onClose) {
-            props.onClose(e);
-          }
-        },
-        noop
-      );
+    serviceContainer.collectionManagerProxy.postData<LoginRequestDto, LoginResponseDto>(
+      "authentication", "/auth/login", props.viewmodel.dto, true
+    ).then(
+      (r: LoginResponseDto) => {
+        serviceContainer.sessionService.setSessionData(r);
+        if (props.onClose) {
+          props.onClose(e);
+        }
+      },
+      noop
+    );
   }
   // #endregion
 
@@ -29,7 +30,7 @@ export function LoginDialogFooter(props: BaseDialogProps<LoginRequestDto>) {
     <>
       <Button
         key="dologin"
-        disabled={props.viewmodel.hasChanges ? false : true}
+        disabled={props.viewmodel.hasChanges && props.viewmodel.isValid ? false : true}
         onClick={loginClick}
       >
         Login

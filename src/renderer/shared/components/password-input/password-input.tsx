@@ -1,6 +1,6 @@
-import { Button, FormGroup, InputGroup, Intent, Tooltip } from "@blueprintjs/core";
+import { Button, Intent, Tooltip } from "@blueprintjs/core";
 import React from "react";
-import { handleStringChange } from "../util";
+import { ValidatedInput } from "../validated-input/validated-input";
 import { PasswordInputProps } from "./password-input.props";
 
 export function PasswordInput(props: PasswordInputProps) {
@@ -14,39 +14,25 @@ export function PasswordInput(props: PasswordInputProps) {
 
   // #region Rendering --------------------------------------------------------
   return (
-    <FormGroup
-      key={props.label || "password"}
-      label="Password"
-      labelFor="password"
-    >
-      <InputGroup
-        key="password"
-        size="small"
-        placeholder={props.placeHolder || "Enter your password..."}
-        rightElement={
-          (
-            <Tooltip
-              content={`${showPassword ? "Hide" : "Show"} Password`}
-            >
-              <Button
-                disabled={props.disabled}
-                icon={showPassword ? "unlock" : "lock"}
-                intent={Intent.WARNING}
-                onClick={handleLockClick}
-                variant="minimal"
-              />
-            </Tooltip>
-          )
-        }
-        type={showPassword ? "text" : "password"}
-        value={props.value}
-        onChange={
-          handleStringChange((newValue: string) => {
-            props.passwordChanged(newValue);
-          })
-        }
-      />
-    </FormGroup>
+    <ValidatedInput
+      {...props}
+      rightElement={
+        (
+          <Tooltip
+            content={`${showPassword ? "Hide" : "Show"} Password`}
+          >
+            <Button
+              disabled={props.disabled}
+              icon={showPassword ? "unlock" : "lock"}
+              intent={Intent.WARNING}
+              onClick={handleLockClick}
+              variant="minimal"
+            />
+          </Tooltip>
+        )
+      }
+      type={showPassword ? "text" : "password"}
+    />
   );
   // #endregion
 }

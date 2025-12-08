@@ -21,6 +21,12 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
   private _selectedTypes: Array<SelectOption<string>>;
   // #endregion
 
+  // #region BaseViewmodel Members ----------------------------------------------
+  public get isValid(): boolean {
+    return true;
+  }
+  // #endregion
+
   // #region Getters - Setters --------------------------------------------------
   public get selectedAbilities(): Array<SelectOption<string>> {
     return this._selectedAbilities;

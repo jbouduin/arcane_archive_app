@@ -43,15 +43,14 @@ export function ButtonBar(props: ButtonBarProps) {
       },
       footerRenderer: (footerProps: BaseDialogProps<LoginRequestDto>) => {
         return (<LoginDialogFooter key="footer" {...footerProps} />);
-      },
-      onClose: () => serviceContainer.dialogService.closeDialog("login")
+      }
     };
-    serviceContainer.dialogService.openDialog("login", loginDialogProps);
+    serviceContainer.dialogService.openDialog(loginDialogProps);
   }
 
   function logoutClick(): void {
     serviceContainer.collectionManagerProxy
-      .postData<never, ResultDto<never>>("authentication", "/auth/logout", null)
+      .postData<never, ResultDto<never>>("authentication", "/auth/logout", null, false)
       .then(
         (_r: ResultDto<never>) => serviceContainer.sessionService.setSessionData(null),
         noop
@@ -76,10 +75,9 @@ export function ButtonBar(props: ButtonBarProps) {
       },
       footerRenderer: (footerProps: BaseDialogProps<LoginRequestDto>) => {
         return (<SettingsDialogFooter key="footer" {...footerProps} />);
-      },
-      onClose: () => serviceContainer.dialogService.closeDialog("ui-settings")
+      }
     };
-    serviceContainer.dialogService.openDialog("ui-settings", uiSettingsProps);
+    serviceContainer.dialogService.openDialog(uiSettingsProps);
   }
 
   function profileClick(): void {
@@ -100,10 +98,9 @@ export function ButtonBar(props: ButtonBarProps) {
       },
       footerRenderer: (footerProps: BaseDialogProps<LoginRequestDto>) => {
         return (<ProfileDialogFooter key="footer" {...footerProps} />);
-      },
-      onClose: () => serviceContainer.dialogService.closeDialog("profile")
+      }
     };
-    serviceContainer.dialogService.openDialog("profile", profileProp);
+    serviceContainer.dialogService.openDialog(profileProp);
   }
 
   function adminClick(): void {
