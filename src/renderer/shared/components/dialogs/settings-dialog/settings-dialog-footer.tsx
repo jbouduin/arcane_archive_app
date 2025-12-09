@@ -1,10 +1,7 @@
 import { LoginRequestDto } from "../../../dto";
-import { BaseDialogProps } from "../../base/base-dialog";
+import { BaseDialogFooterProps } from "../../base/base-dialog";
 
-export function SettingsDialogFooter(_props: BaseDialogProps<LoginRequestDto>) {
-  // #region State ------------------------------------------------------------
-  // #endregion
-
+export function SettingsDialogFooter(_props: BaseDialogFooterProps<LoginRequestDto>) {
   // #region Rendering --------------------------------------------------------
   return (
     <div>Settings view footer</div>

@@ -59,21 +59,7 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
   }
 
   public async getData<T extends object>(server: MtgServer, path: string, suppressSuccessMessage = true): Promise<T> {
-    if (!path.startsWith("/")) {
-      path = "/" + path;
-    }
-    return fetch(this.apiRoots.get(server) + path)
-      .then(
-        async (response: Response) => {
-          const resultDto: ResultDto<T> = (await response.json()) as ResultDto<T>;
-          if (response.status >= 400) {
-            return this.processErrorResponse(path, resultDto);
-          } else {
-            return this.processSuccessResponse(path, resultDto, suppressSuccessMessage);
-          }
-        },
-        (reason: Error) => this.processRejection(path, reason)
-      );
+    return this.sendRequest("GET", server, path, null, suppressSuccessMessage);
   }
 
   public initialize(sessionService: ISessionService, configuration: ConfigurationDto, showToast: (props: ToastProps, key?: string) => void): void {
@@ -85,35 +71,11 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
   }
 
   public postData<Req extends object, Res extends object>(server: MtgServer, path: string, data: Req | null, suppressSuccessMessage: boolean): Promise<Res> {
-    if (!path.startsWith("/")) {
-      path = "/" + path;
-    }
-    const headers: Record<string, string> = {
-      "accept": "application/json",
-      "Content-Type": "application/json"
-    };
-    if (this.sessionService.jwt != null) {
-      headers["Authorization"] = "Bearer " + this.sessionService.jwt;
-    }
+    return this.sendRequest("POST", server, path, data, suppressSuccessMessage);
+  }
 
-    return fetch(
-      this.apiRoots.get(server) + path,
-      {
-        method: "POST",
-        body: (data != null) ? JSON.stringify(data) : null,
-        headers: headers
-      })
-      .then(
-        async (response: Response) => {
-          const resultDto: ResultDto<Res> = (await response.json()) as ResultDto<Res>;
-          if (response.status >= 400) {
-            return this.processErrorResponse(path, resultDto);
-          } else {
-            return this.processSuccessResponse(path, resultDto, suppressSuccessMessage);
-          }
-        },
-        (reason: Error) => this.processRejection(path, reason)
-      );
+  public putData<Req extends object, Res extends object>(server: MtgServer, path: string, data: Req | null, suppressSuccessMessage: boolean): Promise<Res> {
+    return this.sendRequest("PUT", server, path, data, suppressSuccessMessage);
   }
   // #endregion
 
@@ -197,6 +159,50 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
       );
     }
     return resultDto.data!;
+  }
+
+  private sendRequest<Req extends object, Res extends object>(
+    verb: "GET" | "POST" | "PUT" | "PATCH",
+    server: MtgServer,
+    path: string,
+    data: Req | null,
+    suppressSuccessMessage: boolean): Promise<Res> {
+    return fetch(
+      this.buildPath(server, path),
+      {
+        method: verb,
+        body: (data != null) ? JSON.stringify(data) : null,
+        headers: this.buildHeaders()
+      })
+      .then(
+        async (response: Response) => {
+          const resultDto: ResultDto<Res> = (await response.json()) as ResultDto<Res>;
+          if (response.status >= 400) {
+            return this.processErrorResponse(path, resultDto);
+          } else {
+            return this.processSuccessResponse(path, resultDto, suppressSuccessMessage);
+          }
+        },
+        (reason: Error) => this.processRejection(path, reason)
+      );
+  }
+
+  private buildPath(server: MtgServer, path: string): string {
+    if (!path.startsWith("/")) {
+      path = "/" + path;
+    }
+    return this.apiRoots.get(server) + path;
+  }
+
+  private buildHeaders(): Record<string, string> {
+    const headers: Record<string, string> = {
+      "accept": "application/json",
+      "Content-Type": "application/json"
+    };
+    if (this.sessionService.jwt != null) {
+      headers["Authorization"] = "Bearer " + this.sessionService.jwt;
+    }
+    return headers;
   }
   // #endregion
 }

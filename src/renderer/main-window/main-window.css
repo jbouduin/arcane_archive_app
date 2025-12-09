@@ -83,3 +83,9 @@
 .bp6-tree-root:last-child {
   margin-bottom: 10px;
 }
+
+.dialog-footer-button-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

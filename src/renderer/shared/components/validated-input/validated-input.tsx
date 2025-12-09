@@ -19,7 +19,7 @@ export function ValidatedInput(props: ValidatedInputProps) {
       }
       return result;
     },
-    [touched, props.value]
+    [touched, props.inputProps.value]
   );
   // #endregion
 
@@ -33,14 +33,13 @@ export function ValidatedInput(props: ValidatedInputProps) {
       fill={props.fill}
       helperText={validation.helperText}
       intent={validation.intent}
+      disabled={props.inputProps.disabled}
     >
       <InputGroup
-        {...props}
+        {...props.inputProps}
         id={props.keyPrefix + "-input"}
         onBlur={() => setTouched(true)}
-        onChange={props.onChange}
-        required={props.required}
-        size={props.size || "small"}
+        size={props.inputProps.size || "small"}
       />
     </FormGroup>
   );

@@ -5,8 +5,10 @@ import { MtgServer } from "../../types";
 import { ISessionService } from "./session.service";
 
 export interface ICollectionManagerProxyService {
+  /**
+   * Log server responses in console
+   */
   readonly logServerResponses: boolean;
-
   /**
    * Query cards
    * @param cardQuery the query parameters
@@ -26,6 +28,12 @@ export interface ICollectionManagerProxyService {
     showToast: (props: ToastProps, key?: string) => void
   ): void;
   postData<Req extends object, Res extends object>(
+    server: MtgServer,
+    path: string,
+    data: Req | null,
+    supressSuccessMessage: boolean
+  ): Promise<Res>;
+  putData<Req extends object, Res extends object>(
     server: MtgServer,
     path: string,
     data: Req | null,

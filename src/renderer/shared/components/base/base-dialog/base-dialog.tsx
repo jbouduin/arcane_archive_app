@@ -10,10 +10,15 @@ import { BaseDialogProps } from "./base-dialog.props";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function BaseDialog<T extends BaseViewmodel<any>>(props: BaseDialogProps<T>) {
+  // #region State ------------------------------------------------------------
   const [state, setState] = React.useState(props.viewmodel);
+  // #endregion
 
+  // #region Hooks ------------------------------------------------------------
   const serviceContainer: IServiceContainer = useServices();
+  // #endregion
 
+  // #region Rendering --------------------------------------------------------
   return (
     <Dialog
       {...props}
@@ -33,7 +38,7 @@ export function BaseDialog<T extends BaseViewmodel<any>>(props: BaseDialogProps<
     const bodyProps: BaseDialogBodyProps<T> = {
       ...props,
       viewmodel: state,
-      viewModelChanged: (v: BaseViewmodel<T>) => setState(cloneDeep(v))
+      viewmodelChanged: (v: BaseViewmodel<T>) => setState(cloneDeep(v))
     };
     return props.bodyRenderer(bodyProps);
   }
@@ -42,7 +47,9 @@ export function BaseDialog<T extends BaseViewmodel<any>>(props: BaseDialogProps<
     const footerProps: BaseDialogFooterProps<T> = {
       ...props,
       viewmodel: state,
+      viewmodelChanged: (v: BaseViewmodel<T>) => setState(cloneDeep(v))
     };
     return props.footerRenderer(footerProps);
   }
+  // #endregion
 }

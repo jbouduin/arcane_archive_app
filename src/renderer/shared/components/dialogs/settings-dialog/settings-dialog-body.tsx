@@ -1,11 +1,8 @@
 import { H1 } from "@blueprintjs/core";
-import { BaseDialogBodyProps } from "../../base/base-dialog";
 import { LoginRequestDto } from "../../../dto";
+import { BaseDialogBodyProps } from "../../base/base-dialog";
 
 export function SettingsDialogBody(_props: BaseDialogBodyProps<LoginRequestDto>) {
-  // #region State ------------------------------------------------------------
-  // #endregion
-
   // #region Rendering --------------------------------------------------------
   return (
     <div>

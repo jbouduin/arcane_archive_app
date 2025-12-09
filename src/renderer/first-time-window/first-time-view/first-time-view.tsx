@@ -35,7 +35,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
                 </DialogBody>
                 <DialogFooter>
                   <Button
-                    disabled={!props.configuration.hasChanges}
+                    disabled={!props.configuration.hasChanges || !props.configuration.isValid}
                     icon="floppy-disk"
                     onClick={() => {
                       void serviceContainer.configurationService

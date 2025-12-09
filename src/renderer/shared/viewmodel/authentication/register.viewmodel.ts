@@ -1,17 +1,9 @@
-import { stringHasMinimalLength, stringsNotNullOrEmpty } from "../../components/util";
+import { stringCouldBeEmail, stringHasMinimalLength, stringNotNullOrEmpty } from "../../components/util";
 import { RegisterRequestDto } from "../../dto";
 import { ValidationResult } from "../../types";
 import { BaseViewmodel } from "../base.viewmodel";
 
 export class RegisterViewmodel extends BaseViewmodel<RegisterRequestDto> {
-  // #region BaseViewmodel Members --------------------------------------------
-  public get isValid(): boolean {
-    return stringsNotNullOrEmpty(this._dto.userName, this._dto.email, this._dto.emailRepeat, this._dto.password, this._dto.passwordRepeat) &&
-      this._dto.email == this._dto.emailRepeat &&
-      this._dto.password == this._dto.passwordRepeat;
-  }
-  // #endregion
-
   // #region Getters/Setters for Dto Fields -----------------------------------
   public get userName(): string {
     return this._dto.userName;
@@ -54,58 +46,81 @@ export class RegisterViewmodel extends BaseViewmodel<RegisterRequestDto> {
   }
 
   public get firstName(): string {
-    return this._dto.firstName;
+    return this._dto.firstName || "";
   }
 
   public set firstName(value: string) {
-    this._dto.firstName = value;
+    this._dto.firstName = stringNotNullOrEmpty(value) ? value : null;
   }
 
   public get lastName(): string {
-    return this._dto.lastName;
+    return this._dto.lastName || "";
   }
 
   public set lastName(value: string) {
-    this._dto.lastName = value;
+    this._dto.lastName = stringNotNullOrEmpty(value) ? value : null;
   }
   // #endregion
 
   // #region Validation methods -----------------------------------------------
-  public userNameValidation(): ValidationResult {
-    return stringHasMinimalLength(this._dto.userName, 8)
-      ? { helperText: undefined, intent: "none" }
-      : { helperText: "Username length must be 8 or more", intent: "danger" };
+  public validateUserName(): ValidationResult {
+    let result: ValidationResult;
+    if (stringHasMinimalLength(this._dto.userName, 8)) {
+      this.setFieldValid("userName");
+      result = this.validValidation;
+    } else {
+      this.setFieldInvalid("userName");
+      result = { helperText: "Username length must be 8 or more", intent: "danger" };
+    }
+    return result;
   }
 
-  public emailValidation(): ValidationResult {
-    return this.couldBeEmail(this._dto.email)
-      ? { helperText: undefined, intent: "none" }
-      : { helperText: "Please enter a valid email address", intent: "danger" };
+  public validateEmail(): ValidationResult {
+    let result: ValidationResult;
+    if (stringCouldBeEmail(this._dto.email)) {
+      this.setFieldValid("email");
+      result = this.validValidation;
+    } else {
+      this.setFieldInvalid("email");
+      result = { helperText: "Please enter a valid email address", intent: "danger" };
+    }
+    return result;
   }
 
-  public emailRepeatValidation(): ValidationResult {
-    return this._dto.email == this._dto.emailRepeat
-      ? { helperText: undefined, intent: "none" }
-      : { helperText: "Email and repeated email do not correspond", intent: "danger" };
+  public validateEmailRepeat(): ValidationResult {
+    let result: ValidationResult;
+    if (this._dto.email == this._dto.emailRepeat) {
+      this.setFieldValid("emailRepeat");
+      result = this.validValidation;
+    } else {
+      this.setFieldInvalid("emailRepeat");
+      result = { helperText: "Email and repeated email do not correspond", intent: "danger" };
+    }
+    return result;
   }
 
-  public passwordValidation(): ValidationResult {
-    return stringHasMinimalLength(this._dto.password, 8)
-      ? { helperText: undefined, intent: "none" }
-      : { helperText: "Password length must be 8 or more", intent: "danger" };
+  public validatePassword(): ValidationResult {
+    let result: ValidationResult;
+    if (stringHasMinimalLength(this._dto.password, 8)) {
+      this.setFieldValid("password");
+      result = this.validValidation;
+    } else {
+      this.setFieldInvalid("password");
+      result = { helperText: "Password length must be 8 or more", intent: "danger" };
+    }
+    return result;
   }
 
-  public passwordRepeatValidation(): ValidationResult {
-    return this._dto.password == this._dto.passwordRepeat
-      ? { helperText: undefined, intent: "none" }
-      : { helperText: "Password and repeated password do not correspond", intent: "danger" };
-  }
-  // #endregion
-
-  // #region Auxiliary Methods ------------------------------------------------
-  private couldBeEmail(input: string): boolean {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(input);
+  public validatePasswordRepeat(): ValidationResult {
+    let result: ValidationResult;
+    if (this._dto.password == this._dto.passwordRepeat) {
+      this.setFieldValid("passwordRepeat");
+      result = this.validValidation;
+    } else {
+      this.setFieldInvalid("passwordRepeat");
+      result = { helperText: "Password and repeated password do not correspond", intent: "danger" };
+    }
+    return result;
   }
   // #endregion
 }

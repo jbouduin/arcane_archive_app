@@ -1,3 +1,4 @@
+export * from "./account.dto";
 export * from "./card-query-params.dto";
 export * from "./color.dto";
 export * from "./language.dto";
@@ -11,7 +12,9 @@ export * from "./library-ruling.dto";
 export * from "./login-request.dto";
 export * from "./login-response.dto";
 export * from "./mtg-set.dto";
+export * from "./profile.dto";
 export * from "./query-result.dto";
 export * from "./register-request.dto";
 export * from "./sync-param.dto";
 export * from "./sync-task-param.dto";
+export * from "./user.dto";

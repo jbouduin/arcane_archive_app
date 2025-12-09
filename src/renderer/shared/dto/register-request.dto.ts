@@ -4,6 +4,6 @@ export type RegisterRequestDto = {
   passwordRepeat: string;
   email: string;
   emailRepeat: string;
-  firstName: string;
-  lastName: string;
+  firstName: string | null;
+  lastName: string | null;
 };

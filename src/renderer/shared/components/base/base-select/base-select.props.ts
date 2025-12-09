@@ -3,6 +3,7 @@ import { SelectOption } from "../../../types";
 
 export interface BaseSelectProps<T> extends Props {
   allItems: Array<SelectOption<T>>;
+  disabled?: boolean;
   formGroupLabel: string;
   selectedItems: Array<SelectOption<T>>;
 

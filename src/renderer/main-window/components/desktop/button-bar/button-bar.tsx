@@ -3,15 +3,15 @@ import { noop } from "lodash";
 import * as React from "react";
 import { ResultDto } from "../../../../../common/dto/mtg-collection";
 import { useServices, useSession } from "../../../../hooks";
-import { BaseDialogBodyProps, BaseDialogProps } from "../../../../shared/components/base/base-dialog";
+import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../../../../shared/components/base/base-dialog";
 import { LoginDialogBody } from "../../../../shared/components/dialogs/login-view/login-dialog-body";
 import { LoginDialogFooter } from "../../../../shared/components/dialogs/login-view/login-dialog-footer";
 import { ProfileDialogBody } from "../../../../shared/components/dialogs/profile-dialog/profile-dialog-body";
 import { ProfileDialogFooter } from "../../../../shared/components/dialogs/profile-dialog/profile-dialog-footer";
 import { SettingsDialogBody } from "../../../../shared/components/dialogs/settings-dialog/settings-dialog-body";
 import { SettingsDialogFooter } from "../../../../shared/components/dialogs/settings-dialog/settings-dialog-footer";
-import { LoginRequestDto } from "../../../../shared/dto";
-import { LoginViewmodel } from "../../../../shared/viewmodel";
+import { LoginRequestDto, UserDto } from "../../../../shared/dto";
+import { LoginViewmodel, UserViewmodel } from "../../../../shared/viewmodel";
 import { EDesktopView } from "../desktop-view.enum";
 import { ButtonBarButton } from "./button-bar-button";
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
@@ -39,10 +39,10 @@ export function ButtonBar(props: ButtonBarProps) {
         }
       ),
       bodyRenderer: (bodyProps: BaseDialogBodyProps<LoginRequestDto>) => {
-        return (<LoginDialogBody key="body" {...bodyProps} />);
+        return (<LoginDialogBody {...bodyProps} />);
       },
-      footerRenderer: (footerProps: BaseDialogProps<LoginRequestDto>) => {
-        return (<LoginDialogFooter key="footer" {...footerProps} />);
+      footerRenderer: (footerProps: BaseDialogFooterProps<LoginRequestDto>) => {
+        return (<LoginDialogFooter {...footerProps} />);
       }
     };
     serviceContainer.dialogService.openDialog(loginDialogProps);
@@ -71,36 +71,38 @@ export function ButtonBar(props: ButtonBarProps) {
         }
       ),
       bodyRenderer: (bodyProps: BaseDialogBodyProps<LoginRequestDto>) => {
-        return (<SettingsDialogBody key="body" {...bodyProps} />);
+        return (<SettingsDialogBody {...bodyProps} />);
       },
-      footerRenderer: (footerProps: BaseDialogProps<LoginRequestDto>) => {
-        return (<SettingsDialogFooter key="footer" {...footerProps} />);
+      footerRenderer: (footerProps: BaseDialogFooterProps<LoginRequestDto>) => {
+        return (<SettingsDialogFooter {...footerProps} />);
       }
     };
     serviceContainer.dialogService.openDialog(uiSettingsProps);
   }
 
   function profileClick(): void {
-    const profileProp: BaseDialogProps<LoginRequestDto> = {
-      isOpen: true,
-      isCloseButtonShown: true,
-      canEscapeKeyClose: true,
-      canOutsideClickClose: false,
-      title: "Profile",
-      viewmodel: new LoginViewmodel(
-        {
-          user: "sys_admi",
-          password: "sys_admin"
-        }
-      ),
-      bodyRenderer: (bodyProps: BaseDialogBodyProps<LoginRequestDto>) => {
-        return (<ProfileDialogBody key="body" {...bodyProps} />);
-      },
-      footerRenderer: (footerProps: BaseDialogProps<LoginRequestDto>) => {
-        return (<ProfileDialogFooter key="footer" {...footerProps} />);
-      }
-    };
-    serviceContainer.dialogService.openDialog(profileProp);
+    serviceContainer.collectionManagerProxy
+      .getData<UserDto>("authentication", "/app/account")
+      .then(
+        (userDto: UserDto) => {
+          const profileProp: BaseDialogProps<UserDto> = {
+            isOpen: true,
+            isCloseButtonShown: true,
+            canEscapeKeyClose: true,
+            canOutsideClickClose: false,
+            title: "Profile",
+            viewmodel: new UserViewmodel(userDto),
+            bodyRenderer: (bodyProps: BaseDialogBodyProps<UserDto>) => {
+              return (<ProfileDialogBody {...bodyProps} />);
+            },
+            footerRenderer: (footerProps: BaseDialogFooterProps<UserDto>) => {
+              return (<ProfileDialogFooter {...footerProps} />);
+            }
+          };
+          serviceContainer.dialogService.openDialog(profileProp);
+        },
+        noop
+      );
   }
 
   function adminClick(): void {

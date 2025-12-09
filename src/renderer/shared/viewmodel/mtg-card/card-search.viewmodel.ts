@@ -1,3 +1,4 @@
+import { addSelectOption, clearSelection, removeSelectOption } from "../../components/util";
 import { ColorDto, MtgSetDto } from "../../dto";
 import { CardSearchDto } from "../../dto/card-search.dto";
 import { ColorType, SelectOption } from "../../types";
@@ -109,7 +110,7 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
   public addColor(type: ColorType, color: SelectOption<ColorDto>): void {
     switch (type) {
       case "card":
-        this.addSelectOption(
+        addSelectOption(
           this._dto.selectedCardColors,
           this._selectedCardColors,
           color,
@@ -117,7 +118,7 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
         );
         break;
       case "identity":
-        this.addSelectOption(
+        addSelectOption(
           this._dto.selectedIdentityColors,
           this._selectedIdentityColors,
           color,
@@ -125,7 +126,7 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
         );
         break;
       case "produced_mana":
-        this.addSelectOption(
+        addSelectOption(
           this._dto.selectedProducedManaColors,
           this._selectedProducedManaColors,
           color,
@@ -138,21 +139,21 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
   public removeColor(type: ColorType, color: SelectOption<ColorDto>): void {
     switch (type) {
       case "card": {
-        this.removeSelectOption(
+        removeSelectOption(
           this._dto.selectedCardColors,
           this._selectedCardColors,
           color);
         break;
       }
       case "identity": {
-        this.removeSelectOption(
+        removeSelectOption(
           this._dto.selectedIdentityColors,
           this._selectedIdentityColors,
           color);
         break;
       }
       case "produced_mana": {
-        this.removeSelectOption(
+        removeSelectOption(
           this._dto.selectedProducedManaColors,
           this._selectedProducedManaColors,
           color);
@@ -164,13 +165,13 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
   public clearColorSelection(type: ColorType): void {
     switch (type) {
       case "card":
-        this.clearSelection(this._dto.selectedCardColors, this._selectedCardColors);
+        clearSelection(this._dto.selectedCardColors, this._selectedCardColors);
         break;
       case "identity":
-        this.clearSelection(this._dto.selectedIdentityColors, this._selectedIdentityColors);
+        clearSelection(this._dto.selectedIdentityColors, this._selectedIdentityColors);
         break;
       case "produced_mana":
-        this.clearSelection(this._dto.selectedProducedManaColors, this._selectedProducedManaColors);
+        clearSelection(this._dto.selectedProducedManaColors, this._selectedProducedManaColors);
         break;
     }
   }
@@ -178,184 +179,156 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
 
   // #region Ability ----------------------------------------------------------
   public addAbility(ability: SelectOption<string>): void {
-    this.addSelectOption(this._dto.selectedAbilities, this._selectedAbilities, ability);
+    addSelectOption(this._dto.selectedAbilities, this._selectedAbilities, ability);
   }
 
   public removeAbility(ability: SelectOption<string>): void {
-    this.removeSelectOption(this._dto.selectedAbilities, this._selectedAbilities, ability);
+    removeSelectOption(this._dto.selectedAbilities, this._selectedAbilities, ability);
   }
 
   public clearAbilitySelection(): void {
-    this.clearSelection(this._dto.selectedAbilities, this._selectedAbilities);
+    clearSelection(this._dto.selectedAbilities, this._selectedAbilities);
   }
   // #endregion
 
   // #region Actions ----------------------------------------------------------
   public addAction(action: SelectOption<string>): void {
-    this.addSelectOption(this._dto.selectedActions, this._selectedActions, action);
+    addSelectOption(this._dto.selectedActions, this._selectedActions, action);
   }
 
   public removeAction(action: SelectOption<string>): void {
-    this.removeSelectOption(this._dto.selectedActions, this._selectedActions, action);
+    removeSelectOption(this._dto.selectedActions, this._selectedActions, action);
   }
 
   public clearActionSelection(): void {
-    this.clearSelection(this._dto.selectedActions, this._selectedActions);
+    clearSelection(this._dto.selectedActions, this._selectedActions);
   }
   // #endregion
 
   // #region CardName -----------------------------------------------------------
   public addCardName(cardName: SelectOption<string>): void {
-    this.addSelectOption(this._dto.selectedCardNames, this._selectedCardNames, cardName);
+    addSelectOption(this._dto.selectedCardNames, this._selectedCardNames, cardName);
   }
 
   public removeCardName(cardName: SelectOption<string>): void {
-    this.removeSelectOption(this._dto.selectedCardNames, this._selectedCardNames, cardName);
+    removeSelectOption(this._dto.selectedCardNames, this._selectedCardNames, cardName);
   }
 
   public clearCardNameSelection(): void {
-    this.clearSelection(this._dto.selectedCardNames, this._selectedCardNames);
+    clearSelection(this._dto.selectedCardNames, this._selectedCardNames);
   }
   // #endregion
 
   // #region GameFormat -------------------------------------------------------
   public addGameFormat(gameFormat: SelectOption<string>): void {
-    this.addSelectOption(this._dto.selectedGameFormats, this._selectedGameFormats, gameFormat);
+    addSelectOption(this._dto.selectedGameFormats, this._selectedGameFormats, gameFormat);
   }
 
   public removeGameFormat(gameFormat: SelectOption<string>): void {
-    this.removeSelectOption(this._dto.selectedGameFormats, this._selectedGameFormats, gameFormat);
+    removeSelectOption(this._dto.selectedGameFormats, this._selectedGameFormats, gameFormat);
   }
 
   public clearGameFormatSelection(): void {
-    this.clearSelection(this._dto.selectedGameFormats, this._selectedGameFormats);
+    clearSelection(this._dto.selectedGameFormats, this._selectedGameFormats);
   }
   // #endregion
 
   // #region Rarity -----------------------------------------------------------
   public addRarity(rarity: SelectOption<string>): void {
-    this.addSelectOption(this._dto.selectedRarities, this._selectedRarities, rarity);
+    addSelectOption(this._dto.selectedRarities, this._selectedRarities, rarity);
   }
 
   public removeRarity(rarity: SelectOption<string>): void {
-    this.removeSelectOption(this._dto.selectedRarities, this._selectedRarities, rarity);
+    removeSelectOption(this._dto.selectedRarities, this._selectedRarities, rarity);
   }
 
   public clearRaritiesSelection(): void {
-    this.clearSelection(this._dto.selectedRarities, this._selectedRarities);
+    clearSelection(this._dto.selectedRarities, this._selectedRarities);
   }
   // #endregion
 
   // #region Card set ---------------------------------------------------------
   public addCardSet(cardSet: SelectOption<MtgSetDto>): void {
-    this.addSelectOption(this._dto.selectedSets, this._selectedSets, cardSet);
+    addSelectOption(this._dto.selectedSets, this._selectedSets, cardSet);
   }
 
   public removeCardSet(cardSet: SelectOption<MtgSetDto>): void {
-    this.removeSelectOption(this._dto.selectedSets, this._selectedSets, cardSet);
+    removeSelectOption(this._dto.selectedSets, this._selectedSets, cardSet);
   }
 
   public clearCardSetSelection(): void {
-    this.clearSelection(this._dto.selectedSets, this._selectedSets);
+    clearSelection(this._dto.selectedSets, this._selectedSets);
   }
   // #endregion
 
   // #region Subtypes ---------------------------------------------------------
   public addSubType(subtype: SelectOption<string>): void {
-    this.addSelectOption(this._dto.selectedSubTypes, this._selectedSubTypes, subtype);
+    addSelectOption(this._dto.selectedSubTypes, this._selectedSubTypes, subtype);
   }
 
   public removeSubType(subtype: SelectOption<string>): void {
-    this.removeSelectOption(this._dto.selectedSubTypes, this._selectedSubTypes, subtype);
+    removeSelectOption(this._dto.selectedSubTypes, this._selectedSubTypes, subtype);
   }
 
   public clearSubTypeSelection(): void {
-    this.clearSelection(this._dto.selectedSubTypes, this._selectedSubTypes);
+    clearSelection(this._dto.selectedSubTypes, this._selectedSubTypes);
   }
   // #endregion
 
   // #region Card Types -------------------------------------------------------
   public addCardType(cardType: SelectOption<string>): void {
-    this.addSelectOption(this._dto.selectedTypes, this._selectedTypes, cardType);
+    addSelectOption(this._dto.selectedTypes, this._selectedTypes, cardType);
   }
 
   public removeCardType(cardType: SelectOption<string>): void {
-    this.removeSelectOption(this._dto.selectedTypes, this._selectedTypes, cardType);
+    removeSelectOption(this._dto.selectedTypes, this._selectedTypes, cardType);
   }
 
   public clearCardTypeSelection(): void {
-    this.clearSelection(this._dto.selectedTypes, this._selectedTypes);
+    clearSelection(this._dto.selectedTypes, this._selectedTypes);
   }
 
   // #endregion
 
   // #region SuperTypes -------------------------------------------------------
   public addSuperType(superType: SelectOption<string>): void {
-    this.addSelectOption(this._dto.selectedSuperTypes, this._selectedSuperTypes, superType);
+    addSelectOption(this._dto.selectedSuperTypes, this._selectedSuperTypes, superType);
   }
 
   public removeSuperType(superType: SelectOption<string>): void {
-    this.removeSelectOption(this._dto.selectedSuperTypes, this._selectedSuperTypes, superType);
+    removeSelectOption(this._dto.selectedSuperTypes, this._selectedSuperTypes, superType);
   }
 
   public clearSuperTypeSelection(): void {
-    this.clearSelection(this._dto.selectedSuperTypes, this._selectedSuperTypes);
+    clearSelection(this._dto.selectedSuperTypes, this._selectedSuperTypes);
   }
   // #endregion
 
   // #region Powers -----------------------------------------------------------
   public addPower(power: SelectOption<string>): void {
-    this.addSelectOption(this._dto.selectedPowers, this.selectedPowers, power);
+    addSelectOption(this._dto.selectedPowers, this.selectedPowers, power);
   }
 
   public removePower(power: SelectOption<string>): void {
-    this.removeSelectOption(this._dto.selectedPowers, this.selectedPowers, power);
+    removeSelectOption(this._dto.selectedPowers, this.selectedPowers, power);
   }
 
   public clearPowerSelection(): void {
-    this.clearSelection(this._dto.selectedPowers, this.selectedPowers);
+    clearSelection(this._dto.selectedPowers, this.selectedPowers);
   }
   // #endregion
 
   // #region Toughnesses ------------------------------------------------------
   public addToughness(toughness: SelectOption<string>): void {
-    this.addSelectOption(this._dto.selectedToughnesses, this._selectedToughnesses, toughness);
+    addSelectOption(this._dto.selectedToughnesses, this._selectedToughnesses, toughness);
   }
 
   public removeToughness(toughness: SelectOption<string>): void {
-    this.removeSelectOption(this._dto.selectedToughnesses, this._selectedToughnesses, toughness);
+    removeSelectOption(this._dto.selectedToughnesses, this._selectedToughnesses, toughness);
   }
 
   public clearToughnessSelection(): void {
-    this.clearSelection(this._dto.selectedToughnesses, this._selectedToughnesses);
-  }
-  // #endregion
-
-  // #region Auxiliary Methods ------------------------------------------------
-  private addSelectOption<T>(
-    dtoArray: Array<T>,
-    viewModelArray: Array<SelectOption<T>>,
-    option: SelectOption<T>,
-    sort?: (a: SelectOption<T>, b: SelectOption<T>) => number): void {
-    dtoArray.push(option.value);
-    viewModelArray.push(option);
-    if (sort) {
-      viewModelArray.sort(sort);
-    } else {
-      viewModelArray.sort((a: SelectOption<T>, b: SelectOption<T>) => a.label.localeCompare(b.label));
-    }
-  }
-
-  private removeSelectOption<T>(dtoArray: Array<T>, viewModelArray: Array<SelectOption<T>>, option: SelectOption<T>): void {
-    let idx = dtoArray.indexOf(option.value);
-    dtoArray.splice(idx, 1);
-    idx = viewModelArray.findIndex((so: SelectOption<T>) => so.value == option.value);
-    viewModelArray.splice(idx, 1);
-  }
-
-  private clearSelection<T>(dtoArray: Array<T>, viewModelArray: Array<SelectOption<T>>): void {
-    dtoArray.splice(0);
-    viewModelArray.splice(0);
+    clearSelection(this._dto.selectedToughnesses, this._selectedToughnesses);
   }
   // #endregion
 }

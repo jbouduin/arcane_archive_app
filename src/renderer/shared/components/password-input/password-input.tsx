@@ -1,6 +1,7 @@
 import { Button, Intent, Tooltip } from "@blueprintjs/core";
 import React from "react";
 import { ValidatedInput } from "../validated-input/validated-input";
+import { ValidatedInputProps } from "../validated-input/validated-input.props";
 import { PasswordInputProps } from "./password-input.props";
 
 export function PasswordInput(props: PasswordInputProps) {
@@ -15,24 +16,29 @@ export function PasswordInput(props: PasswordInputProps) {
   // #region Rendering --------------------------------------------------------
   return (
     <ValidatedInput
-      {...props}
-      rightElement={
-        (
-          <Tooltip
-            content={`${showPassword ? "Hide" : "Show"} Password`}
-          >
-            <Button
-              disabled={props.disabled}
-              icon={showPassword ? "unlock" : "lock"}
-              intent={Intent.WARNING}
-              onClick={handleLockClick}
-              variant="minimal"
-            />
-          </Tooltip>
-        )
-      }
-      type={showPassword ? "text" : "password"}
+      {...buildValidatedInputProps()}
     />
   );
+  // #endregion
+
+  // #region Auxiliary Methods ------------------------------------------------
+  function buildValidatedInputProps(): ValidatedInputProps {
+    const result: ValidatedInputProps = { ...props };
+    props.inputProps.rightElement = (
+      <Tooltip
+        content={`${showPassword ? "Hide" : "Show"} Password`}
+      >
+        <Button
+          disabled={props.inputProps.disabled}
+          icon={showPassword ? "unlock" : "lock"}
+          intent={Intent.WARNING}
+          onClick={handleLockClick}
+          variant="minimal"
+        />
+      </Tooltip>
+    );
+    props.inputProps.type = showPassword ? "text" : "password";
+    return result;
+  }
   // #endregion
 }

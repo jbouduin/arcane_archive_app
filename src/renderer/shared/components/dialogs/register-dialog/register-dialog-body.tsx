@@ -14,16 +14,16 @@ export function RegisterDialogBody(props: BaseDialogBodyProps<RegisterRequestDto
         keyPrefix="user-name"
         label="Username"
         labelInfo="*"
-        required={true}
-        value={(props.viewmodel as RegisterViewmodel).userName}
-        onChange={
-          handleStringChange((newValue: string) => {
+        validate={() => (props.viewmodel as RegisterViewmodel).validateUserName()}
+        inputProps={{
+          required: true,
+          value: (props.viewmodel as RegisterViewmodel).userName,
+          onChange: handleStringChange((newValue: string) => {
             (props.viewmodel as RegisterViewmodel).userName = newValue;
-            props.viewModelChanged(props.viewmodel);
-          })
-        }
-        placeholder="Enter a username..."
-        validate={() => (props.viewmodel as RegisterViewmodel).userNameValidation()}
+            props.viewmodelChanged(props.viewmodel);
+          }),
+          placeholder: "Enter a username..."
+        }}
       />
       <ControlGroup
         key="emails-group"
@@ -34,33 +34,37 @@ export function RegisterDialogBody(props: BaseDialogBodyProps<RegisterRequestDto
           keyPrefix="email"
           label="Email"
           labelInfo="*"
-          inputMode="email"
-          placeholder="Enter your email address..."
-          onChange={
-            handleStringChange((newValue: string) => {
-              (props.viewmodel as RegisterViewmodel).email = newValue;
-              props.viewModelChanged(props.viewmodel);
-            })
-          }
-          validate={() => (props.viewmodel as RegisterViewmodel).emailValidation()}
-          type="email"
-          value={(props.viewmodel as RegisterViewmodel).email}
+          validate={() => (props.viewmodel as RegisterViewmodel).validateEmail()}
+          inputProps={{
+            required: true,
+            inputMode: "email",
+            placeholder: "Enter your email address...",
+            onChange:
+              handleStringChange((newValue: string) => {
+                (props.viewmodel as RegisterViewmodel).email = newValue;
+                props.viewmodelChanged(props.viewmodel);
+              }),
+            type: "email",
+            value: (props.viewmodel as RegisterViewmodel).email
+          }}
         />
         <ValidatedInput
           keyPrefix="repeat-email"
           label="Repeat Email"
           labelInfo="*"
-          inputMode="email"
-          placeholder="Repeat your email address..."
-          onChange={
-            handleStringChange((newValue: string) => {
-              (props.viewmodel as RegisterViewmodel).emailRepeat = newValue;
-              props.viewModelChanged(props.viewmodel);
-            })
-          }
-          validate={() => (props.viewmodel as RegisterViewmodel).emailRepeatValidation()}
-          type="email"
-          value={(props.viewmodel as RegisterViewmodel).emailRepeat}
+          validate={() => (props.viewmodel as RegisterViewmodel).validateEmailRepeat()}
+          inputProps={{
+            required: true,
+            inputMode: "email",
+            placeholder: "Repeat your email address...",
+            onChange:
+              handleStringChange((newValue: string) => {
+                (props.viewmodel as RegisterViewmodel).emailRepeat = newValue;
+                props.viewmodelChanged(props.viewmodel);
+              }),
+            type: "email",
+            value: (props.viewmodel as RegisterViewmodel).emailRepeat
+          }}
         />
       </ControlGroup>
       <ControlGroup
@@ -72,25 +76,31 @@ export function RegisterDialogBody(props: BaseDialogBodyProps<RegisterRequestDto
           keyPrefix="password"
           label="Password"
           labelInfo="*"
-          placeholder="Enter your password"
-          value={((props.viewmodel as RegisterViewmodel)).password}
-          validate={() => (props.viewmodel as RegisterViewmodel).passwordValidation()}
-          onChange={handleStringChange((newValue: string) => {
-            (props.viewmodel as RegisterViewmodel).password = newValue;
-            props.viewModelChanged(props.viewmodel);
-          })}
+          validate={() => (props.viewmodel as RegisterViewmodel).validatePassword()}
+          inputProps={{
+            required: true,
+            onChange: handleStringChange((newValue: string) => {
+              (props.viewmodel as RegisterViewmodel).password = newValue;
+              props.viewmodelChanged(props.viewmodel);
+            }),
+            placeholder: "Enter your password",
+            value: ((props.viewmodel as RegisterViewmodel)).password
+          }}
         />
         <PasswordInput
           keyPrefix="repeat-password"
           label="Repeat Password"
           labelInfo="*"
-          placeholder="Repeat your password"
-          value={((props.viewmodel as RegisterViewmodel)).passwordRepeat}
-          validate={() => (props.viewmodel as RegisterViewmodel).passwordRepeatValidation()}
-          onChange={handleStringChange((newValue: string) => {
-            (props.viewmodel as RegisterViewmodel).passwordRepeat = newValue;
-            props.viewModelChanged(props.viewmodel);
-          })}
+          validate={() => (props.viewmodel as RegisterViewmodel).validatePasswordRepeat()}
+          inputProps={{
+            required: true,
+            placeholder: "Repeat your password",
+            value: ((props.viewmodel as RegisterViewmodel)).passwordRepeat,
+            onChange: handleStringChange((newValue: string) => {
+              (props.viewmodel as RegisterViewmodel).passwordRepeat = newValue;
+              props.viewmodelChanged(props.viewmodel);
+            })
+          }}
         />
       </ControlGroup>
       <ControlGroup
@@ -110,7 +120,7 @@ export function RegisterDialogBody(props: BaseDialogBodyProps<RegisterRequestDto
             onChange={
               handleStringChange((newValue: string) => {
                 (props.viewmodel as RegisterViewmodel).firstName = newValue;
-                props.viewModelChanged(props.viewmodel);
+                props.viewmodelChanged(props.viewmodel);
               })
             }
             size="small"
@@ -130,7 +140,7 @@ export function RegisterDialogBody(props: BaseDialogBodyProps<RegisterRequestDto
             onChange={
               handleStringChange((newValue: string) => {
                 (props.viewmodel as RegisterViewmodel).lastName = newValue;
-                props.viewModelChanged(props.viewmodel);
+                props.viewmodelChanged(props.viewmodel);
               })
             }
             size="small"

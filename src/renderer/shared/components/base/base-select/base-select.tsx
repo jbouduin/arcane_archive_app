@@ -26,9 +26,11 @@ export function BaseSelect<T>(props: BaseSelectProps<T>) {
       <FormGroup
         key={props.formGroupLabel}
         label={props.formGroupLabel}
+        disabled={props.disabled}
       >
         <MultiSelect<SelectOption<T>>
           initialContent={null}
+          disabled={props.disabled}
           itemListPredicate={filterOptionList}
           itemRenderer={(item: SelectOption<T>, itemProps: ItemRendererProps) => itemRenderer(item, itemProps)}
           items={props.allItems}

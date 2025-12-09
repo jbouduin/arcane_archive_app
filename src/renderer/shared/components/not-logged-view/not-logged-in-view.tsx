@@ -2,7 +2,7 @@ import { Button, H4, Props } from "@blueprintjs/core";
 import { useServices } from "../../../hooks";
 import { LoginRequestDto, RegisterRequestDto } from "../../dto";
 import { LoginViewmodel, RegisterViewmodel } from "../../viewmodel";
-import { BaseDialogBodyProps, BaseDialogProps } from "../base/base-dialog";
+import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../base/base-dialog";
 import { LoginDialogBody } from "../dialogs/login-view/login-dialog-body";
 import { LoginDialogFooter } from "../dialogs/login-view/login-dialog-footer";
 import { RegisterDialogBody } from "../dialogs/register-dialog/register-dialog-body";
@@ -28,10 +28,10 @@ export function NotLoggedInView(_props: Props) {
         }
       ),
       bodyRenderer: (bodyProps: BaseDialogBodyProps<LoginRequestDto>) => {
-        return (<LoginDialogBody key="body" {...bodyProps} />);
+        return (<LoginDialogBody {...bodyProps} />);
       },
-      footerRenderer: (footerProps: BaseDialogProps<LoginRequestDto>) => {
-        return (<LoginDialogFooter key="footer" {...footerProps} />);
+      footerRenderer: (footerProps: BaseDialogFooterProps<LoginRequestDto>) => {
+        return (<LoginDialogFooter {...footerProps} />);
       }
     };
     serviceContainer.dialogService.openDialog(loginDialogProps);
@@ -55,10 +55,10 @@ export function NotLoggedInView(_props: Props) {
       title: "Register",
       viewmodel: new RegisterViewmodel(registerDto),
       bodyRenderer: (bodyProps: BaseDialogBodyProps<RegisterRequestDto>) => {
-        return (<RegisterDialogBody key="body" {...bodyProps} />);
+        return (<RegisterDialogBody {...bodyProps} />);
       },
-      footerRenderer: (footerProps: BaseDialogProps<RegisterRequestDto>) => {
-        return (<RegisterDialogFooter key="footer" {...footerProps} />);
+      footerRenderer: (footerProps: BaseDialogFooterProps<RegisterRequestDto>) => {
+        return (<RegisterDialogFooter {...footerProps} />);
       }
     };
     serviceContainer.dialogService.openDialog(loginDialogProps);

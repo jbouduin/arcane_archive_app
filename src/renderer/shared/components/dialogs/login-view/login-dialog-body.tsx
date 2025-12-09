@@ -1,46 +1,44 @@
-import { FormGroup, InputGroup, SectionCard } from "@blueprintjs/core";
+import { SectionCard } from "@blueprintjs/core";
 import { LoginRequestDto } from "../../../dto";
 import { LoginViewmodel } from "../../../viewmodel";
 import { BaseDialogBodyProps } from "../../base/base-dialog";
 import { PasswordInput } from "../../password-input/password-input";
 import { handleStringChange } from "../../util";
+import { ValidatedInput } from "../../validated-input/validated-input";
 
 export function LoginDialogBody(props: BaseDialogBodyProps<LoginRequestDto>) {
   // #region Rendering --------------------------------------------------------
   return (
     <SectionCard padded={false}>
-      <FormGroup
-        key="User"
-        label="Username or Email"
-        labelFor="user-name"
+      <ValidatedInput
+        keyPrefix="user"
+        label="Username or email"
         labelInfo="*"
-      >
-        <InputGroup
-          id="user-name"
-          inputMode="text"
-          placeholder="Enter your username or email address..."
-          onChange={
+        validate={() => (props.viewmodel as LoginViewmodel).validateUser()}
+        inputProps={{
+          required: true,
+          inputMode: "text",
+          placeholder: "Enter your username or email address...",
+          onChange:
             handleStringChange((newValue: string) => {
               (props.viewmodel as LoginViewmodel).user = newValue;
-              props.viewModelChanged(props.viewmodel);
-            })
-          }
-          required={true}
-          size="small"
-          value={(props.viewmodel as LoginViewmodel).user}
-        />
-      </FormGroup>
+              props.viewmodelChanged(props.viewmodel);
+            }),
+          value: ((props.viewmodel as LoginViewmodel)).user
+        }}
+      />
       <PasswordInput
         keyPrefix="password"
         label="Password"
         labelInfo="*"
-        value={((props.viewmodel as LoginViewmodel)).password}
-        onChange={handleStringChange((newValue: string) => {
-          (props.viewmodel as LoginViewmodel).password = newValue;
-          props.viewModelChanged(props.viewmodel);
-        })}
-        validate={() => {
-          return { helperText: undefined, intent: "none" };
+        validate={() => (props.viewmodel as LoginViewmodel).validatePassword()}
+        inputProps={{
+          required: true,
+          value: ((props.viewmodel as LoginViewmodel)).password,
+          onChange: handleStringChange((newValue: string) => {
+            (props.viewmodel as LoginViewmodel).password = newValue;
+            props.viewmodelChanged(props.viewmodel);
+          })
         }}
       />
     </SectionCard>
