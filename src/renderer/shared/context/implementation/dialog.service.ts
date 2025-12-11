@@ -31,13 +31,14 @@ export class DialogService implements IDialogService {
 
   public openDialog<T extends object>(props: BaseDialogProps<T>): void {
     this.dialogSequence++;
+    const seq = this.dialogSequence;
     const modifiedProps = {
       ...props,
       onClose: (event: React.SyntheticEvent<HTMLElement>) => {
         if (props.onClose) {
           props.onClose(event);
         }
-        this.closeDialog(this.dialogSequence);
+        this.closeDialog(seq);
       }
     };
     this.setDialogs((prev: Map<number, BaseDialogProps<T>>) => {

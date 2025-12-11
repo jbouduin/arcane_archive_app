@@ -26,6 +26,10 @@ export function SaveCancelResetFooter<T extends object>(props: SaveCancelResetFo
             </Button>
           )
         }
+        {
+          props.additionalLeftButtons &&
+          (props.additionalLeftButtons)
+        }
       </ButtonGroup>
       <ButtonGroup variant="minimal" vertical={false}>
         {

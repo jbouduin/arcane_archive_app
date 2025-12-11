@@ -4,6 +4,10 @@ import { ValidationResult } from "../../types";
 import { BaseViewmodel } from "../base.viewmodel";
 
 export class LoginViewmodel extends BaseViewmodel<LoginRequestDto> {
+  // #region non Dto related properties ---------------------------------------
+  public readonly showRegisterButton: boolean;
+  // #endregion
+
   // #region Getters/Setters --------------------------------------------------
   public get user(): string {
     return this._dto.user;
@@ -19,6 +23,13 @@ export class LoginViewmodel extends BaseViewmodel<LoginRequestDto> {
 
   public set password(value: string) {
     this._dto.password = value;
+  }
+  // #endregion
+
+  // #region Constructor ------------------------------------------------------
+  public constructor(dto: LoginRequestDto, showRegisterButton: boolean) {
+    super(dto);
+    this.showRegisterButton = showRegisterButton;
   }
   // #endregion
 
