@@ -26,8 +26,8 @@ export function BaseSelect<T>(props: BaseSelectProps<T>) {
       <FormGroup
         key={props.formGroupLabel}
         label={props.formGroupLabel}
-        disabled={props.disabled}
       >
+        {/* LATER: solve the issue that taginput has no readonly property, so we have to disable.  */}
         <MultiSelect<SelectOption<T>>
           initialContent={null}
           disabled={props.disabled}

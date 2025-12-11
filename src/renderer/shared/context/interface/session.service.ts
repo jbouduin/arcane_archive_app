@@ -7,6 +7,7 @@ export interface ISessionService {
   readonly loggedIn: boolean;
   readonly userName: string | null;
   hasRole(role: ApplicationRole): boolean;
+  hasAnyRole(...roles: Array<ApplicationRole>): boolean;
   setSessionData(data: LoginResponseDto | null): void;
   subscribe(listener: SessionChangeListener): () => void;
 };

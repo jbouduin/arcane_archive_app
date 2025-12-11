@@ -1,7 +1,12 @@
 import { Button, ButtonGroup } from "@blueprintjs/core";
 import { SaveCancelResetFooterProps } from "./save-cancel-reset-footer.props";
 
+// TODO memoize -> re-render is only required on changeflag of viewmodel
 export function SaveCancelResetFooter<T extends object>(props: SaveCancelResetFooterProps<T>) {
+  // #region Set defaults -----------------------------------------------------
+  const { showCommitButton = true } = props;
+  // #endregion
+
   // #region Rendering --------------------------------------------------------
   return (
     <div className="dialog-footer-button-bar">
@@ -16,28 +21,41 @@ export function SaveCancelResetFooter<T extends object>(props: SaveCancelResetFo
                 props.viewmodel.cancelChanges();
                 props.viewmodelChanged(props.viewmodel);
               }}
-              icon={props.resetButtonIcon || "refresh"}
+              icon={props.resetButtonIcon ?? "refresh"}
             >
-              {props.resetButtonLabel || "Undo changes"}
+              {props.resetButtonLabel ?? "Undo changes"}
             </Button>
           )
         }
       </ButtonGroup>
       <ButtonGroup variant="minimal" vertical={false}>
-        <Button
-          key="commitButton"
-          disabled={props.viewmodel.hasChanges && props.viewmodel.isValid ? false : true}
-          onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => props.onCommitButtonClick(e, props.viewmodel.dto)}
-          icon={props.commitButtonIcon || "floppy-disk"}
-        >
-          {props.commitButtonLabel || "Save"}
-        </Button>
+        {
+          showCommitButton &&
+          (
+            <Button
+              key="commitButton"
+              disabled={props.viewmodel.hasChanges && props.viewmodel.isValid ? false : true}
+              onClick={
+                (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+                  if (props.onCommitButtonClick) {
+                    props.onCommitButtonClick(e, props.viewmodel.dto);
+                  } else if (props.onClose) {
+                    props.onClose(e);
+                  }
+                }
+              }
+              icon={props.commitButtonIcon ?? "floppy-disk"}
+            >
+              {props.commitButtonLabel ?? "Save"}
+            </Button>
+          )
+        }
         <Button
           key="cancelButton"
-          icon={props.cancelButtonIcon || "cross"}
+          icon={props.cancelButtonIcon ?? "cross"}
           onClick={props.onClose}
         >
-          {props.cancelButtonLabel || "Cancel"}
+          {props.cancelButtonLabel ?? "Cancel"}
         </Button>
       </ButtonGroup>
     </div>

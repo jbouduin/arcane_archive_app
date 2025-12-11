@@ -16,15 +16,15 @@ export function LanguageButtonBar(props: LanguageButtonBarProps) {
 
   // #region Rendering --------------------------------------------------------
   return (
-    <ButtonGroup className="language-button-bar" variant="minimal">
+    <ButtonGroup fill={true} variant="minimal" alignText="center">
       {
-        props.cardLanguages.map((language: string) => {
+        props.allLanguages.map((language: string) => {
           const languageDef = serviceContainer.languageService.getLanguage(language);
           const label = languageDef ? languageDef.buttonText : language;
           const tooltip = languageDef ? languageDef.displayValue : language;
           return (
             <LanguageButtonBarButton
-              isCurrentLanguage={language === props.currentLanguage}
+              isCurrentLanguage={language == props.currentLanguage}
               key={language}
               label={label}
               language={language}

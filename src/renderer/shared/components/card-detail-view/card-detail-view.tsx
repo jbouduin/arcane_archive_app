@@ -76,7 +76,7 @@ export function CardDetailView(props: CardDetailViewProps) {
           (
             <SectionCard padded={false}>
               <LanguageButtonBar
-                cardLanguages={card.languages}
+                allLanguages={card.languages}
                 currentLanguage={currentLanguage}
                 onButtonClick={(language: string) => setCurrentLanguage(language)}
               />
@@ -151,8 +151,8 @@ export function CardDetailView(props: CardDetailViewProps) {
               key="owned"
               // panel={<CardOwnerShipView cardId={cardViewState.card.cardId} className={props.className} collectionId={props.collectionId} />}
               title="Ownership"
-            /> */}
-            {/* <Tab
+            />
+            <Tab
               id="All prints"
               key="all-prints"
               // panel={<CardAllPrints cardId={cardViewState.card.cardId} oracleId={cardViewState.card.oracleId} />}

@@ -84,18 +84,6 @@ img.rotate-180 {
   flex-direction: column;
 }
 
-.language-button-bar {
-  padding-left: 10px;
-  padding-right: 10px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.language-button-bar-button {
-  padding: 5px;
-}
-
 .left-panel-button-group {
   flex: 0 1 auto;
 }

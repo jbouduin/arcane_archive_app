@@ -1,7 +1,7 @@
 import React from "react";
 import { Mosaic, MosaicNode } from "react-mosaic-component";
 import { SortDirection } from "../../../shared/components/base/base-table";
-import { CardQueryParamsDto, ColorDto, MtgSetDto } from "../../../shared/dto";
+import { CardQueryParamsDto, ColorDto, MtgSetTreeDto } from "../../../shared/dto";
 import { CardSearchDto } from "../../../shared/dto/card-search.dto";
 import { CardSortField } from "../../../shared/types";
 import { MtgSetTreeViewmodel } from "../../../shared/viewmodel";
@@ -37,7 +37,7 @@ export function LibraryView(props: LibraryViewProps) {
       selectedProducedManaColors: new Array<ColorDto>(),
       selectedPowers: new Array<string>(),
       selectedRarities: new Array<string>(),
-      selectedSets: new Array<MtgSetDto>(),
+      selectedSets: new Array<MtgSetTreeDto>(),
       selectedSubTypes: new Array<string>(),
       selectedSuperTypes: new Array<string>(),
       selectedToughnesses: new Array<string>(),

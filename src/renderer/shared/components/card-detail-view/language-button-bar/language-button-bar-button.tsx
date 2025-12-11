@@ -17,7 +17,6 @@ export function LanguageButtonBarButton(props: LanguageButtonBarButtonProps) {
       usePortal={false}
     >
       <Button
-        className="language-button-bar-button"
         intent={props.isCurrentLanguage ? "primary" : "none"}
         onClick={onButtonClick}
       >

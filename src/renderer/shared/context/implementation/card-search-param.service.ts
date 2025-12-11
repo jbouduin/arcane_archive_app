@@ -2,6 +2,7 @@ import { noop } from "lodash";
 import { SelectOption } from "../../types";
 import { ICardSearchParamService, ICollectionManagerProxyService } from "../interface";
 
+// TODO rename to cardsearch service and move getCards from proxyservice in this class
 export class CardSearchParamService implements ICardSearchParamService {
   // #region Private fields ---------------------------------------------------
   private _cardSuperTypes: Array<SelectOption<string>>;

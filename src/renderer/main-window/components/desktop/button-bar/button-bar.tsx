@@ -17,7 +17,6 @@ import { ButtonBarButton } from "./button-bar-button";
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
 import { ButtonBarProps } from "./button-bar.props";
 
-// TODO active view white, inactive views mute
 export function ButtonBar(props: ButtonBarProps) {
   // #region Hooks ------------------------------------------------------------
   const { loggedIn } = useSession();
@@ -123,6 +122,7 @@ export function ButtonBar(props: ButtonBarProps) {
             assetPath="assets/img/mtg.svg"
             buttonType={EButtonBarButtonType.TooltipButton}
             desktopView={EDesktopView.Library}
+            intent={props.currentView == EDesktopView.Library ? "primary" : undefined}
             onButtonClick={(desktopView: EDesktopView) => props.onDesktopViewSelectionClick(desktopView)}
             tooltip={<span>Magic the Gathering Database</span>}
           />
@@ -130,6 +130,7 @@ export function ButtonBar(props: ButtonBarProps) {
             assetPath="assets/img/collection.svg"
             buttonType={EButtonBarButtonType.TooltipButton}
             desktopView={EDesktopView.Collection}
+            intent={props.currentView == EDesktopView.Collection ? "primary" : undefined}
             onButtonClick={(desktopView: EDesktopView) => props.onDesktopViewSelectionClick(desktopView)}
             tooltip={<span>Collections</span>}
           />
@@ -137,6 +138,7 @@ export function ButtonBar(props: ButtonBarProps) {
             assetPath="assets/img/deck.svg"
             buttonType={EButtonBarButtonType.TooltipButton}
             desktopView={EDesktopView.Deck}
+            intent={props.currentView == EDesktopView.Deck ? "primary" : undefined}
             onButtonClick={(desktopView: EDesktopView) => props.onDesktopViewSelectionClick(desktopView)}
             tooltip={<span>Decks</span>}
           />
@@ -190,6 +192,7 @@ export function ButtonBar(props: ButtonBarProps) {
       </Menu>
     );
   }
+
   function renderNotLoggedInMenu(): React.JSX.Element {
     return (
       <Menu size="small">

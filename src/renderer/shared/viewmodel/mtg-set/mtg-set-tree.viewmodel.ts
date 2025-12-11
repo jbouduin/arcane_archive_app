@@ -1,8 +1,8 @@
 import { IBaseTreeNodeViewmodel } from "../../components/base/base-tree-view";
-import { MtgSetDto } from "../../dto";
+import { MtgSetTreeDto } from "../../dto";
 
 export class MtgSetTreeViewmodel implements IBaseTreeNodeViewmodel {
-  private readonly _dto: MtgSetDto;
+  private readonly _dto: MtgSetTreeDto;
 
   // #region IBaseTreeNodeViewmodel Members -----------------------------------
   public isSelected: boolean;
@@ -15,7 +15,7 @@ export class MtgSetTreeViewmodel implements IBaseTreeNodeViewmodel {
   }
 
   public get cardSetName(): string {
-    return this._dto.name["ENGLISH"] || this._dto.code;
+    return this._dto.setName;
   }
 
   public get parentId(): number | null {
@@ -23,7 +23,7 @@ export class MtgSetTreeViewmodel implements IBaseTreeNodeViewmodel {
   }
 
   public get treeItemLabel(): string {
-    return `${this.cardSetName} (${this._dto.baseSetSize})`;
+    return `${this._dto.setName} (${this._dto.baseSetSize})`;
   }
 
   public get cardSetType(): string {
@@ -46,13 +46,18 @@ export class MtgSetTreeViewmodel implements IBaseTreeNodeViewmodel {
     return this._dto.code;
   }
 
-  public get dto(): MtgSetDto {
+  public get partialPreview(): boolean {
+    return this._dto.partialPreview;
+  }
+
+  public get dto(): MtgSetTreeDto {
     return this._dto;
   }
+
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: MtgSetDto) {
+  public constructor(dto: MtgSetTreeDto) {
     this._dto = dto;
     this.isSelected = false;
     this.isExpanded = false;

@@ -5,6 +5,7 @@ import { IServiceContainer, ServiceContainerContext } from "../../../../shared/c
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
 import { ButtonBarButtonProps } from "./button-bar-button.props";
 
+// TODO build svg cache service or memoize button because after login svg's are retrieved again
 export function ButtonBarButton(props: ButtonBarButtonProps) {
   // #region State ------------------------------------------------------------
   const [svg, setSvg] = React.useState<string | undefined>(undefined);
@@ -88,7 +89,7 @@ export function ButtonBarButton(props: ButtonBarButtonProps) {
         placement="right"
         usePortal={true}
       >
-        <Button onClick={onButtonClick}>
+        <Button onClick={onButtonClick} intent={props.intent}>
           {
             svg &&
             <SvgRenderer height={30} svg={svg} width={30} />

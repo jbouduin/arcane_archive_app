@@ -12,6 +12,10 @@ export interface SaveCancelResetFooterProps<T extends object> extends BaseDialog
    */
   resetButtonIcon?: IconName | MaybeElement;
   /**
+   * Default: true
+   */
+  showCommitButton?: boolean;
+  /**
    * Default: Save
    */
   commitButtonLabel?: string;
@@ -27,5 +31,8 @@ export interface SaveCancelResetFooterProps<T extends object> extends BaseDialog
    * Default: cross
    */
   cancelButtonIcon?: IconName | MaybeElement;
-  onCommitButtonClick: (event: React.SyntheticEvent<HTMLElement, Event>, dto: T) => Promise<void>;
+  /**
+   * defaults to props.onClose
+   */
+  onCommitButtonClick?: (event: React.SyntheticEvent<HTMLElement, Event>, dto: T) => Promise<void>;
 }

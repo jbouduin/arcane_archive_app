@@ -34,7 +34,7 @@ export class LibraryCardListViewmodel extends AbstractCardViewmodel {
     super();
     this.cardId = dto.id;
     const mtgSet = mtgSetService.getSetById(dto.mtgSetId);
-    this.setName = mtgSet?.name["ENGLISH"] || "Unknown set";
+    this.setName = mtgSet?.setName || "Unknown set";
     this.setKeyruneCode = mtgSet?.keyruneCode || "DEFAULT";
     this.cardName = dto.cardName;
     this.convertedManaCost = dto.convertedManaCost;

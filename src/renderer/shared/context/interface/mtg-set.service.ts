@@ -1,11 +1,11 @@
-import { MtgSetDto } from "../../dto";
+import { MtgSetTreeDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { ICollectionManagerProxyService } from "./collection-manage-proxy.service";
 
 export interface IMtgSetService {
-  readonly allSets: Array<MtgSetDto>;
+  readonly allSets: Array<MtgSetTreeDto>;
 
-  getSelectOptions(): Array<SelectOption<MtgSetDto>>;
-  getSetById(id: number): MtgSetDto | undefined;
+  getSelectOptions(): Array<SelectOption<MtgSetTreeDto>>;
+  getSetById(id: number): MtgSetTreeDto | undefined;
   initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void>;
 }

@@ -5,6 +5,7 @@ export type MtgSetDto = AuditableDto & MasterDataDto<string> & {
   parentId: number | null;
   // #endregion
 
+  setName: string;
   // #region MtgJson fields ----------------------------------------------------
   /**
    * The number of cards in the set. This will default to totalSetSize if not available. Wizards of the Coast sometimes
@@ -60,6 +61,7 @@ export type MtgSetDto = AuditableDto & MasterDataDto<string> & {
    * The release date for the set.
    */
   releaseDate: Date;
+  languages: Array<string>;
   // #endregion
 
   // #region External References -----------------------------------------------

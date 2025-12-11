@@ -11,6 +11,7 @@ export * from "./library-legality";
 export * from "./library-ruling.dto";
 export * from "./login-request.dto";
 export * from "./login-response.dto";
+export * from "./mtg-set-tree.dto";
 export * from "./mtg-set.dto";
 export * from "./profile.dto";
 export * from "./query-result.dto";

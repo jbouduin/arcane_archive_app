@@ -6,7 +6,7 @@ import { SessionChangeListener } from "../session-change-listener";
 export class SessionService implements ISessionService {
   // #region Private fields ---------------------------------------------------
   private _jwt: string | null;
-  private roles: Array<ApplicationRole>;
+  private roles: Set<ApplicationRole>;
   private _userName: string | null;
   private listeners: Array<SessionChangeListener>;
   // #endregion
@@ -29,14 +29,18 @@ export class SessionService implements ISessionService {
   public constructor() {
     this._jwt = null;
     this._userName = null;
-    this.roles = new Array<ApplicationRole>();
+    this.roles = new Set<ApplicationRole>();
     this.listeners = new Array<SessionChangeListener>();
   }
   // #endregion
 
   // #region ISessionService Members ------------------------------------------
   public hasRole(role: ApplicationRole): boolean {
-    return this.roles.includes(role);
+    return this.roles.has(role);
+  }
+
+  public hasAnyRole(...roles: Array<ApplicationRole>): boolean {
+    return roles.some((role: ApplicationRole) => this.roles.has(role));
   }
 
   public setSessionData(data: LoginResponseDto | null): void {
@@ -49,7 +53,7 @@ export class SessionService implements ISessionService {
     } else {
       this._jwt = null;
       this._userName = null;
-      this.roles.splice(0);
+      this.roles.clear();
     }
     this.listeners.forEach((l: SessionChangeListener) => l(data));
   }

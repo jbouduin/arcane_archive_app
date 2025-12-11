@@ -1,5 +1,5 @@
 import { addSelectOption, clearSelection, removeSelectOption } from "../../components/util";
-import { ColorDto, MtgSetDto } from "../../dto";
+import { ColorDto, MtgSetTreeDto } from "../../dto";
 import { CardSearchDto } from "../../dto/card-search.dto";
 import { ColorType, SelectOption } from "../../types";
 import { BaseViewmodel } from "../base.viewmodel";
@@ -15,7 +15,7 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
   private _selectedPowers: Array<SelectOption<string>>;
   private _selectedProducedManaColors: Array<SelectOption<ColorDto>>;
   private _selectedRarities: Array<SelectOption<string>>;
-  private _selectedSets: Array<SelectOption<MtgSetDto>>;
+  private _selectedSets: Array<SelectOption<MtgSetTreeDto>>;
   private _selectedSubTypes: Array<SelectOption<string>>;
   private _selectedSuperTypes: Array<SelectOption<string>>;
   private _selectedToughnesses: Array<SelectOption<string>>;
@@ -65,7 +65,7 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
     return this._selectedRarities;
   }
 
-  public get selectedSets(): Array<SelectOption<MtgSetDto>> {
+  public get selectedSets(): Array<SelectOption<MtgSetTreeDto>> {
     return this._selectedSets;
   }
 
@@ -91,7 +91,7 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
     super(initial);
     this._selectedAbilities = new Array<SelectOption<string>>();
     this._selectedActions = new Array<SelectOption<string>>();
-    this._selectedSets = new Array<SelectOption<MtgSetDto>>();
+    this._selectedSets = new Array<SelectOption<MtgSetTreeDto>>();
     this._selectedCardColors = new Array<SelectOption<ColorDto>>();
     this._selectedCardNames = new Array<SelectOption<string>>();
     this._selectedGameFormats = new Array<SelectOption<string>>();
@@ -248,11 +248,11 @@ export class CardSearchViewmodel extends BaseViewmodel<CardSearchDto> {
   // #endregion
 
   // #region Card set ---------------------------------------------------------
-  public addCardSet(cardSet: SelectOption<MtgSetDto>): void {
+  public addCardSet(cardSet: SelectOption<MtgSetTreeDto>): void {
     addSelectOption(this._dto.selectedSets, this._selectedSets, cardSet);
   }
 
-  public removeCardSet(cardSet: SelectOption<MtgSetDto>): void {
+  public removeCardSet(cardSet: SelectOption<MtgSetTreeDto>): void {
     removeSelectOption(this._dto.selectedSets, this._selectedSets, cardSet);
   }
 

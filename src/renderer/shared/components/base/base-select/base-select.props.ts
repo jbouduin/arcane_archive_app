@@ -6,6 +6,7 @@ export interface BaseSelectProps<T> extends Props {
   disabled?: boolean;
   formGroupLabel: string;
   selectedItems: Array<SelectOption<T>>;
+  readOnly?: boolean;
 
   itemLabel?: (option: SelectOption<T>) => string;
   onClearOptions: () => void;

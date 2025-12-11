@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { cloneDeep } from "lodash";
 import React from "react";
 import { useServices } from "../../../hooks";
-import { ColorDto, MtgSetDto } from "../../dto";
+import { ColorDto, MtgSetTreeDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { CardSearchViewmodel } from "../../viewmodel";
 import { BaseSelect } from "../base/base-select/base-select";
@@ -55,7 +55,7 @@ export function CardSearchView(props: CardSearchViewProps) {
   const allPowers = React.useMemo(() => serviceContainer.cardSearchParamService.powerValues, []);
   const allToughnesses = React.useMemo(() => serviceContainer.cardSearchParamService.toughnessValues, []);
   const setImageRenderer = React.useCallback(
-    (option: SelectOption<MtgSetDto>) => (
+    (option: SelectOption<MtgSetTreeDto>) => (
       <i
         key={`icon-${option.value.keyruneCode}`}
         className={classNames("tree-view-image", "ss", "ss-" + option.value.keyruneCode.toLowerCase())}
@@ -75,16 +75,16 @@ export function CardSearchView(props: CardSearchViewProps) {
   // #region Rendering --------------------------------------------------------
   return (
     <div className="left-panel-search-panel">
-      <BaseSelect<MtgSetDto>
+      <BaseSelect<MtgSetTreeDto>
         allItems={allCardSets}
         key={`card-set-select-${scrollVersion}`}
         formGroupLabel="Set"
         selectedItems={searchViewmodel.selectedSets}
         onClearOptions={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearCardSetSelection())}
-        onOptionAdded={(item: SelectOption<MtgSetDto>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addCardSet(item))}
-        onOptionRemoved={(item: SelectOption<MtgSetDto>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeCardSet(item))}
+        onOptionAdded={(item: SelectOption<MtgSetTreeDto>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.addCardSet(item))}
+        onOptionRemoved={(item: SelectOption<MtgSetTreeDto>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeCardSet(item))}
         preTextElement={setImageRenderer}
-        itemLabel={(option: SelectOption<MtgSetDto>) => option.value.code}
+        itemLabel={(option: SelectOption<MtgSetTreeDto>) => option.value.code}
       />
       <BaseServerSelect<string>
         key={`card-name-select-${scrollVersion}`}

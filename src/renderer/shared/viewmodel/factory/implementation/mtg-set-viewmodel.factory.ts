@@ -1,49 +1,46 @@
-import { IDisplayValueService } from "../../../context";
-import { MtgSetDto } from "../../../dto";
+import { IDisplayValueService, ILanguageService } from "../../../context";
+import { MtgSetDto, MtgSetTreeDto } from "../../../dto";
+import { MtgSetDetailViewmodel } from "../../mtg-set";
 import { MtgSetTreeViewmodel } from "../../mtg-set/mtg-set-tree.viewmodel";
 import { IMtgSetViewmodelFactory } from "../interface/mtg-set-viewmodel.factory";
 
 export class MtgSetViewmodelFactory implements IMtgSetViewmodelFactory {
   // #region Private fields ---------------------------------------------------
-  private _displayValueService: IDisplayValueService;
+  private readonly displayValueService: IDisplayValueService;
+  private readonly languageService: ILanguageService;
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(displayValueService: IDisplayValueService) {
-    this._displayValueService = displayValueService;
+  public constructor(displayValueService: IDisplayValueService, languageService: ILanguageService) {
+    this.displayValueService = displayValueService;
+    this.languageService = languageService;
   }
   // #endregion
 
   // #region IMtgSetViewmodelFactory Members ----------------------------------
-  public getMtgSetTreeViewmodel(dto: MtgSetDto): MtgSetTreeViewmodel {
+  public getMtgSetTreeViewmodel(dto: MtgSetTreeDto): MtgSetTreeViewmodel {
     return new MtgSetTreeViewmodel(dto);
   }
 
   public getGroupMtgSetTreeViewmodel(group: string): MtgSetTreeViewmodel {
-    const dto: MtgSetDto = {
+    const dto: MtgSetTreeDto = {
       id: 0,
       parentId: 0,
       baseSetSize: 0,
-      totalSetSize: 0,
       block: null,
-      foilOnly: false,
-      foreignOnly: false,
-      nonFoilOnly: false,
-      onlineOnly: false,
       partialPreview: false,
-      paperOnly: false,
-      tokenSetCode: null,
       type: "CORE",
       keyruneCode: "default",
       releaseDate: new Date(),
-      name: { ENGLISH: group },
+      setName: group,
       code: group,
-      createdAt: new Date(),
-      createdBy: "",
-      modifiedAt: new Date(),
-      modifiedBy: ""
+      tokenSetCode: null
     };
     return new MtgSetTreeViewmodel(dto);
+  }
+
+  public getMtgSetDetailViewmodel(dto: MtgSetDto): MtgSetDetailViewmodel {
+    return new MtgSetDetailViewmodel(this.displayValueService, this.languageService, dto);
   }
   // #endregion
 }

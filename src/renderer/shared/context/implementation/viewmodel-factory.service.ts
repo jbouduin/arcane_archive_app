@@ -15,7 +15,8 @@ export class ViewmodelFactoryService implements IViewmodelFactoryService {
 
   // #region IViewmodelFactoryService Members ---------------------------------
   public get mtgSetViewmodelFactory(): IMtgSetViewmodelFactory {
-    return this._mtgSetViewmodelFactory ?? (this._mtgSetViewmodelFactory = new MtgSetViewmodelFactory(this.displayValueService));
+    return this._mtgSetViewmodelFactory ??
+      (this._mtgSetViewmodelFactory = new MtgSetViewmodelFactory(this.displayValueService, this.languageService));
   }
 
   public get mtgCardViewmodelFactory(): IMtgCardViewmodelFactory {

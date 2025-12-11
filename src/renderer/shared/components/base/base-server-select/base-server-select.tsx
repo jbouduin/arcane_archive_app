@@ -62,6 +62,7 @@ export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
         key={props.keyString}
         label={props.label}
       >
+        {/* LATER: solve the issue that taginput has no readonly property, so we have to disable.  */}
         <MultiSelect<SelectOption<T>>
           initialContent={null}
           itemRenderer={(item: SelectOption<T>, itemProps: ItemRendererProps) => itemRenderer(item, itemProps)}

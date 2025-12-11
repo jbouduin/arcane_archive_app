@@ -3,7 +3,7 @@ import React from "react";
 import { useServices } from "../../../../hooks/use-services";
 import { CardSearchView } from "../../../../shared/components/card-search-view/card-search-view";
 import { SetTreeView } from "../../../../shared/components/set-tree-view/set-tree-view";
-import { MtgSetDto } from "../../../../shared/dto";
+import { MtgSetTreeDto } from "../../../../shared/dto";
 import { MtgSetTreeConfigurationViewmodel } from "../../../../shared/viewmodel";
 import { LibraryViewLeftProps } from "./library-view-left.props";
 
@@ -15,7 +15,7 @@ export function LibraryViewLeft(props: LibraryViewLeftProps) {
   // #region memo -------------------------------------------------------------
   const cardSets = React.useMemo(
     () => {
-      return serviceContainer.mtgSetService.allSets.map((set: MtgSetDto) => serviceContainer.viewmodelFactoryService.mtgSetViewmodelFactory.getMtgSetTreeViewmodel(set));
+      return serviceContainer.mtgSetService.allSets.map((set: MtgSetTreeDto) => serviceContainer.viewmodelFactoryService.mtgSetViewmodelFactory.getMtgSetTreeViewmodel(set));
     },
     []
   );

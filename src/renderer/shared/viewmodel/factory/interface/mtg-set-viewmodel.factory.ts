@@ -1,7 +1,9 @@
-import { MtgSetDto } from "../../../dto";
+import { MtgSetDto, MtgSetTreeDto } from "../../../dto";
 import { MtgSetTreeViewmodel } from "../../mtg-set";
+import { MtgSetDetailViewmodel } from "../../mtg-set/mtg-set-detail.viewmodel";
 
 export interface IMtgSetViewmodelFactory {
-  getMtgSetTreeViewmodel(dto: MtgSetDto): MtgSetTreeViewmodel;
+  getMtgSetTreeViewmodel(dto: MtgSetTreeDto): MtgSetTreeViewmodel;
   getGroupMtgSetTreeViewmodel(group: string): MtgSetTreeViewmodel;
+  getMtgSetDetailViewmodel(dto: MtgSetDto): MtgSetDetailViewmodel;
 }

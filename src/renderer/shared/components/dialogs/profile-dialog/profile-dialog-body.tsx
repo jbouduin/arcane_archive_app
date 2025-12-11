@@ -4,6 +4,7 @@ import { useServices } from "../../../../hooks";
 import { UserDto } from "../../../dto";
 import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption } from "../../../types";
 import { UserViewmodel } from "../../../viewmodel";
+import { AuditFields } from "../../base/audit-fields/audit-fields";
 import { BaseDialogBodyProps } from "../../base/base-dialog";
 import { BaseSelect } from "../../base/base-select/base-select";
 import { handleStringChange } from "../../util";
@@ -48,7 +49,7 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
           labelInfo="*"
           validate={() => (props.viewmodel as UserViewmodel).validateAccountName()}
           inputProps={{
-            disabled: true,
+            readOnly: true,
             required: true,
             value: (props.viewmodel as UserViewmodel).accountName,
             onChange: handleStringChange((newValue: string) => {
@@ -164,7 +165,7 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
               <td style={{ paddingLeft: "0px" }}>
                 <Checkbox
                   checked={(props.viewmodel as UserViewmodel).accountLocked}
-                  disabled={!isSysAdmin}
+                  readOnly={!isSysAdmin}
                 >
                   Account Locked
                 </Checkbox>
@@ -172,7 +173,7 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
               <td>
                 <Checkbox
                   checked={(props.viewmodel as UserViewmodel).accountActive}
-                  disabled={!isSysAdmin}
+                  readOnly={!isSysAdmin}
                 >
                   Account Active
                 </Checkbox>
@@ -182,7 +183,7 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
               <td style={{ paddingLeft: "0px" }}>
                 <Checkbox
                   checked={(props.viewmodel as UserViewmodel).accountExpired}
-                  disabled={!isSysAdmin}
+                  readOnly={!isSysAdmin}
                 >
                   Account Expired
                 </Checkbox>
@@ -190,7 +191,7 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
               <td>
                 <Checkbox
                   checked={(props.viewmodel as UserViewmodel).passwordExpired}
-                  disabled={!isSysAdmin}
+                  readOnly={!isSysAdmin}
                 >
                   Password Expired
                 </Checkbox>
@@ -198,78 +199,7 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
             </tr>
           </tbody>
         </HTMLTable>
-        <ControlGroup
-          key="created-control-group"
-          fill={true}
-          vertical={false}
-        >
-          <FormGroup
-            id="created-at-group"
-            label="Created at"
-            labelFor="created-at"
-            disabled={true}
-          >
-            <InputGroup
-              id="created-at"
-              inputMode="text"
-              disabled={true}
-              size="small"
-              type="text"
-              value={(props.viewmodel as UserViewmodel).createdAt.toLocaleString()}
-            />
-          </FormGroup>
-          <FormGroup
-            id="created-by-group"
-            label="By"
-            labelFor="created-by"
-            disabled={true}
-          >
-            <InputGroup
-              id="created-by"
-              inputMode="text"
-              disabled={true}
-              size="small"
-              type="text"
-              value={(props.viewmodel as UserViewmodel).createdBy}
-            />
-          </FormGroup>
-        </ControlGroup>
-        <ControlGroup
-          key="modified-control-group"
-          fill={true}
-          vertical={false}
-        >
-          <FormGroup
-            id="modified-at-group"
-            label="Modified at"
-            labelFor="modified-at"
-            disabled={true}
-          >
-            <InputGroup
-              id="modified-at"
-              inputMode="text"
-              disabled={true}
-              size="small"
-              type="text"
-              value={(props.viewmodel as UserViewmodel).modifiedAt.toLocaleString()}
-            />
-          </FormGroup>
-          <FormGroup
-            id="modified-by-group"
-            label="By"
-            labelFor="modified-by"
-            disabled={true}
-          >
-            <InputGroup
-              id="modified-by"
-              inputMode="text"
-              disabled={true}
-              size="small"
-              type="text"
-              value={(props.viewmodel as UserViewmodel).modifiedBy}
-            />
-          </FormGroup>
-        </ControlGroup>
+        <AuditFields auditFields={(props.viewmodel as UserViewmodel)} />
       </>
     );
   }

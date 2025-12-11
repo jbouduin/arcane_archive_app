@@ -7,21 +7,18 @@ import { LanguageDto } from "../../../dto";
 import { SplashScreen } from "../../splash";
 import { BaseDesktopProps } from "./base-desktop.props";
 import { BaseDesktopState } from "./base-desktop.state";
+import { useServices } from "../../../../hooks";
 
 export function BaseDesktop(props: BaseDesktopProps) {
   // #region State ------------------------------------------------------------
+  const useDarkTheme = useServices().configurationService.rendererConfiguration.useDarkTheme;
   const initialState: BaseDesktopState = {
     alertProps: null,
     initialized: true,
-    // cardConditions: new Array<ICardConditionDto>(),
-    // cardSets: new Array<IMtgCardSetDto>(),
-    // gameFormats: new Array<IGameFormatDto>(),
     languages: new Array<LanguageDto>(),
     rendererConfiguration: null,
     splashScreenOpen: false,
-    // symbolSvgs: new Map<string, string>(),
-    // TODO get theme from configuration
-    themeClassName: Classes.DARK
+    themeClassName: useDarkTheme ? Classes.DARK : ""
   };
   const [desktopState, setDesktopState] = React.useState<BaseDesktopState>(initialState);
   // #endregion
