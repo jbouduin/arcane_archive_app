@@ -123,6 +123,14 @@ img.rotate-180 {
   color: white !important;
 }
 
+.bp6-control-group:not(.bp6-vertical)> :not(:last-child) {
+  margin-right: 4px;
+}
+
+.bp6-control-group:not(.bp6-vertical)> :not(:first-child) {
+  margin-left: 4px;
+}
+
 .mosaic-tile-content-wrapper {
   display: flex;
   flex-direction: column;

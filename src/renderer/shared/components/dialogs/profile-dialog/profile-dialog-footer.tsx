@@ -29,7 +29,7 @@ export function ProfileDialogFooter(props: BaseDialogFooterProps<UserDto>) {
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter
+    <SaveCancelResetFooter<UserDto>
       {...props}
       showResetButton={true}
       onCommitButtonClick={onSaveClick}

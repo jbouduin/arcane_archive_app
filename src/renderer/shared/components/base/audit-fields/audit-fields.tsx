@@ -22,7 +22,6 @@ export function AuditFields(props: AuditFieldsProps) {
           </FormGroup>
         )
       }
-      {/* TODO padding between the two formgroups (to be implemented in all dialogs) */}
       <ControlGroup
         key="created-control-group"
         fill={true}

@@ -1,7 +1,6 @@
 import { Button, ButtonGroup } from "@blueprintjs/core";
 import { SaveCancelResetFooterProps } from "./save-cancel-reset-footer.props";
 
-// TODO memoize -> re-render is only required on changeflag of viewmodel
 export function SaveCancelResetFooter<T extends object>(props: SaveCancelResetFooterProps<T>) {
   // #region Set defaults -----------------------------------------------------
   const { showCommitButton = true } = props;

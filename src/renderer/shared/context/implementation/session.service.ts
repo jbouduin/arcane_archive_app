@@ -48,7 +48,7 @@ export class SessionService implements ISessionService {
       this._jwt = data.token;
       const payload = this._jwt.split(".")[1];
       const raw = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
-      this.roles = raw["roles"];
+      this.roles = new Set<ApplicationRole>(raw["roles"]);
       this._userName = raw["sub"];
     } else {
       this._jwt = null;

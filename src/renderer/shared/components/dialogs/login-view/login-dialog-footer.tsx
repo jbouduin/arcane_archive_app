@@ -27,7 +27,7 @@ export function LoginDialogFooter(props: BaseDialogFooterProps<LoginRequestDto>)
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter
+    <SaveCancelResetFooter<LoginRequestDto>
       {...props}
       showResetButton={false}
       commitButtonLabel="Log in"
