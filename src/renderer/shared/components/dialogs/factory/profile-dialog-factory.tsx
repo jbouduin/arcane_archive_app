@@ -6,7 +6,7 @@ import { ProfileDialogBody } from "../profile-dialog/profile-dialog-body";
 import { ProfileDialogFooter } from "../profile-dialog/profile-dialog-footer";
 
 export function showProfileDialog(serviceContainer: IServiceContainer): void {
-  serviceContainer.collectionManagerProxy
+  void serviceContainer.collectionManagerProxy
     .getData<UserDto>("authentication", "/app/account")
     .then(
       (userDto: UserDto) => {

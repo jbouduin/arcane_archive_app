@@ -1,7 +1,8 @@
 import { AuthenticationViewmodelFactory } from "../../viewmodel/factory/implementation/authentication-viewmodel.factory";
 import { MtgCardViewmodelFactory } from "../../viewmodel/factory/implementation/mtg-card-viewmodel.factory";
 import { MtgSetViewmodelFactory } from "../../viewmodel/factory/implementation/mtg-set-viewmodel.factory";
-import { IAuthenticationViewmodelFactory, IMtgCardViewmodelFactory, IMtgSetViewmodelFactory } from "../../viewmodel/factory/interface";
+import { SettingsViewmodelFactory } from "../../viewmodel/factory/implementation/settings-viewmodel.factory";
+import { IAuthenticationViewmodelFactory, IMtgCardViewmodelFactory, IMtgSetViewmodelFactory, ISettingsViewmodelFactory } from "../../viewmodel/factory/interface";
 import { IColorService, IDisplayValueService, ILanguageService, IMtgSetService, IViewmodelFactoryService } from "../interface";
 
 export class ViewmodelFactoryService implements IViewmodelFactoryService {
@@ -13,6 +14,7 @@ export class ViewmodelFactoryService implements IViewmodelFactoryService {
   private _mtgCardViewmodelFactory!: IMtgCardViewmodelFactory;
   private _mtgSetViewmodelFactory!: IMtgSetViewmodelFactory;
   private _authenticationViewmodelFactory!: IAuthenticationViewmodelFactory;
+  private _settingsViewmodelFactory!: ISettingsViewmodelFactory;
   // #endregion
 
   // #region IViewmodelFactoryService Members ---------------------------------
@@ -29,6 +31,11 @@ export class ViewmodelFactoryService implements IViewmodelFactoryService {
   public get mtgCardViewmodelFactory(): IMtgCardViewmodelFactory {
     return this._mtgCardViewmodelFactory ??
       (this._mtgCardViewmodelFactory = new MtgCardViewmodelFactory(this.colorService, this.displayValueService, this.languageService, this.mtgSetService));
+  }
+
+  public get settingsViewmodelFactory(): ISettingsViewmodelFactory {
+    return this._settingsViewmodelFactory ??
+      (this._settingsViewmodelFactory = new SettingsViewmodelFactory());
   }
 
   public initialize(

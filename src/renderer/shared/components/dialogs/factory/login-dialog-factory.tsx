@@ -1,8 +1,8 @@
 import { IServiceContainer } from "../../../context";
 import { LoginRequestDto } from "../../../dto";
 import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
-import { LoginDialogBody } from "../login-view/login-dialog-body";
-import { LoginDialogFooter } from "../login-view/login-dialog-footer";
+import { LoginDialogBody } from "../login-dialog/login-dialog-body";
+import { LoginDialogFooter } from "../login-dialog/login-dialog-footer";
 
 export function showLoginDialog(serviceContainer: IServiceContainer, showRegisterButton: boolean): void {
   const loginDialogProps: BaseDialogProps<LoginRequestDto> = {

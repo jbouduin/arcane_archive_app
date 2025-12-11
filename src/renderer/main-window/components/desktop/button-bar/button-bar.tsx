@@ -3,13 +3,8 @@ import { noop } from "lodash";
 import * as React from "react";
 import { ResultDto } from "../../../../../common/dto/mtg-collection";
 import { useServices, useSession } from "../../../../hooks";
-import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../../../../shared/components/base/base-dialog";
-import { showLoginDialog } from "../../../../shared/components/dialogs/factory";
+import { showLoginDialog, showPreferencesDialog, showSystemSettingsDialog } from "../../../../shared/components/dialogs/factory";
 import { showProfileDialog } from "../../../../shared/components/dialogs/factory/profile-dialog-factory";
-import { SettingsDialogBody } from "../../../../shared/components/dialogs/settings-dialog/settings-dialog-body";
-import { SettingsDialogFooter } from "../../../../shared/components/dialogs/settings-dialog/settings-dialog-footer";
-import { LoginRequestDto } from "../../../../shared/dto";
-import { LoginViewmodel } from "../../../../shared/viewmodel";
 import { EDesktopView } from "../desktop-view.enum";
 import { ButtonBarButton } from "./button-bar-button";
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
@@ -33,31 +28,6 @@ export function ButtonBar(props: ButtonBarProps) {
         (_r: ResultDto<never>) => serviceContainer.sessionService.setSessionData(null),
         noop
       );
-  }
-
-  function uiSettingsClick(): void {
-    const uiSettingsProps: BaseDialogProps<LoginRequestDto> = {
-      isOpen: true,
-      isCloseButtonShown: true,
-      canEscapeKeyClose: true,
-      canOutsideClickClose: false,
-      title: "UI Settings",
-      // TODO use settings
-      viewmodel: new LoginViewmodel(
-        {
-          user: "sys_admi",
-          password: "sys_admin"
-        },
-        false
-      ),
-      bodyRenderer: (bodyProps: BaseDialogBodyProps<LoginRequestDto>) => {
-        return (<SettingsDialogBody {...bodyProps} />);
-      },
-      footerRenderer: (footerProps: BaseDialogFooterProps<LoginRequestDto>) => {
-        return (<SettingsDialogFooter {...footerProps} />);
-      }
-    };
-    serviceContainer.dialogService.openDialog(uiSettingsProps);
   }
 
   function profileClick(): void {
@@ -135,7 +105,8 @@ export function ButtonBar(props: ButtonBarProps) {
   function renderSettingsMenu(): React.JSX.Element {
     return (
       <Menu size="small">
-        <MenuItem onClick={uiSettingsClick} text="UI Settings" />
+        <MenuItem onClick={() => showPreferencesDialog(serviceContainer)} text="Preferences" />
+        <MenuItem onClick={() => showSystemSettingsDialog(serviceContainer)} text="System Settings" />
         {
           serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") &&
           <MenuItem onClick={adminClick} text="Admin" />

@@ -22,7 +22,6 @@ export function BaseDialog<T extends BaseViewmodel<any>>(props: BaseDialogProps<
   return (
     <Dialog
       {...props}
-      title={props.title}
       className={serviceContainer.configurationService.rendererConfiguration.useDarkTheme ? Classes.DARK : ""}
     >
       <DialogBody>

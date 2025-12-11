@@ -1,16 +1,14 @@
 import { ContextMenu, Menu, MenuItem, TreeNodeInfo } from "@blueprintjs/core";
 import classNames from "classnames";
-import { cloneDeep, isEqual, noop, upperFirst } from "lodash";
+import { cloneDeep, isEqual, upperFirst } from "lodash";
 import React from "react";
 import { CardSetGroupBy, CardSetSort } from "../../../../common/types";
 import { useServices } from "../../../hooks";
-import { MtgSetDto, SyncParamDto } from "../../dto";
-import { MtgSetDetailViewmodel, MtgSetTreeConfigurationViewmodel } from "../../viewmodel";
+import { SyncParamDto } from "../../dto";
+import { MtgSetTreeConfigurationViewmodel } from "../../viewmodel";
 import { MtgSetTreeViewmodel } from "../../viewmodel/mtg-set/mtg-set-tree.viewmodel";
-import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../base/base-dialog";
 import { BaseTreeView, BaseTreeViewProps } from "../base/base-tree-view";
-import { MtgSetDialogBody } from "../dialogs/mtg-set-dialog/mtg-set-dialog-body";
-import { MtgSetDialogFooter } from "../dialogs/mtg-set-dialog/mtg-set-dialog-footer";
+import { showSetDialog } from "../dialogs/factory";
 import { HeaderView } from "./header-view";
 import { SetTreeViewProps } from "./set-tree-view.props";
 
@@ -105,37 +103,6 @@ export function SetTreeView(props: SetTreeViewProps) {
     };
     void serviceContainer.collectionManagerProxy.postData("library", "/admin/synchronization/partial", postData, true);
     // .then()
-  }
-
-  function showSetDetails(setId: number): void {
-    void serviceContainer.collectionManagerProxy.getData<MtgSetDto>("library", `/public/mtg-set/${setId}`)
-      .then(
-        (setDto: MtgSetDto) => {
-          const viewmodel: MtgSetDetailViewmodel = serviceContainer.viewmodelFactoryService.mtgSetViewmodelFactory.getMtgSetDetailViewmodel(setDto);
-          const dialogProps: BaseDialogProps<MtgSetDto> = {
-            viewmodel: viewmodel,
-            bodyRenderer: (bodyProps: BaseDialogBodyProps<MtgSetDto>) => {
-              return (<MtgSetDialogBody {...bodyProps} />);
-            },
-            footerRenderer: (footerProps: BaseDialogFooterProps<MtgSetDto>) => {
-              return (<MtgSetDialogFooter {...footerProps} />);
-            },
-            isOpen: true,
-            title: (
-              <>
-                <i
-                  key={`icon-${viewmodel.dto.id}`}
-                  className={classNames("tree-view-image", "ss", "ss-" + viewmodel.keyruneCode.toLowerCase())}
-                >
-                </i>
-                {viewmodel.setName}
-              </>
-            )
-          };
-          serviceContainer.dialogService.openDialog(dialogProps);
-        },
-        noop
-      );
   }
   // #endregion
 
@@ -270,7 +237,7 @@ export function SetTreeView(props: SetTreeViewProps) {
                   onClick={
                     (e) => {
                       e.preventDefault();
-                      showSetDetails(cardSet.id);
+                      showSetDialog(serviceContainer, cardSet.id);
                     }
                   }
                   text="Properties"
