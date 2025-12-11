@@ -1,7 +1,7 @@
 import { H5, Section, SectionCard, Tab, Tabs } from "@blueprintjs/core";
 import React from "react";
 import { useServices } from "../../../hooks";
-import { LibraryCardDto } from "../../dto";
+import { LanguageDto, LibraryCardDto } from "../../dto";
 import { ScryfallLanguageMap } from "../../types";
 import { LibraryCardViewmodel } from "../../viewmodel/mtg-card";
 import { LibraryCardfaceViewmodel } from "../../viewmodel/mtg-card/library-cardface.viewmodel";
@@ -17,7 +17,13 @@ import { RulingsView } from "./rulings-view/rulings-view";
 export function CardDetailView(props: CardDetailViewProps) {
   // #region State ------------------------------------------------------------
   const [cardViewmodel, setCardviewmodel] = React.useState<LibraryCardViewmodel | null>(null);
-  const [currentLanguage, setCurrentLanguage] = React.useState<string>("");
+  const [currentLanguage, setCurrentLanguage] = React.useState<LanguageDto>({
+    language: "",
+    sequence: -1,
+    printedCode: "",
+    displayValue: "",
+    buttonText: ""
+  });
   // #endregion
 
   // #region Hooks ------------------------------------------------------------
@@ -78,7 +84,7 @@ export function CardDetailView(props: CardDetailViewProps) {
               <LanguageButtonBar
                 allLanguages={card.languages}
                 currentLanguage={currentLanguage}
-                onButtonClick={(language: string) => setCurrentLanguage(language)}
+                onButtonClick={(language: LanguageDto) => setCurrentLanguage(language)}
               />
             </SectionCard>
           )
@@ -88,7 +94,7 @@ export function CardDetailView(props: CardDetailViewProps) {
           cardBackId={card.cardBackId}
           setCode={card.layout != "TOKEN" ? card.setCode : card.tokenSetCode}
           collectorNumber={card.collectorNumber}
-          scryfallLanguage={ScryfallLanguageMap.get(currentLanguage) || "en"}
+          scryfallLanguage={ScryfallLanguageMap.get(currentLanguage.language) || "en"}
         />
       </Section>
     );
@@ -96,7 +102,7 @@ export function CardDetailView(props: CardDetailViewProps) {
 
   function renderFacesSection(card: LibraryCardViewmodel): Array<React.JSX.Element> {
     let result: Array<React.JSX.Element>;
-    const languageViewModel = card.cardLanguages.get(currentLanguage);
+    const languageViewModel = card.cardLanguages.get(currentLanguage.language);
     if (languageViewModel) {
       result = Array.of(...languageViewModel.cardfaces.values()).map((face: LibraryCardfaceViewmodel, idx: number) => {
         return (

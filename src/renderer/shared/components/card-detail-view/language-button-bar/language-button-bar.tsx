@@ -1,15 +1,11 @@
 import { ButtonGroup } from "@blueprintjs/core";
-import { useServices } from "../../../../hooks/use-services";
+import { LanguageDto } from "../../../dto";
 import { LanguageButtonBarButton } from "./language-button-bar-button";
 import { LanguageButtonBarProps } from "./language-button-bar.props";
 
 export function LanguageButtonBar(props: LanguageButtonBarProps) {
-  // #region Hooks ------------------------------------------------------------
-  const serviceContainer = useServices();
-  // #endregion
-
   // #region Event handling ----------------------------------------------------
-  function onAnyButtonClick(language: string): void {
+  function onAnyButtonClick(language: LanguageDto): void {
     props.onButtonClick(language);
   }
   // #endregion
@@ -18,18 +14,13 @@ export function LanguageButtonBar(props: LanguageButtonBarProps) {
   return (
     <ButtonGroup fill={true} variant="minimal" alignText="center">
       {
-        props.allLanguages.map((language: string) => {
-          const languageDef = serviceContainer.languageService.getLanguage(language);
-          const label = languageDef ? languageDef.buttonText : language;
-          const tooltip = languageDef ? languageDef.displayValue : language;
+        props.allLanguages.map((language: LanguageDto) => {
           return (
             <LanguageButtonBarButton
               isCurrentLanguage={language == props.currentLanguage}
-              key={language}
-              label={label}
+              key={language.language}
               language={language}
               onButtonClick={onAnyButtonClick}
-              tooltip={<span>{tooltip}</span>}
             />
           );
         })

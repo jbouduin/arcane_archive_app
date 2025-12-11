@@ -1,15 +1,15 @@
 import { Checkbox, ControlGroup, FormGroup, HTMLTable, InputGroup, Tab, Tabs, Text, TextAlignment } from "@blueprintjs/core";
+import classNames from "classnames";
 import React from "react";
-import { MtgSetDto } from "../../../dto";
+import { LanguageDto, MtgSetDto } from "../../../dto";
 import { MtgSetDetailViewmodel } from "../../../viewmodel";
 import { AuditFields } from "../../base/audit-fields/audit-fields";
 import { BaseDialogBodyProps } from "../../base/base-dialog";
 import { LanguageButtonBar } from "../../card-detail-view/language-button-bar/language-button-bar";
-import classNames from "classnames";
 
 export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
   const vm = props.viewmodel as MtgSetDetailViewmodel;
-  const [currentLanguage, setCurrentLanguage] = React.useState<string>(vm.languages[0]);
+  const [currentLanguage, setCurrentLanguage] = React.useState<LanguageDto>(vm.languages[0]);
 
   // #region Rendering --------------------------------------------------------
   return (
@@ -152,7 +152,7 @@ export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
   }
 
   function renderSetDetailsLanguageHeader(): React.JSX.Element {
-    if (vm.languages.length == 1 && vm.languages[0] == "ENGLISH") {
+    if (vm.languages.length == 1 && vm.languages[0].language == "ENGLISH") {
       return (<></>);
     } else {
       return (
@@ -163,7 +163,7 @@ export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
             onButtonClick={setCurrentLanguage}
           />
           <Text style={{ textAlign: TextAlignment.CENTER, paddingTop: "5px", paddingBottom: "5px" }}>
-            {vm.name.get(currentLanguage) ?? vm.setName}
+            {vm.name.get(currentLanguage.language) ?? vm.setName}
           </Text>
           <p className={classNames("bp6-divider", "ruling-divider")} />
         </>

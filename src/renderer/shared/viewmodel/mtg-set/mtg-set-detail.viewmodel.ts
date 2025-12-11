@@ -5,7 +5,7 @@ import { BaseViewmodel } from "../base.viewmodel";
 
 export class MtgSetDetailViewmodel extends BaseViewmodel<MtgSetDto> implements IAuditFieldsViewmodel {
   // #region Private fields ---------------------------------------------------
-  private readonly sortedLanguages: Array<string>;
+  private readonly sortedLanguages: Array<LanguageDto>;
   private readonly _name: Map<string, string>;
   private readonly _setType: string;
   // #endregion
@@ -91,7 +91,7 @@ export class MtgSetDetailViewmodel extends BaseViewmodel<MtgSetDto> implements I
     return this._dto.modifiedBy;
   }
 
-  public get languages(): Array<string> {
+  public get languages(): Array<LanguageDto> {
     return this.sortedLanguages;
   }
 
@@ -106,8 +106,7 @@ export class MtgSetDetailViewmodel extends BaseViewmodel<MtgSetDto> implements I
     this.sortedLanguages = setDto.languages
       .map((lng: string) => languageService.getLanguage(lng))
       .filter((lng: LanguageDto | undefined) => lng != undefined)
-      .sort((a: LanguageDto, b: LanguageDto) => a.sequence - b.sequence)
-      .map((lng: LanguageDto) => lng.language);
+      .sort((a: LanguageDto, b: LanguageDto) => a.sequence - b.sequence);
     this._name = new Map<string, string>(Object.entries(setDto.name));
     this._setType = displayValueService.getDisplayValue("setType", setDto.type) ?? setDto.type;
   }

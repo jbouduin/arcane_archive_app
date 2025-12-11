@@ -1,9 +1,9 @@
 import { IColorService, IDisplayValueService, ILanguageService, IMtgSetService } from "../../context";
 import { LanguageDto, LibraryCardDto, LibraryLegality } from "../../dto";
-import { CardLayout } from "../../types/card-layout";
 import { ColorDto } from "../../dto/color.dto";
 import { LibraryCardLanguageDto } from "../../dto/library-card-language.dto";
 import { LibraryCardfaceDto } from "../../dto/library-cardface.dto";
+import { CardLayout } from "../../types/card-layout";
 import { AbstractCardViewmodel } from "./abstract-card.viewmodel";
 import { LibraryCardLanguageViewmodel } from "./library-card-language.viewmodel";
 import { LibraryCardfaceViewmodel } from "./library-cardface.viewmodel";
@@ -19,8 +19,7 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
   public readonly setKeyruneCode: string;
   public readonly collectorNumber: string;
   public readonly colorIdentity: Array<string>;
-  public readonly languages: Array<string>;
-  public readonly displayLanguages: Array<string>;
+  public readonly languages: Array<LanguageDto>;
   public readonly rarity: string;
   public readonly layout: CardLayout;
   public readonly manaCost: Array<string>;
@@ -60,15 +59,10 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
       .filter((color: ColorDto | undefined) => color != undefined)
       .sort((a: ColorDto, b: ColorDto) => a.sequence - b.sequence)
       .map((color: ColorDto) => color.manaSymbol);
-    this.displayLanguages = new Array<string>();
-    this.languages = new Array<string>();
-    dto.cardLanguages
-      .map((cardLanguage: LibraryCardLanguageDto) => cardLanguage.language)
-      .forEach((lng: string) => {
-        this.languages.push(lng);
-        const lngDto: LanguageDto | undefined = languageService.getLanguage(lng);
-        this.displayLanguages.push(lngDto?.buttonText ?? lng);
-      });
+    this.languages = dto.cardLanguages
+      .map((cardLanguage: LibraryCardLanguageDto) => languageService.getLanguage(cardLanguage.language))
+      .filter((lng: LanguageDto | undefined) => lng != undefined)
+      .sort((a: LanguageDto, b: LanguageDto) => a.sequence - b.sequence);
     this.rarity = dto.rarity;
     this.layout = dto.layout;
     this.manaCost = this.calculateCardManaCost(dto.cardfaces.map((cardface: LibraryCardfaceDto) => cardface.manaCost));
