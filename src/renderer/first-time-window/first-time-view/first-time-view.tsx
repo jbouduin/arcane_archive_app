@@ -3,12 +3,12 @@ import classNames from "classnames";
 // import { ConfigurationDto } from "../../../common/dto";
 // import { ConfigurationWrapper } from "../../shared/components/configuration";
 // import { DisplayValueService, DisplayValueServiceContext, IpcProxyService, IpcProxyServiceContext } from "../../shared/context";
-import { FirstTimeViewProps } from "./first-time-view.props";
-import { IServiceContainer, ServiceContainerContext } from "../../shared/context";
-import React from "react";
-import { ConfigurationViewModel } from "../../shared/viewmodel";
-import { ConfigurationDto } from "../../../common/dto";
 import { noop } from "lodash";
+import React from "react";
+import { SettingsDto } from "../../../common/dto";
+import { IServiceContainer, ServiceContainerContext } from "../../shared/context";
+import { ConfigurationViewModel } from "../../shared/viewmodel";
+import { FirstTimeViewProps } from "./first-time-view.props";
 
 export function FirstTimeView(props: FirstTimeViewProps) {
   // #region State ------------------------------------------------------------
@@ -41,7 +41,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
                       void serviceContainer.configurationService
                         .saveConfiguration(props.configuration.dto)
                         .then(
-                          (_saved: ConfigurationDto) => window.close(),
+                          (_saved: SettingsDto) => window.close(),
                           noop
                         );
                     }}

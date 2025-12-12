@@ -1,5 +1,5 @@
 import { SelectOption } from "../../types";
-import { ICollectionManagerProxyService } from "./collection-manage-proxy.service";
+import { ICollectionManagerProxyService } from "./collection-manager-proxy.service";
 
 export interface ICardSearchParamService {
   readonly cardTypes: Array<SelectOption<string>>;

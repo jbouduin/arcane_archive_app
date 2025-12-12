@@ -19,13 +19,13 @@ export class MtgCollectionClient extends BaseService implements IMtgCollectionCl
     @inject(INFRASTRUCTURE.ConfigurationService) configurationService: IConfigurationService
   ) {
     super(logService, resultFactory);
-    this.apiConfiguration = configurationService.configuration.apiConfiguration;
+    this.apiConfiguration = configurationService.configuration.systemConfiguration.apiConfiguration;
   }
   // #endregion
 
   // #region IMtgCollectionData Members ---------------------------------------
   public async getData<T>(path: string): Promise<ResultDto<T>> {
-    const response = await fetch(this.apiConfiguration.mtgCollectionApiRoot + path);
+    const response = await fetch(this.apiConfiguration.libraryApiRoot + path);
     const result = (await response.json()) as ResultDto<T>;
     return result;
   }

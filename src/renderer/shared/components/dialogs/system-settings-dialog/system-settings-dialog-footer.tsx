@@ -1,10 +1,9 @@
+import { SystemSettingsDto } from "../../../../../common/dto";
 import { BaseDialogFooterProps, SaveCancelResetFooter } from "../../base/base-dialog";
 
-// eslint-disable-next-line  @typescript-eslint/no-wrapper-object-types
-export function SystemSettingsDialogFooter(props: BaseDialogFooterProps<String>) {
+export function SystemSettingsDialogFooter(props: BaseDialogFooterProps<SystemSettingsDto>) {
   // #region Event handling ---------------------------------------------------
-  // eslint-disable-next-line  @typescript-eslint/no-wrapper-object-types
-  function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, _dto: String): Promise<void> {
+  function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, _dto: SystemSettingsDto): Promise<void> {
     if (props.onClose) {
       props.onClose(event);
     }
@@ -13,9 +12,9 @@ export function SystemSettingsDialogFooter(props: BaseDialogFooterProps<String>)
   // #endregion
 
   // #region Rendering --------------------------------------------------------
+  // TODO show reset AND factory default buttons
   return (
-    // eslint-disable-next-line  @typescript-eslint/no-wrapper-object-types
-    <SaveCancelResetFooter<String>
+    <SaveCancelResetFooter<SystemSettingsDto>
       {...props}
       showResetButton={true}
       resetButtonIcon="wrench-redo"

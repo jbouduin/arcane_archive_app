@@ -30,10 +30,6 @@ export function ButtonBar(props: ButtonBarProps) {
       );
   }
 
-  function profileClick(): void {
-    showProfileDialog(serviceContainer);
-  }
-
   function adminClick(): void {
     const props: ToastProps = {
       message: "Not implemented",
@@ -118,7 +114,7 @@ export function ButtonBar(props: ButtonBarProps) {
   function renderLoggedInMenu(): React.JSX.Element {
     return (
       <Menu size="small">
-        <MenuItem onClick={profileClick} text="User Profile" />
+        <MenuItem onClick={() => showProfileDialog(serviceContainer)} text="User Profile" />
         <MenuItem onClick={logoutClick} text="Log out" />
       </Menu>
     );

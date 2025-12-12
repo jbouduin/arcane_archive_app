@@ -1,12 +1,13 @@
 import { Classes } from "@blueprintjs/core";
-import { ConfigurationDto } from "../../../../common/dto";
+import { SettingsDto } from "../../../../common/dto";
 import { BaseViewmodel } from "../base.viewmodel";
+import { SetTreeSettingsViewmodel } from "../settings/set-tree-settings.viewmodel";
 import { DataConfigurationViewmodel } from "./data-configuration.viewmodel";
-import { MtgViewTreeConfigurationViewmodel } from "./mtg-view-tree-configuration.viewmodel";
 
-export class ConfigurationViewModel extends BaseViewmodel<ConfigurationDto> {
+// TODO get rid of this class
+export class ConfigurationViewModel extends BaseViewmodel<SettingsDto> {
   // #region private fields ---------------------------------------------------
-  private _databaseViewTreeConfigurationViewmodel: MtgViewTreeConfigurationViewmodel;
+  private _databaseViewTreeConfigurationViewmodel: SetTreeSettingsViewmodel;
   private _dataConfigurationViewmodel: DataConfigurationViewmodel;
   private readonly _isFirstUse: boolean;
   // #endregion
@@ -29,16 +30,16 @@ export class ConfigurationViewModel extends BaseViewmodel<ConfigurationDto> {
 
   // #region Getters/Setters --------------------------------------------------
   public get theme(): string {
-    return this._dto.rendererConfiguration.useDarkTheme ? Classes.DARK : "";
+    return this._dto.preferences.useDarkTheme ? Classes.DARK : "";
   }
 
-  public get databaseViewConfigurationViewmodel(): MtgViewTreeConfigurationViewmodel {
+  public get databaseViewConfigurationViewmodel(): SetTreeSettingsViewmodel {
     return this._databaseViewTreeConfigurationViewmodel;
   }
 
-  public set databaseViewConfigurationViewmodel(value: MtgViewTreeConfigurationViewmodel) {
+  public set databaseViewConfigurationViewmodel(value: SetTreeSettingsViewmodel) {
     this._databaseViewTreeConfigurationViewmodel = value;
-    this._dto.rendererConfiguration.mtgSetTreeViewConfiguration = value.dto;
+    this._dto.preferences.librarySetTreeSettings = value.dto;
   }
 
   public get dataConfigurationViewmodel(): DataConfigurationViewmodel {
@@ -47,16 +48,16 @@ export class ConfigurationViewModel extends BaseViewmodel<ConfigurationDto> {
 
   public set dataConfigurationViewmodel(value: DataConfigurationViewmodel) {
     this._dataConfigurationViewmodel = value;
-    this._dto.dataConfiguration = value.dto;
+    this._dto.systemConfiguration.dataConfiguration = value.dto;
   }
   // #endregion
 
   // #region Constructor & C° -------------------------------------------------
-  public constructor(dtoConfiguration: ConfigurationDto, isFirstUse: boolean) {
+  public constructor(dtoConfiguration: SettingsDto, isFirstUse: boolean) {
     super(dtoConfiguration);
     this._isFirstUse = isFirstUse;
-    this._databaseViewTreeConfigurationViewmodel = new MtgViewTreeConfigurationViewmodel(dtoConfiguration.rendererConfiguration.mtgSetTreeViewConfiguration);
-    this._dataConfigurationViewmodel = new DataConfigurationViewmodel(dtoConfiguration.dataConfiguration);
+    this._databaseViewTreeConfigurationViewmodel = new SetTreeSettingsViewmodel(dtoConfiguration.preferences.librarySetTreeSettings);
+    this._dataConfigurationViewmodel = new DataConfigurationViewmodel(dtoConfiguration.systemConfiguration.dataConfiguration);
   }
   // #endregion
 }

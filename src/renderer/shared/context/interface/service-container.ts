@@ -1,9 +1,9 @@
 import { ToastProps } from "@blueprintjs/core";
-import { ConfigurationDto as _ConfigurationDto } from "../../../../common/dto";
+import { SettingsDto as _ConfigurationDto } from "../../../../common/dto";
 import { LanguageDto as _LanguageDto, MtgSetTreeDto as _MtgSetTreeDto } from "../../dto";
 import { ICardSearchParamService } from "./card-search-param.service";
 import { ICardSymbolService } from "./card-symbol.service";
-import { ICollectionManagerProxyService } from "./collection-manage-proxy.service";
+import { ICollectionManagerProxyService } from "./collection-manager-proxy.service";
 import { IColorService } from "./color.service";
 import { IConfigurationService } from "./configuration.service";
 import { IDialogService } from "./dialog.service";

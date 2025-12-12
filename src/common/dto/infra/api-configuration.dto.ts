@@ -2,6 +2,8 @@ export type ApiConfigurationDto = {
   scryfallApiRoot: string;
   scryfallCardBackRoot: string;
   scryfallMinimumRequestTimeout: number;
-  mtgCollectionApiRoot: string;
+  libraryApiRoot: string;
   authenticationApiRoot: string;
+  collectionApiRoot: string;
+  deckApiRoot: string;
 };

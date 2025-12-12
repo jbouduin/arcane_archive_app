@@ -1,5 +1,5 @@
 import { LanguageDto } from "../../dto/language.dto";
-import { ICollectionManagerProxyService } from "./collection-manage-proxy.service";
+import { ICollectionManagerProxyService } from "./collection-manager-proxy.service";
 
 export interface ILanguageService {
   readonly allLanguages: Readonly<Array<LanguageDto>>;

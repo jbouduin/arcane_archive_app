@@ -2,6 +2,7 @@ import { DataConfigurationDto } from "../../../../common/dto";
 import { stringsNotNullOrEmpty } from "../../components/util";
 import { BaseViewmodel } from "../base.viewmodel";
 
+// TODO get rid of this class
 export class DataConfigurationViewmodel extends BaseViewmodel<DataConfigurationDto> {
   // #region BaseViewmodel Members ----------------------------------------------
   public get isValid(): boolean {
@@ -39,5 +40,9 @@ export class DataConfigurationViewmodel extends BaseViewmodel<DataConfigurationD
   public constructor(dtoDataConfiguration: DataConfigurationDto) {
     super(dtoDataConfiguration);
   }
+  // #endregion
+
+  // #region validation methods -----------------------------------------------
+  // TODO
   // #endregion
 }

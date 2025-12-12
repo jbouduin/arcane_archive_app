@@ -1,5 +1,4 @@
 import { Button, ButtonGroup, IconName, InputGroup, Menu, MenuDivider, MenuItem, Popover } from "@blueprintjs/core";
-import { isEmpty, xor } from "lodash";
 import React from "react";
 import { useServices } from "../../../hooks";
 import { IServiceContainer } from "../../context";
@@ -196,7 +195,7 @@ function headerView(props: HeaderViewProps) {
       <MenuItem
         onClick={() => props.onCardSetTypeFilterChanged(setType)}
         roleStructure="listoption"
-        selected={props.cardSetTypeFilter.indexOf(setType) >= 0}
+        selected={props.cardSetTypeFilter.has(setType)}
         text={serviceContainer.displayValueService.getDisplayValue("setType", setType)}
       />
     );
@@ -211,6 +210,7 @@ function headerView(props: HeaderViewProps) {
 export const HeaderView = React.memo(headerView, (prev: HeaderViewProps, next: HeaderViewProps) => {
   return prev.cardSetGroupBy == next.cardSetGroupBy &&
     prev.cardSetSort == next.cardSetSort &&
-    isEmpty(xor(prev.cardSetTypeFilter, next.cardSetTypeFilter)) &&
+    prev.cardSetTypeFilter.size == next.cardSetTypeFilter.size &&
+    Array.from(prev.cardSetTypeFilter).every(item => next.cardSetTypeFilter.has(item)) &&
     compareClassNameProp(prev.className || "", next.className || "");
 });

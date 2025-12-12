@@ -6,7 +6,7 @@ import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption } from "../../../ty
 import { UserViewmodel } from "../../../viewmodel";
 import { AuditFields } from "../../base/audit-fields/audit-fields";
 import { BaseDialogBodyProps } from "../../base/base-dialog";
-import { BaseSelect } from "../../base/base-select/base-select";
+import { BaseMultiSelect } from "../../base/base-multi-select/base-multi-select";
 import { handleStringChange } from "../../util";
 import { ValidatedInput } from "../../validated-input/validated-input";
 
@@ -123,7 +123,7 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
             />
           </FormGroup>
         </ControlGroup>
-        <BaseSelect<ApplicationRole>
+        <BaseMultiSelect<ApplicationRole>
           key="roles"
           disabled={!isSysAdmin}
           allItems={ROLES_SELECT_OPTIONS}

@@ -1,11 +1,11 @@
-import { MtgSetTreeViewConfigurationDto } from "../../../../common/dto";
+import { SetTreeSettingsDto } from "../../../../common/dto";
 import { CardSetGroupBy, CardSetSort } from "../../../../common/types";
 
 export class MtgSetTreeConfigurationViewmodel {
   // #region Private fields ---------------------------------------------------
   private _cardSetSort: CardSetSort;
   private _cardSetGroupBy: CardSetGroupBy;
-  private _cardSetTypeFilter: Array<string>;
+  private _cardSetTypeFilter: Set<string>;
   private _cardSetFilterValue: string | null;
   // #endregion
 
@@ -34,30 +34,28 @@ export class MtgSetTreeConfigurationViewmodel {
     this._cardSetFilterValue = value;
   }
 
-  public get cardSetTypeFilter(): Array<string> {
+  public get cardSetTypeFilter(): Set<string> {
     return this._cardSetTypeFilter;
   }
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: MtgSetTreeViewConfigurationDto) {
+  public constructor(dto: SetTreeSettingsDto) {
     this._cardSetSort = dto.cardSetSort;
     this._cardSetGroupBy = dto.cardSetGroupBy;
-    this._cardSetTypeFilter = dto.cardSetTypeFilter;
+    this._cardSetTypeFilter = new Set<string>(dto.cardSetTypeFilter);
     this._cardSetFilterValue = null;
   }
   // #endregion
 
   // #region Public methods ---------------------------------------------------
   public toggleCardSetFilterType(cardSetType: string): void {
-    const indexOfType = this._cardSetTypeFilter.indexOf(cardSetType);
-    if (indexOfType >= 0) {
-      this._cardSetTypeFilter = this._cardSetTypeFilter
-        .filter((ct: string) => ct != cardSetType);
+    if (this.cardSetTypeFilter.has(cardSetType)) {
+      this.cardSetTypeFilter.delete(cardSetType);
     } else {
-      this._cardSetTypeFilter.push(cardSetType);
+      this.cardSetTypeFilter.add(cardSetType);
     }
-    this._cardSetFilterValue = null;
+    this.cardSetFilterValue = null;
   }
   // #endregion
 }

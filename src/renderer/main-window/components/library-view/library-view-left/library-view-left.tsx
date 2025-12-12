@@ -39,7 +39,7 @@ export function LibraryViewLeft(props: LibraryViewLeftProps) {
               <SetTreeView
                 {...props}
                 cardSets={cardSets}
-                configuration={new MtgSetTreeConfigurationViewmodel(serviceContainer.configurationService.rendererConfiguration.mtgSetTreeViewConfiguration)}
+                configuration={new MtgSetTreeConfigurationViewmodel(serviceContainer.configurationService.preferences.librarySetTreeSettings)}
                 onSetsSelected={props.onSetSelectionChanged}
               />
             )

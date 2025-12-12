@@ -1,5 +1,5 @@
 import { inject, singleton } from "tsyringe";
-import { ConfigurationDto } from "../../../../common/dto";
+import { SettingsDto } from "../../../../common/dto";
 import { IResult, IRouter, RouteCallback, RoutedRequest } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
 import { IConfigurationService, IRouterService } from "../interface";
@@ -26,19 +26,19 @@ export class ConfigurationRouter implements IRouter {
   // #endregion
 
   // #region Route callbacks --------------------------------------------------
-  private getSettings(_request: RoutedRequest<void>): Promise<IResult<ConfigurationDto>> {
+  private getSettings(_request: RoutedRequest<void>): Promise<IResult<SettingsDto>> {
     return this.configurationService.getSettings();
   }
 
-  private getFactoryDefault(_request: RoutedRequest<void>): Promise<IResult<ConfigurationDto>> {
+  private getFactoryDefault(_request: RoutedRequest<void>): Promise<IResult<SettingsDto>> {
     return this.configurationService.getFactoryDefault();
   }
 
-  private putSettings(request: RoutedRequest<ConfigurationDto>): Promise<IResult<ConfigurationDto>> {
+  private putSettings(request: RoutedRequest<SettingsDto>): Promise<IResult<SettingsDto>> {
     return this.configurationService.putSettings(request.data);
   }
 
-  private setSettings(request: RoutedRequest<ConfigurationDto>): Promise<IResult<ConfigurationDto>> {
+  private setSettings(request: RoutedRequest<SettingsDto>): Promise<IResult<SettingsDto>> {
     return this.configurationService.setSettings(request.data);
   }
   // #endregion

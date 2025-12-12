@@ -62,7 +62,7 @@ export function SetTreeView(props: SetTreeViewProps) {
     // --- filter Sets by textfilter value and cardSetType ---
     const result = data.filter((cardSet: MtgSetTreeViewmodel) => {
       return (filterProps.cardSetFilterValue ? cardSet.cardSetName.toUpperCase().indexOf(filterProps.cardSetFilterValue.toUpperCase()) >= 0 : true) &&
-        filterProps.cardSetTypeFilter.indexOf(cardSet.cardSetType) >= 0;
+        filterProps.cardSetTypeFilter.has(cardSet.cardSetType);
     });
 
     // --- if group by parent then filter out those items where parent is filtered out and add those whose parent was removed ---

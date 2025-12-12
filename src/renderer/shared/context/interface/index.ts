@@ -1,6 +1,6 @@
 export * from "./card-search-param.service";
 export * from "./card-symbol.service";
-export * from "./collection-manage-proxy.service";
+export * from "./collection-manager-proxy.service";
 export * from "./color.service";
 export * from "./configuration.service";
 export * from "./dialog.service";
@@ -8,6 +8,7 @@ export * from "./display-value.service";
 export * from "./ipc-proxy.service";
 export * from "./language.service";
 export * from "./mtg-set.service";
+export * from "./preferences-context-type";
 export * from "./service-container";
 export * from "./session.service";
 export * from "./viewmodel-factory.service";

@@ -3,12 +3,12 @@ import { ItemRendererProps, MultiSelect } from "@blueprintjs/select";
 import * as React from "react";
 import { SelectOption } from "../../../types";
 import { HighlightText } from "../highlight-text/highlight-text";
-import { BaseSelectProps } from "./base-select.props";
+import { BaseMultiSelectProps } from "./base-multi-select.props";
 
 /**
  * A multi select component that uses a static (cached) list of items
  */
-export function BaseSelect<T>(props: BaseSelectProps<T>) {
+export function BaseMultiSelect<T>(props: BaseMultiSelectProps<T>) {
   // #region Event handling ----------------------------------------------------
   function onSelect(item: SelectOption<T>): void {
     const indexOfSelected = props.selectedItems.findIndex((value: SelectOption<T>) => value.value == item.value);

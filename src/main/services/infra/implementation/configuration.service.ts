@@ -1,11 +1,11 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { inject, singleton } from "tsyringe";
-import { ConfigurationDto, RendererConfigurationDto } from "../../../../common/dto";
+import { PreferencesDto, SettingsDto } from "../../../../common/dto";
+import { ApiConfigurationDto } from "../../../../common/dto/infra/api-configuration.dto";
 import { BaseService, IResult } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
 import { IConfigurationService, ILogService, IResultFactory } from "../interface";
-import { ApiConfigurationDto } from "../../../../common/dto/infra/api-configuration.dto";
 
 @singleton()
 export class ConfigurationService extends BaseService implements IConfigurationService {
@@ -14,12 +14,12 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   private appDirectory!: string;
   private homeDirectory!: string;
   private useDarkTheme!: boolean;
-  private _configuration!: ConfigurationDto;
+  private _configuration!: SettingsDto;
   private _isFirstUsage!: boolean;
   // #endregion
 
   // #region IConfigurationService properties ---------------------------------
-  public get configuration(): ConfigurationDto {
+  public get configuration(): SettingsDto {
     return this._configuration;
   }
 
@@ -29,8 +29,8 @@ export class ConfigurationService extends BaseService implements IConfigurationS
 
   public get dataBaseFilePath(): string {
     return join(
-      this._configuration.dataConfiguration.rootDataDirectory,
-      this._configuration.dataConfiguration.databaseName
+      this._configuration.systemConfiguration.dataConfiguration.rootDataDirectory,
+      this._configuration.systemConfiguration.dataConfiguration.databaseName
     );
   }
   // #endregion
@@ -51,7 +51,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     this.useDarkTheme = useDarkTheme;
     this.configFilePath = join(appDirectory, "collection-manager.config.json");
     if (existsSync(this.configFilePath)) {
-      this._configuration = JSON.parse(readFileSync(this.configFilePath, "utf-8")) as ConfigurationDto;
+      this._configuration = JSON.parse(readFileSync(this.configFilePath, "utf-8")) as SettingsDto;
       this._isFirstUsage = false;
     } else {
       this._configuration = this.createFactoryDefault();
@@ -61,42 +61,43 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   // #endregion
 
   // #region Route callbacks --------------------------------------------------
-  public getSettings(): Promise<IResult<ConfigurationDto>> {
+  public getSettings(): Promise<IResult<SettingsDto>> {
     return this.resultFactory.createSuccessResultPromise(this._configuration);
   }
 
-  public getFactoryDefault(): Promise<IResult<ConfigurationDto>> {
+  public getFactoryDefault(): Promise<IResult<SettingsDto>> {
     return this.resultFactory.createSuccessResultPromise(this.createFactoryDefault());
   }
 
-  public putSettings(configuration: ConfigurationDto): Promise<IResult<ConfigurationDto>> {
+  public putSettings(configuration: SettingsDto): Promise<IResult<SettingsDto>> {
     // LATER Validation
     this.createDirectoryIfNotExists(dirname(this.configFilePath));
     writeFileSync(this.configFilePath, JSON.stringify(configuration, null, 2));
     this._configuration = configuration;
     this._isFirstUsage = false;
-    return this.resultFactory.createSuccessResultPromise<ConfigurationDto>(configuration);
+    return this.resultFactory.createSuccessResultPromise<SettingsDto>(configuration);
   }
 
-  public setSettings(configuration: ConfigurationDto): Promise<IResult<ConfigurationDto>> {
+  public setSettings(configuration: SettingsDto): Promise<IResult<SettingsDto>> {
     writeFileSync(this.configFilePath, JSON.stringify(configuration, null, 2));
     this._configuration = configuration;
     this._isFirstUsage = false;
-    return this.resultFactory.createSuccessResultPromise<ConfigurationDto>(configuration);
+    return this.resultFactory.createSuccessResultPromise<SettingsDto>(configuration);
   }
   // #endregion
 
   // #region Auxiliary factory default methods --------------------------------
-  private createFactoryDefault(): ConfigurationDto {
-    const result: ConfigurationDto = {
-      apiConfiguration: this.createApiConfigurationFactoryDefault(),
-      dataConfiguration: {
-        refreshCacheAtStartup: false,
-        rootDataDirectory: join(this.homeDirectory, "mtg-collection-manager"),
-        cacheDirectory: join(this.appDirectory, ".cache"),
-        databaseName: "magic-db.sqlite"
+  private createFactoryDefault(): SettingsDto {
+    const result: SettingsDto = {
+      systemConfiguration: {
+        apiConfiguration: this.createApiConfigurationFactoryDefault(),
+        dataConfiguration: {
+          rootDataDirectory: join(this.homeDirectory, "mtg-collection-manager"),
+          cacheDirectory: join(this.appDirectory, ".cache"),
+          databaseName: "magic-db.sqlite"
+        }
       },
-      rendererConfiguration: this.createRendererConfigurationFactoryDefault(this.useDarkTheme)
+      preferences: this.createRendererConfigurationFactoryDefault(this.useDarkTheme)
     };
     return result;
   }
@@ -108,16 +109,19 @@ export class ConfigurationService extends BaseService implements IConfigurationS
       // Scryfall api requests 50-100 ms between calls, let's give it some slack
       scryfallMinimumRequestTimeout: 60,
       authenticationApiRoot: "http://localhost:5401/api",
-      mtgCollectionApiRoot: "http://localhost:5402/api"
+      libraryApiRoot: "http://localhost:5402/api",
+      collectionApiRoot: "http://localhost:5403/api",
+      deckApiRoot: "http://localhost:5404/api"
     };
     return result;
   }
 
-  private createRendererConfigurationFactoryDefault(useDarkTheme: boolean): RendererConfigurationDto {
-    const result: RendererConfigurationDto = {
+  private createRendererConfigurationFactoryDefault(useDarkTheme: boolean): PreferencesDto {
+    const result: PreferencesDto = {
+      refreshCacheAtStartup: false,
       useDarkTheme: useDarkTheme,
       logServerResponses: false,
-      mtgSetTreeViewConfiguration: {
+      librarySetTreeSettings: {
         cardSetSort: "releaseDateDescending",
         cardSetGroupBy: "parent",
         cardSetTypeFilter: [

@@ -1,9 +1,10 @@
-import { MtgSetTreeViewConfigurationDto } from "../library";
+import { SetTreeSettingsDto } from "./set-tree-settings.dto";
 
-export type RendererConfigurationDto = {
+export type PreferencesDto = {
+  refreshCacheAtStartup: boolean;
   useDarkTheme: boolean;
   logServerResponses: boolean;
-  mtgSetTreeViewConfiguration: MtgSetTreeViewConfigurationDto;
+  librarySetTreeSettings: SetTreeSettingsDto;
   /*
    * FEATURE settings for all center panels
    * for all views ->

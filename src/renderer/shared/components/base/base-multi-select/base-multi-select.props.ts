@@ -1,7 +1,7 @@
 import { Props } from "@blueprintjs/core";
 import { SelectOption } from "../../../types";
 
-export interface BaseSelectProps<T> extends Props {
+export interface BaseMultiSelectProps<T> extends Props {
   allItems: Array<SelectOption<T>>;
   disabled?: boolean;
   formGroupLabel: string;

@@ -6,7 +6,7 @@ import { useServices } from "../../../hooks";
 import { ColorDto, MtgSetTreeDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { CardSearchViewmodel } from "../../viewmodel";
-import { BaseSelect } from "../base/base-select/base-select";
+import { BaseMultiSelect } from "../base/base-multi-select/base-multi-select";
 import { BaseServerSelect } from "../base/base-server-select/base-server-select";
 import { CardSymbolRenderer } from "../card-symbol-renderer";
 import { CardSearchViewProps } from "./card-search-view.props";
@@ -75,7 +75,7 @@ export function CardSearchView(props: CardSearchViewProps) {
   // #region Rendering --------------------------------------------------------
   return (
     <div className="left-panel-search-panel">
-      <BaseSelect<MtgSetTreeDto>
+      <BaseMultiSelect<MtgSetTreeDto>
         allItems={allCardSets}
         key={`card-set-select-${scrollVersion}`}
         formGroupLabel="Set"
@@ -99,7 +99,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         onItemRemoved={(item: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeCardName(item))}
         onClearSelectedItems={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearCardNameSelection())}
       />
-      <BaseSelect<ColorDto>
+      <BaseMultiSelect<ColorDto>
         key={`card-color-select-${scrollVersion}`}
         allItems={allColors}
         formGroupLabel="Card color"
@@ -109,7 +109,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         selectedItems={searchViewmodel.selectedCardColors}
         preTextElement={colorSymbolRenderer}
       />
-      <BaseSelect<ColorDto>
+      <BaseMultiSelect<ColorDto>
         key={`produced-mana-color-select-${scrollVersion}`}
         allItems={allColors}
         formGroupLabel="Produced mana color"
@@ -119,7 +119,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         selectedItems={searchViewmodel.selectedProducedManaColors}
         preTextElement={colorSymbolRenderer}
       />
-      <BaseSelect<ColorDto>
+      <BaseMultiSelect<ColorDto>
         key={`identity-color-select-${scrollVersion}`}
         allItems={allColors}
         formGroupLabel="Identity color"
@@ -129,7 +129,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         selectedItems={searchViewmodel.selectedIdentityColors}
         preTextElement={colorSymbolRenderer}
       />
-      <BaseSelect<string>
+      <BaseMultiSelect<string>
         allItems={allRarities}
         key={`rarity-select-${scrollVersion}`}
         formGroupLabel="Rarity"
@@ -138,7 +138,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeRarity(option))}
         selectedItems={searchViewmodel.selectedRarities}
       />
-      <BaseSelect<string>
+      <BaseMultiSelect<string>
         allItems={allFormats}
         key={`game-format-select-${scrollVersion}`}
         formGroupLabel="Game Format"
@@ -147,7 +147,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeGameFormat(option))}
         selectedItems={searchViewmodel.selectedGameFormats}
       />
-      <BaseSelect<string>
+      <BaseMultiSelect<string>
         allItems={allCardTypes}
         key={`card-type-select-${scrollVersion}`}
         formGroupLabel="Card type"
@@ -156,7 +156,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeCardType(option))}
         selectedItems={searchViewmodel.selectedTypes}
       />
-      <BaseSelect<string>
+      <BaseMultiSelect<string>
         allItems={allSuperTypes}
         key={`super-type-select-${scrollVersion}`}
         formGroupLabel="Super-type"
@@ -178,7 +178,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         onItemRemoved={(item: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removeSubType(item))}
         onClearSelectedItems={() => onSelectOptionEvent((v: CardSearchViewmodel) => v.clearSubTypeSelection())}
       />
-      <BaseSelect<string>
+      <BaseMultiSelect<string>
         allItems={allPowers}
         key={`power-select-${scrollVersion}`}
         formGroupLabel="Power"
@@ -187,7 +187,7 @@ export function CardSearchView(props: CardSearchViewProps) {
         onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: CardSearchViewmodel) => v.removePower(option))}
         selectedItems={searchViewmodel.selectedPowers}
       />
-      <BaseSelect<string>
+      <BaseMultiSelect<string>
         allItems={allToughnesses}
         key={`toughness-select-${scrollVersion}`}
         formGroupLabel="Toughness"

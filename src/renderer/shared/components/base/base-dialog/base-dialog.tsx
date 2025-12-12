@@ -1,8 +1,7 @@
-import { Classes, Dialog, DialogBody, DialogFooter } from "@blueprintjs/core";
+import { Dialog, DialogBody, DialogFooter } from "@blueprintjs/core";
 import { cloneDeep } from "lodash";
 import React from "react";
-import { useServices } from "../../../../hooks/use-services";
-import { IServiceContainer } from "../../../context";
+import { usePreferences } from "../../../../hooks";
 import { BaseViewmodel } from "../../../viewmodel/base.viewmodel";
 import { BaseDialogBodyProps } from "./base-dialog-body.props";
 import { BaseDialogFooterProps } from "./base-dialog-footer.props";
@@ -11,18 +10,15 @@ import { BaseDialogProps } from "./base-dialog.props";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function BaseDialog<T extends BaseViewmodel<any>>(props: BaseDialogProps<T>) {
   // #region State ------------------------------------------------------------
+  const { themeClassName } = usePreferences();
   const [state, setState] = React.useState(props.viewmodel);
-  // #endregion
-
-  // #region Hooks ------------------------------------------------------------
-  const serviceContainer: IServiceContainer = useServices();
   // #endregion
 
   // #region Rendering --------------------------------------------------------
   return (
     <Dialog
       {...props}
-      className={serviceContainer.configurationService.rendererConfiguration.useDarkTheme ? Classes.DARK : ""}
+      className={themeClassName}
     >
       <DialogBody>
         {renderBody()}

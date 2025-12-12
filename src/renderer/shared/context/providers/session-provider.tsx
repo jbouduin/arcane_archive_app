@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useServices } from "../../hooks/use-services";
-import { SessionContext } from "../context";
+import { useServices } from "../../../hooks/use-services";
+import { SessionContext } from "../shared.context";
 
 export function SessionProvider({ children }: { children: React.ReactNode; }) {
   // #region State ------------------------------------------------------------

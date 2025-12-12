@@ -1,6 +1,6 @@
 import { LoginResponseDto } from "../../dto";
 import { ApplicationRole } from "../../types";
-import { SessionChangeListener } from "../session-change-listener";
+import { SessionChangeListener } from "../providers";
 
 export interface ISessionService {
   readonly jwt: string | null;

@@ -20,7 +20,7 @@ export class ScryfallClient extends BaseService implements IScryfallClient {
     @inject(INFRASTRUCTURE.ConfigurationService) configurationService: IConfigurationService
   ) {
     super(logService, resultFactory);
-    this.apiConfiguration = configurationService.configuration.apiConfiguration;
+    this.apiConfiguration = configurationService.configuration.systemConfiguration.apiConfiguration;
     this.requestQueue = new Array<() => Promise<void>>();
     this.isProcessingQueue = false;
     this.nextQuery = Date.now() + this.apiConfiguration.scryfallMinimumRequestTimeout;

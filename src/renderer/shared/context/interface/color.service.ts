@@ -1,6 +1,6 @@
 import { ColorDto } from "../../dto";
 import { SelectOption } from "../../types";
-import { ICollectionManagerProxyService } from "./collection-manage-proxy.service";
+import { ICollectionManagerProxyService } from "./collection-manager-proxy.service";
 
 export interface IColorService {
   readonly allColors: Array<ColorDto>;

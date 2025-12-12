@@ -1,6 +1,6 @@
 import { CardSetGroupBy, CardSetSort } from "../../types";
 
-export type MtgSetTreeViewConfigurationDto = {
+export type SetTreeSettingsDto = {
   cardSetSort: CardSetSort;
   cardSetGroupBy: CardSetGroupBy;
   cardSetTypeFilter: Array<string>;

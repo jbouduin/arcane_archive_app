@@ -1,17 +1,21 @@
 import { ToastProps } from "@blueprintjs/core";
-import { ICardSearchParamService, ICardSymbolService, ICollectionManagerProxyService, IColorService, IConfigurationService, IDialogService, IDisplayValueService, IIpcProxyService, ILanguageService, IMtgSetService, IServiceContainer, ISessionService, IViewmodelFactoryService } from "../interface";
+import {
+  ICardSearchParamService, ICardSymbolService, ICollectionManagerProxyService, IColorService, IConfigurationService,
+  IDialogService, IDisplayValueService, IIpcProxyService, ILanguageService, IMtgSetService, IServiceContainer,
+  ISessionService, IViewmodelFactoryService
+} from "../interface";
+import { CardSearchParamService } from "./card-search-param.service";
+import { CardSymbolService } from "./card-symbol.service";
+import { CollectionManagerProxyService } from "./collection-manager-proxy.service";
+import { ColorService } from "./color.service";
 import { ConfigurationService } from "./configuration.service";
+import { DialogService } from "./dialog.service";
 import { DisplayValueService } from "./display-value.service";
 import { IpcProxyService } from "./ipc-proxy.service";
 import { LanguageService } from "./language.service";
 import { MtgSetService } from "./mtg-set.service";
-import { ViewmodelFactoryService } from "./viewmodel-factory.service";
-import { CardSymbolService } from "./card-symbol.service";
-import { ColorService } from "./color.service";
-import { CollectionManagerProxyService } from "./collection-manage-proxy.service";
-import { CardSearchParamService } from "./card-search-param.service";
-import { DialogService } from "./dialog.service";
 import { SessionService } from "./session.service";
+import { ViewmodelFactoryService } from "./viewmodel-factory.service";
 
 export class ServiceContainer implements IServiceContainer {
   // #region Private fields ---------------------------------------------------
@@ -108,7 +112,6 @@ export class ServiceContainer implements IServiceContainer {
       this._cardSearchParamService.initialize(this._collectionManagerProxy),
       this._cardSymbolService.initialize(this._ipcProxy),
       this._colorService.initialize(this._collectionManagerProxy),
-      this._configurationService.initialize(this._ipcProxy),
       this._displayValueService.initialize(this._collectionManagerProxy),
       this._languageService.initialize(this._collectionManagerProxy),
       this._mtgSetService.initialize(this._collectionManagerProxy)

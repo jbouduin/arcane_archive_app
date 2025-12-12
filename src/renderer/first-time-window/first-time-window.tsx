@@ -1,20 +1,20 @@
 import { BlueprintProvider, FocusStyleManager, OverlayToaster, Position, ToastProps } from "@blueprintjs/core";
 import { createRoot } from "react-dom/client";
 import { IServiceContainer, ServiceContainerContext } from "../shared/context";
+import { CardSearchParamService } from "../shared/context/implementation/card-search-param.service";
 import { CardSymbolService } from "../shared/context/implementation/card-symbol.service";
+import { CollectionManagerProxyService } from "../shared/context/implementation/collection-manager-proxy.service";
 import { ColorService } from "../shared/context/implementation/color.service";
 import { ConfigurationService } from "../shared/context/implementation/configuration.service";
+import { DialogService } from "../shared/context/implementation/dialog.service";
 import { DisplayValueService } from "../shared/context/implementation/display-value.service";
 import { IpcProxyService } from "../shared/context/implementation/ipc-proxy.service";
 import { LanguageService } from "../shared/context/implementation/language.service";
 import { MtgSetService } from "../shared/context/implementation/mtg-set.service";
+import { SessionService } from "../shared/context/implementation/session.service";
 import { ViewmodelFactoryService } from "../shared/context/implementation/viewmodel-factory.service";
 import { ConfigurationViewModel } from "../shared/viewmodel";
 import { FirstTimeView } from "./first-time-view/first-time-view";
-import { CollectionManagerProxyService } from "../shared/context/implementation/collection-manage-proxy.service";
-import { CardSearchParamService } from "../shared/context/implementation/card-search-param.service";
-import { DialogService } from "../shared/context/implementation/dialog.service";
-import { SessionService } from "../shared/context/implementation/session.service";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 

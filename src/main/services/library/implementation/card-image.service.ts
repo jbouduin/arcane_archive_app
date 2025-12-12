@@ -2,12 +2,12 @@ import { net } from "electron";
 import { createWriteStream, existsSync, mkdirSync } from "fs";
 import path from "path";
 import { inject, injectable } from "tsyringe";
+import { CARD_IMAGE_FACE } from "../../../../common/types";
 import { IMtgCollectionClient, IScryfallClient } from "../../api/interface";
 import { BaseService } from "../../base";
 import { IConfigurationService, ILogService, IResultFactory } from "../../infra/interface";
 import { API, INFRASTRUCTURE } from "../../service.tokens";
 import { ICardImageService } from "../interface/card-image.service";
-import { CARD_IMAGE_FACE } from "../../../../common/types";
 
 @injectable()
 export class CardImageService extends BaseService implements ICardImageService {
@@ -26,7 +26,7 @@ export class CardImageService extends BaseService implements ICardImageService {
     @inject(API.ScryfallClient) scryfallClient: IScryfallClient
   ) {
     super(logService, resultFactory);
-    this.cacheDirectory = path.join(configurationService.configuration.dataConfiguration.cacheDirectory, "card-images");
+    this.cacheDirectory = path.join(configurationService.configuration.systemConfiguration.dataConfiguration.cacheDirectory, "card-images");
     this.configurationService = configurationService;
     this.scryfallClient = scryfallClient;
   }
@@ -76,12 +76,12 @@ export class CardImageService extends BaseService implements ICardImageService {
   private async cacheImage(url: URL, cachedImagePath: string): Promise<boolean> {
     let imageUrl: URL;
     if (url.host == CARD_IMAGE_FACE) {
-      imageUrl = new URL(this.configurationService.configuration.apiConfiguration.scryfallApiRoot);
+      imageUrl = new URL(this.configurationService.configuration.systemConfiguration.apiConfiguration.scryfallApiRoot);
       imageUrl.pathname = (imageUrl.pathname + url.pathname).replace("//", "");
       url.searchParams.forEach((v: string, k: string) => imageUrl.searchParams.append(k, v));
     } else {
       const cardBackId = url.pathname.substring(1);
-      imageUrl = new URL(this.configurationService.configuration.apiConfiguration.scryfallCardBackRoot +
+      imageUrl = new URL(this.configurationService.configuration.systemConfiguration.apiConfiguration.scryfallCardBackRoot +
         `/large/${cardBackId.substring(0, 1)}/${cardBackId.substring(1, 2)}/${cardBackId}.jpg`
       );
     }

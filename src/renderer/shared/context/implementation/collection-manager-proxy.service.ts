@@ -1,5 +1,5 @@
 import { ToastProps } from "@blueprintjs/core";
-import { ConfigurationDto } from "../../../../common/dto";
+import { SettingsDto } from "../../../../common/dto";
 import { ResultDto, ValidationErrorDto } from "../../../../common/dto/mtg-collection";
 import { CardQueryParamsDto, ColorDto, LibraryCardListDto, MtgSetTreeDto, QueryResultDto } from "../../dto";
 import { MtgServer } from "../../types";
@@ -62,12 +62,14 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
     return this.sendRequest("GET", server, path, null, suppressSuccessMessage);
   }
 
-  public initialize(sessionService: ISessionService, configuration: ConfigurationDto, showToast: (props: ToastProps, key?: string) => void): void {
-    this._logServerResponses = configuration.rendererConfiguration.logServerResponses;
+  public initialize(sessionService: ISessionService, configuration: SettingsDto, showToast: (props: ToastProps, key?: string) => void): void {
+    this._logServerResponses = configuration.preferences.logServerResponses;
     this.showToast = showToast;
     this.sessionService = sessionService;
-    this.apiRoots.set("library", configuration.apiConfiguration.mtgCollectionApiRoot);
-    this.apiRoots.set("authentication", configuration.apiConfiguration.authenticationApiRoot);
+    this.apiRoots.set("authentication", configuration.systemConfiguration.apiConfiguration.authenticationApiRoot);
+    this.apiRoots.set("library", configuration.systemConfiguration.apiConfiguration.libraryApiRoot);
+    this.apiRoots.set("collection", configuration.systemConfiguration.apiConfiguration.collectionApiRoot);
+    this.apiRoots.set("deck", configuration.systemConfiguration.apiConfiguration.deckApiRoot);
   }
 
   public postData<Req extends object, Res extends object>(server: MtgServer, path: string, data: Req | null, suppressSuccessMessage: boolean): Promise<Res> {

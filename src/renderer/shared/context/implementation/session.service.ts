@@ -1,7 +1,7 @@
 import { LoginResponseDto } from "../../dto";
 import { ApplicationRole } from "../../types";
 import { ISessionService } from "../interface/session.service";
-import { SessionChangeListener } from "../session-change-listener";
+import { SessionChangeListener } from "../providers";
 
 export class SessionService implements ISessionService {
   // #region Private fields ---------------------------------------------------

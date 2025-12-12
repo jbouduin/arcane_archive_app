@@ -1,47 +1,72 @@
-import { ConfigurationDto, RendererConfigurationDto } from "../../../../common/dto";
+import { PreferencesDto, SettingsDto } from "../../../../common/dto";
 import { IConfigurationService, IIpcProxyService } from "../interface";
+import { PreferencesChangeListener } from "../providers";
 
 export class ConfigurationService implements IConfigurationService {
   // #region private fields ---------------------------------------------------
   private ipcProxy!: IIpcProxyService;
-  private _configuration!: ConfigurationDto;
+  private _settings!: SettingsDto;
+  private listeners: Array<PreferencesChangeListener>;
+  // #endregion
+
+  // #region IConfiguration Getters -------------------------------------------
+  public get configuration(): SettingsDto {
+    return this._settings;
+  }
+
+  public get preferences(): PreferencesDto {
+    return this._settings.preferences;
+  }
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor() { }
+  public constructor() {
+    this.listeners = new Array<PreferencesChangeListener>();
+  }
   // #endregion
 
   // #region IConfiguration Members -------------------------------------------
-  public get configuration(): ConfigurationDto {
-    return this._configuration;
-  }
-
-  public get rendererConfiguration(): RendererConfigurationDto {
-    return this._configuration.rendererConfiguration;
-  }
-
-  public initialize(ipcProxy: IIpcProxyService): Promise<ConfigurationDto> {
+  public initialize(ipcProxy: IIpcProxyService): Promise<SettingsDto> {
     this.ipcProxy = ipcProxy;
-    return this.ipcProxy.getData<ConfigurationDto>("/configuration")
+    return this.ipcProxy.getData<SettingsDto>("/configuration")
       .then(
-        (configuration: ConfigurationDto) => {
-          this._configuration = configuration;
-          ipcProxy.logServerResponses = configuration.rendererConfiguration.logServerResponses;
-          return configuration;
+        (settings: SettingsDto) => {
+          this._settings = settings;
+          ipcProxy.logServerResponses = settings.preferences.logServerResponses;
+          return settings;
         }
       );
   }
 
-  public saveConfiguration(configuration: ConfigurationDto): Promise<ConfigurationDto> {
+  public saveConfiguration(configuration: SettingsDto): Promise<SettingsDto> {
     return this.ipcProxy
-      .postData<ConfigurationDto, ConfigurationDto>("/configuration", configuration)
+      .postData<SettingsDto, SettingsDto>("/configuration", configuration)
       .then(
-        (saved: ConfigurationDto) => {
-          this._configuration = saved;
+        (saved: SettingsDto) => {
+          this._settings = saved;
           return saved;
         },
         () => configuration
       );
+  }
+
+  public updateLocalPreferences(preferences: PreferencesDto): Promise<PreferencesDto> {
+    this._settings.preferences = preferences;
+    return this.saveConfiguration(this._settings)
+      .then(
+        (saved: SettingsDto) => {
+          this.listeners.forEach((l: PreferencesChangeListener) => l(saved.preferences));
+          return saved.preferences;
+        },
+        () => this._settings.preferences
+      );
+  }
+
+  public subscribe(listener: PreferencesChangeListener): () => void {
+    this.listeners.push(listener);
+    return () => {
+      this.listeners = this.listeners.filter(l => l !== listener);
+    };
   }
   // #endregion
 }

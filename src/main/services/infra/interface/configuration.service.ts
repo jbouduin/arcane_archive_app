@@ -1,14 +1,14 @@
-import { ConfigurationDto } from "../../../../common/dto";
+import { SettingsDto } from "../../../../common/dto";
 import { IResult } from "../../base";
 
 export interface IConfigurationService {
   readonly dataBaseFilePath: string;
   readonly isFirstUsage: boolean;
-  readonly configuration: ConfigurationDto;
+  readonly configuration: SettingsDto;
 
-  getFactoryDefault(): Promise<IResult<ConfigurationDto>>;
-  getSettings(): Promise<IResult<ConfigurationDto>>;
+  getFactoryDefault(): Promise<IResult<SettingsDto>>;
+  getSettings(): Promise<IResult<SettingsDto>>;
   loadSettings(appDirectory: string, homeDirectory: string, useDarkTheme: boolean): void;
-  putSettings(settings: ConfigurationDto): Promise<IResult<ConfigurationDto>>;
-  setSettings(settings: ConfigurationDto): Promise<IResult<ConfigurationDto>>;
+  putSettings(settings: SettingsDto): Promise<IResult<SettingsDto>>;
+  setSettings(settings: SettingsDto): Promise<IResult<SettingsDto>>;
 }

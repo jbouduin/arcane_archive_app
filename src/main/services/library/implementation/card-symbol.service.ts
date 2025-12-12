@@ -26,7 +26,7 @@ export class CardSymbolService extends BaseService implements ICardSymbolService
     @inject(API.ScryfallClient) scryfallClient: IScryfallClient
   ) {
     super(logService, resultFactory);
-    this.cacheDirectory = path.join(configurationService.configuration.dataConfiguration.cacheDirectory, "card-symbols");
+    this.cacheDirectory = path.join(configurationService.configuration.systemConfiguration.dataConfiguration.cacheDirectory, "card-symbols");
     this.mtgCollectionClient = mtgCollectionClient;
     this.scryfallClient = scryfallClient;
   }

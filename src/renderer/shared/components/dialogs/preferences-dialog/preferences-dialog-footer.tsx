@@ -1,10 +1,15 @@
+import { PreferencesDto } from "../../../../../common/dto";
+import { useServices } from "../../../../hooks";
 import { BaseDialogFooterProps, SaveCancelResetFooter } from "../../base/base-dialog";
 
-// eslint-disable-next-line  @typescript-eslint/no-wrapper-object-types
-export function PreferencesDialogFooter(props: BaseDialogFooterProps<String>) {
+export function PreferencesDialogFooter(props: BaseDialogFooterProps<PreferencesDto>) {
+  // #region Hooks ------------------------------------------------------------
+  const serviceContainer = useServices();
+  // #endregion
+
   // #region Event handling ---------------------------------------------------
-  // eslint-disable-next-line  @typescript-eslint/no-wrapper-object-types
-  function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, _dto: String): Promise<void> {
+  function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, _dto: PreferencesDto): Promise<void> {
+    serviceContainer.configurationService.updateLocalPreferences(props.viewmodel.dto);
     if (props.onClose) {
       props.onClose(event);
     }
@@ -14,10 +19,9 @@ export function PreferencesDialogFooter(props: BaseDialogFooterProps<String>) {
 
   // #region Rendering --------------------------------------------------------
   return (
-    // eslint-disable-next-line  @typescript-eslint/no-wrapper-object-types
-    <SaveCancelResetFooter<String>
+    <SaveCancelResetFooter<PreferencesDto>
       {...props}
-      showResetButton={false}
+      showResetButton={true}
       commitButtonLabel="Save"
       commitButtonIcon="floppy-disk"
       onCommitButtonClick={saveClick}

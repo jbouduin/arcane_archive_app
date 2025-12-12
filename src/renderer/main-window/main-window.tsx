@@ -1,10 +1,11 @@
 import { FocusStyleManager, H1, OverlaysProvider, OverlayToaster, PortalProvider, Position, ToastProps } from "@blueprintjs/core";
 import { createRoot } from "react-dom/client";
 import { DialogRenderer } from "../shared/components/base/base-dialog/dialog-renderer";
-import { SessionProvider } from "../shared/components/session-provider";
+import { SessionProvider } from "../shared/context/providers/session-provider";
 import { ServiceContainer } from "../shared/context/implementation/service.container";
 import { ServiceContainerContext } from "../shared/context/shared.context";
 import { MainWindowDesktop } from "./components/desktop/main-window-desktop";
+import { PreferencesProvider } from "../shared/context/providers/preferences-provider";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -34,8 +35,10 @@ void (async () => {
             <PortalProvider>
               <ServiceContainerContext.Provider value={serviceContainer}>
                 <SessionProvider>
-                  <MainWindowDesktop toastCall={toastCall} />
-                  <DialogRenderer dialogService={serviceContainer.dialogService} />
+                  <PreferencesProvider>
+                    <MainWindowDesktop toastCall={toastCall} />
+                    <DialogRenderer dialogService={serviceContainer.dialogService} />
+                  </PreferencesProvider>
                 </SessionProvider>
               </ServiceContainerContext.Provider>
             </PortalProvider>

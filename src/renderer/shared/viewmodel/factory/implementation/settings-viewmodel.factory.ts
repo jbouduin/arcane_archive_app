@@ -1,14 +1,15 @@
+import { PreferencesDto, SystemSettingsDto } from "../../../../../common/dto";
 import { PreferencesViewmodel, SystemSettingsViewmodel } from "../../settings";
-import { ISettingsViewmodelFactory } from "../interface/settings-viewmodel.factory";
+import { ISettingsViewmodelFactory } from "../interface";
 
 export class SettingsViewmodelFactory implements ISettingsViewmodelFactory {
-  // eslint-disable-next-line  @typescript-eslint/no-wrapper-object-types
-  public getPreferencesViewmodel(dto: String): PreferencesViewmodel {
+  // #region ISettingsViewmodelFactory Members --------------------------------
+  public getPreferencesViewmodel(dto: PreferencesDto): PreferencesViewmodel {
     return new PreferencesViewmodel(dto);
   }
 
-  // eslint-disable-next-line  @typescript-eslint/no-wrapper-object-types
-  public getSystemSettingsViewmodel(dto: String): SystemSettingsViewmodel {
+  public getSystemSettingsViewmodel(dto: SystemSettingsDto): SystemSettingsViewmodel {
     return new SystemSettingsViewmodel(dto);
   }
+  // #endregion
 }
