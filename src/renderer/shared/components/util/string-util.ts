@@ -14,3 +14,12 @@ export function stringCouldBeEmail(input: string): boolean {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailPattern.test(input);
 }
+
+export function stringCouldBeUrl(input: string): boolean {
+  try {
+    new URL(input);
+    return true;
+  } catch {
+    return false;
+  }
+}

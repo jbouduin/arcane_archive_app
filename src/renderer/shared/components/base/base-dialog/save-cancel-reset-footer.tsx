@@ -40,10 +40,12 @@ export function SaveCancelResetFooter<T extends object>(props: SaveCancelResetFo
               disabled={props.viewmodel.hasChanges && props.viewmodel.isValid ? false : true}
               onClick={
                 (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-                  if (props.onCommitButtonClick) {
-                    props.onCommitButtonClick(e, props.viewmodel.dto);
-                  } else if (props.onClose) {
-                    props.onClose(e);
+                  if (props.viewmodel.isValid) {
+                    if (props.onCommitButtonClick) {
+                      props.onCommitButtonClick(e, props.viewmodel.dto);
+                    } else if (props.onClose) {
+                      props.onClose(e);
+                    }
                   }
                 }
               }

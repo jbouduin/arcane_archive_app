@@ -1,4 +1,4 @@
-import { FormGroup, InputGroup } from "@blueprintjs/core";
+import { FormGroup, InputGroup, NumericInput } from "@blueprintjs/core";
 import { useMemo, useState } from "react";
 import { ValidationResult } from "../../types";
 import { ValidatedInputProps } from "./validated-input.props";
@@ -19,7 +19,7 @@ export function ValidatedInput(props: ValidatedInputProps) {
       }
       return result;
     },
-    [touched, props.inputProps.value]
+    [touched, props.inputProps?.value, props.numericInputProps?.value]
   );
   // #endregion
 
@@ -33,14 +33,31 @@ export function ValidatedInput(props: ValidatedInputProps) {
       fill={props.fill}
       helperText={validation.helperText}
       intent={validation.intent}
-      disabled={props.inputProps.disabled}
+      disabled={props.inputProps?.disabled || props.numericInputProps?.disabled}
     >
-      <InputGroup
-        {...props.inputProps}
-        id={props.keyPrefix + "-input"}
-        onBlur={() => setTouched(true)}
-        size={props.inputProps.size || "small"}
-      />
+      {
+        props.inputProps &&
+        (
+          <InputGroup
+            {...props.inputProps}
+            id={props.keyPrefix + "-input"}
+            onBlur={() => setTouched(true)}
+            size={props.inputProps.size || "small"}
+          />
+        )
+      }
+      {
+        props.numericInputProps &&
+        (
+          <NumericInput
+            {...props.numericInputProps}
+            id={props.keyPrefix + "-input"}
+            onBlur={() => setTouched(true)}
+            size={props.numericInputProps.size || "small"}
+          />
+        )
+      }
+
     </FormGroup>
   );
   // #endregion

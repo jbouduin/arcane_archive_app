@@ -1,7 +1,7 @@
 import { Lifecycle, container } from "tsyringe";
 import { IRouter } from "../base";
 import { INFRASTRUCTURE } from "../service.tokens";
-import { AssetService } from "./implementation/asset.service";
+import { IoService } from "./implementation/io.service";
 import { BootstrapService } from "./implementation/bootstrap.service";
 import { ConfigurationService } from "./implementation/configuration.service";
 import { LogService } from "./implementation/log.service";
@@ -9,13 +9,13 @@ import { ResultFactory } from "./implementation/result.factory";
 import { RouterService } from "./implementation/router.service";
 import { WindowsService } from "./implementation/windows.service";
 import { IBootstrapService, IConfigurationService, ILogService, IResultFactory, IRouterService, IWindowsService } from "./interface";
-import { IAssetService } from "./interface/asset.service";
-import { AssetRouter, ConfigurationRouter } from "./router";
+import { IIoService } from "./interface/io.service";
+import { IoRouter, ConfigurationRouter } from "./router";
 
 export class InfraDi {
   public static register(): void {
     // #region Services -------------------------------------------------------
-    container.register<IAssetService>(INFRASTRUCTURE.AssetService, { useClass: AssetService }, { lifecycle: Lifecycle.Singleton });
+    container.register<IIoService>(INFRASTRUCTURE.IoService, { useClass: IoService }, { lifecycle: Lifecycle.Singleton });
     container.register<IBootstrapService>(INFRASTRUCTURE.BootstrapService, { useClass: BootstrapService });
     container.register<IConfigurationService>(INFRASTRUCTURE.ConfigurationService, { useClass: ConfigurationService }, { lifecycle: Lifecycle.Singleton });
     container.register<ILogService>(INFRASTRUCTURE.LogService, { useClass: LogService }, { lifecycle: Lifecycle.Singleton });
@@ -25,7 +25,7 @@ export class InfraDi {
     // #endregion
 
     // #region Routers --------------------------------------------------------
-    container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: AssetRouter }, { lifecycle: Lifecycle.Singleton });
+    container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: IoRouter }, { lifecycle: Lifecycle.Singleton });
     container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: ConfigurationRouter }, { lifecycle: Lifecycle.Singleton });
     // #endregion
   }

@@ -24,12 +24,12 @@ export function PasswordInput(props: PasswordInputProps) {
   // #region Auxiliary Methods ------------------------------------------------
   function buildValidatedInputProps(): ValidatedInputProps {
     const result: ValidatedInputProps = { ...props };
-    props.inputProps.rightElement = (
+    props.inputProps!.rightElement = (
       <Tooltip
         content={`${showPassword ? "Hide" : "Show"} Password`}
       >
         <Button
-          disabled={props.inputProps.disabled}
+          disabled={props.inputProps!.disabled}
           icon={showPassword ? "unlock" : "lock"}
           intent={Intent.WARNING}
           onClick={handleLockClick}
@@ -37,7 +37,7 @@ export function PasswordInput(props: PasswordInputProps) {
         />
       </Tooltip>
     );
-    props.inputProps.type = showPassword ? "text" : "password";
+    props.inputProps!.type = showPassword ? "text" : "password";
     return result;
   }
   // #endregion

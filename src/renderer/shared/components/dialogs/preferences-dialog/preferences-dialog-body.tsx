@@ -99,10 +99,11 @@ export function PreferencesDialogBody(props: BaseDialogBodyProps<PreferencesDto>
           fill={true}
           vertical={false}
         >
-          <FormGroup label="Sort sets in tree by" labelFor="sort-sets-by">
+          <FormGroup label="Sort sets in tree by" labelFor="sort-sets-by" fill={true}>
             <HTMLSelect
               id="sort-sets-by"
               minimal={true}
+              fill={true}
               onChange={
                 handleValueChange((value: CardSetSort) => {
                   viewmodel.cardSetSort = value;
@@ -113,10 +114,11 @@ export function PreferencesDialogBody(props: BaseDialogBodyProps<PreferencesDto>
               value={viewmodel.cardSetSort}
             />
           </FormGroup>
-          <FormGroup label="Group sets in tree by" labelFor="group-sets-by">
+          <FormGroup label="Group sets in tree by" labelFor="group-sets-by" fill={true}>
             <HTMLSelect
               id="group-sets-by"
               minimal={true}
+              fill={true}
               onChange={
                 handleValueChange((value: CardSetGroupBy) => {
                   viewmodel.cardSetGroupBy = value;

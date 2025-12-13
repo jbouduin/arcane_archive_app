@@ -7,7 +7,7 @@ export const API = Object.freeze(
 
 export const INFRASTRUCTURE = Object.freeze(
   {
-    AssetService: "AssetService",
+    IoService: "IoService",
     BootstrapService: "BootstrapService",
     ConfigurationService: "ConfigurationService",
     // DatabaseService: "DatabaseService",

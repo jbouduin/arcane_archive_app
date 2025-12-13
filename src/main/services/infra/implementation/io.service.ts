@@ -1,12 +1,13 @@
 import { existsSync, readFileSync } from "fs";
 import { BaseService, IResult } from "../../base";
-import { IAssetService } from "../interface/asset.service";
+import { IIoService } from "../interface/io.service";
 import { ILogService, IResultFactory } from "../interface";
 import { INFRASTRUCTURE } from "../../service.tokens";
 import { inject, injectable } from "tsyringe";
+import { dialog } from "electron";
 
 @injectable()
-export class AssetService extends BaseService implements IAssetService {
+export class IoService extends BaseService implements IIoService {
   // #region Constructor ------------------------------------------------------
   public constructor(
     @inject(INFRASTRUCTURE.LogService) logService: ILogService,
@@ -27,6 +28,17 @@ export class AssetService extends BaseService implements IAssetService {
     } else {
       return this.resultFactory.createNotFoundResultPromise<string>(path);
     }
+  }
+
+  public async selectDirectory(currentPath: string | null): Promise<IResult<string>> {
+    const result = await dialog.showOpenDialog({
+      properties: ["openDirectory"],
+      defaultPath: currentPath || undefined,
+
+    });
+    return result.canceled
+      ? this.resultFactory.createNoContentResult()
+      : this.resultFactory.createSuccessResult(result.filePaths[0]);
   }
   // #endregion
 }

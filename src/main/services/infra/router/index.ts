@@ -1,2 +1,2 @@
-export * from "./asset.router";
+export * from "./io.router";
 export * from "./configuration.router";

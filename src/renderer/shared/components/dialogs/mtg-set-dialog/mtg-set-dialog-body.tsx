@@ -1,4 +1,4 @@
-import { Checkbox, ControlGroup, FormGroup, HTMLTable, InputGroup, Tab, Tabs, Text, TextAlignment } from "@blueprintjs/core";
+import { Checkbox, ControlGroup, FormGroup, HTMLTable, InputGroup, NumericInput, Tab, Tabs, Text, TextAlignment } from "@blueprintjs/core";
 import classNames from "classnames";
 import React from "react";
 import { LanguageDto, MtgSetDto } from "../../../dto";
@@ -111,13 +111,13 @@ export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
             label="Base Set Size"
             labelFor="base-size"
           >
-            <InputGroup
+            <NumericInput
               id="base-size"
-              inputMode="numeric"
               readOnly={true}
               size="small"
-              type="text"
-              value={vm.baseSetSize.toString()}
+              stepSize={1}
+              fill={true}
+              value={vm.baseSetSize}
             />
           </FormGroup>
           <FormGroup
@@ -125,13 +125,13 @@ export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
             label="Total Set Size"
             labelFor="total-size"
           >
-            <InputGroup
+            <NumericInput
               id="total-size"
-              inputMode="text"
               readOnly={true}
               size="small"
-              type="text"
-              value={vm.totalSetSize.toString()}
+              stepSize={1}
+              fill={true}
+              value={vm.totalSetSize}
             />
           </FormGroup>
         </ControlGroup>

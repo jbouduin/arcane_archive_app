@@ -91,4 +91,5 @@ typings/
 # Electron-Forge
 out/
 
-collection-manager.config.json
+# config files
+collection-manager*.json

@@ -13,7 +13,10 @@ export function showSystemSettingsDialog(serviceContainer: IServiceContainer): v
     canOutsideClickClose: false,
     title: "System Settings",
     icon: (<Icon icon="warning-sign" intent="danger" />),
-    viewmodel: serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getSystemSettingsViewmodel(serviceContainer.configurationService.configuration.systemConfiguration),
+    viewmodel: serviceContainer
+      .viewmodelFactoryService
+      .settingsViewmodelFactory
+      .getSystemSettingsViewmodel(serviceContainer.configurationService.configuration.systemConfiguration),
     bodyRenderer: (bodyProps: BaseDialogBodyProps<SystemSettingsDto>) => {
       return (<SystemSettingsDialogBody {...bodyProps} />);
     },
