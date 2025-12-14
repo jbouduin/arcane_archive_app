@@ -1,6 +1,6 @@
 import { Classes } from "@blueprintjs/core";
 import { useCallback, useEffect, useState } from "react";
-import { useServices } from "../../../hooks/use-services";
+import { useServices } from "../../../hooks";
 import { PreferencesContext } from "../shared.context";
 
 export function PreferencesProvider({ children }: { children: React.ReactNode; }) {
@@ -10,7 +10,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode; }
 
   // #region State ------------------------------------------------------------
   const configurationService = useServices().configurationService;
-  const [theme, setTheme] = useState<string>(toThemeName(configurationService.configuration.preferences.useDarkTheme));
+  const [theme, setTheme] = useState<string>(toThemeName(configurationService.preferences.useDarkTheme));
   // #endregion
 
   // #region Effects ----------------------------------------------------------

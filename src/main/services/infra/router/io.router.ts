@@ -1,8 +1,8 @@
 import { inject, singleton } from "tsyringe";
+import { IpcPaths } from "../../../../common/ipc";
 import { BaseRouter, IResult, IRouter, RouteCallback, RoutedRequest } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
-import { ILogService, IResultFactory, IRouterService } from "../interface";
-import { IIoService } from "../interface/io.service";
+import { IIoService, ILogService, IResultFactory, IRouterService } from "../interface";
 
 @singleton()
 export class IoRouter extends BaseRouter implements IRouter {
@@ -23,9 +23,9 @@ export class IoRouter extends BaseRouter implements IRouter {
 
   // #region IRouteDestinationService methods ---------------------------------
   public setRoutes(router: IRouterService): void {
-    router.registerGetRoute("/asset", this.asset.bind(this) as RouteCallback);
-    router.registerGetRoute("/select-directory", this.selectDirectory.bind(this) as RouteCallback);
-    router.registerGetRoute("/select-directory/:current", this.selectDirectory.bind(this) as RouteCallback);
+    router.registerGetRoute(IpcPaths.IO_ASSET, this.asset.bind(this) as RouteCallback);
+    router.registerGetRoute(IpcPaths.IO_SELECT_DIRECTORY, this.selectDirectory.bind(this) as RouteCallback);
+    router.registerGetRoute(`${IpcPaths.IO_SELECT_DIRECTORY}/:current`, this.selectDirectory.bind(this) as RouteCallback);
   }
   // #endregion
 

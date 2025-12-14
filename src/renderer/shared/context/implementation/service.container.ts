@@ -103,7 +103,6 @@ export class ServiceContainer implements IServiceContainer {
   // #region IServiceContainer Members (methods) ------------------------------
   public async initialize(showToast: (props: ToastProps, key?: string) => void): Promise<void> {
     this._ipcProxy.initialize(showToast);
-
     const configuration = await this._configurationService.initialize(this._ipcProxy);
     this._collectionManagerProxy.initialize(this.sessionService, configuration, showToast);
     this._dialogService.initialize(showToast);

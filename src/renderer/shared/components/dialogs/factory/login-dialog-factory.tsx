@@ -4,6 +4,7 @@ import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../
 import { LoginDialogBody } from "../login-dialog/login-dialog-body";
 import { LoginDialogFooter } from "../login-dialog/login-dialog-footer";
 
+// LATER create a dialogFactory class
 export function showLoginDialog(serviceContainer: IServiceContainer, showRegisterButton: boolean): void {
   const loginDialogProps: BaseDialogProps<LoginRequestDto> = {
     isOpen: true,

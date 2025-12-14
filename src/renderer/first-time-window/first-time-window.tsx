@@ -36,7 +36,8 @@ void (async () => {
   const configurationService = new ConfigurationService();
   await configurationService.initialize(ipcProxyService)
     .then(
-      () => new ConfigurationViewModel(configurationService.configuration, true),
+      () => undefined as unknown as ConfigurationViewModel,
+      // () => new ConfigurationViewModel(configurationService.configuration, true),
       (_r: Error) => undefined as unknown as ConfigurationViewModel
     )
     .then((configurationViewmodel: ConfigurationViewModel) => {

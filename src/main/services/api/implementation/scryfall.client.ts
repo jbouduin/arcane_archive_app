@@ -1,5 +1,4 @@
 import { inject, singleton } from "tsyringe";
-import { ApiConfigurationDto } from "../../../../common/dto";
 import { BaseService } from "../../base";
 import { IConfigurationService, ILogService, IResultFactory } from "../../infra/interface";
 import { INFRASTRUCTURE } from "../../service.tokens";
@@ -8,7 +7,7 @@ import { IScryfallClient } from "../interface";
 @singleton()
 export class ScryfallClient extends BaseService implements IScryfallClient {
   // #region Private fields ---------------------------------------------------
-  private readonly apiConfiguration: ApiConfigurationDto;
+  private readonly configurationService: IConfigurationService;
   private readonly requestQueue: Array<() => Promise<void>>;
   private isProcessingQueue: boolean;
   private nextQuery: number;
@@ -20,10 +19,10 @@ export class ScryfallClient extends BaseService implements IScryfallClient {
     @inject(INFRASTRUCTURE.ConfigurationService) configurationService: IConfigurationService
   ) {
     super(logService, resultFactory);
-    this.apiConfiguration = configurationService.configuration.systemConfiguration.apiConfiguration;
+    this.configurationService = configurationService;
     this.requestQueue = new Array<() => Promise<void>>();
     this.isProcessingQueue = false;
-    this.nextQuery = Date.now() + this.apiConfiguration.scryfallMinimumRequestTimeout;
+    this.nextQuery = Date.now();
   }
   // #endregion
 
@@ -47,7 +46,7 @@ export class ScryfallClient extends BaseService implements IScryfallClient {
   private async processRequest(uri: string | URL, resolve: (value: Response | PromiseLike<Response>) => void, reject: (reason?: unknown) => void) {
     const now = Date.now();
     const sleepTime = Math.max(this.nextQuery - now, 0);
-    this.nextQuery = now + this.apiConfiguration.scryfallMinimumRequestTimeout;
+    this.nextQuery = now + this.configurationService.apiConfiguration.scryfallMinimumRequestTimeout;
 
     await this.sleep(sleepTime);
     this.logService.debug("Main", `fetch ${uri}`);

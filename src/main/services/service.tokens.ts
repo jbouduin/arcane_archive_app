@@ -1,6 +1,6 @@
 export const API = Object.freeze(
   {
-    MtgCollectionClient: "MrgCollectionClient",
+    ApiClient: "ApiClient",
     ScryfallClient: "ScryfallClient"
   }
 );

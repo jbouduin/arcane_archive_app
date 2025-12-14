@@ -3,8 +3,7 @@ import { noop } from "lodash";
 import * as React from "react";
 import { ResultDto } from "../../../../../common/dto/mtg-collection";
 import { useServices, useSession } from "../../../../hooks";
-import { showLoginDialog, showPreferencesDialog, showSystemSettingsDialog } from "../../../../shared/components/dialogs/factory";
-import { showProfileDialog } from "../../../../shared/components/dialogs/factory/profile-dialog-factory";
+import { showLoginDialog, showPreferencesDialog, showProfileDialog, showSystemSettingsDialog } from "../../../../shared/components/dialogs/factory";
 import { EDesktopView } from "../desktop-view.enum";
 import { ButtonBarButton } from "./button-bar-button";
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
@@ -18,6 +17,7 @@ export function ButtonBar(props: ButtonBarProps) {
 
   // #region Event handling -------------------------------------------------------------
   function loginClick(): void {
+    // TODO check if authorization service is available
     showLoginDialog(serviceContainer, true);
   }
 

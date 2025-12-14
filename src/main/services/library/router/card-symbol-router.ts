@@ -1,8 +1,9 @@
 import { inject, singleton } from "tsyringe";
+import { IpcPaths } from "../../../../common/ipc";
 import { BaseRouter, IResult, IRouter, RouteCallback, RoutedRequest } from "../../base";
 import { ILogService, IResultFactory, IRouterService } from "../../infra/interface";
 import { INFRASTRUCTURE, LIBRARY } from "../../service.tokens";
-import { ICardSymbolService } from "../interface/card-symbol.service";
+import { ICardSymbolService } from "../interface";
 
 @singleton()
 export class CardSymbolRouter extends BaseRouter implements IRouter {
@@ -23,7 +24,7 @@ export class CardSymbolRouter extends BaseRouter implements IRouter {
 
   // #region IRouteDestinationService methods ---------------------------------
   public setRoutes(router: IRouterService): void {
-    router.registerGetRoute("/card-symbol/svg", this.getCardSymbolSvg.bind(this) as RouteCallback);
+    router.registerGetRoute(IpcPaths.CARD_SYMBOL_SVG, this.getCardSymbolSvg.bind(this) as RouteCallback);
   }
   // #endregion
 

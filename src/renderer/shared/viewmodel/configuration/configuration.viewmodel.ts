@@ -8,7 +8,7 @@ import { DataConfigurationViewmodel } from "./data-configuration.viewmodel";
 export class ConfigurationViewModel extends BaseViewmodel<SettingsDto> {
   // #region private fields ---------------------------------------------------
   private _databaseViewTreeConfigurationViewmodel: SetTreeSettingsViewmodel;
-  private _dataConfigurationViewmodel: DataConfigurationViewmodel;
+  private _dataConfigurationViewmodel!: DataConfigurationViewmodel;
   private readonly _isFirstUse: boolean;
   // #endregion
 
@@ -48,7 +48,7 @@ export class ConfigurationViewModel extends BaseViewmodel<SettingsDto> {
 
   public set dataConfigurationViewmodel(value: DataConfigurationViewmodel) {
     this._dataConfigurationViewmodel = value;
-    this._dto.systemConfiguration.dataConfiguration = value.dto;
+    // this._dto.systemConfiguration.dataConfiguration = value.dto;
   }
   // #endregion
 
@@ -57,7 +57,7 @@ export class ConfigurationViewModel extends BaseViewmodel<SettingsDto> {
     super(dtoConfiguration);
     this._isFirstUse = isFirstUse;
     this._databaseViewTreeConfigurationViewmodel = new SetTreeSettingsViewmodel(dtoConfiguration.preferences.librarySetTreeSettings);
-    this._dataConfigurationViewmodel = new DataConfigurationViewmodel(dtoConfiguration.systemConfiguration.dataConfiguration);
+    // this._dataConfigurationViewmodel = new DataConfigurationViewmodel(dtoConfiguration.systemConfiguration.dataConfiguration);
   }
   // #endregion
 }

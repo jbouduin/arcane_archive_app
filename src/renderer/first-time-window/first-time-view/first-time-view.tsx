@@ -3,9 +3,7 @@ import classNames from "classnames";
 // import { ConfigurationDto } from "../../../common/dto";
 // import { ConfigurationWrapper } from "../../shared/components/configuration";
 // import { DisplayValueService, DisplayValueServiceContext, IpcProxyService, IpcProxyServiceContext } from "../../shared/context";
-import { noop } from "lodash";
 import React from "react";
-import { SettingsDto } from "../../../common/dto";
 import { IServiceContainer, ServiceContainerContext } from "../../shared/context";
 import { ConfigurationViewModel } from "../../shared/viewmodel";
 import { FirstTimeViewProps } from "./first-time-view.props";
@@ -28,7 +26,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
       <Section compact={true}>
         <ServiceContainerContext.Consumer>
           {
-            (serviceContainer: IServiceContainer) => (
+            (_serviceContainer: IServiceContainer) => (
               <>
                 <DialogBody>
                   <p>Service container wrapper</p>
@@ -38,12 +36,12 @@ export function FirstTimeView(props: FirstTimeViewProps) {
                     disabled={!props.configuration.hasChanges || !props.configuration.isValid}
                     icon="floppy-disk"
                     onClick={() => {
-                      void serviceContainer.configurationService
-                        .saveConfiguration(props.configuration.dto)
-                        .then(
-                          (_saved: SettingsDto) => window.close(),
-                          noop
-                        );
+                      // void serviceContainer.configurationService
+                      //   .saveConfiguration(props.configuration.dto)
+                      //   .then(
+                      //     (_saved: SettingsDto) => window.close(),
+                      //     noop
+                      //   );
                     }}
                   >
                     Save

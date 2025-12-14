@@ -7,7 +7,7 @@ import { IMtgCollectionClient, IScryfallClient } from "../../api/interface";
 import { BaseService, IResult } from "../../base";
 import { IConfigurationService, ILogService, IResultFactory } from "../../infra/interface";
 import { API, INFRASTRUCTURE } from "../../service.tokens";
-import { ICardSymbolService } from "../interface/card-symbol.service";
+import { ICardSymbolService } from "../interface";
 
 @injectable()
 export class CardSymbolService extends BaseService implements ICardSymbolService {
@@ -22,11 +22,11 @@ export class CardSymbolService extends BaseService implements ICardSymbolService
     @inject(INFRASTRUCTURE.LogService) logService: ILogService,
     @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory,
     @inject(INFRASTRUCTURE.ConfigurationService) configurationService: IConfigurationService,
-    @inject(API.MtgCollectionClient) mtgCollectionClient: IMtgCollectionClient,
+    @inject(API.ApiClient) mtgCollectionClient: IMtgCollectionClient,
     @inject(API.ScryfallClient) scryfallClient: IScryfallClient
   ) {
     super(logService, resultFactory);
-    this.cacheDirectory = path.join(configurationService.configuration.systemConfiguration.dataConfiguration.cacheDirectory, "card-symbols");
+    this.cacheDirectory = path.join(configurationService.configuration.dataConfiguration.cacheDirectory, "card-symbols");
     this.mtgCollectionClient = mtgCollectionClient;
     this.scryfallClient = scryfallClient;
   }

@@ -43,6 +43,5 @@ export class DataConfigurationViewmodel extends BaseViewmodel<DataConfigurationD
   // #endregion
 
   // #region validation methods -----------------------------------------------
-  // TODO
   // #endregion
 }

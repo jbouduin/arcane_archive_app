@@ -1,16 +1,15 @@
 import { Lifecycle, container } from "tsyringe";
 import { IRouter } from "../base";
 import { INFRASTRUCTURE } from "../service.tokens";
-import { IoService } from "./implementation/io.service";
 import { BootstrapService } from "./implementation/bootstrap.service";
 import { ConfigurationService } from "./implementation/configuration.service";
+import { IoService } from "./implementation/io.service";
 import { LogService } from "./implementation/log.service";
 import { ResultFactory } from "./implementation/result.factory";
 import { RouterService } from "./implementation/router.service";
 import { WindowsService } from "./implementation/windows.service";
-import { IBootstrapService, IConfigurationService, ILogService, IResultFactory, IRouterService, IWindowsService } from "./interface";
-import { IIoService } from "./interface/io.service";
-import { IoRouter, ConfigurationRouter } from "./router";
+import { IBootstrapService, IConfigurationService, IIoService, ILogService, IResultFactory, IRouterService, IWindowsService } from "./interface";
+import { ConfigurationRouter, IoRouter } from "./router";
 
 export class InfraDi {
   public static register(): void {

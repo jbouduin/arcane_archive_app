@@ -1,9 +1,4 @@
-export type ApiConfigurationDto = {
-  scryfallApiRoot: string;
-  scryfallCardBackRoot: string;
-  scryfallMinimumRequestTimeout: number;
-  libraryApiRoot: string;
-  authenticationApiRoot: string;
-  collectionApiRoot: string;
-  deckApiRoot: string;
-};
+import { DiscoveryDto } from "../../../main/dto";
+
+// currently ApiConfigurationDto matches one to one
+export type ApiConfigurationDto = DiscoveryDto;

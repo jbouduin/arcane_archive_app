@@ -1,8 +1,8 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { inject, singleton } from "tsyringe";
-import { PreferencesDto, SettingsDto } from "../../../../common/dto";
-import { ApiConfigurationDto } from "../../../../common/dto/infra/api-configuration.dto";
+import { ApiConfigurationDto, PreferencesDto, ResultDto, SettingsDto, SystemSettingsDto } from "../../../../common/dto";
+import { DiscoveryDto } from "../../../dto";
 import { BaseService, IResult } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
 import { IConfigurationService, ILogService, IResultFactory } from "../interface";
@@ -11,16 +11,31 @@ import { IConfigurationService, ILogService, IResultFactory } from "../interface
 export class ConfigurationService extends BaseService implements IConfigurationService {
   // #region private fields ---------------------------------------------------
   private configFilePath!: string;
+  private preferencesFilePath!: string;
   private appDirectory!: string;
   private homeDirectory!: string;
   private useDarkTheme!: boolean;
-  private _configuration!: SettingsDto;
+  private _configuration!: SystemSettingsDto;
+  private _apiConfiguration!: ApiConfigurationDto;
+  private _preferences!: PreferencesDto;
   private _isFirstUsage!: boolean;
   // #endregion
 
   // #region IConfigurationService properties ---------------------------------
-  public get configuration(): SettingsDto {
+  public get apiConfiguration(): ApiConfigurationDto {
+    return this._apiConfiguration;
+  }
+
+  public set apiConfiguration(value: ApiConfigurationDto) {
+    this._apiConfiguration = value;
+  }
+
+  public get configuration(): SystemSettingsDto {
     return this._configuration;
+  }
+
+  public get preferences(): PreferencesDto {
+    return this._preferences;
   }
 
   public get isFirstUsage(): boolean {
@@ -29,8 +44,8 @@ export class ConfigurationService extends BaseService implements IConfigurationS
 
   public get dataBaseFilePath(): string {
     return join(
-      this._configuration.systemConfiguration.dataConfiguration.rootDataDirectory,
-      this._configuration.systemConfiguration.dataConfiguration.databaseName
+      this._configuration.dataConfiguration.rootDataDirectory,
+      this._configuration.dataConfiguration.databaseName
     );
   }
   // #endregion
@@ -45,59 +60,75 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   // #endregion
 
   // #region IConfigurationService methods ------------------------------------
-  public loadSettings(appDirectory: string, homeDirectory: string, useDarkTheme: boolean): void {
+  public initialize(appDirectory: string, homeDirectory: string, useDarkTheme: boolean): void {
     this.appDirectory = appDirectory;
     this.homeDirectory = homeDirectory;
     this.useDarkTheme = useDarkTheme;
     this.configFilePath = join(appDirectory, "collection-manager.config.json");
     if (existsSync(this.configFilePath)) {
-      this._configuration = JSON.parse(readFileSync(this.configFilePath, "utf-8")) as SettingsDto;
+      this._configuration = JSON.parse(readFileSync(this.configFilePath, "utf-8")) as SystemSettingsDto;
       this._isFirstUsage = false;
     } else {
-      this._configuration = this.createFactoryDefault();
+      this._configuration = this.createConfigurationFactoryDefault();
       this._isFirstUsage = true;
     }
+    this.preferencesFilePath = join(appDirectory, "collection-manager.preferences.json");
+    if (existsSync(this.preferencesFilePath)) {
+      this._preferences = JSON.parse(readFileSync(this.preferencesFilePath, "utf-8")) as PreferencesDto;
+    } else {
+      this._preferences = this.createPreferencesFactoryDefault(this.useDarkTheme);
+    }
+  }
+
+  public async runDiscovery(discover: () => Promise<ResultDto<DiscoveryDto>>): Promise<void> {
+    const discoveryDto = await discover();
+    this._apiConfiguration = discoveryDto.data;
   }
   // #endregion
 
   // #region Route callbacks --------------------------------------------------
-  public getSettings(): Promise<IResult<SettingsDto>> {
+  public getSystemSettings(): Promise<IResult<SystemSettingsDto>> {
     return this.resultFactory.createSuccessResultPromise(this._configuration);
   }
 
-  public getFactoryDefault(): Promise<IResult<SettingsDto>> {
-    return this.resultFactory.createSuccessResultPromise(this.createFactoryDefault());
+  public getSystemSettingsFactoryDefault(): Promise<IResult<SystemSettingsDto>> {
+    return this.resultFactory.createSuccessResultPromise(this.createConfigurationFactoryDefault());
   }
 
-  public putSettings(configuration: SettingsDto): Promise<IResult<SettingsDto>> {
-    // LATER Validation
+  public getSettings(): Promise<IResult<SettingsDto>> {
+    const result: SettingsDto = {
+      apiConfiguration: this._apiConfiguration,
+      preferences: this._preferences
+    };
+    return this.resultFactory.createSuccessResultPromise(result);
+  }
+
+  public saveSystemSettings(configuration: SystemSettingsDto): Promise<IResult<SystemSettingsDto>> {
     this.createDirectoryIfNotExists(dirname(this.configFilePath));
     writeFileSync(this.configFilePath, JSON.stringify(configuration, null, 2));
     this._configuration = configuration;
     this._isFirstUsage = false;
-    return this.resultFactory.createSuccessResultPromise<SettingsDto>(configuration);
+    return this.resultFactory.createSuccessResultPromise<SystemSettingsDto>(configuration);
   }
 
-  public setSettings(configuration: SettingsDto): Promise<IResult<SettingsDto>> {
-    writeFileSync(this.configFilePath, JSON.stringify(configuration, null, 2));
-    this._configuration = configuration;
-    this._isFirstUsage = false;
-    return this.resultFactory.createSuccessResultPromise<SettingsDto>(configuration);
+  public savePreferences(preferences: PreferencesDto): Promise<IResult<PreferencesDto>> {
+    this.createDirectoryIfNotExists(dirname(this.preferencesFilePath));
+    writeFileSync(this.preferencesFilePath, JSON.stringify(this._configuration, null, 2));
+    this._preferences = preferences;
+    return this.resultFactory.createSuccessResultPromise<PreferencesDto>(this._preferences);
   }
   // #endregion
 
   // #region Auxiliary factory default methods --------------------------------
-  private createFactoryDefault(): SettingsDto {
-    const result: SettingsDto = {
-      systemConfiguration: {
-        apiConfiguration: this.createApiConfigurationFactoryDefault(),
-        dataConfiguration: {
-          rootDataDirectory: join(this.homeDirectory, "mtg-collection-manager"),
-          cacheDirectory: join(this.appDirectory, ".cache"),
-          databaseName: "magic-db.sqlite"
-        }
-      },
-      preferences: this.createRendererConfigurationFactoryDefault(this.useDarkTheme)
+  private createConfigurationFactoryDefault(): SystemSettingsDto {
+    const result: SystemSettingsDto = {
+      discovery: "http://localhost:5402/api/public/discover",
+      dataConfiguration: {
+        rootDataDirectory: join(this.homeDirectory, "mtg-collection-manager"),
+        cacheDirectory: join(this.appDirectory, ".cache"),
+        databaseName: "magic-db.sqlite"
+
+      }
     };
     return result;
   }
@@ -116,7 +147,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     return result;
   }
 
-  private createRendererConfigurationFactoryDefault(useDarkTheme: boolean): PreferencesDto {
+  private createPreferencesFactoryDefault(useDarkTheme: boolean): PreferencesDto {
     const result: PreferencesDto = {
       refreshCacheAtStartup: false,
       useDarkTheme: useDarkTheme,

@@ -1,6 +1,5 @@
 import { ToastProps } from "@blueprintjs/core";
-import { SettingsDto } from "../../../../common/dto";
-import { ResultDto, ValidationErrorDto } from "../../../../common/dto/mtg-collection";
+import { ResultDto, SettingsDto, ValidationErrorDto } from "../../../../common/dto";
 import { CardQueryParamsDto, ColorDto, LibraryCardListDto, MtgSetTreeDto, QueryResultDto } from "../../dto";
 import { MtgServer } from "../../types";
 import { ICollectionManagerProxyService, ISessionService } from "../interface";
@@ -66,10 +65,10 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
     this._logServerResponses = configuration.preferences.logServerResponses;
     this.showToast = showToast;
     this.sessionService = sessionService;
-    this.apiRoots.set("authentication", configuration.systemConfiguration.apiConfiguration.authenticationApiRoot);
-    this.apiRoots.set("library", configuration.systemConfiguration.apiConfiguration.libraryApiRoot);
-    this.apiRoots.set("collection", configuration.systemConfiguration.apiConfiguration.collectionApiRoot);
-    this.apiRoots.set("deck", configuration.systemConfiguration.apiConfiguration.deckApiRoot);
+    this.apiRoots.set("authentication", configuration.apiConfiguration.authenticationApiRoot);
+    this.apiRoots.set("library", configuration.apiConfiguration.libraryApiRoot);
+    this.apiRoots.set("collection", configuration.apiConfiguration.collectionApiRoot);
+    this.apiRoots.set("deck", configuration.apiConfiguration.deckApiRoot);
   }
 
   public postData<Req extends object, Res extends object>(server: MtgServer, path: string, data: Req | null, suppressSuccessMessage: boolean): Promise<Res> {
@@ -95,9 +94,18 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
       // eslint-disable-next-line no-console
       console.log(reason);
     }
+
+    let message: string;
+    // Detect unreachable server (ERR_CONNECTION_REFUSED → "Failed to fetch")
+    if (reason.message?.includes("Failed to fetch")) {
+      message = "Cannot connect to the server.";
+    } else {
+      message = reason.message ?? "An unexpected error occurred.";
+    }
+
     void this.showToast(
       {
-        message: reason.message ?? "Some error occurred",
+        message: message,
         intent: "danger",
         isCloseButtonShown: true,
         icon: "warning-sign"

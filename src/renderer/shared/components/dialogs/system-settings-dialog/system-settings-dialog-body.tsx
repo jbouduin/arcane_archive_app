@@ -1,6 +1,7 @@
 import { Button, Callout, Tab, Tabs } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { SystemSettingsDto } from "../../../../../common/dto";
+import { IpcPaths } from "../../../../../common/ipc";
 import { useServices } from "../../../../hooks";
 import { SystemSettingsViewmodel } from "../../../viewmodel/settings";
 import { BaseDialogBodyProps } from "../../base/base-dialog";
@@ -50,7 +51,7 @@ export function SystemSettingsDialogBody(props: BaseDialogBodyProps<SystemSettin
       current = "/" + encodeURIComponent(viewmodel.rootDataDirectory);
     }
 
-    serviceContainer.ipcProxy.getData<string>(`/select-directory${current}`)
+    serviceContainer.ipcProxy.getData<string>(`${IpcPaths.IO_SELECT_DIRECTORY}${current}`)
       .then(
         (dir: string | undefined) => {
           if (dir) {
@@ -123,6 +124,24 @@ export function SystemSettingsDialogBody(props: BaseDialogBodyProps<SystemSettin
   function renderApi(): React.JSX.Element {
     return (
       <>
+        <ValidatedInput
+          keyPrefix="auth-url"
+          label="Discovery Internet Address"
+          labelInfo="*"
+          validate={() => viewmodel.validateDiscovery()}
+          inputProps={{
+            inputMode: "text",
+            placeholder: "Enter an internet address...",
+            size: "small",
+            type: "text",
+            onChange: handleStringChange((newValue: string) => {
+              viewmodel.discovery = newValue;
+              props.viewmodelChanged(props.viewmodel);
+            }),
+            value: viewmodel.discovery
+          }}
+        />
+        {/* LATER: display these values also or have a separate dialog which also displays status of all services
         <ValidatedInput
           keyPrefix="auth-url"
           label="Authentication Service Internet Address"
@@ -224,9 +243,9 @@ export function SystemSettingsDialogBody(props: BaseDialogBodyProps<SystemSettin
             }),
             value: viewmodel.scryfallCardBackRoot
           }}
-        />
-        {/* BUG: when changing the value, cancel the dialog and re-opening it: the value is one less than before */}
-        <ValidatedInput
+        /> */}
+        { /* when changing the value, cancel the dialog and re-opening it: the value is one less than before -> not relevant anymore
+         <ValidatedInput
           keyPrefix="scryfall-url"
           label="Scryfall Minimal Request Time-out"
           labelInfo="*"
@@ -240,7 +259,7 @@ export function SystemSettingsDialogBody(props: BaseDialogBodyProps<SystemSettin
             },
             value: viewmodel.scryfallMinimumRequestTimeout
           }}
-        />
+        /> */}
       </>
     );
   }

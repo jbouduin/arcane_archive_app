@@ -43,7 +43,6 @@ const config : ForgeConfig = {
   plugins: [
    new AutoUnpackNativesPlugin({}),
     new WebpackPlugin({
-      // img-src * data: cached-image: asset:;
       devContentSecurityPolicy: "default-src 'self' 'unsafe-inline' data:; " +
         "script-src 'self' 'unsafe-eval' 'unsafe-inline' data:;" +
         "connect-src 'self' http://localhost:5401 http://localhost:5402 ws://localhost:3000;" +

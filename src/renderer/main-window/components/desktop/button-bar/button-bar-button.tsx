@@ -1,5 +1,6 @@
 import { Button, Popover, Tooltip } from "@blueprintjs/core";
 import * as React from "react";
+import { IpcPaths } from "../../../../../common/ipc";
 import { SvgRenderer } from "../../../../shared/components/svg-renderer";
 import { IServiceContainer, ServiceContainerContext } from "../../../../shared/context";
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
@@ -26,7 +27,7 @@ export function ButtonBarButton(props: ButtonBarButtonProps) {
   // #region Effect -----------------------------------------------------------
   React.useEffect(
     () => {
-      void serviceContainer.ipcProxy.getData<string>(`/asset?path=${props.assetPath}`)
+      void serviceContainer.ipcProxy.getData<string>(`${IpcPaths.IO_ASSET}?path=${props.assetPath}`)
         .then(
           (response: string) => setSvg(response),
           (_r: Error) => setSvg(undefined)

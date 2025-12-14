@@ -5,6 +5,7 @@ import { CARD_IMAGE_BACK, CARD_IMAGE_FACE } from "../../../../../common/types";
 import { compareClassNameProp } from "../../util";
 import { CardImageViewProps } from "./card-image-view.props";
 import { CardImageViewState } from "./card-image-view.state";
+import { IpcPaths } from "../../../../../common/ipc";
 
 export const CardImageView = React.memo(
   (props: CardImageViewProps) => {
@@ -102,9 +103,9 @@ export const CardImageView = React.memo(
     function calculateImageUrl(): string {
       let result: string;
       if (cardImageState.currentDisplayedSide == "front" || props.cardBackId == null) {
-        result = `cached-image://${CARD_IMAGE_FACE}/cards/${props.setCode}/${props.collectorNumber}/${props.scryfallLanguage}?format=image&version=large&side=${cardImageState.currentDisplayedSide}`;
+        result = `${IpcPaths.CACHED_IMAGE}://${CARD_IMAGE_FACE}/cards/${props.setCode}/${props.collectorNumber}/${props.scryfallLanguage}?format=image&version=large&side=${cardImageState.currentDisplayedSide}`;
       } else {
-        result = `cached-image://${CARD_IMAGE_BACK}/${props.cardBackId}`;
+        result = `${IpcPaths.CACHED_IMAGE}://${CARD_IMAGE_BACK}/${props.cardBackId}`;
       }
       return result;
     }

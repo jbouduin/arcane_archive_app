@@ -2,6 +2,7 @@ import { Button, H4, Props } from "@blueprintjs/core";
 import { useServices } from "../../../hooks";
 import { showLoginDialog, showRegisterDialog } from "../dialogs/factory";
 
+// TODO check if authentication service is available
 export function NotLoggedInView(_props: Props) {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();

@@ -1,3 +1,4 @@
+import { IpcPaths } from "../../../../common/ipc";
 import { ICardSymbolService, IIpcProxyService } from "../interface";
 
 export class CardSymbolService implements ICardSymbolService {
@@ -21,7 +22,7 @@ export class CardSymbolService implements ICardSymbolService {
   }
 
   public async initialize(ipcProxy: IIpcProxyService): Promise<void> {
-    const response = await ipcProxy.getData<Map<string, string>>("/card-symbol/svg");
+    const response = await ipcProxy.getData<Map<string, string>>(IpcPaths.CARD_SYMBOL_SVG);
     this.cardSymbols = response;
     return Promise.resolve();
   }

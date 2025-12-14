@@ -7,7 +7,7 @@ import { IMtgCollectionClient, IScryfallClient } from "./interface";
 export class ApiDi {
   public static register(): void {
     // #region Services -------------------------------------------------------
-    container.register<IMtgCollectionClient>(API.MtgCollectionClient, { useClass: MtgCollectionClient });
+    container.register<IMtgCollectionClient>(API.ApiClient, { useClass: MtgCollectionClient });
     container.register<IScryfallClient>(API.ScryfallClient, { useClass: ScryfallClient }, { lifecycle: Lifecycle.Singleton });
     // #endregion
   }

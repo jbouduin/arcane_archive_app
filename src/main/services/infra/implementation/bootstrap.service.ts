@@ -4,11 +4,11 @@ import { container, injectable } from "tsyringe";
 // import { IpcChannel } from "../../../../common/ipc";
 // import { MigrationDi } from "../../../database/migrations/migrations.di";
 // import { ICardRepository } from "../../../database/repo/interfaces";
-import { SettingsDto } from "../../../../common/dto";
-import { IpcChannel, IpcRequest } from "../../../../common/ipc";
+import { IpcChannel, IpcPaths, IpcRequest } from "../../../../common/ipc";
+import { IMtgCollectionClient } from "../../api/interface";
 import { IRouter } from "../../base";
 import { ICardImageService, ICardSymbolService } from "../../library/interface";
-import { INFRASTRUCTURE, LIBRARY } from "../../service.tokens";
+import { API, INFRASTRUCTURE, LIBRARY } from "../../service.tokens";
 import { IBootstrapService, IConfigurationService, ILogService, IRouterService, IWindowsService } from "../interface";
 
 @injectable()
@@ -30,7 +30,7 @@ export class BootstrapService implements IBootstrapService {
     const splashWindow = windowsService.createSplashWindow();
     await this.preboot(configurationService, rootRouterService);
     splashWindow.on("show", () => {
-      void this.bootFunction(splashWindow, configurationService.configuration)
+      void this.bootFunction(splashWindow, configurationService)
         .then(() => windowsService.createMainWindow())
         .catch((reason: Error) => {
           logService.error("Main", "Error in boot function: " + reason.message, reason);
@@ -60,7 +60,7 @@ export class BootstrapService implements IBootstrapService {
 
   // #region helper methods ---------------------------------------------------
   private async preboot(configurationService: IConfigurationService, routerService: IRouterService): Promise<void> {
-    configurationService.loadSettings(app.getAppPath(), homedir(), nativeTheme.shouldUseDarkColors);
+    configurationService.initialize(app.getAppPath(), homedir(), nativeTheme.shouldUseDarkColors);
     container.resolveAll<IRouter>(INFRASTRUCTURE.Router).forEach((svc: IRouter) => svc.setRoutes(routerService));
     routerService.logRoutes();
     this.registerIpcChannel("DELETE", routerService);
@@ -68,7 +68,7 @@ export class BootstrapService implements IBootstrapService {
     this.registerIpcChannel("PATCH", routerService);
     this.registerIpcChannel("POST", routerService);
     this.registerIpcChannel("PUT", routerService);
-    protocol.handle("cached-image", async (request: Request): Promise<Response> => {
+    protocol.handle(IpcPaths.CACHED_IMAGE, async (request: Request): Promise<Response> => {
       return container
         .resolve<ICardImageService>(LIBRARY.CardImageService)
         .getImage(new URL(request.url));
@@ -77,9 +77,12 @@ export class BootstrapService implements IBootstrapService {
     return Promise.resolve();
   }
 
-  private async bootFunction(splashWindow: BrowserWindow, settings: SettingsDto): Promise<void> {
+  private async bootFunction(splashWindow: BrowserWindow, configurationService: IConfigurationService): Promise<void> {
     const callback = (label: string) => splashWindow.webContents.send("splash", label);
     callback("Initializing");
+    const apiClient = container.resolve<IMtgCollectionClient>(API.ApiClient);
+    // TODO error handling
+    await configurationService.runDiscovery(() => apiClient.discover());
     // const migrationContainer = MigrationDi.registerMigrations();
     // await container.resolve<IDatabaseService>(INFRASTRUCTURE.DatabaseService)
     //   .migrateToLatest(
@@ -98,7 +101,7 @@ export class BootstrapService implements IBootstrapService {
     //       .synchronize(syncParam, splashWindow.webContents);
     //   })
     //   .then(() => splashWindow.webContents.send("splash", "loading main program"));
-    if (settings.preferences.refreshCacheAtStartup) {
+    if (configurationService.preferences.refreshCacheAtStartup) {
       callback("Caching cardsymbols");
       await container.resolve<ICardSymbolService>(LIBRARY.CardSymbolService).cacheImages(callback);
     }

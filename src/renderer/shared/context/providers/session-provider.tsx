@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useServices } from "../../../hooks/use-services";
+import { useServices } from "../../../hooks";
 import { SessionContext } from "../shared.context";
 
 export function SessionProvider({ children }: { children: React.ReactNode; }) {

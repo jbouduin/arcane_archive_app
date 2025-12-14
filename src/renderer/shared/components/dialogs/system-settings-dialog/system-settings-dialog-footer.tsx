@@ -1,28 +1,61 @@
+import { Button } from "@blueprintjs/core";
+import { noop } from "lodash";
+import { ReactNode } from "react";
 import { SystemSettingsDto } from "../../../../../common/dto";
+import { useServices } from "../../../../hooks";
 import { BaseDialogFooterProps, SaveCancelResetFooter } from "../../base/base-dialog";
 
 export function SystemSettingsDialogFooter(props: BaseDialogFooterProps<SystemSettingsDto>) {
+  // #region Hooks ------------------------------------------------------------
+  const serviceContainer = useServices();
+  // #endregion
+
   // #region Event handling ---------------------------------------------------
-  function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, _dto: SystemSettingsDto): Promise<void> {
-    if (props.onClose) {
-      props.onClose(event);
-    }
-    return Promise.resolve();
+  function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: SystemSettingsDto): Promise<void> {
+    return serviceContainer.configurationService.saveConfiguration(dto)
+      .then(
+        (_r: SystemSettingsDto) => {
+          // TODO user should restart completely or reboot main. Prefer restart
+          if (props.onClose) {
+            props.onClose(event);
+          }
+        },
+        noop
+      );
+  }
+
+  function factoryDefaultClick() {
+    serviceContainer.ipcProxy.getData<SystemSettingsDto>("/configuration/factory-default")
+      .then(
+        (dto: SystemSettingsDto) => {
+          Object.assign(props.viewmodel.dto, dto);
+          props.viewmodelChanged(props.viewmodel);
+        },
+        noop
+      );
   }
   // #endregion
 
   // #region Rendering --------------------------------------------------------
-  // TODO show reset AND factory default buttons
   return (
     <SaveCancelResetFooter<SystemSettingsDto>
       {...props}
       showResetButton={true}
-      resetButtonIcon="wrench-redo"
-      resetButtonLabel="Factory Defaults"
-      commitButtonLabel="Save"
-      commitButtonIcon="floppy-disk"
+      additionalLeftButtons={additionalLeftButtons()}
       onCommitButtonClick={saveClick}
     />
   );
+
+  function additionalLeftButtons(): ReactNode {
+    return (
+      <Button
+        key="factory-default"
+        icon="wrench-redo"
+        onClick={factoryDefaultClick}
+      >
+        Factory Defaults
+      </Button>
+    );
+  }
   // #endregion
 }

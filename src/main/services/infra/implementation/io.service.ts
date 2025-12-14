@@ -1,10 +1,9 @@
-import { existsSync, readFileSync } from "fs";
-import { BaseService, IResult } from "../../base";
-import { IIoService } from "../interface/io.service";
-import { ILogService, IResultFactory } from "../interface";
-import { INFRASTRUCTURE } from "../../service.tokens";
-import { inject, injectable } from "tsyringe";
 import { dialog } from "electron";
+import { existsSync, readFileSync } from "fs";
+import { inject, injectable } from "tsyringe";
+import { BaseService, IResult } from "../../base";
+import { INFRASTRUCTURE } from "../../service.tokens";
+import { IIoService, ILogService, IResultFactory } from "../interface";
 
 @injectable()
 export class IoService extends BaseService implements IIoService {

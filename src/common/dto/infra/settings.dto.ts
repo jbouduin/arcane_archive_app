@@ -1,7 +1,10 @@
+import { ApiConfigurationDto } from "./api-configuration.dto";
 import { PreferencesDto } from "./preferences.dto";
-import { SystemSettingsDto } from "./system-settings.dto";
 
+/**
+ * This dto is to be used when retrieving the settings for the renderer
+ */
 export type SettingsDto = {
-  systemConfiguration: SystemSettingsDto;
+  apiConfiguration: ApiConfigurationDto;
   preferences: PreferencesDto;
 };
