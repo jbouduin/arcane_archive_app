@@ -16,8 +16,6 @@ export function MainWindowDesktop(props: MainWindowDesktopProps) {
   return (
     <BaseDesktop
       desktopContent={(props: DesktopContentProps) => desktopContent(props)}
-      // TODO this one can be removed, toast can be displayed from dialogservice
-      toastCall={props.toastCall}
     />
   );
 
