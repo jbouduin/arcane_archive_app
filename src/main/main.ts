@@ -1,4 +1,4 @@
-import { app, BrowserWindow, session } from "electron";
+import { app, BrowserWindow, globalShortcut, session } from "electron";
 import { existsSync } from "fs";
 import { join } from "path";
 import "reflect-metadata";
@@ -36,6 +36,16 @@ void app.whenReady().then(async () => {
       container.resolve<IWindowsService>(INFRASTRUCTURE.WindowsService).createMainWindow();
     }
   });
+
+  globalShortcut.register(
+    "CommandOrControl+Shift+I",
+    () => {
+      const win = BrowserWindow.getFocusedWindow();
+      if (win) {
+        win.webContents.openDevTools();
+      }
+    }
+  );
 
   /*
    * this used to be const reactDevToolsPath = join(process.env.LOCALAPPDATA, "Google", "Chrome", "User Data", "Default", "Extensions", "fmkadmapgofadopljbjfkapdkoienihi", "5.2.0_0");

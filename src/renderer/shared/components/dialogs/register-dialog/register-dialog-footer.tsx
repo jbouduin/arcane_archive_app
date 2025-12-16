@@ -1,5 +1,4 @@
 import { Button } from "@blueprintjs/core";
-import { noop } from "lodash";
 import React, { ReactNode } from "react";
 import { useServices } from "../../../../hooks";
 import { RegisterRequestDto } from "../../../dto";
@@ -14,16 +13,12 @@ export function RegisterDialogFooter(props: BaseDialogFooterProps<RegisterReques
 
   // #region Event handling ---------------------------------------------------
   function registerClick(e: React.SyntheticEvent<HTMLElement, Event>, dto: RegisterRequestDto) {
-    return serviceContainer.collectionManagerProxy.postData<RegisterRequestDto, object>(
-      "authentication", "/public/account", dto, false
-    ).then(
-      (_r: object) => {
+    return serviceContainer.sessionService.register(serviceContainer, dto)
+      .then(() => {
         if (props.onClose) {
           props.onClose(e);
         }
-      },
-      noop
-    );
+      });
   }
 
   function loginClick(e: React.MouseEvent<HTMLElement, MouseEvent>): void {

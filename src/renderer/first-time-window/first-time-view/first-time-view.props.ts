@@ -1,6 +1,6 @@
 import { Props } from "@blueprintjs/core";
-import { ConfigurationViewModel } from "../../shared/viewmodel";
+import { SystemSettingsDto } from "../../../common/dto";
 
 export interface FirstTimeViewProps extends Props {
-  configuration: ConfigurationViewModel;
+  systemSettings: SystemSettingsDto;
 }

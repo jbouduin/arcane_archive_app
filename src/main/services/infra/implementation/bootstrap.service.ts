@@ -1,7 +1,6 @@
 import { app, BrowserWindow, dialog, ipcMain, IpcMainInvokeEvent, nativeTheme, protocol } from "electron";
 import { homedir } from "os";
 import { container, injectable } from "tsyringe";
-// import { IpcChannel } from "../../../../common/ipc";
 // import { MigrationDi } from "../../../database/migrations/migrations.di";
 // import { ICardRepository } from "../../../database/repo/interfaces";
 import { IpcChannel, IpcPaths, IpcRequest } from "../../../../common/ipc";
@@ -20,6 +19,7 @@ export class BootstrapService implements IBootstrapService {
     const configurationService: IConfigurationService = container.resolve(INFRASTRUCTURE.ConfigurationService);
     const logService: ILogService = container.resolve(INFRASTRUCTURE.LogService);
 
+    // TODO move to preboot, eventually route it over IPC Post
     ipcMain.handle("show-main-window", () => {
       windowsService.mainWindow.show();
       if (!splashWindow.isDestroyed()) {
@@ -41,12 +41,16 @@ export class BootstrapService implements IBootstrapService {
     });
 
     void splashWindow.on("ready-to-show", () => {
+      // TODO show splashwindow -> First time window needs to initialize also
+      // show first time window when ready (as with main-window)
+      // hide splash when opening first time window, reopen as currently
       if (configurationService.isFirstUsage) {
         const firsTimeWindow = windowsService.createFirstTimeWindow();
         firsTimeWindow.on("closed", () => {
           if (configurationService.isFirstUsage) {
             app.quit();
           } else {
+            // TODO in this case refresh cache should also be executed
             splashWindow.show();
           }
         });
@@ -73,8 +77,10 @@ export class BootstrapService implements IBootstrapService {
         .resolve<ICardImageService>(LIBRARY.CardImageService)
         .getImage(new URL(request.url));
     });
-
-    return Promise.resolve();
+    // TODO check if we can move this to boot
+    const apiClient = container.resolve<IMtgCollectionClient>(API.ApiClient);
+    // TODO error handling
+    await configurationService.runDiscovery(() => apiClient.discover());
   }
 
   private async bootFunction(splashWindow: BrowserWindow, configurationService: IConfigurationService): Promise<void> {
@@ -102,8 +108,7 @@ export class BootstrapService implements IBootstrapService {
     //   })
     //   .then(() => splashWindow.webContents.send("splash", "loading main program"));
     if (configurationService.preferences.refreshCacheAtStartup) {
-      callback("Caching cardsymbols");
-      await container.resolve<ICardSymbolService>(LIBRARY.CardSymbolService).cacheImages(callback);
+      this.refreshCache(callback);
     }
     callback("Loading main program");
   }
@@ -113,5 +118,10 @@ export class BootstrapService implements IBootstrapService {
       channel,
       (event: IpcMainInvokeEvent, ...args: Array<unknown>) => routerService.routeRequest(channel, event.sender, args[0] as IpcRequest<unknown>)
     );
+  }
+
+  private async refreshCache(callback: (label: string) => void): Promise<void> {
+    callback("Caching cardsymbols");
+    await container.resolve<ICardSymbolService>(LIBRARY.CardSymbolService).cacheImages(callback);
   }
 }

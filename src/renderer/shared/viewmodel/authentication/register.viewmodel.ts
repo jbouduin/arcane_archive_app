@@ -75,6 +75,7 @@ export class RegisterViewmodel extends BaseViewmodel<RegisterRequestDto> {
 
   // #region Validation methods -----------------------------------------------
   public validateUserName(): ValidationResult {
+    // LATER go to server to check if username already in use
     let result: ValidationResult;
     if (stringHasMinimalLength(this._dto.userName, 8)) {
       this.setFieldValid("userName");
@@ -87,6 +88,7 @@ export class RegisterViewmodel extends BaseViewmodel<RegisterRequestDto> {
   }
 
   public validateEmail(): ValidationResult {
+    // LATER go to server to check if email already in use
     let result: ValidationResult;
     if (stringCouldBeEmail(this._dto.email)) {
       this.setFieldValid("email");

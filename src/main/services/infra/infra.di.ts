@@ -8,8 +8,13 @@ import { LogService } from "./implementation/log.service";
 import { ResultFactory } from "./implementation/result.factory";
 import { RouterService } from "./implementation/router.service";
 import { WindowsService } from "./implementation/windows.service";
-import { IBootstrapService, IConfigurationService, IIoService, ILogService, IResultFactory, IRouterService, IWindowsService } from "./interface";
+import {
+  IBootstrapService, IConfigurationService, IIoService, ILogService, IResultFactory, IRouterService,
+  ISessionService, IWindowsService
+} from "./interface";
 import { ConfigurationRouter, IoRouter } from "./router";
+import { SessionService } from "./implementation/session.service";
+import { SessionRouter } from "./router/session.router";
 
 export class InfraDi {
   public static register(): void {
@@ -20,12 +25,14 @@ export class InfraDi {
     container.register<ILogService>(INFRASTRUCTURE.LogService, { useClass: LogService }, { lifecycle: Lifecycle.Singleton });
     container.register<IResultFactory>(INFRASTRUCTURE.ResultFactory, { useClass: ResultFactory }, { lifecycle: Lifecycle.Singleton });
     container.register<IRouterService>(INFRASTRUCTURE.RouterService, { useClass: RouterService }, { lifecycle: Lifecycle.Singleton });
+    container.register<ISessionService>(INFRASTRUCTURE.SessionService, { useClass: SessionService }, { lifecycle: Lifecycle.Singleton });
     container.register<IWindowsService>(INFRASTRUCTURE.WindowsService, { useClass: WindowsService }, { lifecycle: Lifecycle.Singleton });
     // #endregion
 
     // #region Routers --------------------------------------------------------
     container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: IoRouter }, { lifecycle: Lifecycle.Singleton });
     container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: ConfigurationRouter }, { lifecycle: Lifecycle.Singleton });
+    container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: SessionRouter }, { lifecycle: Lifecycle.Singleton });
     // #endregion
   }
 }

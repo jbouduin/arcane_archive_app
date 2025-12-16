@@ -1,6 +1,7 @@
 import { ToastProps } from "@blueprintjs/core";
 import { SettingsDto as _ConfigurationDto } from "../../../../common/dto";
 import { LanguageDto as _LanguageDto, MtgSetTreeDto as _MtgSetTreeDto } from "../../dto";
+import { InitializeServiceContainerOptions } from "../../types";
 import { ICardSearchParamService } from "./card-search-param.service";
 import { ICardSymbolService } from "./card-symbol.service";
 import { ICollectionManagerProxyService } from "./collection-manager-proxy.service";
@@ -79,5 +80,5 @@ export interface IServiceContainer {
    * Method called before rendering the window. All other services are initialized and fill their caches.
    * @param showToast the handler to show a toast in the desktop
    */
-  initialize(showToast: (props: ToastProps, key?: string) => void): Promise<void>;
+  initialize(showToast: (props: ToastProps, key?: string) => void, options?: InitializeServiceContainerOptions): Promise<void>;
 }

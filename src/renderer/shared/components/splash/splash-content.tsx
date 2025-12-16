@@ -12,7 +12,7 @@ export function SplashContent() {
   // #endregion
 
   // #region Rendering --------------------------------------------------------
-  window.ipc.onProgress((status) => {
+  window.ipc.onProgress((status: string) => {
     setState({ label: status });
   });
 

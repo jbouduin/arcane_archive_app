@@ -9,7 +9,7 @@ export function PreferencesDialogFooter(props: BaseDialogFooterProps<Preferences
 
   // #region Event handling ---------------------------------------------------
   function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, _dto: PreferencesDto): Promise<void> {
-    serviceContainer.configurationService.updateLocalPreferences(props.viewmodel.dto);
+    serviceContainer.configurationService.savePreferences(serviceContainer, props.viewmodel.dto);
     if (props.onClose) {
       props.onClose(event);
     }

@@ -1,6 +1,6 @@
 import { ApiConfigurationDto, PreferencesDto, SettingsDto, SystemSettingsDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
-import { IConfigurationService, IIpcProxyService } from "../interface";
+import { IConfigurationService, IIpcProxyService, IServiceContainer } from "../interface";
 import { PreferencesChangeListener } from "../providers";
 
 export class ConfigurationService implements IConfigurationService {
@@ -19,6 +19,11 @@ export class ConfigurationService implements IConfigurationService {
   public get preferences(): PreferencesDto {
     return this._preferences;
   }
+
+  public set preferences(value: PreferencesDto) {
+    this._preferences = value;
+    this.listeners.forEach((listener: PreferencesChangeListener) => listener(this._preferences));
+  }
   // #endregion
 
   // #region Constructor ------------------------------------------------------
@@ -30,7 +35,7 @@ export class ConfigurationService implements IConfigurationService {
   // #region IConfiguration Members -------------------------------------------
   public initialize(ipcProxy: IIpcProxyService): Promise<SettingsDto> {
     this.ipcProxy = ipcProxy;
-    return this.ipcProxy.getData<SettingsDto>("/settings")
+    return this.ipcProxy.getData<SettingsDto>(IpcPaths.SETTINGS)
       .then(
         (settings: SettingsDto) => {
           this._apiConfiguration = settings.apiConfiguration;
@@ -41,7 +46,7 @@ export class ConfigurationService implements IConfigurationService {
       );
   }
 
-  public saveConfiguration(configuration: SystemSettingsDto): Promise<SystemSettingsDto> {
+  public saveSystemSettings(configuration: SystemSettingsDto): Promise<SystemSettingsDto> {
     return this.ipcProxy
       .postData<SystemSettingsDto, SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS, configuration)
       .then(
@@ -52,13 +57,17 @@ export class ConfigurationService implements IConfigurationService {
       );
   }
 
-  public updateLocalPreferences(preferences: PreferencesDto): Promise<PreferencesDto> {
-    return this.ipcProxy
-      .postData<PreferencesDto, PreferencesDto>(IpcPaths.PREFERENCES, preferences)
+  public savePreferences(serviceContainer: IServiceContainer, preferences: PreferencesDto): Promise<PreferencesDto> {
+    const promises = new Array<Promise<PreferencesDto>>();
+    promises.push(this.ipcProxy.postData<PreferencesDto, PreferencesDto>(IpcPaths.PREFERENCES, preferences));
+    if (serviceContainer.sessionService.loggedIn) {
+      promises.push(serviceContainer.collectionManagerProxy.putData<PreferencesDto, PreferencesDto>("authentication", "/app/account/preferences", preferences, true));
+    }
+    return Promise.all(promises)
       .then(
-        (saved: PreferencesDto) => {
-          this._preferences = saved;
-          return saved;
+        (saved: Array<PreferencesDto>) => {
+          this.preferences = saved[0];
+          return saved[0];
         },
         () => preferences
       );
@@ -67,7 +76,7 @@ export class ConfigurationService implements IConfigurationService {
   public subscribe(listener: PreferencesChangeListener): () => void {
     this.listeners.push(listener);
     return () => {
-      this.listeners = this.listeners.filter(l => l !== listener);
+      this.listeners = this.listeners.filter((listener: PreferencesChangeListener) => listener !== listener);
     };
   }
   // #endregion

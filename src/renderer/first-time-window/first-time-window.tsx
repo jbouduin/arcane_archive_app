@@ -1,26 +1,18 @@
-import { BlueprintProvider, FocusStyleManager, OverlayToaster, Position, ToastProps } from "@blueprintjs/core";
+import { BlueprintProvider, FocusStyleManager, H1, OverlayToaster, Position, ToastProps } from "@blueprintjs/core";
 import { createRoot } from "react-dom/client";
-import { IServiceContainer, ServiceContainerContext } from "../shared/context";
-import { CardSearchParamService } from "../shared/context/implementation/card-search-param.service";
-import { CardSymbolService } from "../shared/context/implementation/card-symbol.service";
-import { CollectionManagerProxyService } from "../shared/context/implementation/collection-manager-proxy.service";
-import { ColorService } from "../shared/context/implementation/color.service";
-import { ConfigurationService } from "../shared/context/implementation/configuration.service";
-import { DialogService } from "../shared/context/implementation/dialog.service";
-import { DisplayValueService } from "../shared/context/implementation/display-value.service";
-import { IpcProxyService } from "../shared/context/implementation/ipc-proxy.service";
-import { LanguageService } from "../shared/context/implementation/language.service";
-import { MtgSetService } from "../shared/context/implementation/mtg-set.service";
-import { SessionService } from "../shared/context/implementation/session.service";
-import { ViewmodelFactoryService } from "../shared/context/implementation/viewmodel-factory.service";
-import { ConfigurationViewModel } from "../shared/viewmodel";
+import { ServiceContainerContext, SessionProvider } from "../shared/context";
+import { DialogRenderer } from "../shared/components/base/base-dialog/dialog-renderer";
+import { ServiceContainer } from "../shared/context/implementation/service.container";
 import { FirstTimeView } from "./first-time-view/first-time-view";
+import { PreferencesProvider } from "../shared/context/providers/preferences-provider";
+import { SystemSettingsDto } from "../../common/dto";
+import { IpcPaths } from "../../common/ipc";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
 void (async () => {
   await import("../main-window/main-window.css");
-
+  await import("./first-time-window.css");
   const appToaster = await OverlayToaster.create(
     {
       className: "recipe-toaster",
@@ -31,50 +23,46 @@ void (async () => {
     }
   );
 
-  const ipcProxyService = new IpcProxyService();
-  ipcProxyService.initialize((props: ToastProps, key?: string) => appToaster.show(props, key));
-  const configurationService = new ConfigurationService();
-  await configurationService.initialize(ipcProxyService)
-    .then(
-      () => undefined as unknown as ConfigurationViewModel,
-      // () => new ConfigurationViewModel(configurationService.configuration, true),
-      (_r: Error) => undefined as unknown as ConfigurationViewModel
-    )
-    .then((configurationViewmodel: ConfigurationViewModel) => {
-      const container = document.getElementById("root")!;
-      const root = createRoot(container);
+  const toastCall = (props: ToastProps, key?: string) => appToaster.show(props, key);
+  const serviceContainer = new ServiceContainer();
+  const container = document.getElementById("root")!;
+  const root = createRoot(container);
 
-      if (configurationViewmodel) {
-        const serviceContainer: IServiceContainer = {
-          cardSearchParamService: new CardSearchParamService(),
-          cardSymbolService: new CardSymbolService(),
-          collectionManagerProxy: new CollectionManagerProxyService(),
-          colorService: new ColorService(),
-          configurationService: configurationService,
-          dialogService: new DialogService(),
-          displayValueService: new DisplayValueService(),
-          ipcProxy: ipcProxyService,
-          languageService: new LanguageService(),
-          mtgSetService: new MtgSetService(),
-          sessionService: new SessionService(),
-          viewmodelFactoryService: new ViewmodelFactoryService(),
-          initialize: function (_showToast: (props: ToastProps, key?: string) => void): Promise<void> {
-            throw new Error("Function not implemented.");
-          }
-        };
+  serviceContainer
+    .initialize(
+      toastCall,
+      {
+        skipCardSearchParamService: true,
+        skipColorService: true,
+        skipCardSymbolService: true,
+        skipLanguageService: true,
+        skipMtgSetService: true,
+        skipSessionService: true,
+      }
+    )
+    .then(
+      async () => {
+        const systemSettings = await serviceContainer.ipcProxy.getData<SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS_FACTORY_DEFAULT);
         root.render(
           <BlueprintProvider>
             <ServiceContainerContext.Provider value={serviceContainer}>
-              <FirstTimeView className={configurationViewmodel.theme} configuration={configurationViewmodel} />
+              <SessionProvider>
+                <PreferencesProvider>
+                  <FirstTimeView systemSettings={systemSettings} />
+                  <DialogRenderer dialogService={serviceContainer.dialogService} />
+                </PreferencesProvider>
+              </SessionProvider>
             </ServiceContainerContext.Provider>
           </BlueprintProvider>
         );
-      } else {
+      },
+      (reason: unknown) => {
         root.render(
-          <div>
-            <p><b>Unable to retrieve a default configuration.</b></p>
-          </div>
+          <>
+            <H1>Error initializing</H1>
+            {reason}
+          </>
         );
       }
-    });
+    );
 })();

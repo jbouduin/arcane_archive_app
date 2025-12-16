@@ -1,7 +1,4 @@
 import { ButtonGroup, Menu, MenuItem, ToastProps } from "@blueprintjs/core";
-import { noop } from "lodash";
-import * as React from "react";
-import { ResultDto } from "../../../../../common/dto/mtg-collection";
 import { useServices, useSession } from "../../../../hooks";
 import { showLoginDialog, showPreferencesDialog, showProfileDialog, showSystemSettingsDialog } from "../../../../shared/components/dialogs/factory";
 import { EDesktopView } from "../desktop-view.enum";
@@ -22,12 +19,7 @@ export function ButtonBar(props: ButtonBarProps) {
   }
 
   function logoutClick(): void {
-    serviceContainer.collectionManagerProxy
-      .postData<never, ResultDto<never>>("authentication", "/auth/logout", null, false)
-      .then(
-        (_r: ResultDto<never>) => serviceContainer.sessionService.setSessionData(null),
-        noop
-      );
+    void serviceContainer.sessionService.logout(serviceContainer);
   }
 
   function adminClick(): void {

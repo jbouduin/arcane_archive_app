@@ -1,5 +1,6 @@
 export * from "./api-configuration.dto";
 export * from "./data-configuration.dto";
+export * from "./login-response.dto";
 export * from "./preferences.dto";
 export * from "./set-tree-settings.dto";
 export * from "./settings.dto";

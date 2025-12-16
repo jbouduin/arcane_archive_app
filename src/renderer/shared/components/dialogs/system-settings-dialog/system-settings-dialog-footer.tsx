@@ -12,7 +12,7 @@ export function SystemSettingsDialogFooter(props: BaseDialogFooterProps<SystemSe
 
   // #region Event handling ---------------------------------------------------
   function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: SystemSettingsDto): Promise<void> {
-    return serviceContainer.configurationService.saveConfiguration(dto)
+    return serviceContainer.configurationService.saveSystemSettings(dto)
       .then(
         (_r: SystemSettingsDto) => {
           // TODO user should restart completely or reboot main. Prefer restart

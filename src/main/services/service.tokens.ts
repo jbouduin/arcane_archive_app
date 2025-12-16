@@ -15,6 +15,7 @@ export const INFRASTRUCTURE = Object.freeze(
     LogService: "LogService",
     ResultFactory: "ResultFactory",
     RouterService: "RouterService",
+    SessionService: "SessionService",
     Router: "Router",
     WindowsService: "WindowsService"
   }

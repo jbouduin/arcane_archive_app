@@ -5,9 +5,10 @@ import { IServiceContainer } from "../../../context";
 import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 import { SystemSettingsDialogBody } from "../system-settings-dialog/system-settings-dialog-body";
 import { SystemSettingsDialogFooter } from "../system-settings-dialog/system-settings-dialog-footer";
+import { IpcPaths } from "../../../../../common/ipc";
 
 export function showSystemSettingsDialog(serviceContainer: IServiceContainer): void {
-  serviceContainer.ipcProxy.getData<SystemSettingsDto>("/configuration")
+  serviceContainer.ipcProxy.getData<SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS)
     .then(
       (configuration: SystemSettingsDto) => {
         const uiSettingsProps: BaseDialogProps<SystemSettingsDto> = {

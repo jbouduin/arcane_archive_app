@@ -1,4 +1,5 @@
 import { ToastProps } from "@blueprintjs/core";
+import { InitializeServiceContainerOptions } from "../../types";
 import {
   ICardSearchParamService, ICardSymbolService, ICollectionManagerProxyService, IColorService, IConfigurationService,
   IDialogService, IDisplayValueService, IIpcProxyService, ILanguageService, IMtgSetService, IServiceContainer,
@@ -101,21 +102,36 @@ export class ServiceContainer implements IServiceContainer {
   // #endregion
 
   // #region IServiceContainer Members (methods) ------------------------------
-  public async initialize(showToast: (props: ToastProps, key?: string) => void): Promise<void> {
+  public async initialize(showToast: (props: ToastProps, key?: string) => void, options: InitializeServiceContainerOptions = {}): Promise<void> {
     this._ipcProxy.initialize(showToast);
     const configuration = await this._configurationService.initialize(this._ipcProxy);
     this._collectionManagerProxy.initialize(this.sessionService, configuration, showToast);
     this._dialogService.initialize(showToast);
 
-    await Promise.all([
-      this._cardSearchParamService.initialize(this._collectionManagerProxy),
-      this._cardSymbolService.initialize(this._ipcProxy),
-      this._colorService.initialize(this._collectionManagerProxy),
-      this._displayValueService.initialize(this._collectionManagerProxy),
-      this._languageService.initialize(this._collectionManagerProxy),
-      this._mtgSetService.initialize(this._collectionManagerProxy)
-    ]);
+    const skippableServices = new Array<Promise<void>>();
+    if (!options.skipCardSearchParamService) {
+      skippableServices.push(this._cardSearchParamService.initialize(this._collectionManagerProxy));
+    }
+    if (!options.skipCardSymbolService) {
+      skippableServices.push(this._cardSymbolService.initialize(this._ipcProxy));
+    }
+    if (!options.skipColorService) {
+      skippableServices.push(this._colorService.initialize(this._collectionManagerProxy));
+    }
+    if (!options.skipDisplayValueService) {
+      skippableServices.push(this._displayValueService.initialize(this._collectionManagerProxy));
+    }
+    if (!options.skipLanguageService) {
+      skippableServices.push(this._languageService.initialize(this._collectionManagerProxy));
+    }
+    if (!options.skipMtgSetService) {
+      skippableServices.push(this._mtgSetService.initialize(this._collectionManagerProxy));
+    }
+    if (!options.skipSessionService) {
+      skippableServices.push(this._sessionService.initialize(this._ipcProxy, this._configurationService));
+    }
 
+    await Promise.all(skippableServices);
     this._viewmodelFactoryService.initialize(
       this._colorService,
       this._displayValueService,

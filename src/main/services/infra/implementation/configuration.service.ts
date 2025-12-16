@@ -10,12 +10,12 @@ import { IConfigurationService, ILogService, IResultFactory } from "../interface
 @singleton()
 export class ConfigurationService extends BaseService implements IConfigurationService {
   // #region private fields ---------------------------------------------------
-  private configFilePath!: string;
+  private systemSettingsFilePath!: string;
   private preferencesFilePath!: string;
   private appDirectory!: string;
   private homeDirectory!: string;
   private useDarkTheme!: boolean;
-  private _configuration!: SystemSettingsDto;
+  private _systemSettings!: SystemSettingsDto;
   private _apiConfiguration!: ApiConfigurationDto;
   private _preferences!: PreferencesDto;
   private _isFirstUsage!: boolean;
@@ -31,7 +31,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   }
 
   public get configuration(): SystemSettingsDto {
-    return this._configuration;
+    return this._systemSettings;
   }
 
   public get preferences(): PreferencesDto {
@@ -44,8 +44,8 @@ export class ConfigurationService extends BaseService implements IConfigurationS
 
   public get dataBaseFilePath(): string {
     return join(
-      this._configuration.dataConfiguration.rootDataDirectory,
-      this._configuration.dataConfiguration.databaseName
+      this._systemSettings.dataConfiguration.rootDataDirectory,
+      this._systemSettings.dataConfiguration.databaseName
     );
   }
   // #endregion
@@ -64,12 +64,12 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     this.appDirectory = appDirectory;
     this.homeDirectory = homeDirectory;
     this.useDarkTheme = useDarkTheme;
-    this.configFilePath = join(appDirectory, "collection-manager.config.json");
-    if (existsSync(this.configFilePath)) {
-      this._configuration = JSON.parse(readFileSync(this.configFilePath, "utf-8")) as SystemSettingsDto;
+    this.systemSettingsFilePath = join(appDirectory, "collection-manager.config.json");
+    if (existsSync(this.systemSettingsFilePath)) {
+      this._systemSettings = JSON.parse(readFileSync(this.systemSettingsFilePath, "utf-8")) as SystemSettingsDto;
       this._isFirstUsage = false;
     } else {
-      this._configuration = this.createConfigurationFactoryDefault();
+      this._systemSettings = this.createConfigurationFactoryDefault();
       this._isFirstUsage = true;
     }
     this.preferencesFilePath = join(appDirectory, "collection-manager.preferences.json");
@@ -88,7 +88,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
 
   // #region Route callbacks --------------------------------------------------
   public getSystemSettings(): Promise<IResult<SystemSettingsDto>> {
-    return this.resultFactory.createSuccessResultPromise(this._configuration);
+    return this.resultFactory.createSuccessResultPromise(this._systemSettings);
   }
 
   public getSystemSettingsFactoryDefault(): Promise<IResult<SystemSettingsDto>> {
@@ -104,16 +104,16 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   }
 
   public saveSystemSettings(configuration: SystemSettingsDto): Promise<IResult<SystemSettingsDto>> {
-    this.createDirectoryIfNotExists(dirname(this.configFilePath));
-    writeFileSync(this.configFilePath, JSON.stringify(configuration, null, 2));
-    this._configuration = configuration;
+    this.createDirectoryIfNotExists(dirname(this.systemSettingsFilePath));
+    writeFileSync(this.systemSettingsFilePath, JSON.stringify(configuration, null, 2));
+    this._systemSettings = configuration;
     this._isFirstUsage = false;
     return this.resultFactory.createSuccessResultPromise<SystemSettingsDto>(configuration);
   }
 
   public savePreferences(preferences: PreferencesDto): Promise<IResult<PreferencesDto>> {
     this.createDirectoryIfNotExists(dirname(this.preferencesFilePath));
-    writeFileSync(this.preferencesFilePath, JSON.stringify(this._configuration, null, 2));
+    writeFileSync(this.preferencesFilePath, JSON.stringify(preferences, null, 2));
     this._preferences = preferences;
     return this.resultFactory.createSuccessResultPromise<PreferencesDto>(this._preferences);
   }
@@ -129,20 +129,6 @@ export class ConfigurationService extends BaseService implements IConfigurationS
         databaseName: "magic-db.sqlite"
 
       }
-    };
-    return result;
-  }
-
-  private createApiConfigurationFactoryDefault(): ApiConfigurationDto {
-    const result: ApiConfigurationDto = {
-      scryfallApiRoot: "https://api.scryfall.com",
-      scryfallCardBackRoot: "https://backs.scryfall.io",
-      // Scryfall api requests 50-100 ms between calls, let's give it some slack
-      scryfallMinimumRequestTimeout: 60,
-      authenticationApiRoot: "http://localhost:5401/api",
-      libraryApiRoot: "http://localhost:5402/api",
-      collectionApiRoot: "http://localhost:5403/api",
-      deckApiRoot: "http://localhost:5404/api"
     };
     return result;
   }
