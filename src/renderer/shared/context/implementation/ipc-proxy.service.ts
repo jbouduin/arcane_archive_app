@@ -46,14 +46,14 @@ export class IpcProxyService implements IIpcProxyService {
       );
   }
 
-  public getData<T extends object | string>(path: string): Promise<T> {
+  public getData<Res extends object | string>(path: string): Promise<Res> {
     const request: IpcRequest<never> = {
       id: ++this.getRequestCounter,
       path: path
     };
-    return window.ipc.data<never, T>("GET", request)
+    return window.ipc.data<never, Res>("GET", request)
       .then(
-        (response: IpcResponse<T>) => {
+        (response: IpcResponse<Res>) => {
           if (response.status >= EIpcStatus.BadRequest) {
             return this.processIpcErrorResponse("GET", response);
           } else {
@@ -64,34 +64,23 @@ export class IpcProxyService implements IIpcProxyService {
       );
   }
 
-  public postData<T extends object, U extends object>(path: string, data: T): Promise<U> {
-    const request: IpcRequest<T> = {
-      id: ++this.postRequestCounter,
-      path: path,
-      data: data
-    };
-    return window.ipc.data<T, U>("POST", request)
-      .then(
-        (response: IpcResponse<U>) => {
-          if (response.status >= EIpcStatus.BadRequest) {
-            return this.processIpcErrorResponse("POST", response);
-          } else {
-            return this.processIpcResponse(response);
-          }
-        },
-        (reason: Error) => this.processIpcRejection<U>("POST", reason)
-      );
+  public postEmptyBody<Res extends object>(path: string): Promise<Res> {
+    return this.executePost(path, null);
   }
 
-  public putData<T extends object, U extends object>(path: string, data: T): Promise<U> {
-    const request: IpcRequest<T> = {
+  public postData<Req extends object, Res extends object>(path: string, data: Req): Promise<Res> {
+    return this.executePost(path, data);
+  }
+
+  public putData<Req extends object, Res extends object>(path: string, data: Req): Promise<Res> {
+    const request: IpcRequest<Req> = {
       id: ++this.putRequestCounter,
       path: path,
       data: data
     };
-    return window.ipc.data<T, U>("PUT", request)
+    return window.ipc.data<Req, Res>("PUT", request)
       .then(
-        (response: IpcResponse<U>) => {
+        (response: IpcResponse<Res>) => {
           if (response.status >= EIpcStatus.BadRequest) {
             return this.processIpcErrorResponse("PUT", response);
           } else {
@@ -102,15 +91,15 @@ export class IpcProxyService implements IIpcProxyService {
       );
   }
 
-  public patchData<T extends object, U extends object>(path: string, data: T): Promise<U> {
-    const request: IpcRequest<T> = {
+  public patchData<Req extends object, Res extends object>(path: string, data: Req): Promise<Res> {
+    const request: IpcRequest<Req> = {
       id: ++this.patchRequestCounter,
       path: path,
       data: data
     };
-    return window.ipc.data<T, U>("PATCH", request)
+    return window.ipc.data<Req, Res>("PATCH", request)
       .then(
-        (response: IpcResponse<U>) => {
+        (response: IpcResponse<Res>) => {
           if (response.status >= EIpcStatus.BadRequest) {
             return this.processIpcErrorResponse("PATCH", response);
           } else {
@@ -120,14 +109,29 @@ export class IpcProxyService implements IIpcProxyService {
         (reason: Error) => this.processIpcRejection("PATCH", reason)
       );
   }
-
-  public showMainWindow(): void {
-    void window.ipc.showMainWindow();
-  }
   // #endregion
 
   // #region Auxiliary methods ------------------------------------------------
-  private processIpcErrorResponse<T>(channel: IpcChannel, response: IpcResponse<T>): Promise<never> {
+  private executePost<Req extends object, Res extends object>(path: string, data: Req | null): Promise<Res> {
+    const request: IpcRequest<Req> = {
+      id: ++this.postRequestCounter,
+      path: path,
+      data: data
+    };
+    return window.ipc.data<Req, Res>("POST", request)
+      .then(
+        (response: IpcResponse<Res>) => {
+          if (response.status >= EIpcStatus.BadRequest) {
+            return this.processIpcErrorResponse("POST", response);
+          } else {
+            return this.processIpcResponse(response);
+          }
+        },
+        (reason: Error) => this.processIpcRejection<Res>("POST", reason)
+      );
+  }
+
+  private processIpcErrorResponse<Dto>(channel: IpcChannel, response: IpcResponse<Dto>): Promise<never> {
     if (this.logServerResponses) {
       // eslint-disable-next-line no-console
       console.log(response);
@@ -180,7 +184,7 @@ export class IpcProxyService implements IIpcProxyService {
     return Promise.reject(new Error(`Server error: ${response.status}`));
   }
 
-  private processIpcResponse<T>(response: IpcResponse<T>): T {
+  private processIpcResponse<Dto>(response: IpcResponse<Dto>): Dto {
     if (this.logServerResponses) {
       // eslint-disable-next-line no-console
       console.log(response);

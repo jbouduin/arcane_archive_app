@@ -7,13 +7,23 @@ export class IpcPaths {
   public static readonly SYSTEM_SETTINGS = "/system-settings";
   public static readonly SYSTEM_SETTINGS_FACTORY_DEFAULT = "/system-settings/factory-default";
   public static readonly PREFERENCES = "/preferences";
-  public static readonly SESSION = "/session";
   public static readonly SETTINGS = "/settings";
+  // #endregion
+
+  // #region Infra: Settings --------------------------------------------------
+  public static readonly SESSION = "/session";
   // #endregion
 
   // #region Infra: Io --------------------------------------------------------
   public static readonly IO_ASSET = "/asset";
   public static readonly IO_SELECT_DIRECTORY = "/select-directory";
+  // #endregion
+
+  // #region Infra: Windows ---------------------------------------------------
+  public static readonly MAIN_WINDOW_SHOW = "/window/main/show";
+  public static readonly SPLASH_WINDOW_SHOW = "/window/splash/show";
+  public static readonly SPLASH_WINDOW_HIDE = "/window/splash/hide";
+  public static readonly FIRST_TIME_WINDOW_SHOW = "/window/first-time/show";
   // #endregion
 
   // #region Library: Card Symbol ---------------------------------------------

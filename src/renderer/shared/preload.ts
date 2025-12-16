@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { IpcChannel, IpcRequest, IpcResponse } from "../../common/ipc";
+import { IpcChannel, IpcRequest, IpcResponse, ProgressCallback, ProgressCallbackValue } from "../../common/ipc";
 
 const versions = {
   node: () => process.versions.node,
@@ -13,13 +13,12 @@ const ipc = {
     const r = ipcRenderer.invoke(channel, request);
     return r as Promise<IpcResponse<U>>;
   },
-  // FEATURE extended progress reporting with two progress bars
-  onProgress: (callback: (status: string) => void) => {
+  onProgress: (callback: ProgressCallback) => {
     // to avoid memory leaks and as only the splash screen is listening to it
     ipcRenderer.removeAllListeners("splash");
-    ipcRenderer.on("splash", (_event, value) => callback(value as string));
+    ipcRenderer.on("splash", (_event, value) => callback(value as ProgressCallbackValue));
   },
-  showMainWindow: () => ipcRenderer.invoke("show-main-window")
+  // TODO remove me showMainWindow: () => ipcRenderer.invoke("show-main-window")
 };
 
 // expose

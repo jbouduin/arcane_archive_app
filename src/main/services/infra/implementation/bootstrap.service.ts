@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, IpcMainInvokeEvent, nativeTheme, protocol } from "electron";
+import { app, dialog, ipcMain, IpcMainInvokeEvent, nativeTheme, protocol } from "electron";
 import { homedir } from "os";
 import { container, injectable } from "tsyringe";
 // import { MigrationDi } from "../../../database/migrations/migrations.di";
@@ -9,62 +9,76 @@ import { IRouter } from "../../base";
 import { ICardImageService, ICardSymbolService } from "../../library/interface";
 import { API, INFRASTRUCTURE, LIBRARY } from "../../service.tokens";
 import { IBootstrapService, IConfigurationService, ILogService, IRouterService, IWindowsService } from "../interface";
+import { ProgressCallback } from "../../../../common/ipc";
 
 @injectable()
 export class BootstrapService implements IBootstrapService {
   // #region IBootstrapService methods ----------------------------------------
   public async boot(): Promise<void> {
     const windowsService: IWindowsService = container.resolve(INFRASTRUCTURE.WindowsService);
-    const rootRouterService: IRouterService = container.resolve(INFRASTRUCTURE.RouterService);
     const configurationService: IConfigurationService = container.resolve(INFRASTRUCTURE.ConfigurationService);
     const logService: ILogService = container.resolve(INFRASTRUCTURE.LogService);
 
-    // TODO move to preboot, eventually route it over IPC Post
-    ipcMain.handle("show-main-window", () => {
-      windowsService.mainWindow.show();
-      if (!splashWindow.isDestroyed()) {
-        splashWindow.close();
-      }
-    });
-
+    // --- 1. create the splash window ---
     const splashWindow = windowsService.createSplashWindow();
-    await this.preboot(configurationService, rootRouterService);
-    splashWindow.on("show", () => {
-      void this.bootFunction(splashWindow, configurationService)
-        .then(() => windowsService.createMainWindow())
-        .catch((reason: Error) => {
-          logService.error("Main", "Error in boot function: " + reason.message, reason);
-          splashWindow.hide();
-          dialog.showErrorBox(`Error:" ${reason.message}`, reason.stack || "");
-          app.exit();
-        });
+    const callback: ProgressCallback = (label: string) => splashWindow.webContents.send("splash", label);
+    // --- 2. run preboot ---
+    await this.preboot(configurationService);
+    splashWindow.on("ready-to-show", () => {
+      splashWindow.show();
+      callback("Running discovery");
+      const apiClient = container.resolve<IMtgCollectionClient>(API.ApiClient);
+      // --- 3. run discovery ---
+      void configurationService.runDiscovery(() => apiClient.discover())
+        .then(
+          () => {
+            if (configurationService.isFirstUsage) {
+              // --- 4a. run first usage sequence ---
+              splashWindow.webContents.send("splash", "Initializing first time window");
+              const firsTimeWindow = windowsService.createFirstTimeWindow();
+              firsTimeWindow.on("closed", () => {
+                if (configurationService.isFirstUsage) {
+                  app.quit();
+                } else {
+                  splashWindow.show();
+                  void this.bootFunction(callback, configurationService, true)
+                    .then(() => windowsService.createMainWindow())
+                    .catch((reason: Error) => {
+                      logService.error("Main", "Error in boot function: " + reason.message, reason);
+                      splashWindow.hide();
+                      dialog.showErrorBox(`Error:" ${reason.message}`, reason.stack || "");
+                      app.exit();
+                    });
+                }
+              });
+            } else {
+              // --- 4b. run normal sequence ---
+              void this.bootFunction(callback, configurationService, false)
+                .then(() => windowsService.createMainWindow())
+                .catch((reason: Error) => {
+                  logService.error("Main", "Error in boot function: " + reason.message, reason);
+                  splashWindow.hide();
+                  dialog.showErrorBox(`Error:" ${reason.message}`, reason.stack || "");
+                  app.exit();
+                });
+            }
+          },
+          (reason: Error) => {
+            logService.error("Main", "Discovery failed: " + reason.message, reason);
+            dialog.showErrorBox(`Discovery failed: ${reason.message}`, reason.stack || "");
+            app.exit();
+          }
+        );
     });
 
-    void splashWindow.on("ready-to-show", () => {
-      // TODO show splashwindow -> First time window needs to initialize also
-      // show first time window when ready (as with main-window)
-      // hide splash when opening first time window, reopen as currently
-      if (configurationService.isFirstUsage) {
-        const firsTimeWindow = windowsService.createFirstTimeWindow();
-        firsTimeWindow.on("closed", () => {
-          if (configurationService.isFirstUsage) {
-            app.quit();
-          } else {
-            // TODO in this case refresh cache should also be executed
-            splashWindow.show();
-          }
-        });
-      } else {
-        splashWindow.show();
-      }
-    });
     return Promise.resolve();
   }
   // #endregion
 
   // #region helper methods ---------------------------------------------------
-  private async preboot(configurationService: IConfigurationService, routerService: IRouterService): Promise<void> {
+  private async preboot(configurationService: IConfigurationService): Promise<void> {
     configurationService.initialize(app.getAppPath(), homedir(), nativeTheme.shouldUseDarkColors);
+    const routerService: IRouterService = container.resolve(INFRASTRUCTURE.RouterService);
     container.resolveAll<IRouter>(INFRASTRUCTURE.Router).forEach((svc: IRouter) => svc.setRoutes(routerService));
     routerService.logRoutes();
     this.registerIpcChannel("DELETE", routerService);
@@ -77,18 +91,11 @@ export class BootstrapService implements IBootstrapService {
         .resolve<ICardImageService>(LIBRARY.CardImageService)
         .getImage(new URL(request.url));
     });
-    // TODO check if we can move this to boot
-    const apiClient = container.resolve<IMtgCollectionClient>(API.ApiClient);
-    // TODO error handling
-    await configurationService.runDiscovery(() => apiClient.discover());
   }
 
-  private async bootFunction(splashWindow: BrowserWindow, configurationService: IConfigurationService): Promise<void> {
-    const callback = (label: string) => splashWindow.webContents.send("splash", label);
+  private async bootFunction(callback: ProgressCallback, configurationService: IConfigurationService, firstUsage: boolean): Promise<void> {
     callback("Initializing");
-    const apiClient = container.resolve<IMtgCollectionClient>(API.ApiClient);
-    // TODO error handling
-    await configurationService.runDiscovery(() => apiClient.discover());
+
     // const migrationContainer = MigrationDi.registerMigrations();
     // await container.resolve<IDatabaseService>(INFRASTRUCTURE.DatabaseService)
     //   .migrateToLatest(
@@ -107,8 +114,8 @@ export class BootstrapService implements IBootstrapService {
     //       .synchronize(syncParam, splashWindow.webContents);
     //   })
     //   .then(() => splashWindow.webContents.send("splash", "loading main program"));
-    if (configurationService.preferences.refreshCacheAtStartup) {
-      this.refreshCache(callback);
+    if (configurationService.preferences.refreshCacheAtStartup || firstUsage) {
+      await this.refreshCache(callback);
     }
     callback("Loading main program");
   }
@@ -121,7 +128,7 @@ export class BootstrapService implements IBootstrapService {
   }
 
   private async refreshCache(callback: (label: string) => void): Promise<void> {
-    callback("Caching cardsymbols");
+    callback("Loading main program - Caching cardsymbols");
     await container.resolve<ICardSymbolService>(LIBRARY.CardSymbolService).cacheImages(callback);
   }
 }

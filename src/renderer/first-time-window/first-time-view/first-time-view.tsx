@@ -30,6 +30,7 @@ export function FirstTimeView(_props: FirstTimeViewProps) {
   const [registrationViewmodel, setRegistrationViewmodel] = useState<RegisterViewmodel>(
     serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getRegisterViewmodel(false)
   );
+  // this one is initialized with the factory default system settings
   const [systemSettingsViewmodel, setSystemSettingsViewmodel] = useState<SystemSettingsViewmodel>(
     serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getSystemSettingsViewmodel(_props.systemSettings)
   );

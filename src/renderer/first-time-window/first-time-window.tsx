@@ -64,5 +64,6 @@ void (async () => {
           </>
         );
       }
-    );
+    )
+    .then(() => serviceContainer.ipcProxy.postEmptyBody<never>(IpcPaths.FIRST_TIME_WINDOW_SHOW));
 })();

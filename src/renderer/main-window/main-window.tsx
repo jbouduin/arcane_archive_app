@@ -6,6 +6,7 @@ import { ServiceContainer } from "../shared/context/implementation/service.conta
 import { ServiceContainerContext } from "../shared/context/shared.context";
 import { MainWindowDesktop } from "./components/desktop/main-window-desktop";
 import { PreferencesProvider } from "../shared/context/providers/preferences-provider";
+import { IpcPaths } from "../../common/ipc";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -54,5 +55,5 @@ void (async () => {
         );
       }
     )
-    .then(() => serviceContainer.ipcProxy.showMainWindow());
+    .then(() => serviceContainer.ipcProxy.postEmptyBody<never>(IpcPaths.MAIN_WINDOW_SHOW));
 })();

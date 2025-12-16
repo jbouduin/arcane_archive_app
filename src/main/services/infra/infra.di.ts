@@ -7,14 +7,13 @@ import { IoService } from "./implementation/io.service";
 import { LogService } from "./implementation/log.service";
 import { ResultFactory } from "./implementation/result.factory";
 import { RouterService } from "./implementation/router.service";
+import { SessionService } from "./implementation/session.service";
 import { WindowsService } from "./implementation/windows.service";
 import {
   IBootstrapService, IConfigurationService, IIoService, ILogService, IResultFactory, IRouterService,
   ISessionService, IWindowsService
 } from "./interface";
-import { ConfigurationRouter, IoRouter } from "./router";
-import { SessionService } from "./implementation/session.service";
-import { SessionRouter } from "./router/session.router";
+import { ConfigurationRouter, IoRouter, SessionRouter, WindowsRouter } from "./router";
 
 export class InfraDi {
   public static register(): void {
@@ -33,6 +32,7 @@ export class InfraDi {
     container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: IoRouter }, { lifecycle: Lifecycle.Singleton });
     container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: ConfigurationRouter }, { lifecycle: Lifecycle.Singleton });
     container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: SessionRouter }, { lifecycle: Lifecycle.Singleton });
+    container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: WindowsRouter }, { lifecycle: Lifecycle.Singleton });
     // #endregion
   }
 }
