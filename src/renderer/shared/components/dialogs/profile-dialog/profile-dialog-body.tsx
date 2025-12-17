@@ -126,7 +126,7 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
           disabled={!isSysAdmin}
           allItems={ROLES_SELECT_OPTIONS}
           formGroupLabel="Roles"
-          onClearOptions={
+          onClearSelectedOptions={
             () => {
               props.viewmodel.clearSelectedRoles();
               props.viewmodelChanged(props.viewmodel);
@@ -144,7 +144,7 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
               props.viewmodelChanged(props.viewmodel);
             }
           }
-          selectedItems={props.viewmodel.selectedRoles}
+          selectedOptions={props.viewmodel.selectedRoles}
         />
       </>
     );

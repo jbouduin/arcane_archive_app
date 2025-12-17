@@ -1,6 +1,5 @@
 import { ToastProps } from "@blueprintjs/core";
 import { SettingsDto } from "../../../../common/dto";
-import { CardQueryParamsDto, LibraryCardListDto, QueryResultDto } from "../../dto";
 import { MtgServer } from "../../types";
 import { ISessionService } from "./session.service";
 
@@ -9,11 +8,6 @@ export interface ICollectionManagerProxyService {
    * Log server responses in console
    */
   readonly logServerResponses: boolean;
-  /**
-   * Query cards
-   * @param cardQuery the query parameters
-   */
-  getCards(cardQuery: CardQueryParamsDto): Promise<QueryResultDto<LibraryCardListDto>>;
   /**
    * Fetch data from backend
    * @param path the path

@@ -1,11 +1,11 @@
 import { ToastProps } from "@blueprintjs/core";
 import { InitializeServiceContainerOptions } from "../../types";
 import {
-  ICardSearchParamService, ICardSymbolService, ICollectionManagerProxyService, IColorService, IConfigurationService,
+  ICardSearchService, ICardSymbolService, ICollectionManagerProxyService, IColorService, IConfigurationService,
   IDialogService, IDisplayValueService, IIpcProxyService, ILanguageService, IMtgSetService, IServiceContainer,
   ISessionService, IViewmodelFactoryService
 } from "../interface";
-import { CardSearchParamService } from "./card-search-param.service";
+import { CardSearchService } from "./card-search.service";
 import { CardSymbolService } from "./card-symbol.service";
 import { CollectionManagerProxyService } from "./collection-manager-proxy.service";
 import { ColorService } from "./color.service";
@@ -20,7 +20,7 @@ import { ViewmodelFactoryService } from "./viewmodel-factory.service";
 
 export class ServiceContainer implements IServiceContainer {
   // #region Private fields ---------------------------------------------------
-  private _cardSearchParamService: ICardSearchParamService;
+  private _cardSearchParamService: ICardSearchService;
   private _cardSymbolService: ICardSymbolService;
   private _collectionManagerProxy: ICollectionManagerProxyService;
   private _colorService: IColorService;
@@ -36,7 +36,7 @@ export class ServiceContainer implements IServiceContainer {
 
   // #region Constructor ------------------------------------------------------
   public constructor() {
-    this._cardSearchParamService = new CardSearchParamService();
+    this._cardSearchParamService = new CardSearchService();
     this._cardSymbolService = new CardSymbolService();
     this._collectionManagerProxy = new CollectionManagerProxyService();
     this._colorService = new ColorService();
@@ -52,7 +52,7 @@ export class ServiceContainer implements IServiceContainer {
   // #endregion
 
   // #region IServiceContainer Members (getters) ------------------------------
-  public get cardSearchParamService(): ICardSearchParamService {
+  public get cardSearchService(): ICardSearchService {
     return this._cardSearchParamService;
   }
 
@@ -121,7 +121,7 @@ export class ServiceContainer implements IServiceContainer {
     this._dialogService.initialize(showToast);
 
     const skippableServices = new Array<Promise<void>>();
-    if (!options.skipCardSearchParamService) {
+    if (!options.skipCardSearchService) {
       skippableServices.push(this._cardSearchParamService.initialize(this._collectionManagerProxy));
     }
     if (!options.skipCardSymbolService) {

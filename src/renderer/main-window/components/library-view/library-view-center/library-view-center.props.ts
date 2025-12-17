@@ -1,10 +1,11 @@
 import { Props } from "@blueprintjs/core";
-import { CardQueryParamsDto } from "../../../../shared/dto";
 import { SortDirection } from "../../../../shared/components/base/base-table";
+import { CardQueryParamsDto, LibraryCardListDto, QueryResultDto } from "../../../../shared/dto";
 import { CardSortField } from "../../../../shared/types";
 
 export interface LibraryViewCenterProps extends Props {
-  cardQuery: CardQueryParamsDto;
+  cardQueryParams: CardQueryParamsDto;
+  queryResult: QueryResultDto<LibraryCardListDto>;
 
   onCardSelected: (cardId: number | null) => void;
   onCurrentPageChanged: (newPage: number) => void;

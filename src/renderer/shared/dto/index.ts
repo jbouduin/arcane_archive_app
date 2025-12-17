@@ -1,4 +1,6 @@
 export * from "./account.dto";
+export * from "./advanced-card-search.dto";
+export * from "./card-filter-params.dto";
 export * from "./card-query-params.dto";
 export * from "./color.dto";
 export * from "./language.dto";

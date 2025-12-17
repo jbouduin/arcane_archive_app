@@ -7,7 +7,7 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
   // TODO create empty view models, eventually go to server to generate a username
   // #region IAuthenticationViewmodelFactory Members --------------------------
   public getLoginViewmodel(showRegisterButton: boolean): LoginViewmodel {
-    // LATER: allow user to locally save username (and password if we can encrypt-decrypt it in some form)
+    // TODO: allow user to locally save username (and password if we can encrypt-decrypt it in some form)
     return new LoginViewmodel(
       {
         user: "sys_admi",

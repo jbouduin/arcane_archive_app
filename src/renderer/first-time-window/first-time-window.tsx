@@ -32,7 +32,7 @@ void (async () => {
     .initialize(
       toastCall,
       {
-        skipCardSearchParamService: true,
+        skipCardSearchService: true,
         skipColorService: true,
         skipCardSymbolService: true,
         skipLanguageService: true,

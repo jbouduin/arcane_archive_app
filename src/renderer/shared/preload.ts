@@ -17,8 +17,7 @@ const ipc = {
     // to avoid memory leaks and as only the splash screen is listening to it
     ipcRenderer.removeAllListeners("splash");
     ipcRenderer.on("splash", (_event, value) => callback(value as ProgressCallbackValue));
-  },
-  // TODO remove me showMainWindow: () => ipcRenderer.invoke("show-main-window")
+  }
 };
 
 // expose

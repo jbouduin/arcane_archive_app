@@ -1,16 +1,22 @@
-import React from "react";
+import { noop } from "lodash";
+import { useState } from "react";
 import { Mosaic, MosaicNode } from "react-mosaic-component";
+import { useServices } from "../../../hooks";
 import { SortDirection } from "../../../shared/components/base/base-table";
-import { CardQueryParamsDto, ColorDto, MtgSetTreeDto } from "../../../shared/dto";
-import { CardSearchDto } from "../../../shared/dto/card-search.dto";
+import { CardQueryParamsDto, LibraryCardListDto, MtgSetTreeDto, QueryResultDto } from "../../../shared/dto";
+import { CardFilterParamsDto } from "../../../shared/dto/card-filter-params.dto";
 import { CardSortField } from "../../../shared/types";
-import { MtgSetTreeViewmodel } from "../../../shared/viewmodel";
 import { LibraryViewCenter } from "./library-view-center/library-view-center";
 import { LibraryViewLeft } from "./library-view-left/library-view-left";
 import { LibraryViewRight } from "./library-view-right/library-view-right";
 import { LibraryViewProps } from "./library-view.props";
+import { LibraryViewState } from "./library-view.state";
 
 export function LibraryView(props: LibraryViewProps) {
+  // #region Hooks ------------------------------------------------------------
+  const containerService = useServices();
+  // #endregion
+
   // #region State ------------------------------------------------------------
   const initialLayout: MosaicNode<string> = {
     direction: "row",
@@ -22,65 +28,124 @@ export function LibraryView(props: LibraryViewProps) {
     },
     splitPercentage: 20,
   };
-  const initialCardQueryParams: CardQueryParamsDto = React.useMemo(
-    () => ({
-      pageNumber: 0,
-      pageSize: 100,
-      sortField: "collectorNumberSortValue",
-      sortDirection: "ASC",
-      selectedAbilities: new Array<string>(),
-      selectedActions: new Array<string>(),
-      selectedCardColors: new Array<ColorDto>(),
-      selectedCardNames: new Array<string>(),
-      selectedGameFormats: new Array<string>(),
-      selectedIdentityColors: new Array<ColorDto>(),
-      selectedProducedManaColors: new Array<ColorDto>(),
-      selectedPowers: new Array<string>(),
-      selectedRarities: new Array<string>(),
-      selectedSets: new Array<MtgSetTreeDto>(),
-      selectedSubTypes: new Array<string>(),
-      selectedSuperTypes: new Array<string>(),
-      selectedToughnesses: new Array<string>(),
-      selectedTypes: new Array<string>()
-    }),
-    []
-  );
-  const [mosaicLayout, setMosaicLayout] = React.useState<MosaicNode<string>>(initialLayout);
-  const [cardQueryDto, setCardQueryDto] = React.useState<CardQueryParamsDto>(initialCardQueryParams);
-  const [selectedCard, setSelectedCard] = React.useState<number | null>(null);
-  // #endregion
-
-  // #region Memo -------------------------------------------------------------
-  const renderTile = React.useCallback((id: string) => elementMap[id], [cardQueryDto, selectedCard]);
+  const initialLibraryViewState: LibraryViewState = {
+    cardQueryParams: containerService.cardSearchService.cardQueryParams,
+    cardFilterParams: containerService.cardSearchService.cardFilterParams,
+    cardSetFilter: containerService.cardSearchService.cardSetFilter,
+    selectedCard: null,
+    queryResult: containerService.cardSearchService.lastQueryResult,
+    currentSelectedSearchTab: containerService.cardSearchService.currentSelectedSearchTab
+  };
+  const [mosaicLayout, setMosaicLayout] = useState<MosaicNode<string>>(initialLayout);
+  const [state, setState] = useState<LibraryViewState>(initialLibraryViewState);
   // #endregion
 
   // #region Rendering --------------------------------------------------------
-  const elementMap: { [viewId: string]: React.JSX.Element; } = React.useMemo(() => ({
+  const elementMap: { [viewId: string]: React.JSX.Element; } = {
     a: (
       <LibraryViewLeft
-        initialCardSearchDto={initialCardQueryParams}
+        cardFilterParams={state.cardFilterParams}
+        cardSetFilter={state.cardSetFilter}
+        currentSelectedSearchTab={state.currentSelectedSearchTab}
         onSetSelectionChanged={
-          (selection: Array<MtgSetTreeViewmodel>) =>
-            setCardQueryDto(prev => ({ ...prev, selectedSets: selection.map((set: MtgSetTreeViewmodel) => set.dto) }))
+          (selection: Array<MtgSetTreeDto>, execute: boolean) => {
+            containerService.cardSearchService.cardSetFilter = selection;
+            if (execute) {
+              containerService.cardSearchService
+                .getCards(state.cardQueryParams, null, selection)
+                .then(
+                  (resp: QueryResultDto<LibraryCardListDto>) => {
+                    containerService.cardSearchService.lastQueryResult = resp;
+                    setState(prev => ({ ...prev, cardSetFilter: selection, queryResult: resp }));
+                  },
+                  noop
+                );
+            } else {
+              setState(prev => ({ ...prev, cardSetFilter: selection }));
+            }
+          }
         }
-        onAdvancedSearch={(cardSearch: CardSearchDto) => setCardQueryDto(prev => (({ ...prev, ...cardSearch })))}
+        onCardFilterParamsChanged={
+          (cardFilterParams: CardFilterParamsDto) => {
+            containerService.cardSearchService.cardFilterParams = cardFilterParams;
+            setState(prev => ({ ...prev, cardFilterParams: cardFilterParams }));
+          }
+        }
+        onSearch={
+          (sets: Array<MtgSetTreeDto>, filterParams: CardFilterParamsDto) => {
+            containerService.cardSearchService.cardSetFilter = sets;
+            containerService.cardSearchService.cardFilterParams = filterParams;
+            containerService.cardSearchService
+              .getCards(state.cardQueryParams, filterParams, sets)
+              .then(
+                (resp: QueryResultDto<LibraryCardListDto>) => {
+                  containerService.cardSearchService.lastQueryResult = resp;
+                  setState(prev => ({ ...prev, cardFilterParams: filterParams, cardSetFilter: sets, queryResult: resp }));
+                },
+                noop
+              );
+          }
+        }
+        onSelectedSearchTabChanged={
+          (newSelection: string | number) => {
+            containerService.cardSearchService.currentSelectedSearchTab = newSelection;
+            setState(prev => ({ ...prev, currentSelectedSearchTab: newSelection }));
+          }
+        }
       />
     ),
     b: (
       <LibraryViewCenter
-        cardQuery={cardQueryDto}
-        onCardSelected={setSelectedCard}
-        onCurrentPageChanged={(newPage: number) => setCardQueryDto(prev => ({ ...prev, pageNumber: newPage }))}
-        onCurrentPageSizeChanged={(newPageSize: number) => setCardQueryDto(prev => ({ ...prev, pageNumber: 0, pageSize: newPageSize }))}
-        onSortChanged={(fieldName: CardSortField, direction: SortDirection) => setCardQueryDto(prev => ({ ...prev, pageNumber: 0, sortField: fieldName, sortDirection: direction }))}
+        cardQueryParams={state.cardQueryParams}
+        queryResult={state.queryResult}
+        onCardSelected={(cardId: number | null) => setState(prev => ({ ...prev, selectedCard: cardId }))}
+        onCurrentPageChanged={(newPage: number) => {
+          const newCardQueryParams: CardQueryParamsDto = { ...state.cardQueryParams, pageNumber: newPage };
+          containerService.cardSearchService.cardQueryParams = newCardQueryParams;
+          containerService.cardSearchService
+            .getCards(newCardQueryParams, state.cardFilterParams, state.cardSetFilter)
+            .then(
+              (resp: QueryResultDto<LibraryCardListDto>) => {
+                containerService.cardSearchService.lastQueryResult = resp;
+                setState(prev => ({ ...prev, cardQueryParams: newCardQueryParams, queryResult: resp }));
+              },
+              noop
+            );
+        }}
+        onCurrentPageSizeChanged={(newPageSize: number) => {
+          const newCardQueryParams: CardQueryParamsDto = { ...state.cardQueryParams, pageSize: newPageSize };
+          containerService.cardSearchService.cardQueryParams = newCardQueryParams;
+          containerService.cardSearchService
+            .getCards(newCardQueryParams, state.cardFilterParams, state.cardSetFilter)
+            .then(
+              (resp: QueryResultDto<LibraryCardListDto>) => {
+                containerService.cardSearchService.lastQueryResult = resp;
+                setState(prev => ({ ...prev, cardQueryParams: newCardQueryParams, queryResult: resp }));
+              },
+              noop
+            );
+        }}
+        onSortChanged={(fieldName: CardSortField, direction: SortDirection) => {
+          const newCardQueryParams: CardQueryParamsDto = { ...state.cardQueryParams, sortDirection: direction, sortField: fieldName };
+          containerService.cardSearchService.cardQueryParams = newCardQueryParams;
+          containerService.cardSearchService
+            .getCards(newCardQueryParams, state.cardFilterParams, state.cardSetFilter)
+            .then(
+              (resp: QueryResultDto<LibraryCardListDto>) => {
+                containerService.cardSearchService.lastQueryResult = resp;
+                setState(prev => ({ ...prev, cardQueryParams: newCardQueryParams, queryResult: resp }));
+              },
+              noop
+            );
+        }}
       />
     ),
-    c: <LibraryViewRight cardId={selectedCard} />,
-  }), [cardQueryDto, selectedCard]);
+    c: <LibraryViewRight cardId={state.selectedCard} />
+  };
 
   return (
     <Mosaic
-      renderTile={renderTile}
+      renderTile={(id: string) => elementMap[id]}
       value={mosaicLayout}
       onChange={(newNode: MosaicNode<string> | null) => setMosaicLayout(newNode || initialLayout)}
       {...props}

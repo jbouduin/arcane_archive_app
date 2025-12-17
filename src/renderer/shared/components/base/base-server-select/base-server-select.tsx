@@ -10,6 +10,15 @@ import { BaseServerSelectProps } from "./base-server-select.props";
  * A multi select component that retrieves items from the server
  */
 export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
+  // #region Memo --------------------------------------------------------------
+  const optionsIsSelected = React.useCallback(
+    (item: SelectOption<T>) => props.selectedOptions.findIndex(
+      (value: SelectOption<T>) => props.itemComparer ? props.itemComparer(item.value, value.value) : item.value == value.value
+    ) >= 0,
+    [props.selectedOptions]
+  );
+  // #endregion
+
   // #region State ------------------------------------------------------------
   const [items, setItems] = React.useState(new Array<SelectOption<T>>());
   const [queryString, setQueryString] = React.useState<string>("");
@@ -26,7 +35,7 @@ export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
         const timeOutId = setTimeout(
           () => {
             void serviceContainer.collectionManagerProxy
-              .getData<Array<T>>(props.server, `/${props.serverBaseUrl}?q=${queryString}`)
+              .getData<Array<T>>(props.server, `${props.serverBaseUrl}?q=${queryString}`)
               .then(
                 (r: Array<T>) => {
                   const sorted = props.itemSort ? r.sort(props.itemSort) : r;
@@ -46,11 +55,10 @@ export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
 
   // #region Event handling ---------------------------------------------------
   function onSelect(item: SelectOption<T>): void {
-    const indexOfSelected = props.selectedItems.findIndex((f: SelectOption<T>) => f.label == item.label);
-    if (indexOfSelected >= 0) {
-      props.onItemRemoved(item);
+    if (optionsIsSelected(item)) {
+      props.onOptionsRemoved(item);
     } else {
-      props.onItemAdded(item);
+      props.onOptionAdded(item);
     }
   }
   // #endregion
@@ -60,22 +68,28 @@ export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
     <div className="layout-isolation">
       <FormGroup
         key={props.keyString}
-        label={props.label}
+        label={props.formGroupLabel}
       >
         {/* LATER: solve the issue that taginput has no readonly property, so we have to disable.  */}
         <MultiSelect<SelectOption<T>>
           initialContent={null}
           itemRenderer={(item: SelectOption<T>, itemProps: ItemRendererProps) => itemRenderer(item, itemProps)}
+          disabled={props.disabled}
           items={items}
+          itemsEqual={
+            (a: SelectOption<T>, b: SelectOption<T>) => {
+              return props.itemComparer ? props.itemComparer(a.value, b.value) : a.value == b.value;
+            }
+          }
           key={props.keyString}
           noResults={<MenuItem disabled={true} roleStructure="listoption" text="No results." />}
-          onClear={props.onClearSelectedItems}
+          onClear={props.onClearSelectedOptions}
           onItemSelect={(item: SelectOption<T>) => onSelect(item)}
           onQueryChange={onQueryChange}
-          onRemove={props.onItemRemoved}
+          onRemove={props.onOptionsRemoved}
           popoverProps={{ matchTargetWidth: true, minimal: true }}
           resetOnSelect={true}
-          selectedItems={props.selectedItems}
+          selectedItems={props.selectedOptions}
           tagRenderer={tagRenderer}
         />
       </FormGroup>
@@ -96,7 +110,7 @@ export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
         onFocus={itemProps.handleFocus}
         ref={itemProps.ref}
         roleStructure="listoption"
-        selected={props.selectedItems.includes(item)}
+        selected={optionsIsSelected(item)}
         shouldDismissPopover={false}
         text={(
           <div>

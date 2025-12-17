@@ -9,10 +9,18 @@ import { BaseMultiSelectProps } from "./base-multi-select.props";
  * A multi select component that uses a static (cached) list of items
  */
 export function BaseMultiSelect<T>(props: BaseMultiSelectProps<T>) {
+  // #region Memo --------------------------------------------------------------
+  const optionIsSelected = React.useCallback(
+    (item: SelectOption<T>) => props.selectedOptions.findIndex(
+      (value: SelectOption<T>) => props.itemComparer ? props.itemComparer(item.value, value.value) : item.value == value.value
+    ) >= 0,
+    [props.selectedOptions]
+  );
+  // #endregion
+
   // #region Event handling ----------------------------------------------------
   function onSelect(item: SelectOption<T>): void {
-    const indexOfSelected = props.selectedItems.findIndex((value: SelectOption<T>) => value.value == item.value);
-    if (indexOfSelected >= 0) {
+    if (optionIsSelected(item)) {
       props.onOptionRemoved(item);
     } else {
       props.onOptionAdded(item);
@@ -34,9 +42,14 @@ export function BaseMultiSelect<T>(props: BaseMultiSelectProps<T>) {
           itemListPredicate={filterOptionList}
           itemRenderer={(item: SelectOption<T>, itemProps: ItemRendererProps) => itemRenderer(item, itemProps)}
           items={props.allItems}
+          itemsEqual={
+            (a: SelectOption<T>, b: SelectOption<T>) => {
+              return props.itemComparer ? props.itemComparer(a.value, b.value) : a.value == b.value;
+            }
+          }
           key={props.formGroupLabel}
           noResults={<MenuItem disabled={true} roleStructure="listoption" text="No results." />}
-          onClear={props.onClearOptions}
+          onClear={props.onClearSelectedOptions}
           onItemSelect={(item: SelectOption<T>) => onSelect(item)}
           onRemove={props.onOptionRemoved}
           popoverProps={{
@@ -49,7 +62,7 @@ export function BaseMultiSelect<T>(props: BaseMultiSelectProps<T>) {
             }
           }}
           resetOnSelect={true}
-          selectedItems={props.selectedItems}
+          selectedItems={props.selectedOptions}
           tagRenderer={(item: SelectOption<T>) => tagRenderer(item)}
         />
       </FormGroup>
@@ -70,7 +83,7 @@ export function BaseMultiSelect<T>(props: BaseMultiSelectProps<T>) {
         onFocus={itemProps.handleFocus}
         ref={itemProps.ref}
         roleStructure="listoption"
-        selected={props.selectedItems.includes(item)}
+        selected={optionIsSelected(item)}
         shouldDismissPopover={false}
         text={(
           <div style={{ display: "flex" }}>

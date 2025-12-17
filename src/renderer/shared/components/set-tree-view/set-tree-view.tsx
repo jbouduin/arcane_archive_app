@@ -123,7 +123,7 @@ export function SetTreeView(props: SetTreeViewProps) {
         buildTree={buildTree}
         data={props.cardSets}
         filterProps={{ filter: state, applyFilterProps: applyFilterProps }}
-        onDataSelected={(sets: Array<MtgSetTreeViewmodel>) => props.onSetsSelected(sets)}
+        onDataSelected={(sets: Array<MtgSetTreeViewmodel>) => props.onSetsSelected(sets.map((set: MtgSetTreeViewmodel) => set.dto))}
       />
     </>
   );

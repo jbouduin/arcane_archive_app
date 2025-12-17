@@ -1,6 +1,5 @@
 import { ToastProps } from "@blueprintjs/core";
 import { ResultDto, SettingsDto, ValidationErrorDto } from "../../../../common/dto";
-import { CardQueryParamsDto, ColorDto, LibraryCardListDto, MtgSetTreeDto, QueryResultDto } from "../../dto";
 import { MtgServer } from "../../types";
 import { ICollectionManagerProxyService, ISessionService } from "../interface";
 
@@ -22,39 +21,6 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
   // #region ICollectionManagerProxyService Members ---------------------------
   public get logServerResponses(): boolean {
     return this._logServerResponses;
-  }
-
-  public getCards(cardQuery: CardQueryParamsDto): Promise<QueryResultDto<LibraryCardListDto>> {
-    const path = "/public/card/list";
-    const params = new URLSearchParams();
-    cardQuery.selectedAbilities.forEach((ability: string) => params.append("kw", ability));
-    cardQuery.selectedActions.forEach((action: string) => params.append("kw", action));
-    cardQuery.selectedCardColors.forEach((color: ColorDto) => params.append("cc", color.code));
-    cardQuery.selectedCardNames.forEach((cardName: string) => params.append("cn", cardName));
-    cardQuery.selectedGameFormats.forEach((gameFormat: string) => params.append("gf", gameFormat));
-    cardQuery.selectedIdentityColors.forEach((color: ColorDto) => params.append("ic", color.code));
-    cardQuery.selectedPowers.forEach((power: string) => params.append("pw", power));
-    cardQuery.selectedProducedManaColors.forEach((color: ColorDto) => params.append("pm", color.code));
-    cardQuery.selectedRarities.forEach((rarity: string) => params.append("rar", rarity));
-    cardQuery.selectedSets.forEach((set: MtgSetTreeDto) => params.append("set", set.id.toString()));
-    cardQuery.selectedSubTypes.forEach((type: string) => params.append("sub", type));
-    cardQuery.selectedSuperTypes.forEach((type: string) => params.append("sup", type));
-    cardQuery.selectedTypes.forEach((type: string) => params.append("ty", type));
-    cardQuery.selectedToughnesses.forEach((toughness: string) => params.append("tn", toughness));
-    // TODO  cardnames, and wordbank catalogs
-    if (params.size > 0) {
-      params.append("pn", cardQuery.pageNumber.toString());
-      params.append("ps", cardQuery.pageSize.toString());
-      params.append("sort", `${cardQuery.sortField}:${cardQuery.sortDirection}`);
-      return this.getData<QueryResultDto<LibraryCardListDto>>("library", path + "?" + params.toString());
-    } else {
-      return Promise.resolve({
-        currentPageNumber: 0,
-        currentPageSize: 100,
-        hasMore: false,
-        resultList: new Array<LibraryCardListDto>()
-      });
-    }
   }
 
   public async getData<T extends object>(server: MtgServer, path: string, suppressSuccessMessage = true): Promise<T> {

@@ -1,5 +1,5 @@
 import { isEqual } from "lodash";
-import React from "react";
+import { memo, useMemo } from "react";
 import { useServices } from "../../../../hooks/use-services";
 import { BaseLookupResult, GenericTextColumn, IBaseColumn, PagingView, SortDirection } from "../../../../shared/components/base/base-table";
 import { CardSetColumn, CardTableView, CollectiorNumberColumn, ColorIdentityColumn, ManaCostColumn } from "../../../../shared/components/card-table-view";
@@ -8,44 +8,20 @@ import { CardSortField } from "../../../../shared/types";
 import { LibraryCardListViewmodel } from "../../../../shared/viewmodel/mtg-card";
 import { LibraryViewCenterProps } from "./library-view-center.props";
 
-const MemoCardTableView = React.memo(
+const MemoCardTableView = memo(
   CardTableView<LibraryCardListViewmodel>,
-  (prev, next) =>
-    isEqual(prev.data, next.data) &&
-    isEqual(prev.sortableColumnDefinitions, next.sortableColumnDefinitions)
+  (prev, next) => isEqual(prev.data, next.data) && isEqual(prev.sortableColumnDefinitions, next.sortableColumnDefinitions)
+
 );
 
-export const LibraryViewCenter = React.memo(
+export const LibraryViewCenter = memo(
   (props: LibraryViewCenterProps) => {
-    // #region State ------------------------------------------------------------
-    const initialQueryResult: QueryResultDto<LibraryCardListDto> = {
-      hasMore: false,
-      resultList: new Array<LibraryCardListDto>(),
-      currentPageNumber: 0,
-      currentPageSize: 50
-    };
-    const [queryResult, setQueryResult] = React.useState<QueryResultDto<LibraryCardListDto>>(initialQueryResult);
-    // #endregion
-
     // #region Hooks ------------------------------------------------------------
     const serviceContainer = useServices();
     // #endregion
 
-    // #region Effects ----------------------------------------------------------
-    React.useEffect(
-      () => {
-        void serviceContainer.collectionManagerProxy.getCards(props.cardQuery)
-          .then(
-            (queryResult: QueryResultDto<LibraryCardListDto>) => setQueryResult(queryResult),
-            () => setQueryResult(initialQueryResult)
-          );
-      },
-      [props.cardQuery]
-    );
-    // #endregion
-
     // #region Memo --------------------------------------------------------------
-    const sortableColumnDefinitions = React.useMemo(
+    const sortableColumnDefinitions = useMemo(
       () => {
         const result = new Array<IBaseColumn<LibraryCardListViewmodel, BaseLookupResult>>();
         let columNumber = 0;
@@ -139,7 +115,7 @@ export const LibraryViewCenter = React.memo(
       },
       []
     );
-    const tableData = React.useMemo(() => getTableData(queryResult, props.cardQuery), [queryResult]);
+    const tableData = useMemo(() => getTableData(props.queryResult, props.cardQueryParams), [props.cardQueryParams, props.queryResult]);
     // #endregion
 
     // #region Rendering --------------------------------------------------------
@@ -158,9 +134,9 @@ export const LibraryViewCenter = React.memo(
           sortType="server"
         />
         <PagingView
-          hasMore={queryResult.hasMore}
-          currentPageNumber={queryResult.currentPageNumber}
-          currentPageSize={queryResult.currentPageSize}
+          hasMore={props.queryResult.hasMore}
+          currentPageNumber={props.queryResult.currentPageNumber}
+          currentPageSize={props.queryResult.currentPageSize}
           currentPageChanged={(newPage: number) => props.onCurrentPageChanged(newPage)}
           currentPageSizeChanged={(newPageSize: number) => props.onCurrentPageSizeChanged(newPageSize)}
         />
@@ -229,5 +205,5 @@ export const LibraryViewCenter = React.memo(
     // #endregion
   },
   (prev: LibraryViewCenterProps, next: LibraryViewCenterProps) => {
-    return isEqual(prev.cardQuery, next.cardQuery);
+    return isEqual(prev.cardQueryParams, next.cardQueryParams) && isEqual(prev.queryResult, next.queryResult);
   });

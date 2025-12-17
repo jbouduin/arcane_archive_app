@@ -7,11 +7,13 @@ import { IMtgSetService } from "../interface/mtg-set.service";
 export class MtgSetService implements IMtgSetService {
   // #region Private fields ---------------------------------------------------
   private setMap: Map<number, MtgSetTreeDto>;
+  private selectOptions: Array<SelectOption<MtgSetTreeDto>>;
   // #endregion
 
   // #region Constructor ------------------------------------------------------
   public constructor() {
     this.setMap = new Map<number, MtgSetTreeDto>();
+    this.selectOptions = new Array<SelectOption<MtgSetTreeDto>>();
   }
   // #endregion
 
@@ -33,7 +35,13 @@ export class MtgSetService implements IMtgSetService {
   public async initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void> {
     return collectionManagerProxy.getData<Array<MtgSetTreeDto>>("library", "/public/mtg-set")
       .then(
-        (data: Array<MtgSetTreeDto>) => data.forEach((set: MtgSetTreeDto) => this.setMap.set(set.id, set)),
+        (data: Array<MtgSetTreeDto>) => {
+          data.forEach((set: MtgSetTreeDto) => this.setMap.set(set.id, set));
+          this.selectOptions.push(
+            ...data.sort((a: MtgSetTreeDto, b: MtgSetTreeDto) => a.setName.localeCompare(b.setName))
+              .map((set: MtgSetTreeDto) => ({ label: set.setName, value: set }))
+          );
+        },
         noop
       );
   }
