@@ -1,7 +1,7 @@
 import { noop } from "lodash";
 import { LoginResponseDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
-import { LoginRequestDto, ProfileDto, RegisterRequestDto } from "../../dto";
+import { LoginRequestDto, ProfileDto, RegisterRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
 import { IConfigurationService, IServiceContainer } from "../interface";
 import { ISessionService } from "../interface/session.service";
@@ -117,6 +117,16 @@ export class SessionService implements ISessionService {
   public register(serviceContainer: IServiceContainer, registerDto: RegisterRequestDto): Promise<void> {
     return serviceContainer.collectionManagerProxy
       .postData<RegisterRequestDto, never>("authentication", "/public/account", registerDto, false);
+  }
+
+  public saveUser(serviceContainer: IServiceContainer, dto: UserDto): Promise<UserDto> {
+    const path = serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") &&
+      dto.account.accountName != serviceContainer.sessionService.userName
+      ? "/admin/acount"
+      : "/app/account";
+    return serviceContainer.collectionManagerProxy.putData<UserDto, UserDto>(
+      "authentication", path, dto, false
+    );
   }
   // #endregion
 }

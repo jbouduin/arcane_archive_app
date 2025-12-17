@@ -1,21 +1,20 @@
 import { IServiceContainer } from "../../../context";
-import { LoginRequestDto } from "../../../dto";
-import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 import { LoginDialogBody } from "../login-dialog/login-dialog-body";
 import { LoginDialogFooter } from "../login-dialog/login-dialog-footer";
+import { LoginDialogBodyProps, LoginDialogFooterProps, LoginDialogProps } from "../login-dialog/login-dialog.props";
 
 export function showLoginDialog(serviceContainer: IServiceContainer, showRegisterButton: boolean): void {
-  const loginDialogProps: BaseDialogProps<LoginRequestDto> = {
+  const loginDialogProps: LoginDialogProps = {
     isOpen: true,
     isCloseButtonShown: true,
     canEscapeKeyClose: true,
     canOutsideClickClose: false,
     title: "Login",
     viewmodel: serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getLoginViewmodel(showRegisterButton),
-    bodyRenderer: (bodyProps: BaseDialogBodyProps<LoginRequestDto>) => {
+    bodyRenderer: (bodyProps: LoginDialogBodyProps) => {
       return (<LoginDialogBody {...bodyProps} />);
     },
-    footerRenderer: (footerProps: BaseDialogFooterProps<LoginRequestDto>) => {
+    footerRenderer: (footerProps: LoginDialogFooterProps) => {
       return (<LoginDialogFooter {...footerProps} />);
     }
   };

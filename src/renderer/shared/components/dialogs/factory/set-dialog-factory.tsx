@@ -3,21 +3,21 @@ import { noop } from "lodash";
 import { IServiceContainer } from "../../../context";
 import { MtgSetDto } from "../../../dto";
 import { MtgSetDetailViewmodel } from "../../../viewmodel";
-import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 import { MtgSetDialogBody } from "../mtg-set-dialog/mtg-set-dialog-body";
 import { MtgSetDialogFooter } from "../mtg-set-dialog/mtg-set-dialog-footer";
+import { MtgSetDialogBodyProps, MtgSetDialogFooterProps, MtgSetDialogProps } from "../mtg-set-dialog/mtg-set-dialog.props";
 
 export function showSetDialog(serviceContainer: IServiceContainer, setId: number): void {
   void serviceContainer.collectionManagerProxy.getData<MtgSetDto>("library", `/public/mtg-set/${setId}`)
     .then(
       (setDto: MtgSetDto) => {
         const viewmodel: MtgSetDetailViewmodel = serviceContainer.viewmodelFactoryService.mtgSetViewmodelFactory.getMtgSetDetailViewmodel(setDto);
-        const dialogProps: BaseDialogProps<MtgSetDto> = {
+        const dialogProps: MtgSetDialogProps = {
           viewmodel: viewmodel,
-          bodyRenderer: (bodyProps: BaseDialogBodyProps<MtgSetDto>) => {
+          bodyRenderer: (bodyProps: MtgSetDialogBodyProps) => {
             return (<MtgSetDialogBody {...bodyProps} />);
           },
-          footerRenderer: (footerProps: BaseDialogFooterProps<MtgSetDto>) => {
+          footerRenderer: (footerProps: MtgSetDialogFooterProps) => {
             return (<MtgSetDialogFooter {...footerProps} />);
           },
           isOpen: true,

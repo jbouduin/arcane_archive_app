@@ -103,6 +103,18 @@ export class ServiceContainer implements IServiceContainer {
 
   // #region IServiceContainer Members (methods) ------------------------------
   public async initialize(showToast: (props: ToastProps, key?: string) => void, options: InitializeServiceContainerOptions = {}): Promise<void> {
+    // TODO: if initializing one of the services fails: toastCall is used, but as there is
+    // no window, they will never be displayed to the user
+    // solution:
+    // - pass a fake showToast to the initialize calls of the proxies (dialogservice does not need it) that intercepts the toast calls a
+    // - return array of errors or even ToastProps from this method with all intercepted toast call methods
+    // - set the real toast call in the services
+    // - somewhere we have to check if
+    //   - discovery succeeded (currently back-end gives a dialog-box)
+    //   - library service is available -> if not: that was it
+    //   - authentication service is available -> although we could check in the this in the login/register dialog itself also
+    //   - deck, collection service is available  -> could be checked when selecting that view, combined with authentication service availability
+    //     because the deck and collection services can not be used without authentication
     this._ipcProxy.initialize(showToast);
     const configuration = await this._configurationService.initialize(this._ipcProxy);
     this._collectionManagerProxy.initialize(this.sessionService, configuration, showToast);

@@ -1,12 +1,13 @@
 import { Button } from "@blueprintjs/core";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { useServices } from "../../../../hooks";
 import { RegisterRequestDto } from "../../../dto";
 import { RegisterViewmodel } from "../../../viewmodel";
-import { BaseDialogFooterProps, SaveCancelResetFooter } from "../../base/base-dialog";
+import { SaveCancelResetFooter } from "../../base/base-dialog";
 import { showLoginDialog } from "../factory";
+import { RegisterDialogFooterProps } from "./register-dialog-props";
 
-export function RegisterDialogFooter(props: BaseDialogFooterProps<RegisterRequestDto>) {
+export function RegisterDialogFooter(props: RegisterDialogFooterProps) {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
@@ -31,7 +32,7 @@ export function RegisterDialogFooter(props: BaseDialogFooterProps<RegisterReques
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter<RegisterRequestDto>
+    <SaveCancelResetFooter<RegisterRequestDto, RegisterViewmodel>
       additionalLeftButtons={additionalLeftButtons()}
       {...props}
       showResetButton={true}
@@ -43,7 +44,7 @@ export function RegisterDialogFooter(props: BaseDialogFooterProps<RegisterReques
 
   function additionalLeftButtons(): ReactNode {
     return (
-      (props.viewmodel as RegisterViewmodel).showLoginButton &&
+      props.viewmodel.showLoginButton &&
       (
         <Button
           key="login"

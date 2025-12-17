@@ -1,7 +1,8 @@
 import { Button, ButtonGroup } from "@blueprintjs/core";
 import { SaveCancelResetFooterProps } from "./save-cancel-reset-footer.props";
+import { BaseViewmodel } from "../../../viewmodel/base.viewmodel";
 
-export function SaveCancelResetFooter<T extends object>(props: SaveCancelResetFooterProps<T>) {
+export function SaveCancelResetFooter<Dto extends object, Vm extends BaseViewmodel<Dto>>(props: SaveCancelResetFooterProps<Dto, Vm>) {
   // #region Set defaults -----------------------------------------------------
   const { showCommitButton = true } = props;
   // #endregion

@@ -65,6 +65,8 @@ export class BootstrapService implements IBootstrapService {
           },
           (reason: Error) => {
             logService.error("Main", "Discovery failed: " + reason.message, reason);
+            // LATER we could open a real window (maybe even the main window and show a dialog with a retry capability)
+            // same for the dialog.showErrorBox above
             dialog.showErrorBox(`Discovery failed: ${reason.message}`, reason.stack || "");
             app.exit();
           }

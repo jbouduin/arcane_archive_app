@@ -3,9 +3,7 @@ import { cloneDeep, noop } from "lodash";
 import { LoginResponseDto } from "../../../../common/dto";
 import { useServices } from "../../../hooks";
 import { LoginDialogBody } from "../../../shared/components/dialogs/login-dialog/login-dialog-body";
-import { LoginRequestDto } from "../../../shared/dto";
 import { LoginViewmodel } from "../../../shared/viewmodel";
-import { BaseViewmodel } from "../../../shared/viewmodel/base.viewmodel";
 import { LoginPanelProps } from "./login-panel.props";
 
 export function LoginPanel(props: LoginPanelProps) {
@@ -33,8 +31,8 @@ export function LoginPanel(props: LoginPanelProps) {
     <>
       <DialogBody className="first-time-view-panel-body">
         <LoginDialogBody
-          viewmodelChanged={(v: BaseViewmodel<LoginRequestDto>) => {
-            props.viewmodelChanged(cloneDeep(v as LoginViewmodel));
+          viewmodelChanged={(v: LoginViewmodel) => {
+            props.viewmodelChanged(cloneDeep(v));
           }}
           viewmodel={props.viewmodel}
           isOpen={true}

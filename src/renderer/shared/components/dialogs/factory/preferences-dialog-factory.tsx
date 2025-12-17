@@ -1,22 +1,21 @@
 import { cloneDeep } from "lodash";
-import { PreferencesDto } from "../../../../../common/dto";
 import { IServiceContainer } from "../../../context";
-import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 import { PreferencesDialogBody } from "../preferences-dialog/preferences-dialog-body";
 import { PreferencesDialogFooter } from "../preferences-dialog/preferences-dialog-footer";
+import { PreferencesDialogBodyProps, PreferencesDialogFooterProps, PreferencesDialogProps } from "../preferences-dialog/preferences-dialog.props";
 
 export function showPreferencesDialog(serviceContainer: IServiceContainer): void {
-  const uiSettingsProps: BaseDialogProps<PreferencesDto> = {
+  const uiSettingsProps: PreferencesDialogProps = {
     isOpen: true,
     isCloseButtonShown: true,
     canEscapeKeyClose: true,
     canOutsideClickClose: false,
     title: "Preferences",
     viewmodel: serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(cloneDeep(serviceContainer.configurationService.preferences)),
-    bodyRenderer: (bodyProps: BaseDialogBodyProps<PreferencesDto>) => {
+    bodyRenderer: (bodyProps: PreferencesDialogBodyProps) => {
       return (<PreferencesDialogBody {...bodyProps} />);
     },
-    footerRenderer: (footerProps: BaseDialogFooterProps<PreferencesDto>) => {
+    footerRenderer: (footerProps: PreferencesDialogFooterProps) => {
       return (<PreferencesDialogFooter {...footerProps} />);
     }
   };

@@ -1,16 +1,17 @@
 import { Callout, Checkbox, ControlGroup, FormGroup, HTMLSelect, HTMLTable, Icon, Tab, Tabs, Tooltip } from "@blueprintjs/core";
-import { PreferencesDto } from "../../../../../common/dto";
 import { CardSetGroupBy, CardSetSort } from "../../../../../common/types";
 import { useServices, useSession } from "../../../../hooks";
 import { SelectOption } from "../../../types";
-import { PreferencesViewmodel, SetTreeSettingsViewmodel } from "../../../viewmodel/settings";
-import { BaseDialogBodyProps } from "../../base/base-dialog";
+import { SetTreeSettingsViewmodel } from "../../../viewmodel/settings";
 import { handleBooleanChange } from "../../util/handle-boolean-change";
 import { handleValueChange } from "../../util/handle-value-change";
+import { PreferencesDialogBodyProps } from "./preferences-dialog.props";
 
-export function PreferencesDialogBody(props: BaseDialogBodyProps<PreferencesDto>) {
+export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
+  // #region Hooks ------------------------------------------------------------
   const { loggedIn } = useSession();
   const serviceContainer = useServices();
+  // #endregion
 
   // #region Rendering --------------------------------------------------------
   return (
@@ -46,10 +47,10 @@ export function PreferencesDialogBody(props: BaseDialogBodyProps<PreferencesDto>
       <>
         <Checkbox
           key="dark-theme"
-          checked={(props.viewmodel as PreferencesViewmodel).useDarkTheme}
+          checked={props.viewmodel.useDarkTheme}
           onChange={
             handleBooleanChange((value: boolean) => {
-              (props.viewmodel as PreferencesViewmodel).useDarkTheme = value;
+              props.viewmodel.useDarkTheme = value;
               props.viewmodelChanged(props.viewmodel);
             })
           }
@@ -58,10 +59,10 @@ export function PreferencesDialogBody(props: BaseDialogBodyProps<PreferencesDto>
         </Checkbox>
         <Checkbox
           key="refresh-cache"
-          checked={(props.viewmodel as PreferencesViewmodel).refreshCacheAtStartup}
+          checked={props.viewmodel.refreshCacheAtStartup}
           onChange={
             handleBooleanChange((value: boolean) => {
-              (props.viewmodel as PreferencesViewmodel).refreshCacheAtStartup = value;
+              props.viewmodel.refreshCacheAtStartup = value;
               props.viewmodelChanged(props.viewmodel);
             })
           }
@@ -76,10 +77,10 @@ export function PreferencesDialogBody(props: BaseDialogBodyProps<PreferencesDto>
         </Checkbox>
         <Checkbox
           key="log-server-response"
-          checked={(props.viewmodel as PreferencesViewmodel).logServerResponses}
+          checked={props.viewmodel.logServerResponses}
           onChange={
             handleBooleanChange((value: boolean) => {
-              (props.viewmodel as PreferencesViewmodel).logServerResponses = value;
+              props.viewmodel.logServerResponses = value;
               props.viewmodelChanged(props.viewmodel);
             })
           }
@@ -91,7 +92,7 @@ export function PreferencesDialogBody(props: BaseDialogBodyProps<PreferencesDto>
   }
 
   function renderLibraryTreeviewmodel() {
-    const viewmodel = (props.viewmodel as PreferencesViewmodel).librarySetTreeSettingsViewmodel;
+    const viewmodel = props.viewmodel.librarySetTreeSettingsViewmodel;
     return (
       <>
         <ControlGroup

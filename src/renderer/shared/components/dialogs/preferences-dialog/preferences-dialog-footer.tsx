@@ -1,8 +1,10 @@
 import { PreferencesDto } from "../../../../../common/dto";
 import { useServices } from "../../../../hooks";
-import { BaseDialogFooterProps, SaveCancelResetFooter } from "../../base/base-dialog";
+import { PreferencesViewmodel } from "../../../viewmodel";
+import { SaveCancelResetFooter } from "../../base/base-dialog";
+import { PreferencesDialogFooterProps } from "./preferences-dialog.props";
 
-export function PreferencesDialogFooter(props: BaseDialogFooterProps<PreferencesDto>) {
+export function PreferencesDialogFooter(props: PreferencesDialogFooterProps) {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
@@ -19,7 +21,7 @@ export function PreferencesDialogFooter(props: BaseDialogFooterProps<Preferences
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter<PreferencesDto>
+    <SaveCancelResetFooter<PreferencesDto, PreferencesViewmodel>
       {...props}
       showResetButton={true}
       commitButtonLabel="Save"

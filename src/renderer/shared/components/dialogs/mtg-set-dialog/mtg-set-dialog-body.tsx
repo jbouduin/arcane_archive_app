@@ -1,15 +1,15 @@
 import { Checkbox, ControlGroup, FormGroup, HTMLTable, InputGroup, NumericInput, Tab, Tabs, Text, TextAlignment } from "@blueprintjs/core";
 import classNames from "classnames";
-import React from "react";
-import { LanguageDto, MtgSetDto } from "../../../dto";
-import { MtgSetDetailViewmodel } from "../../../viewmodel";
+import { LanguageDto } from "../../../dto";
 import { AuditFields } from "../../base/audit-fields/audit-fields";
-import { BaseDialogBodyProps } from "../../base/base-dialog";
 import { LanguageButtonBar } from "../../card-detail-view/language-button-bar/language-button-bar";
+import { MtgSetDialogBodyProps } from "./mtg-set-dialog.props";
+import { useState } from "react";
 
-export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
-  const vm = props.viewmodel as MtgSetDetailViewmodel;
-  const [currentLanguage, setCurrentLanguage] = React.useState<LanguageDto>(vm.languages[0]);
+export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
+  // #region State ------------------------------------------------------------
+  const [currentLanguage, setCurrentLanguage] = useState<LanguageDto>(props.viewmodel.languages[0]);
+  // #endregion
 
   // #region Rendering --------------------------------------------------------
   return (
@@ -49,7 +49,7 @@ export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
               readOnly={true}
               size="small"
               type="text"
-              value={vm.code}
+              value={props.viewmodel.code}
             />
           </FormGroup>
           <FormGroup
@@ -63,7 +63,7 @@ export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
               readOnly={true}
               size="small"
               type="text"
-              value={vm.releaseDate.toLocaleDateString()}
+              value={props.viewmodel.releaseDate.toLocaleDateString()}
             />
           </FormGroup>
         </ControlGroup>
@@ -83,7 +83,7 @@ export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
               readOnly={true}
               size="small"
               type="text"
-              value={vm.type}
+              value={props.viewmodel.type}
             />
           </FormGroup>
           <FormGroup
@@ -97,7 +97,7 @@ export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
               readOnly={true}
               size="small"
               type="text"
-              value={vm.block ?? ""}
+              value={props.viewmodel.block ?? ""}
             />
           </FormGroup>
         </ControlGroup>
@@ -117,7 +117,7 @@ export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
               size="small"
               stepSize={1}
               fill={true}
-              value={vm.baseSetSize}
+              value={props.viewmodel.baseSetSize}
             />
           </FormGroup>
           <FormGroup
@@ -131,7 +131,7 @@ export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
               size="small"
               stepSize={1}
               fill={true}
-              value={vm.totalSetSize}
+              value={props.viewmodel.totalSetSize}
             />
           </FormGroup>
         </ControlGroup>
@@ -142,9 +142,9 @@ export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
         >
           <thead></thead>
           <tbody>
-            {generateTableRow(vm.partialPreview, "Partial Preview", vm.foreignOnly, "Non-English only")}
-            {generateTableRow(vm.foilOnly, "Foil Only", vm.nonFoilOnly, "Non-foil only")}
-            {generateTableRow(vm.onlineOnly, "Online only", vm.paperOnly, "Paper only")}
+            {generateTableRow(props.viewmodel.partialPreview, "Partial Preview", props.viewmodel.foreignOnly, "Non-English only")}
+            {generateTableRow(props.viewmodel.foilOnly, "Foil Only", props.viewmodel.nonFoilOnly, "Non-foil only")}
+            {generateTableRow(props.viewmodel.onlineOnly, "Online only", props.viewmodel.paperOnly, "Paper only")}
           </tbody>
         </HTMLTable>
       </>
@@ -152,18 +152,18 @@ export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
   }
 
   function renderSetDetailsLanguageHeader(): React.JSX.Element {
-    if (vm.languages.length == 1 && vm.languages[0].language == "ENGLISH") {
+    if (props.viewmodel.languages.length == 1 && props.viewmodel.languages[0].language == "ENGLISH") {
       return (<></>);
     } else {
       return (
         <>
           <LanguageButtonBar
             currentLanguage={currentLanguage}
-            allLanguages={vm.languages}
+            allLanguages={props.viewmodel.languages}
             onButtonClick={setCurrentLanguage}
           />
           <Text style={{ textAlign: TextAlignment.CENTER, paddingTop: "5px", paddingBottom: "5px" }}>
-            {vm.name.get(currentLanguage.language) ?? vm.setName}
+            {props.viewmodel.name.get(currentLanguage.language) ?? props.viewmodel.setName}
           </Text>
           <p className={classNames("bp6-divider", "ruling-divider")} />
         </>
@@ -190,7 +190,7 @@ export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
               readOnly={true}
               size="small"
               type="text"
-              value={vm.code}
+              value={props.viewmodel.code}
             />
           </FormGroup>
           <FormGroup
@@ -204,11 +204,11 @@ export function MtgSetDialogBody(props: BaseDialogBodyProps<MtgSetDto>) {
               readOnly={true}
               size="small"
               type="text"
-              value={vm.tokenSetCode ?? ""}
+              value={props.viewmodel.tokenSetCode ?? ""}
             />
           </FormGroup>
         </ControlGroup>
-        <AuditFields auditFields={vm} />
+        <AuditFields auditFields={props.viewmodel} />
       </>
     );
   }

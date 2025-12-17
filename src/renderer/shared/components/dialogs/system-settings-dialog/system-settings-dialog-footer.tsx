@@ -3,9 +3,11 @@ import { noop } from "lodash";
 import { ReactNode } from "react";
 import { SystemSettingsDto } from "../../../../../common/dto";
 import { useServices } from "../../../../hooks";
-import { BaseDialogFooterProps, SaveCancelResetFooter } from "../../base/base-dialog";
+import { SaveCancelResetFooter } from "../../base/base-dialog";
+import { SystemSettingsDialogFooterProps } from "./system-settings-dialog-props";
+import { SystemSettingsViewmodel } from "../../../viewmodel";
 
-export function SystemSettingsDialogFooter(props: BaseDialogFooterProps<SystemSettingsDto>) {
+export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProps) {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
@@ -15,7 +17,9 @@ export function SystemSettingsDialogFooter(props: BaseDialogFooterProps<SystemSe
     return serviceContainer.configurationService.saveSystemSettings(dto)
       .then(
         (_r: SystemSettingsDto) => {
-          // TODO user should restart completely or reboot main. Prefer restart
+          // TODO user should restart completely or reboot main.
+          // As reboot main is not implemented -> restart
+          // warning should be given
           if (props.onClose) {
             props.onClose(event);
           }
@@ -38,7 +42,7 @@ export function SystemSettingsDialogFooter(props: BaseDialogFooterProps<SystemSe
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter<SystemSettingsDto>
+    <SaveCancelResetFooter<SystemSettingsDto, SystemSettingsViewmodel>
       {...props}
       showResetButton={true}
       additionalLeftButtons={additionalLeftButtons()}

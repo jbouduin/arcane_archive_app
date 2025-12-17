@@ -1,16 +1,14 @@
 import { Checkbox, ControlGroup, FormGroup, HTMLTable, InputGroup, Tab, Tabs } from "@blueprintjs/core";
 import { useMemo } from "react";
 import { useServices } from "../../../../hooks";
-import { UserDto } from "../../../dto";
 import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption } from "../../../types";
-import { UserViewmodel } from "../../../viewmodel";
 import { AuditFields } from "../../base/audit-fields/audit-fields";
-import { BaseDialogBodyProps } from "../../base/base-dialog";
 import { BaseMultiSelect } from "../../base/base-multi-select/base-multi-select";
 import { handleStringChange } from "../../util";
 import { ValidatedInput } from "../../validated-input/validated-input";
+import { ProfileDialogBodyProps } from "./profile-dialog-props";
 
-export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
+export function ProfileDialogBody(props: ProfileDialogBodyProps) {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
@@ -47,13 +45,13 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
           keyPrefix="user-name"
           label="Username"
           labelInfo="*"
-          validate={() => (props.viewmodel as UserViewmodel).validateAccountName()}
+          validate={() => props.viewmodel.validateAccountName()}
           inputProps={{
             readOnly: true,
             required: true,
-            value: (props.viewmodel as UserViewmodel).accountName,
+            value: props.viewmodel.accountName,
             onChange: handleStringChange((newValue: string) => {
-              (props.viewmodel as UserViewmodel).accountName = newValue;
+              props.viewmodel.accountName = newValue;
               props.viewmodelChanged(props.viewmodel);
             }),
             placeholder: "Enter a username..."
@@ -63,18 +61,18 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
           keyPrefix="email"
           label="Email"
           labelInfo="*"
-          validate={() => (props.viewmodel as UserViewmodel).validateEmail()}
+          validate={() => props.viewmodel.validateEmail()}
           inputProps={{
             required: true,
             inputMode: "email",
             placeholder: "Enter your email address...",
             onChange:
               handleStringChange((newValue: string) => {
-                (props.viewmodel as UserViewmodel).email = newValue;
+                props.viewmodel.email = newValue;
                 props.viewmodelChanged(props.viewmodel);
               }),
             type: "email",
-            value: (props.viewmodel as UserViewmodel).email
+            value: props.viewmodel.email
           }}
         />
         <ControlGroup
@@ -93,13 +91,13 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
               placeholder="Enter your first name..."
               onChange={
                 handleStringChange((newValue: string) => {
-                  (props.viewmodel as UserViewmodel).firstName = newValue;
+                  props.viewmodel.firstName = newValue;
                   props.viewmodelChanged(props.viewmodel);
                 })
               }
               size="small"
               type="text"
-              value={(props.viewmodel as UserViewmodel).firstName}
+              value={props.viewmodel.firstName}
             />
           </FormGroup>
           <FormGroup
@@ -113,13 +111,13 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
               placeholder="Enter your last name..."
               onChange={
                 handleStringChange((newValue: string) => {
-                  (props.viewmodel as UserViewmodel).lastName = newValue;
+                  props.viewmodel.lastName = newValue;
                   props.viewmodelChanged(props.viewmodel);
                 })
               }
               size="small"
               type="text"
-              value={(props.viewmodel as UserViewmodel).lastName}
+              value={props.viewmodel.lastName}
             />
           </FormGroup>
         </ControlGroup>
@@ -130,23 +128,23 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
           formGroupLabel="Roles"
           onClearOptions={
             () => {
-              (props.viewmodel as UserViewmodel).clearSelectedRoles();
+              props.viewmodel.clearSelectedRoles();
               props.viewmodelChanged(props.viewmodel);
             }
           }
           onOptionAdded={
             (role: SelectOption<ApplicationRole>) => {
-              (props.viewmodel as UserViewmodel).addRole(role);
+              props.viewmodel.addRole(role);
               props.viewmodelChanged(props.viewmodel);
             }
           }
           onOptionRemoved={
             (role: SelectOption<ApplicationRole>) => {
-              (props.viewmodel as UserViewmodel).removeRole(role);
+              props.viewmodel.removeRole(role);
               props.viewmodelChanged(props.viewmodel);
             }
           }
-          selectedItems={(props.viewmodel as UserViewmodel).selectedRoles}
+          selectedItems={props.viewmodel.selectedRoles}
         />
       </>
     );
@@ -164,7 +162,7 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
             <tr>
               <td style={{ paddingLeft: "0px" }}>
                 <Checkbox
-                  checked={(props.viewmodel as UserViewmodel).accountLocked}
+                  checked={props.viewmodel.accountLocked}
                   readOnly={!isSysAdmin}
                 >
                   Account Locked
@@ -172,7 +170,7 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
               </td>
               <td>
                 <Checkbox
-                  checked={(props.viewmodel as UserViewmodel).accountActive}
+                  checked={props.viewmodel.accountActive}
                   readOnly={!isSysAdmin}
                 >
                   Account Active
@@ -182,7 +180,7 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
             <tr>
               <td style={{ paddingLeft: "0px" }}>
                 <Checkbox
-                  checked={(props.viewmodel as UserViewmodel).accountExpired}
+                  checked={props.viewmodel.accountExpired}
                   readOnly={!isSysAdmin}
                 >
                   Account Expired
@@ -190,7 +188,7 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
               </td>
               <td>
                 <Checkbox
-                  checked={(props.viewmodel as UserViewmodel).passwordExpired}
+                  checked={props.viewmodel.passwordExpired}
                   readOnly={!isSysAdmin}
                 >
                   Password Expired
@@ -199,7 +197,7 @@ export function ProfileDialogBody(props: BaseDialogBodyProps<UserDto>) {
             </tr>
           </tbody>
         </HTMLTable>
-        <AuditFields auditFields={(props.viewmodel as UserViewmodel)} />
+        <AuditFields auditFields={props.viewmodel} />
       </>
     );
   }

@@ -1,8 +1,9 @@
 import { IconName, MaybeElement } from "@blueprintjs/core";
 import React, { ReactNode } from "react";
 import { BaseDialogFooterProps } from "./base-dialog-footer.props";
+import { BaseViewmodel } from "../../../viewmodel/base.viewmodel";
 
-export interface SaveCancelResetFooterProps<T extends object> extends BaseDialogFooterProps<T> {
+export interface SaveCancelResetFooterProps<Dto extends object, Vm extends BaseViewmodel<Dto>> extends BaseDialogFooterProps<Dto, Vm> {
   /**
    * Any additional buttons rendered to the right of the reset button
    */
@@ -42,5 +43,5 @@ export interface SaveCancelResetFooterProps<T extends object> extends BaseDialog
   /**
    * defaults to props.onClose
    */
-  onCommitButtonClick?: (event: React.SyntheticEvent<HTMLElement, Event>, dto: T) => Promise<void>;
+  onCommitButtonClick?: (event: React.SyntheticEvent<HTMLElement, Event>, dto: Dto) => Promise<void>;
 }

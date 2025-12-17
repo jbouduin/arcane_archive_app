@@ -1,18 +1,12 @@
 import { Button, Callout, Tab, Tabs } from "@blueprintjs/core";
 import { noop } from "lodash";
-import { SystemSettingsDto } from "../../../../../common/dto";
 import { IpcPaths } from "../../../../../common/ipc";
 import { useServices } from "../../../../hooks";
-import { SystemSettingsViewmodel } from "../../../viewmodel/settings";
-import { BaseDialogBodyProps } from "../../base/base-dialog";
 import { handleStringChange } from "../../util";
 import { ValidatedInput } from "../../validated-input/validated-input";
+import { SystemSettingsDialogBodyProps } from "./system-settings-dialog-props";
 
-export function SystemSettingsDialogBody(props: BaseDialogBodyProps<SystemSettingsDto>) {
-  // #region Constants --------------------------------------------------------
-  const viewmodel: SystemSettingsViewmodel = props.viewmodel as SystemSettingsViewmodel;
-  // #endregion
-
+export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
@@ -46,9 +40,9 @@ export function SystemSettingsDialogBody(props: BaseDialogBodyProps<SystemSettin
   );
 
   function onSearchDirectory(target: "root" | "cache") {
-    let current = target == "root" ? viewmodel.rootDataDirectory : viewmodel.cacheDirectory;
+    let current = target == "root" ? props.viewmodel.rootDataDirectory : props.viewmodel.cacheDirectory;
     if (current != "") {
-      current = "/" + encodeURIComponent(viewmodel.rootDataDirectory);
+      current = "/" + encodeURIComponent(props.viewmodel.rootDataDirectory);
     }
 
     serviceContainer.ipcProxy.getData<string>(`${IpcPaths.IO_SELECT_DIRECTORY}${current}`)
@@ -56,9 +50,9 @@ export function SystemSettingsDialogBody(props: BaseDialogBodyProps<SystemSettin
         (dir: string | undefined) => {
           if (dir) {
             if (target == "root") {
-              viewmodel.rootDataDirectory = dir;
+              props.viewmodel.rootDataDirectory = dir;
             } else {
-              viewmodel.cacheDirectory = dir;
+              props.viewmodel.cacheDirectory = dir;
             }
             props.viewmodelChanged(props.viewmodel);
           }
@@ -74,7 +68,7 @@ export function SystemSettingsDialogBody(props: BaseDialogBodyProps<SystemSettin
           keyPrefix="data-root"
           label="Root Data Directory"
           labelInfo="*"
-          validate={() => viewmodel.validateRootDataDirectory()}
+          validate={() => props.viewmodel.validateRootDataDirectory()}
           inputProps={{
             inputMode: "text",
             placeholder: "Enter a directory...",
@@ -82,14 +76,14 @@ export function SystemSettingsDialogBody(props: BaseDialogBodyProps<SystemSettin
             size: "small",
             type: "text",
             readOnly: true,
-            value: viewmodel.rootDataDirectory
+            value: props.viewmodel.rootDataDirectory
           }}
         />
         <ValidatedInput
           keyPrefix="cache-dir"
           label="Cache Directory"
           labelInfo="*"
-          validate={() => viewmodel.validateCacheDataDirectory()}
+          validate={() => props.viewmodel.validateCacheDataDirectory()}
           inputProps={{
             inputMode: "text",
             placeholder: "Enter a directory...",
@@ -97,24 +91,24 @@ export function SystemSettingsDialogBody(props: BaseDialogBodyProps<SystemSettin
             size: "small",
             type: "text",
             readOnly: true,
-            value: viewmodel.cacheDirectory
+            value: props.viewmodel.cacheDirectory
           }}
         />
         <ValidatedInput
           keyPrefix="db-name"
           label="Database Name"
           labelInfo="*"
-          validate={() => viewmodel.validateDatabaseName()}
+          validate={() => props.viewmodel.validateDatabaseName()}
           inputProps={{
             inputMode: "text",
             placeholder: "Enter a name...",
             size: "small",
             type: "text",
             onChange: handleStringChange((newValue: string) => {
-              viewmodel.databaseName = newValue;
+              props.viewmodel.databaseName = newValue;
               props.viewmodelChanged(props.viewmodel);
             }),
-            value: viewmodel.databaseName
+            value: props.viewmodel.databaseName
           }}
         />
       </>
@@ -128,17 +122,17 @@ export function SystemSettingsDialogBody(props: BaseDialogBodyProps<SystemSettin
           keyPrefix="auth-url"
           label="Discovery Internet Address"
           labelInfo="*"
-          validate={() => viewmodel.validateDiscovery()}
+          validate={() => props.viewmodel.validateDiscovery()}
           inputProps={{
             inputMode: "text",
             placeholder: "Enter an internet address...",
             size: "small",
             type: "text",
             onChange: handleStringChange((newValue: string) => {
-              viewmodel.discovery = newValue;
+              props.viewmodel.discovery = newValue;
               props.viewmodelChanged(props.viewmodel);
             }),
-            value: viewmodel.discovery
+            value: props.viewmodel.discovery
           }}
         />
         {/* LATER: display these values also or have a separate dialog which also displays status of all services

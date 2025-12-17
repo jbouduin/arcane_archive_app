@@ -1,17 +1,17 @@
 import { Icon } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { SystemSettingsDto } from "../../../../../common/dto";
+import { IpcPaths } from "../../../../../common/ipc";
 import { IServiceContainer } from "../../../context";
-import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 import { SystemSettingsDialogBody } from "../system-settings-dialog/system-settings-dialog-body";
 import { SystemSettingsDialogFooter } from "../system-settings-dialog/system-settings-dialog-footer";
-import { IpcPaths } from "../../../../../common/ipc";
+import { SystemSettingsDialogBodyProps, SystemSettingsDialogFooterProps, SystemSettingsDialogProps } from "../system-settings-dialog/system-settings-dialog-props";
 
 export function showSystemSettingsDialog(serviceContainer: IServiceContainer): void {
   serviceContainer.ipcProxy.getData<SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS)
     .then(
       (configuration: SystemSettingsDto) => {
-        const uiSettingsProps: BaseDialogProps<SystemSettingsDto> = {
+        const uiSettingsProps: SystemSettingsDialogProps = {
           isOpen: true,
           isCloseButtonShown: true,
           canEscapeKeyClose: true,
@@ -22,10 +22,10 @@ export function showSystemSettingsDialog(serviceContainer: IServiceContainer): v
             .viewmodelFactoryService
             .settingsViewmodelFactory
             .getSystemSettingsViewmodel(configuration),
-          bodyRenderer: (bodyProps: BaseDialogBodyProps<SystemSettingsDto>) => {
+          bodyRenderer: (bodyProps: SystemSettingsDialogBodyProps) => {
             return (<SystemSettingsDialogBody {...bodyProps} />);
           },
-          footerRenderer: (footerProps: BaseDialogFooterProps<SystemSettingsDto>) => {
+          footerRenderer: (footerProps: SystemSettingsDialogFooterProps) => {
             return (<SystemSettingsDialogFooter {...footerProps} />);
           }
         };

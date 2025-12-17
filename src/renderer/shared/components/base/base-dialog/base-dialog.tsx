@@ -7,8 +7,7 @@ import { BaseDialogBodyProps } from "./base-dialog-body.props";
 import { BaseDialogFooterProps } from "./base-dialog-footer.props";
 import { BaseDialogProps } from "./base-dialog.props";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function BaseDialog<T extends BaseViewmodel<any>>(props: BaseDialogProps<T>) {
+export function BaseDialog<Dto extends object, Vm extends BaseViewmodel<Dto>>(props: BaseDialogProps<Dto, Vm>) {
   // #region State ------------------------------------------------------------
   const { themeClassName } = usePreferences();
   const [state, setState] = React.useState(props.viewmodel);
@@ -30,19 +29,19 @@ export function BaseDialog<T extends BaseViewmodel<any>>(props: BaseDialogProps<
   );
 
   function renderBody(): React.JSX.Element {
-    const bodyProps: BaseDialogBodyProps<T> = {
+    const bodyProps: BaseDialogBodyProps<Dto, Vm> = {
       ...props,
       viewmodel: state,
-      viewmodelChanged: (v: BaseViewmodel<T>) => setState(cloneDeep(v))
+      viewmodelChanged: (v: Vm) => setState(cloneDeep(v))
     };
     return props.bodyRenderer(bodyProps);
   }
 
   function renderFooter(): React.JSX.Element {
-    const footerProps: BaseDialogFooterProps<T> = {
+    const footerProps: BaseDialogFooterProps<Dto, Vm> = {
       ...props,
       viewmodel: state,
-      viewmodelChanged: (v: BaseViewmodel<T>) => setState(cloneDeep(v))
+      viewmodelChanged: (v: Vm) => setState(cloneDeep(v))
     };
     return props.footerRenderer(footerProps);
   }

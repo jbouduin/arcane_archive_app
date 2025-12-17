@@ -26,8 +26,6 @@ void (async () => {
   const serviceContainer = new ServiceContainer();
   const container = document.getElementById("root")!;
   const root = createRoot(container);
-  // LATER: if initializing one of the services fails: toastCall is used, but as there will be
-  // no window, they will never be displayed to the user
   serviceContainer.initialize(toastCall)
     .then(
       () => {

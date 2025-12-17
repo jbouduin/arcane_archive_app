@@ -4,11 +4,12 @@ import { ReactNode } from "react";
 import { useServices } from "../../../../hooks/use-services";
 import { LoginRequestDto } from "../../../dto";
 import { LoginViewmodel } from "../../../viewmodel";
-import { BaseDialogFooterProps, SaveCancelResetFooter } from "../../base/base-dialog";
+import { SaveCancelResetFooter } from "../../base/base-dialog";
 import { showRegisterDialog } from "../factory";
 import { LoginResponseDto } from "../../../../../common/dto";
+import { LoginDialogFooterProps } from "./login-dialog.props";
 
-export function LoginDialogFooter(props: BaseDialogFooterProps<LoginRequestDto>) {
+export function LoginDialogFooter(props: LoginDialogFooterProps) {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
@@ -33,7 +34,7 @@ export function LoginDialogFooter(props: BaseDialogFooterProps<LoginRequestDto>)
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter<LoginRequestDto>
+    <SaveCancelResetFooter<LoginRequestDto, LoginViewmodel>
       additionalLeftButtons={additionalLeftButtons()}
       {...props}
       showResetButton={false}
@@ -45,7 +46,7 @@ export function LoginDialogFooter(props: BaseDialogFooterProps<LoginRequestDto>)
 
   function additionalLeftButtons(): ReactNode {
     return (
-      (props.viewmodel as LoginViewmodel).showRegisterButton &&
+      props.viewmodel.showRegisterButton &&
       (
         <Button
           key="register"

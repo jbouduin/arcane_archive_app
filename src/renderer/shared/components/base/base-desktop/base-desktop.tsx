@@ -10,7 +10,8 @@ import { BaseDesktopState } from "./base-desktop.state";
 export function BaseDesktop(props: BaseDesktopProps) {
   // #region State ------------------------------------------------------------
   const { themeClassName } = usePreferences();
-  // TODO use dialog provider to show alerts and splash screen
+  // TODO use dialog provider to show alerts and splash screen and rename to overlay service
+  // after moving code from existing overlay service
   const initialState: BaseDesktopState = {
     alertProps: null,
     splashScreenOpen: false
