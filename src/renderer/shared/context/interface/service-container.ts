@@ -7,7 +7,7 @@ import { ICardSymbolService } from "./card-symbol.service";
 import { ICollectionManagerProxyService } from "./collection-manager-proxy.service";
 import { IColorService } from "./color.service";
 import { IConfigurationService } from "./configuration.service";
-import { IDialogService } from "./dialog.service";
+import { IOverlayService } from "./overlay.service";
 import { IDisplayValueService } from "./display-value.service";
 import { IIpcProxyService } from "./ipc-proxy.service";
 import { ILanguageService } from "./language.service";
@@ -42,9 +42,9 @@ export interface IServiceContainer {
   readonly configurationService: IConfigurationService;
 
   /**
-   * Service that displays dialogs
+   * Service that displays dialogs, toasts, alert, and splash screen
    */
-  readonly dialogService: IDialogService;
+  readonly overlayService: IOverlayService;
 
   /**
    * Dictionaries with display values for enums.

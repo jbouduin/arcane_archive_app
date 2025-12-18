@@ -19,5 +19,5 @@ export function showPreferencesDialog(serviceContainer: IServiceContainer): void
       return (<PreferencesDialogFooter {...footerProps} />);
     }
   };
-  serviceContainer.dialogService.openDialog(uiSettingsProps);
+  serviceContainer.overlayService.openDialog(uiSettingsProps);
 }

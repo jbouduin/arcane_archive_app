@@ -32,7 +32,7 @@ export function showSetDialog(serviceContainer: IServiceContainer, setId: number
             </>
           )
         };
-        serviceContainer.dialogService.openDialog(dialogProps);
+        serviceContainer.overlayService.openDialog(dialogProps);
       },
       noop
     );

@@ -1,20 +1,23 @@
 import { Dialog } from "@blueprintjs/core";
 import classNames from "classnames";
+import { noop } from "lodash";
+import { usePreferences } from "../../../hooks";
 import { SplashContent } from "./splash-content";
 import { SplashScreenProps } from "./splash-screen.props";
 
 export function SplashScreen(props: SplashScreenProps) {
+  const { themeClassName } = usePreferences();
   return (
     <Dialog
-      canEscapeKeyClose={true}
+      canEscapeKeyClose={false}
       canOutsideClickClose={false}
-      className={classNames(props.className, "splash-window")}
+      className={classNames(themeClassName, props.className, "splash-window")}
       enforceFocus={true}
-      isOpen={props.isOpen}
-      onClose={props.onDialogClose}
+      isOpen={true}
+      onClose={noop}
       shouldReturnFocusOnClose={true}
     >
-      <SplashContent />
+      <SplashContent callBackValue={props.callBackValue} />
     </Dialog>
   );
 }

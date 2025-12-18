@@ -34,15 +34,15 @@ export class RouterService extends BaseRouter implements IRouterService {
   // #region IRouterService methods -------------------------------------------
   public logRoutes(): void {
     this.logService.info("Main", `registered ${this.deleteRoutes.size} DELETE routes`);
-    this.deleteRoutes.forEach((_value: RouteCallback, key: string) => this.logService.debug("Main", `-  DELETE ${key}`));
+    this.deleteRoutes.forEach((_value: RouteCallback, key: string) => this.logService.debug("Main", `  DELETE ${key}`));
     this.logService.info("Main", `registered ${this.getRoutes.size} GET routes`);
-    this.getRoutes.forEach((_value: RouteCallback, key: string) => this.logService.debug("Main", `-  GET ${key}`));
+    this.getRoutes.forEach((_value: RouteCallback, key: string) => this.logService.debug("Main", `  GET ${key}`));
     this.logService.info("Main", `registered ${this.patchRoutes.size} PATCH routes`);
-    this.patchRoutes.forEach((_value: RouteCallback, key: string) => this.logService.debug("Main", `-  PATCH ${key}`));
+    this.patchRoutes.forEach((_value: RouteCallback, key: string) => this.logService.debug("Main", `  PATCH ${key}`));
     this.logService.info("Main", `registered ${this.postRoutes.size} POST routes`);
-    this.postRoutes.forEach((_value: RouteCallback, key: string) => this.logService.debug("Main", `-  POST ${key}`));
+    this.postRoutes.forEach((_value: RouteCallback, key: string) => this.logService.debug("Main", `  POST ${key}`));
     this.logService.info("Main", `registered ${this.putRoutes.size} PUT routes`);
-    this.putRoutes.forEach((_value: RouteCallback, key: string) => this.logService.debug("Main", `-  PUT ${key}`));
+    this.putRoutes.forEach((_value: RouteCallback, key: string) => this.logService.debug("Main", `  PUT ${key}`));
   }
 
   public registerDeleteRoute(path: string, callback: RouteCallback): void {

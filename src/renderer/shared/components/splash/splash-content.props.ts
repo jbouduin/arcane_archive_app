@@ -1,6 +1,6 @@
 import { Props } from "@blueprintjs/core";
 import { ProgressCallbackValue } from "../../../../common/ipc";
 
-export interface SplashScreenProps extends Props {
+export interface SplashContentProps extends Props {
   callBackValue: ProgressCallbackValue;
 }

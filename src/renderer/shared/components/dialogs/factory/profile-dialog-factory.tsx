@@ -24,7 +24,7 @@ export function showProfileDialog(serviceContainer: IServiceContainer): void {
             return (<ProfileDialogFooter {...footerProps} />);
           }
         };
-        serviceContainer.dialogService.openDialog(profileProp);
+        serviceContainer.overlayService.openDialog(profileProp);
       },
       noop
     );

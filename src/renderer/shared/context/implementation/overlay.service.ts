@@ -1,13 +1,16 @@
-import { ToastProps } from "@blueprintjs/core";
+import { AlertProps, ToastProps } from "@blueprintjs/core";
 import { Dispatch } from "react";
+import { ProgressCallbackValue } from "../../../../common/ipc";
 import { BaseDialogProps } from "../../components/base/base-dialog";
-import { IDialogService } from "../interface";
 import { BaseViewmodel } from "../../viewmodel/base.viewmodel";
+import { IOverlayService } from "../interface";
 
-export class DialogService implements IDialogService {
+export class OverlayService implements IOverlayService {
   // #region Private fields ---------------------------------------------------
+  private setAlert!: Dispatch<React.SetStateAction<AlertProps | null>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private setDialogs!: Dispatch<React.SetStateAction<Map<number, BaseDialogProps<any, any>>>>;
+  private setSplashScreen!: Dispatch<React.SetStateAction<ProgressCallbackValue | null>>;
   private _showToast!: (props: ToastProps, key?: string) => void;
   private dialogSequence: number;
   // #endregion
@@ -18,12 +21,20 @@ export class DialogService implements IDialogService {
   }
   // #endregion
 
-  // #region IDialogService Members -------------------------------------------
-  public setDispatcher(
+  // #region IOverlayService Members ------------------------------------------
+  public setDialogDispatcher(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setDialogs: React.Dispatch<React.SetStateAction<Map<number, BaseDialogProps<any, any>>>>
   ): void {
     this.setDialogs = setDialogs;
+  }
+
+  public setAlertDispatcher(setAlert: React.Dispatch<React.SetStateAction<AlertProps | null>>): void {
+    this.setAlert = setAlert;
+  }
+
+  public setSplashScreenDispatcher(setSplashScreen: React.Dispatch<React.SetStateAction<ProgressCallbackValue | null>>): void {
+    this.setSplashScreen = setSplashScreen;
   }
 
   public initialize(showToast: (props: ToastProps, key?: string) => void): void {
@@ -61,8 +72,28 @@ export class DialogService implements IDialogService {
     });
   }
 
-  public showToast(props: ToastProps, key?: string): void {
-    this._showToast(props, key);
+  public showToast(toastProps: ToastProps, key?: string): void {
+    this._showToast(toastProps, key);
+  }
+
+  public showSplashScreen(value: ProgressCallbackValue): void {
+    this.setSplashScreen(value);
+  }
+
+  public hideSplashSceen(): void {
+    this.setSplashScreen(null);
+  }
+
+  public showAlert(alertProps: AlertProps): void {
+    if (!alertProps.onClose) {
+      const newAlertProps: AlertProps = {
+        ...alertProps,
+        onClose: () => this.setAlert(null)
+      };
+      this.setAlert(newAlertProps);
+    } else {
+      this.setAlert(alertProps);
+    }
   }
   // #endregion
 }

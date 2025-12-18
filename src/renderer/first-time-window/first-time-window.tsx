@@ -49,7 +49,7 @@ void (async () => {
               <SessionProvider>
                 <PreferencesProvider>
                   <FirstTimeView systemSettings={systemSettings} />
-                  <DialogRenderer dialogService={serviceContainer.dialogService} />
+                  <DialogRenderer overlayService={serviceContainer.overlayService} />
                 </PreferencesProvider>
               </SessionProvider>
             </ServiceContainerContext.Provider>

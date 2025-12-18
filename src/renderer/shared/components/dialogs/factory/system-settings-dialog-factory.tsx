@@ -29,7 +29,7 @@ export function showSystemSettingsDialog(serviceContainer: IServiceContainer): v
             return (<SystemSettingsDialogFooter {...footerProps} />);
           }
         };
-        serviceContainer.dialogService.openDialog(uiSettingsProps);
+        serviceContainer.overlayService.openDialog(uiSettingsProps);
       },
       noop
     );

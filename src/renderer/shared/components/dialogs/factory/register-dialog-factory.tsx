@@ -18,5 +18,5 @@ export function showRegisterDialog(serviceContainer: IServiceContainer, showLogi
       return (<RegisterDialogFooter {...footerProps} />);
     }
   };
-  serviceContainer.dialogService.openDialog(loginDialogProps);
+  serviceContainer.overlayService.openDialog(loginDialogProps);
 }

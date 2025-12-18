@@ -36,7 +36,7 @@ void (async () => {
                 <SessionProvider>
                   <PreferencesProvider>
                     <MainWindowDesktop toastCall={toastCall} />
-                    <DialogRenderer dialogService={serviceContainer.dialogService} />
+                    <DialogRenderer overlayService={serviceContainer.overlayService} />
                   </PreferencesProvider>
                 </SessionProvider>
               </ServiceContainerContext.Provider>

@@ -27,7 +27,7 @@ export function ButtonBar(props: ButtonBarProps) {
       message: "Not implemented",
       intent: "danger"
     };
-    serviceContainer.dialogService.showToast(props, "admin not implemented");
+    serviceContainer.overlayService.showToast(props, "admin not implemented");
   }
   // #endregion
 
