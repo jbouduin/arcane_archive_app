@@ -94,7 +94,7 @@ export function ButtonBar(props: ButtonBarProps) {
     return (
       <Menu size="small">
         <MenuItem onClick={() => showPreferencesDialog(serviceContainer)} text="Preferences" />
-        <MenuItem onClick={() => showSystemSettingsDialog(serviceContainer)} text="System Settings" />
+        <MenuItem onClick={() => showSystemSettingsDialog(serviceContainer, false)} text="System Settings" />
         {
           serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") &&
           <MenuItem onClick={adminClick} text="Admin" />

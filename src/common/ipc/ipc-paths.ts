@@ -3,6 +3,10 @@ export class IpcPaths {
   public static readonly CACHED_IMAGE = "cached-image";
   // #endregion
 
+  // #region Infra: App -------------------------------------------------------
+  public static readonly RESTART = "/restart";
+  // #endregion
+
   // #region Infra: Configuration ---------------------------------------------
   public static readonly SYSTEM_SETTINGS = "/system-settings";
   public static readonly SYSTEM_SETTINGS_FACTORY_DEFAULT = "/system-settings/factory-default";

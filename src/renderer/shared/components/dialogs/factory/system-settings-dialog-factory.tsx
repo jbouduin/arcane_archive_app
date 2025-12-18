@@ -7,7 +7,7 @@ import { SystemSettingsDialogBody } from "../system-settings-dialog/system-setti
 import { SystemSettingsDialogFooter } from "../system-settings-dialog/system-settings-dialog-footer";
 import { SystemSettingsDialogBodyProps, SystemSettingsDialogFooterProps, SystemSettingsDialogProps } from "../system-settings-dialog/system-settings-dialog-props";
 
-export function showSystemSettingsDialog(serviceContainer: IServiceContainer): void {
+export function showSystemSettingsDialog(serviceContainer: IServiceContainer, firstTime: boolean): void {
   serviceContainer.ipcProxy.getData<SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS)
     .then(
       (configuration: SystemSettingsDto) => {
@@ -21,7 +21,7 @@ export function showSystemSettingsDialog(serviceContainer: IServiceContainer): v
           viewmodel: serviceContainer
             .viewmodelFactoryService
             .settingsViewmodelFactory
-            .getSystemSettingsViewmodel(configuration),
+            .getSystemSettingsViewmodel(configuration, firstTime),
           bodyRenderer: (bodyProps: SystemSettingsDialogBodyProps) => {
             return (<SystemSettingsDialogBody {...bodyProps} />);
           },

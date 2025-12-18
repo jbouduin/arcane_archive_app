@@ -9,6 +9,8 @@ export interface IConfigurationService {
 
   initialize(ipcProx: IIpcProxyService): Promise<SettingsDto>;
   saveSystemSettings(configuration: SystemSettingsDto): Promise<SystemSettingsDto>;
+  getSystemSettingsFactoryDefaults(): Promise<SystemSettingsDto>;
+  restart(): void;
   savePreferences(serviceContainer: IServiceContainer, preferences: PreferencesDto): Promise<PreferencesDto>;
   subscribe(listener: PreferencesChangeListener): () => void;
 }

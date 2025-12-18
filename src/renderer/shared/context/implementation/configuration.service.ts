@@ -46,6 +46,14 @@ export class ConfigurationService implements IConfigurationService {
       );
   }
 
+  public getSystemSettingsFactoryDefaults(): Promise<SystemSettingsDto> {
+    return this.ipcProxy.getData<SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS_FACTORY_DEFAULT);
+  }
+
+  public restart(): void {
+    void this.ipcProxy.postEmptyBody<never>(IpcPaths.RESTART);
+  }
+
   public saveSystemSettings(configuration: SystemSettingsDto): Promise<SystemSettingsDto> {
     return this.ipcProxy
       .postData<SystemSettingsDto, SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS, configuration)

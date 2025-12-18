@@ -1,6 +1,5 @@
 import { SelectOption } from "../../types";
 
-// TODO consider using Sets for dtoArray and viewmodelArray -> requires checking backend properties of dto's
 export function addSelectOption<T>(
   dtoArray: Array<T>,
   viewmodelArray: Array<SelectOption<T>>,
@@ -16,8 +15,10 @@ export function addSelectOption<T>(
 }
 
 export function removeSelectOption<T>(dtoArray: Array<T>, viewmodelArray: Array<SelectOption<T>>, option: SelectOption<T>): void {
+  // LATER: this is a dangerous call!
   let idx = dtoArray.indexOf(option.value);
   dtoArray.splice(idx, 1);
+  // LATER: this is a dangerous call! also
   idx = viewmodelArray.findIndex((so: SelectOption<T>) => so.value == option.value);
   viewmodelArray.splice(idx, 1);
 }

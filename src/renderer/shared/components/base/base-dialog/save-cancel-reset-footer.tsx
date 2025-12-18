@@ -33,6 +33,13 @@ export function SaveCancelResetFooter<Dto extends object, Vm extends BaseViewmod
         }
       </ButtonGroup>
       <ButtonGroup variant="minimal" vertical={false}>
+        <Button
+          key="cancelButton"
+          icon={props.cancelButtonIcon ?? "cross"}
+          onClick={props.onClose}
+        >
+          {props.cancelButtonLabel ?? "Cancel"}
+        </Button>
         {
           showCommitButton &&
           (
@@ -56,13 +63,6 @@ export function SaveCancelResetFooter<Dto extends object, Vm extends BaseViewmod
             </Button>
           )
         }
-        <Button
-          key="cancelButton"
-          icon={props.cancelButtonIcon ?? "cross"}
-          onClick={props.onClose}
-        >
-          {props.cancelButtonLabel ?? "Cancel"}
-        </Button>
       </ButtonGroup>
     </div>
   );

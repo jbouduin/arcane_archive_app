@@ -8,8 +8,8 @@ export class SettingsViewmodelFactory implements ISettingsViewmodelFactory {
     return new PreferencesViewmodel(dto);
   }
 
-  public getSystemSettingsViewmodel(dto: SystemSettingsDto): SystemSettingsViewmodel {
-    return new SystemSettingsViewmodel(dto);
+  public getSystemSettingsViewmodel(dto: SystemSettingsDto, firstTime: boolean): SystemSettingsViewmodel {
+    return new SystemSettingsViewmodel(dto, firstTime);
   }
   // #endregion
 }

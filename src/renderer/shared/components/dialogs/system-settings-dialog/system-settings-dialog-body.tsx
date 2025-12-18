@@ -14,10 +14,28 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
   // #region Rendering --------------------------------------------------------
   return (
     <>
-      <Callout compact={true} intent="danger">
-        Changes to these settings can break the application.
-        Use at your own risk.
-      </Callout>
+      {
+        props.viewmodel.firstTime &&
+        (
+          <Callout compact={true} intent="danger">
+            Changes to these settings can break the application.
+            <br />
+            Use at your own risk.
+          </Callout>
+        )
+      }
+      {
+        !props.viewmodel.firstTime &&
+        (
+          <Callout compact={true} intent="danger">
+            Changes to these settings can break the application.
+            <br />
+            Use at your own risk.
+            <br />
+            Any change requires a restart of the application.
+          </Callout>
+        )
+      }
       <Tabs
         animate={true}
         defaultSelectedTabId="local-storage"

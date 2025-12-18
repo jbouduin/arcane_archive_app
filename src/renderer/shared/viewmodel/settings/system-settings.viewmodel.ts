@@ -6,6 +6,7 @@ import { BaseViewmodel } from "../base.viewmodel";
 export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
   // #region Private fields ---------------------------------------------------
   private readonly invalidUrlResult: ValidationResult;
+  private readonly _firstTime: boolean;
   // #endregion
 
   // #region Getters/Setters apiConfiguration ---------------------------------
@@ -92,10 +93,17 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
   }
   // #endregion
 
+  // #region Getters/Setters --------------------------------------------------
+  public get firstTime(): boolean {
+    return this._firstTime;
+  }
+  // #endregion
+
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: SystemSettingsDto) {
+  public constructor(dto: SystemSettingsDto, firstTime: boolean) {
     super(dto);
     this.invalidUrlResult = { helperText: "Please enter a valid internet address", intent: "danger" };
+    this._firstTime = firstTime;
   }
   // #endregion
 
@@ -141,14 +149,14 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
     try {
       const url = new URL(this._dto.discovery);
       if (url.protocol == "http:" || url.protocol == "https:") {
-        this.setFieldValid("authenticationApiRoot");
+        this.setFieldValid("discovery");
         result = this.validValidation;
       } else {
-        this.setFieldInvalid("authenticationApiRoot");
+        this.setFieldInvalid("discovery");
         result = this.invalidUrlResult;
       }
     } catch {
-      this.setFieldInvalid("authenticationApiRoot");
+      this.setFieldInvalid("discovery");
       result = this.invalidUrlResult;
     }
 

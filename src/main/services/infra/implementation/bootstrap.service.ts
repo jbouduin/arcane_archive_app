@@ -75,6 +75,14 @@ export class BootstrapService implements IBootstrapService {
 
     return Promise.resolve();
   }
+
+  public restart(): void {
+    if (app.isPackaged) {
+      // relaunch does not work when not packaged
+      app.relaunch();
+    }
+    app.exit();
+  }
   // #endregion
 
   // #region helper methods ---------------------------------------------------

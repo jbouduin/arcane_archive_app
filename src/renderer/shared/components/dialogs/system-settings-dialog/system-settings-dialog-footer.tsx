@@ -3,9 +3,9 @@ import { noop } from "lodash";
 import { ReactNode } from "react";
 import { SystemSettingsDto } from "../../../../../common/dto";
 import { useServices } from "../../../../hooks";
+import { SystemSettingsViewmodel } from "../../../viewmodel";
 import { SaveCancelResetFooter } from "../../base/base-dialog";
 import { SystemSettingsDialogFooterProps } from "./system-settings-dialog-props";
-import { SystemSettingsViewmodel } from "../../../viewmodel";
 
 export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProps) {
   // #region Hooks ------------------------------------------------------------
@@ -16,20 +16,13 @@ export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProp
   function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: SystemSettingsDto): Promise<void> {
     return serviceContainer.configurationService.saveSystemSettings(dto)
       .then(
-        (_r: SystemSettingsDto) => {
-          // TODO user should restart completely or reboot main.
-          // As reboot main is not implemented -> restart
-          // warning should be given
-          if (props.onClose) {
-            props.onClose(event);
-          }
-        },
+        (_r: SystemSettingsDto) => serviceContainer.configurationService.restart(),
         noop
       );
   }
 
   function factoryDefaultClick() {
-    serviceContainer.ipcProxy.getData<SystemSettingsDto>("/configuration/factory-default")
+    void serviceContainer.configurationService.getSystemSettingsFactoryDefaults()
       .then(
         (dto: SystemSettingsDto) => {
           Object.assign(props.viewmodel.dto, dto);
@@ -44,6 +37,7 @@ export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProp
   return (
     <SaveCancelResetFooter<SystemSettingsDto, SystemSettingsViewmodel>
       {...props}
+      commitButtonLabel="Save and Restart"
       showResetButton={true}
       additionalLeftButtons={additionalLeftButtons()}
       onCommitButtonClick={saveClick}

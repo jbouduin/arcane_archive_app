@@ -3,5 +3,5 @@ import { PreferencesViewmodel, SystemSettingsViewmodel } from "../../settings";
 
 export interface ISettingsViewmodelFactory {
   getPreferencesViewmodel(dto: PreferencesDto): PreferencesViewmodel;
-  getSystemSettingsViewmodel(dto: SystemSettingsDto): SystemSettingsViewmodel;
+  getSystemSettingsViewmodel(dto: SystemSettingsDto, firstTime: boolean): SystemSettingsViewmodel;
 }

@@ -32,7 +32,7 @@ export function FirstTimeView(_props: FirstTimeViewProps) {
   );
   // this one is initialized with the factory default system settings
   const [systemSettingsViewmodel, setSystemSettingsViewmodel] = useState<SystemSettingsViewmodel>(
-    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getSystemSettingsViewmodel(_props.systemSettings)
+    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getSystemSettingsViewmodel(_props.systemSettings, true)
   );
   const [preferencesViewmodel, setPreferencesViewmodel] = useState<PreferencesViewmodel>(
     serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(serviceContainer.configurationService.preferences)
