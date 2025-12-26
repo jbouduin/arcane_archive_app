@@ -24,7 +24,7 @@ export function DeckView(props: DeckViewProps) {
       }
       {
         !loggedIn && (
-          <NotLoggedInView {...props} />
+          <NotLoggedInView {...props} server="deck" />
         )
       }
     </>

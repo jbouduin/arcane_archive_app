@@ -1,6 +1,8 @@
+import { noop } from "lodash";
 import { IpcPaths } from "../../../../common/ipc";
 import { ICardSymbolService, IIpcProxyService } from "../interface";
 
+// LATER add sync card symbols method
 export class CardSymbolService implements ICardSymbolService {
   // #region Private fields ---------------------------------------------------
   private cardSymbols: Map<string, string>;
@@ -22,9 +24,13 @@ export class CardSymbolService implements ICardSymbolService {
   }
 
   public async initialize(ipcProxy: IIpcProxyService): Promise<void> {
-    const response = await ipcProxy.getData<Map<string, string>>(IpcPaths.CARD_SYMBOL_SVG);
-    this.cardSymbols = response;
-    return Promise.resolve();
+    return ipcProxy.getData<Map<string, string>>(IpcPaths.CARD_SYMBOL_SVG)
+      .then(
+        (data: Map<string, string>) => {
+          this.cardSymbols = data;
+        },
+        noop
+      );
   }
   // #endregion
 }

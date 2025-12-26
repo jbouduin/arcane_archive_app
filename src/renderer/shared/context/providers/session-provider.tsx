@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { LoginResponseDto } from "../../../../common/dto";
 import { useServices } from "../../../hooks";
 import { SessionContext } from "../shared.context";
+import { ProviderProps } from "./provider.props";
 
-export function SessionProvider({ children }: { children: React.ReactNode; }) {
+export function SessionProvider(props: ProviderProps) {
   // #region State ------------------------------------------------------------
   const sessionService = useServices().sessionService;
   const [loggedIn, setLoggedIn] = useState(sessionService.loggedIn);
@@ -11,9 +13,9 @@ export function SessionProvider({ children }: { children: React.ReactNode; }) {
   // #region Effects ----------------------------------------------------------
   useEffect(
     () => {
-      const unsubscribe = sessionService.subscribe(() => {
-        setLoggedIn(sessionService.loggedIn);
-      });
+      const unsubscribe = sessionService.subscribe(
+        (data: LoginResponseDto | null) => setLoggedIn(data != null)
+      );
       return unsubscribe;
     },
     [sessionService]
@@ -23,7 +25,7 @@ export function SessionProvider({ children }: { children: React.ReactNode; }) {
   // #region Rendering --------------------------------------------------------
   return (
     <SessionContext.Provider value={{ loggedIn: loggedIn }}>
-      {children}
+      {props.children}
     </SessionContext.Provider>
   );
   // #endregion

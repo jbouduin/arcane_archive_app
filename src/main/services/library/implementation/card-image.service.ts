@@ -73,31 +73,35 @@ export class CardImageService extends BaseService implements ICardImageService {
   }
 
   private async cacheImage(url: URL, cachedImagePath: string): Promise<boolean> {
-    let imageUrl: URL;
-    if (url.host == CARD_IMAGE_FACE) {
-      imageUrl = new URL(this.configurationService.apiConfiguration.scryfallApiRoot);
-      imageUrl.pathname = (imageUrl.pathname + url.pathname).replace("//", "");
-      url.searchParams.forEach((v: string, k: string) => imageUrl.searchParams.append(k, v));
-    } else {
-      const cardBackId = url.pathname.substring(1);
-      imageUrl = new URL(this.configurationService.apiConfiguration.scryfallCardBackRoot +
-        `/large/${cardBackId.substring(0, 1)}/${cardBackId.substring(1, 2)}/${cardBackId}.jpg`
-      );
-    }
-    const arrayBuffer: ArrayBuffer = await this.scryfallClient.fetchArrayBuffer(imageUrl);
-    const buffer = Buffer.from(arrayBuffer);
-
-    return new Promise((resolve, reject) => {
-      if (buffer.length > 0) {
-        const writeStream = createWriteStream(cachedImagePath);
-        writeStream.on("error", (err: Error) => reject(err));
-        writeStream.on("finish", () => resolve(true));
-        writeStream.write(buffer);
-        writeStream.end();
+    if (this.configurationService.apiConfiguration != null) {
+      let imageUrl: URL;
+      if (url.host == CARD_IMAGE_FACE) {
+        imageUrl = new URL(this.configurationService.apiConfiguration.scryfallApiRoot);
+        imageUrl.pathname = (imageUrl.pathname + url.pathname).replace("//", "");
+        url.searchParams.forEach((v: string, k: string) => imageUrl.searchParams.append(k, v));
       } else {
-        reject(new Error("Empty response received"));
+        const cardBackId = url.pathname.substring(1);
+        imageUrl = new URL(this.configurationService.apiConfiguration.scryfallCardBackRoot +
+          `/large/${cardBackId.substring(0, 1)}/${cardBackId.substring(1, 2)}/${cardBackId}.jpg`
+        );
       }
-    });
+      const arrayBuffer: ArrayBuffer = await this.scryfallClient.fetchArrayBuffer(imageUrl);
+      const buffer = Buffer.from(arrayBuffer);
+
+      return new Promise((resolve, reject) => {
+        if (buffer.length > 0) {
+          const writeStream = createWriteStream(cachedImagePath);
+          writeStream.on("error", (err: Error) => reject(err));
+          writeStream.on("finish", () => resolve(true));
+          writeStream.write(buffer);
+          writeStream.end();
+        } else {
+          reject(new Error("Empty response received"));
+        }
+      });
+    } else {
+      return Promise.reject(new Error("Api configuration is null"));
+    }
   }
   // #endregion
 }

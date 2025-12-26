@@ -88,7 +88,7 @@ export class CardSearchService implements ICardSearchService {
     };
     this._cardQueryParams = {
       pageNumber: 0,
-      // TODO store this in preferences
+      // TODO store this in preferences, and preference context
       pageSize: 100,
       sortField: "collectorNumberSortValue",
       sortDirection: "ASC",

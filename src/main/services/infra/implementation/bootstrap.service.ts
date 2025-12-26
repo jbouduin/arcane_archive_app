@@ -3,17 +3,25 @@ import { homedir } from "os";
 import { container, injectable } from "tsyringe";
 // import { MigrationDi } from "../../../database/migrations/migrations.di";
 // import { ICardRepository } from "../../../database/repo/interfaces";
-import { IpcChannel, IpcPaths, IpcRequest } from "../../../../common/ipc";
+import { IpcChannel, IpcPaths, IpcRequest, ProgressCallback } from "../../../../common/ipc";
 import { IMtgCollectionClient } from "../../api/interface";
 import { IRouter } from "../../base";
 import { ICardImageService, ICardSymbolService } from "../../library/interface";
 import { API, INFRASTRUCTURE, LIBRARY } from "../../service.tokens";
 import { IBootstrapService, IConfigurationService, ILogService, IRouterService, IWindowsService } from "../interface";
-import { ProgressCallback } from "../../../../common/ipc";
 
 @injectable()
 export class BootstrapService implements IBootstrapService {
   // #region IBootstrapService methods ----------------------------------------
+  /**
+   * Boot sequence:
+   * - create splash window
+   * - run pre-boot sequence
+   * - run discovery
+   * - if applicable: run first usage sequence. After closing first usage window, calls the boot sequence.
+   * - otherwise: run boot sequence
+   * If discovery failed: show messagebox and exit
+   */
   public async boot(): Promise<void> {
     const windowsService: IWindowsService = container.resolve(INFRASTRUCTURE.WindowsService);
     const configurationService: IConfigurationService = container.resolve(INFRASTRUCTURE.ConfigurationService);
@@ -41,7 +49,7 @@ export class BootstrapService implements IBootstrapService {
                   app.quit();
                 } else {
                   splashWindow.show();
-                  void this.bootFunction(callback, configurationService, true)
+                  void this.bootFunction(callback, configurationService)
                     .then(() => windowsService.createMainWindow())
                     .catch((reason: Error) => {
                       logService.error("Main", "Error in boot function: " + reason.message, reason);
@@ -52,8 +60,8 @@ export class BootstrapService implements IBootstrapService {
                 }
               });
             } else {
-              // --- 4b. run normal sequence ---
-              void this.bootFunction(callback, configurationService, false)
+              // --- 4b. run boot sequnce sequence ---
+              void this.bootFunction(callback, configurationService)
                 .then(() => windowsService.createMainWindow())
                 .catch((reason: Error) => {
                   logService.error("Main", "Error in boot function: " + reason.message, reason);
@@ -65,10 +73,6 @@ export class BootstrapService implements IBootstrapService {
           },
           (reason: Error) => {
             logService.error("Main", "Discovery failed: " + reason.message, reason);
-            // LATER we could open a real window (maybe even the main window and show a dialog with a retry capability)
-            // same for the dialog.showErrorBox above
-            dialog.showErrorBox(`Discovery failed: ${reason.message}`, reason.stack || "");
-            app.exit();
           }
         );
     });
@@ -86,6 +90,13 @@ export class BootstrapService implements IBootstrapService {
   // #endregion
 
   // #region helper methods ---------------------------------------------------
+  /**
+   * Preboot sequence:
+   * - read configuration and preferences from the application directory. If not found, the first usage flag remains set.
+   * - register the IPC channels
+   * - set handler for cached images
+   * @param configurationService the configuration service
+   */
   private async preboot(configurationService: IConfigurationService): Promise<void> {
     configurationService.initialize(app.getAppPath(), homedir(), nativeTheme.shouldUseDarkColors);
     const routerService: IRouterService = container.resolve(INFRASTRUCTURE.RouterService);
@@ -103,7 +114,13 @@ export class BootstrapService implements IBootstrapService {
     });
   }
 
-  private async bootFunction(callback: ProgressCallback, configurationService: IConfigurationService, firstUsage: boolean): Promise<void> {
+  /**
+   *
+   * @param callback the callback function, which will set the contents of the splash screen
+   * @param configurationService the, already initialized, configuration service
+   * @param firstUsage
+   */
+  private async bootFunction(callback: ProgressCallback, configurationService: IConfigurationService): Promise<void> {
     callback("Initializing");
 
     // const migrationContainer = MigrationDi.registerMigrations();
@@ -124,7 +141,7 @@ export class BootstrapService implements IBootstrapService {
     //       .synchronize(syncParam, splashWindow.webContents);
     //   })
     //   .then(() => splashWindow.webContents.send("splash", "loading main program"));
-    if (configurationService.preferences.refreshCacheAtStartup || firstUsage) {
+    if (configurationService.preferences.refreshCacheAtStartup || configurationService.isFirstUsage) {
       await this.refreshCache(callback);
     }
     callback("Loading main program");

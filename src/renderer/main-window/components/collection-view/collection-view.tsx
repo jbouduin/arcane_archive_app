@@ -24,7 +24,7 @@ export function CollectionView(props: CollectionViewProps) {
       }
       {
         !loggedIn && (
-          <NotLoggedInView {...props} />
+          <NotLoggedInView {...props} server="collection" />
         )
       }
     </>

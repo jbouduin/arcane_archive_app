@@ -2,6 +2,7 @@ import { AlertProps, ToastProps } from "@blueprintjs/core";
 import { Dispatch } from "react";
 import { ProgressCallbackValue } from "../../../../common/ipc";
 import { BaseDialogProps } from "../../components/base/base-dialog";
+import { ShowToastFn } from "../../types";
 import { BaseViewmodel } from "../../viewmodel/base.viewmodel";
 import { IOverlayService } from "../interface";
 
@@ -37,7 +38,7 @@ export class OverlayService implements IOverlayService {
     this.setSplashScreen = setSplashScreen;
   }
 
-  public initialize(showToast: (props: ToastProps, key?: string) => void): void {
+  public setShowToast(showToast: ShowToastFn): void {
     this._showToast = showToast;
   }
 

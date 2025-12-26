@@ -1,18 +1,20 @@
-import { FocusStyleManager, H1, OverlaysProvider, OverlayToaster, PortalProvider, Position, ToastProps } from "@blueprintjs/core";
+import { Classes, FocusStyleManager, OverlaysProvider, OverlayToaster, PortalProvider, Position, ToastProps } from "@blueprintjs/core";
 import { createRoot } from "react-dom/client";
+import { IpcPaths } from "../../common/ipc";
 import { DialogRenderer } from "../shared/components/base/base-dialog/dialog-renderer";
-import { SessionProvider } from "../shared/context/providers/session-provider";
+import { ServerNotAvailable } from "../shared/components/server-not-available/server-not-available";
 import { ServiceContainer } from "../shared/context/implementation/service.container";
+import { ApiStatusProvider } from "../shared/context/providers/api-status-provider";
+import { PreferencesProvider } from "../shared/context/providers/preferences-provider";
+import { SessionProvider } from "../shared/context/providers/session-provider";
 import { ServiceContainerContext } from "../shared/context/shared.context";
 import { MainWindowDesktop } from "./components/desktop/main-window-desktop";
-import { PreferencesProvider } from "../shared/context/providers/preferences-provider";
-import { IpcPaths } from "../../common/ipc";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
 void (async () => {
   await import("./main-window.css");
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  // await new Promise(resolve => setTimeout(resolve, 3000));
   const appToaster = await OverlayToaster.create(
     {
       className: "recipe-toaster",
@@ -26,32 +28,57 @@ void (async () => {
   const serviceContainer = new ServiceContainer();
   const container = document.getElementById("root")!;
   const root = createRoot(container);
-  serviceContainer.initialize(toastCall)
-    .then(
-      () => {
+  let initialization = await serviceContainer.initialize(toastCall);
+
+  let mainWindowShown = false;
+  const theme = serviceContainer.configurationService.preferences.useDarkTheme ? Classes.DARK : "";
+  while (initialization == null || !initialization.isOk) {
+    let count = 30;
+
+    // Show main window if not already shown
+    if (!mainWindowShown) {
+      serviceContainer.ipcProxy.postEmptyBody<never>(IpcPaths.MAIN_WINDOW_SHOW);
+      mainWindowShown = true;
+    }
+
+    root.render(
+      <ServerNotAvailable initializationResult={initialization} nextTry={count} className={theme} />
+    );
+
+    // Countdown loop
+    await new Promise<void>((resolve) => {
+      const interval = setInterval(() => {
+        count--;
         root.render(
-          <OverlaysProvider>
-            <PortalProvider>
-              <ServiceContainerContext.Provider value={serviceContainer}>
-                <SessionProvider>
-                  <PreferencesProvider>
-                    <MainWindowDesktop toastCall={toastCall} />
-                    <DialogRenderer overlayService={serviceContainer.overlayService} />
-                  </PreferencesProvider>
-                </SessionProvider>
-              </ServiceContainerContext.Provider>
-            </PortalProvider>
-          </OverlaysProvider>
+          <ServerNotAvailable initializationResult={initialization} nextTry={count} className={theme} />
         );
-      },
-      (reason: unknown) => {
-        root.render(
-          <>
-            <H1>Error initializing</H1>
-            {reason}
-          </>
-        );
-      }
-    )
-    .then(() => serviceContainer.ipcProxy.postEmptyBody<never>(IpcPaths.MAIN_WINDOW_SHOW));
+        if (count == 0) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 1000);
+    });
+
+    initialization = await serviceContainer.initialize(toastCall);
+  }
+
+  root.render(
+    <OverlaysProvider>
+      <PortalProvider>
+        <ServiceContainerContext.Provider value={serviceContainer}>
+          <SessionProvider>
+            <PreferencesProvider>
+              <ApiStatusProvider>
+                <MainWindowDesktop toastCall={toastCall} />
+                <DialogRenderer overlayService={serviceContainer.overlayService} />
+              </ApiStatusProvider>
+            </PreferencesProvider>
+          </SessionProvider>
+        </ServiceContainerContext.Provider>
+      </PortalProvider>
+    </OverlaysProvider>
+  );
+  if (!mainWindowShown) {
+    serviceContainer.ipcProxy.postEmptyBody<never>(IpcPaths.MAIN_WINDOW_SHOW);
+  }
 })();

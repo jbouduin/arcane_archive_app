@@ -1,9 +1,11 @@
 import { Classes } from "@blueprintjs/core";
 import { useCallback, useEffect, useState } from "react";
+import { PreferencesDto } from "../../../../common/dto";
 import { useServices } from "../../../hooks";
 import { PreferencesContext } from "../shared.context";
+import { ProviderProps } from "./provider.props";
 
-export function PreferencesProvider({ children }: { children: React.ReactNode; }) {
+export function PreferencesProvider(props: ProviderProps) {
   // #region callback ---------------------------------------------------------
   const toThemeName = useCallback((darkTheme: boolean) => darkTheme ? Classes.DARK : "", []);
   // #endregion
@@ -16,9 +18,9 @@ export function PreferencesProvider({ children }: { children: React.ReactNode; }
   // #region Effects ----------------------------------------------------------
   useEffect(
     () => {
-      const unsubscribe = configurationService.subscribe(() => {
-        setTheme(toThemeName(configurationService.preferences.useDarkTheme));
-      });
+      const unsubscribe = configurationService.subscribe(
+        (data: PreferencesDto) => setTheme(toThemeName(data.useDarkTheme))
+      );
       return unsubscribe;
     },
     [configurationService]
@@ -28,7 +30,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode; }
   // #region Rendering --------------------------------------------------------
   return (
     <PreferencesContext.Provider value={{ themeClassName: theme }}>
-      {children}
+      {props.children}
     </PreferencesContext.Provider>
   );
   // #endregion

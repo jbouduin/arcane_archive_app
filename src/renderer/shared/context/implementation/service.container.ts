@@ -1,10 +1,12 @@
 import { ToastProps } from "@blueprintjs/core";
-import { InitializeServiceContainerOptions } from "../../types";
+import { SettingsDto } from "../../../../common/dto";
+import { InitializeServiceContainerOptions, ShowToastFn } from "../../types";
 import {
   ICardSearchService, ICardSymbolService, ICollectionManagerProxyService, IColorService, IConfigurationService,
   IDisplayValueService, IIpcProxyService, ILanguageService, IMtgSetService,
   IOverlayService, IServiceContainer, ISessionService, IViewmodelFactoryService
 } from "../interface";
+import { InitializationResult } from "../types";
 import { CardSearchService } from "./card-search.service";
 import { CardSymbolService } from "./card-symbol.service";
 import { CollectionManagerProxyService } from "./collection-manager-proxy.service";
@@ -20,7 +22,7 @@ import { ViewmodelFactoryService } from "./viewmodel-factory.service";
 
 export class ServiceContainer implements IServiceContainer {
   // #region Private fields ---------------------------------------------------
-  private _cardSearchParamService: ICardSearchService;
+  private _cardSearchService: ICardSearchService;
   private _cardSymbolService: ICardSymbolService;
   private _collectionManagerProxy: ICollectionManagerProxyService;
   private _colorService: IColorService;
@@ -36,7 +38,7 @@ export class ServiceContainer implements IServiceContainer {
 
   // #region Constructor ------------------------------------------------------
   public constructor() {
-    this._cardSearchParamService = new CardSearchService();
+    this._cardSearchService = new CardSearchService();
     this._cardSymbolService = new CardSymbolService();
     this._collectionManagerProxy = new CollectionManagerProxyService();
     this._colorService = new ColorService();
@@ -53,7 +55,7 @@ export class ServiceContainer implements IServiceContainer {
 
   // #region IServiceContainer Members (getters) ------------------------------
   public get cardSearchService(): ICardSearchService {
-    return this._cardSearchParamService;
+    return this._cardSearchService;
   }
 
   public get cardSymbolService(): ICardSymbolService {
@@ -102,54 +104,82 @@ export class ServiceContainer implements IServiceContainer {
   // #endregion
 
   // #region IServiceContainer Members (methods) ------------------------------
-  public async initialize(showToast: (props: ToastProps, key?: string) => void, options: InitializeServiceContainerOptions = {}): Promise<void> {
-    // TODO: if initializing one of the services fails: toastCall is used, but as there is
-    // no window, they will never be displayed to the user
-    // solution:
-    // - pass a fake showToast to the initialize calls of the proxies (overlay does not need it) that intercepts the toast calls a
-    // - return array of errors or even ToastProps from this method with all intercepted toast call methods
-    // - set the real toast call in the services
-    // - somewhere we have to check if
-    //   - discovery succeeded (currently back-end gives a dialog-box)
-    //   - library service is available -> if not: that was it
-    //   - authentication service is available -> although we could check in the this in the login/register dialog itself also
-    //   - deck, collection service is available  -> could be checked when selecting that view, combined with authentication service availability
-    //     because the deck and collection services can not be used without authentication
-    this._ipcProxy.initialize(showToast);
-    const configuration = await this._configurationService.initialize(this._ipcProxy);
-    this._collectionManagerProxy.initialize(this.sessionService, configuration, showToast);
-    this._overlayService.initialize(showToast);
+  public async initialize(
+    showToast: ShowToastFn,
+    options: InitializeServiceContainerOptions = {}
+  ): Promise<InitializationResult> {
+    const result: InitializationResult = {
+      isOk: true,
+      errors: new Array<ToastProps>()
+    };
 
-    const skippableServices = new Array<Promise<void>>();
-    if (!options.skipCardSearchService) {
-      skippableServices.push(this._cardSearchParamService.initialize(this._collectionManagerProxy));
-    }
-    if (!options.skipCardSymbolService) {
-      skippableServices.push(this._cardSymbolService.initialize(this._ipcProxy));
-    }
-    if (!options.skipColorService) {
-      skippableServices.push(this._colorService.initialize(this._collectionManagerProxy));
-    }
-    if (!options.skipDisplayValueService) {
-      skippableServices.push(this._displayValueService.initialize(this._collectionManagerProxy));
-    }
-    if (!options.skipLanguageService) {
-      skippableServices.push(this._languageService.initialize(this._collectionManagerProxy));
-    }
-    if (!options.skipMtgSetService) {
-      skippableServices.push(this._mtgSetService.initialize(this._collectionManagerProxy));
-    }
-    if (!options.skipSessionService) {
-      skippableServices.push(this._sessionService.initialize(this._ipcProxy, this._configurationService));
-    }
+    // -- show toast "interceptor" to be used during initialization --
+    const initializationShowToast: ShowToastFn = (props: ToastProps, _key?: string) => {
+      if (props.intent == "warning" || props.intent == "danger") {
+        result.isOk = false;
+      }
+      result.errors.push(props);
+    };
 
-    await Promise.all(skippableServices);
-    this._viewmodelFactoryService.initialize(
-      this._colorService,
-      this._displayValueService,
-      this._languageService,
-      this._mtgSetService
-    );
+    // -- initialize IpcProxy with initialization show toast --
+    this._ipcProxy.setShowToast(initializationShowToast);
+    this._collectionManagerProxy.setShowToast(initializationShowToast);
+
+    // !!! all services should be able to handle a second initialization call !!!
+    await this._configurationService.initialize(this._ipcProxy)
+      .then(
+        async (configuration: SettingsDto) => {
+          this._collectionManagerProxy.initialize(this.sessionService, configuration);
+          const apiStatus = await this._collectionManagerProxy.startRefreshing();
+          if (apiStatus.get("library") != null) {
+            // Skippable services do not reject
+            const skippableServices = new Array<Promise<void>>();
+            if (!options.skipCardSearchService) {
+              skippableServices.push(this._cardSearchService.initialize(this._collectionManagerProxy));
+            }
+            if (!options.skipCardSymbolService) {
+              skippableServices.push(this._cardSymbolService.initialize(this._ipcProxy));
+            }
+            if (!options.skipColorService) {
+              skippableServices.push(this._colorService.initialize(this._collectionManagerProxy));
+            }
+            if (!options.skipDisplayValueService) {
+              skippableServices.push(this._displayValueService.initialize(this._collectionManagerProxy));
+            }
+            if (!options.skipLanguageService) {
+              skippableServices.push(this._languageService.initialize(this._collectionManagerProxy));
+            }
+            if (!options.skipMtgSetService) {
+              skippableServices.push(this._mtgSetService.initialize(this._collectionManagerProxy));
+            }
+            if (!options.skipSessionService) {
+              skippableServices.push(this._sessionService.initialize(this._ipcProxy, this._configurationService));
+            }
+
+            await Promise.all(skippableServices)
+              .then(
+                () => this._viewmodelFactoryService.initialize(
+                  this._colorService,
+                  this._displayValueService,
+                  this._languageService,
+                  this._mtgSetService
+                ),
+                () => result.isOk = false
+              );
+          } else {
+            initializationShowToast({ message: "Service not available" });
+            result.isOk = false;
+          }
+        },
+        () => result.isOk = false // configuration could not be retrieved
+      ).finally(() => {
+        // -- set real toast in services --
+        this._overlayService.setShowToast(showToast);
+        this._ipcProxy.setShowToast(showToast);
+        this._collectionManagerProxy.setShowToast(showToast);
+      }
+      );
+    return result;
   }
   // #endregion
 };

@@ -16,17 +16,18 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   private homeDirectory!: string;
   private useDarkTheme!: boolean;
   private _systemSettings!: SystemSettingsDto;
-  private _apiConfiguration!: ApiConfigurationDto;
+  private _apiConfiguration: ApiConfigurationDto | null;
   private _preferences!: PreferencesDto;
   private _isFirstUsage!: boolean;
+  private discover!: (() => Promise<ResultDto<DiscoveryDto>>) | null;
   // #endregion
 
   // #region IConfigurationService properties ---------------------------------
-  public get apiConfiguration(): ApiConfigurationDto {
+  public get apiConfiguration(): ApiConfigurationDto | null {
     return this._apiConfiguration;
   }
 
-  public set apiConfiguration(value: ApiConfigurationDto) {
+  public set apiConfiguration(value: ApiConfigurationDto | null) {
     this._apiConfiguration = value;
   }
 
@@ -56,6 +57,8 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory
   ) {
     super(logService, resultFactory);
+    this._apiConfiguration = null;
+    this.discover = null;
   }
   // #endregion
 
@@ -81,8 +84,12 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   }
 
   public async runDiscovery(discover: () => Promise<ResultDto<DiscoveryDto>>): Promise<void> {
-    const discoveryDto = await discover();
-    this._apiConfiguration = discoveryDto.data;
+    this.discover = discover;
+    void await discover()
+      .then(
+        (res: ResultDto<DiscoveryDto>) => this._apiConfiguration = res.data,
+        () => this._apiConfiguration = null
+      );
   }
   // #endregion
 
@@ -95,7 +102,14 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     return this.resultFactory.createSuccessResultPromise(this.createConfigurationFactoryDefault());
   }
 
-  public getSettings(): Promise<IResult<SettingsDto>> {
+  public async getSettings(): Promise<IResult<SettingsDto>> {
+    if (this._apiConfiguration == null) {
+      await this.discover!()
+        .then(
+          (res: ResultDto<DiscoveryDto>) => this._apiConfiguration = res.data,
+          () => this._apiConfiguration = null
+        );
+    }
     const result: SettingsDto = {
       apiConfiguration: this._apiConfiguration,
       preferences: this._preferences

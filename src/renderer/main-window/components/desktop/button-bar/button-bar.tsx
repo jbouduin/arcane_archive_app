@@ -1,5 +1,5 @@
 import { ButtonGroup, Menu, MenuItem, ToastProps } from "@blueprintjs/core";
-import { useServices, useSession } from "../../../../hooks";
+import { useApiStatus, useServices, useSession } from "../../../../hooks";
 import { showLoginDialog, showPreferencesDialog, showProfileDialog, showSystemSettingsDialog } from "../../../../shared/components/dialogs/factory";
 import { EDesktopView } from "../desktop-view.enum";
 import { ButtonBarButton } from "./button-bar-button";
@@ -9,6 +9,7 @@ import { ButtonBarProps } from "./button-bar.props";
 export function ButtonBar(props: ButtonBarProps) {
   // #region Hooks ------------------------------------------------------------
   const { loggedIn } = useSession();
+  const { authenticationServiceAvailable } = useApiStatus();
   const serviceContainer = useServices();
   // #endregion
 
@@ -115,7 +116,11 @@ export function ButtonBar(props: ButtonBarProps) {
   function renderNotLoggedInMenu(): React.JSX.Element {
     return (
       <Menu size="small">
-        <MenuItem onClick={loginClick} text="Log in" />
+        <MenuItem
+          disabled={!authenticationServiceAvailable}
+          onClick={loginClick}
+          text={authenticationServiceAvailable ? "Log in" : "Log in (service not available)"}
+        />
       </Menu>
     );
   }

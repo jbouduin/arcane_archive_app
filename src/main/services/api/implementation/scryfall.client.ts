@@ -44,19 +44,23 @@ export class ScryfallClient extends BaseService implements IScryfallClient {
   }
 
   private async processRequest(uri: string | URL, resolve: (value: Response | PromiseLike<Response>) => void, reject: (reason?: unknown) => void) {
-    const now = Date.now();
-    const sleepTime = Math.max(this.nextQuery - now, 0);
-    this.nextQuery = now + this.configurationService.apiConfiguration.scryfallMinimumRequestTimeout;
+    if (this.configurationService.apiConfiguration != null) {
+      const now = Date.now();
+      const sleepTime = Math.max(this.nextQuery - now, 0);
+      this.nextQuery = now + this.configurationService.apiConfiguration.scryfallMinimumRequestTimeout;
 
-    await this.sleep(sleepTime);
-    this.logService.debug("Main", `fetch ${uri}`);
-    try {
-      const result = await fetch(uri);
-      this.logService.debug("Main", `retrieved ${uri} -> status: ${result.status}`);
-      // LATER if not 200 reject
-      resolve(result);
-    } catch (error) {
-      reject(error);
+      await this.sleep(sleepTime);
+      this.logService.debug("Main", `fetch ${uri}`);
+      try {
+        const result = await fetch(uri);
+        this.logService.debug("Main", `retrieved ${uri} -> status: ${result.status}`);
+        // LATER if not 200 reject
+        resolve(result);
+      } catch (error) {
+        reject(error);
+      }
+    } else {
+      reject(new Error("Api configuration is null"));
     }
   }
 

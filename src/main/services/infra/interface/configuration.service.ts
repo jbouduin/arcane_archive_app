@@ -3,7 +3,7 @@ import { DiscoveryDto } from "../../../dto";
 import { IResult } from "../../base";
 
 export interface IConfigurationService {
-  readonly apiConfiguration: ApiConfigurationDto;
+  readonly apiConfiguration: ApiConfigurationDto | null;
   readonly dataBaseFilePath: string;
   readonly isFirstUsage: boolean;
   readonly configuration: SystemSettingsDto;

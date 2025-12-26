@@ -6,13 +6,13 @@ import { PreferencesChangeListener } from "../providers";
 export class ConfigurationService implements IConfigurationService {
   // #region private fields ---------------------------------------------------
   private ipcProxy!: IIpcProxyService;
-  private _apiConfiguration!: ApiConfigurationDto;
+  private _apiConfiguration!: ApiConfigurationDto | null;
   private _preferences!: PreferencesDto;
   private listeners: Array<PreferencesChangeListener>;
   // #endregion
 
   // #region IConfiguration Getters -------------------------------------------
-  public get apiConfiguration(): ApiConfigurationDto {
+  public get apiConfiguration(): ApiConfigurationDto | null {
     return this._apiConfiguration;
   }
 

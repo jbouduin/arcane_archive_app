@@ -1,4 +1,4 @@
-import { ToastProps } from "@blueprintjs/core";
+import { ShowToastFn } from "../../types";
 
 export interface IIpcProxyService {
   logServerResponses: boolean;
@@ -9,5 +9,5 @@ export interface IIpcProxyService {
   postEmptyBody<Res extends object>(path: string): Promise<Res>;
   putData<Req extends object, Res extends object>(path: string, data: Req): Promise<Res>;
   patchData<Req extends object, Res extends object>(path: string, data: Req): Promise<Res>;
-  initialize(showToast: (props: ToastProps, key?: string) => void): void;
+  setShowToast(showToast: ShowToastFn): void;
 }

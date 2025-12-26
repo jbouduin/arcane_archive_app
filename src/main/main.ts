@@ -14,7 +14,6 @@ updateElectronApp();
 /*
  * Handle creating/removing shortcuts on Windows when installing/uninstalling.
  */
-
 /* eslint-disable-next-line @typescript-eslint/no-require-imports */
 if (require("electron-squirrel-startup")) {
   app.quit();
@@ -26,17 +25,21 @@ if (require("electron-squirrel-startup")) {
  * Some APIs can only be used after this event occurs.
  */
 void app.whenReady().then(async () => {
+  // --- Initialize DI container ---
   ServicesDI.register();
+  // --- run boot sequence ---
   await container
     .resolve<IBootstrapService>(INFRASTRUCTURE.BootstrapService)
     .boot();
 
+  // --- create main window on activate if no window is available ---
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       container.resolve<IWindowsService>(INFRASTRUCTURE.WindowsService).createMainWindow();
     }
   });
 
+  // --- register the shortcut to open devtools (required because menu is not avaiable) ---
   globalShortcut.register(
     "CommandOrControl+Shift+I",
     () => {
