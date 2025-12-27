@@ -1,4 +1,4 @@
-export type LogSource = "Main" | "Renderer" | "API";
+import { LogSource } from "../../base";
 
 export interface ILogService {
   info(source: LogSource, message: string, ...args: Array<unknown>): void;

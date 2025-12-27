@@ -74,7 +74,6 @@ void (async () => {
   }
 
   const systemSettings = await serviceContainer.ipcProxy.getData<SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS_FACTORY_DEFAULT);
-  // NOW add another wrapper that can retry initialization if it failed
   root.render(
     <BlueprintProvider>
       <ServiceContainerContext.Provider value={serviceContainer}>

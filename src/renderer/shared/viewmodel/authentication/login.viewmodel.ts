@@ -1,11 +1,16 @@
+import { LoginRequestDto } from "../../../../common/dto";
 import { stringCouldBeEmail, stringHasMinimalLength } from "../../components/util";
-import { LoginRequestDto } from "../../dto/login-request.dto";
 import { ValidationResult } from "../../types";
 import { BaseViewmodel } from "../base.viewmodel";
 
 export class LoginViewmodel extends BaseViewmodel<LoginRequestDto> {
+  // #region Private fields ---------------------------------------------------
+  private _selectedExistingPassword: string | null;
+  // #endregion
+
   // #region non Dto related properties ---------------------------------------
   public readonly showRegisterButton: boolean;
+  public readonly savedUserNames: Set<string>;
   // #endregion
 
   // #region Getters/Setters --------------------------------------------------
@@ -24,12 +29,26 @@ export class LoginViewmodel extends BaseViewmodel<LoginRequestDto> {
   public set password(value: string) {
     this._dto.password = value;
   }
+
+  public set selectedExistingPassword(value: string) {
+    this._selectedExistingPassword = value;
+  }
+
+  public get modifiedPasswordOfExistingUser(): boolean {
+    return this.savedUserNames.has(this.user) && this.password != this._selectedExistingPassword;
+  }
+
+  public get nonExistinguser(): boolean {
+    return !this.savedUserNames.has(this.user);
+  }
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: LoginRequestDto, showRegisterButton: boolean) {
+  public constructor(dto: LoginRequestDto, showRegisterButton: boolean, savedUsernames: Array<string>) {
     super(dto);
     this.showRegisterButton = showRegisterButton;
+    this.savedUserNames = new Set<string>(savedUsernames);
+    this._selectedExistingPassword = null;
   }
   // #endregion
 

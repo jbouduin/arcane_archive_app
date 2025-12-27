@@ -1,23 +1,52 @@
 import { random } from "lodash";
+import { IServiceContainer } from "../../../context";
 import { RegisterRequestDto, UserDto } from "../../../dto";
 import { LoginViewmodel, RegisterViewmodel, UserViewmodel } from "../../authentication";
 import { IAuthenticationViewmodelFactory } from "../interface";
 
 export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelFactory {
-  // TODO create empty view models, eventually go to server to generate a username
   // #region IAuthenticationViewmodelFactory Members --------------------------
-  public getLoginViewmodel(showRegisterButton: boolean): LoginViewmodel {
-    // TODO: allow user to locally save username (and password if we can encrypt-decrypt it in some form)
+  public getInitialLoginViewmodel(showRegisterButton: boolean, knownUsers: Array<string> = new Array<string>()): LoginViewmodel {
     return new LoginViewmodel(
       {
-        user: "sys_admi",
-        password: "sys_admin"
+        user: "",
+        password: ""
       },
-      showRegisterButton
+      showRegisterButton,
+      knownUsers
     );
   }
 
+  public async getLoginViewmodel(showRegisterButton: boolean, serviceContainer: IServiceContainer): Promise<LoginViewmodel> {
+    let result: LoginViewmodel;
+    const savedUserNames = await serviceContainer.sessionService
+      .getSavedUserNames(serviceContainer)
+      .then(
+        (userNames: Array<string>) => userNames,
+        () => new Array<string>()
+      );
+    if (savedUserNames.length == 1) {
+      // create an initial view model and set the properties, so that the modified flag is true
+      const existingPwd = await serviceContainer.sessionService.getPassword(serviceContainer, savedUserNames[0]);
+      result = this.getInitialLoginViewmodel(showRegisterButton, savedUserNames);
+      result.user = savedUserNames[0];
+      result.password = existingPwd;
+      result.selectedExistingPassword = existingPwd;
+    } else {
+      result = new LoginViewmodel(
+        {
+          user: "",
+          password: ""
+        },
+        showRegisterButton,
+        savedUserNames
+      );
+    }
+    return result;
+  }
+
   public getRegisterViewmodel(showLoginButton: boolean): RegisterViewmodel {
+    // TODO create empty register viewmodel, eventually go to server to generate a username
     const nr = random(100000, 999999);
     const registerDto: RegisterRequestDto = {
       userName: "usr_" + nr.toString(),

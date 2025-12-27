@@ -15,8 +15,7 @@ export function ButtonBar(props: ButtonBarProps) {
 
   // #region Event handling -------------------------------------------------------------
   function loginClick(): void {
-    // TODO check if authorization service is available
-    showLoginDialog(serviceContainer, true);
+    void showLoginDialog(serviceContainer, true);
   }
 
   function logoutClick(): void {

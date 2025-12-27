@@ -1,4 +1,4 @@
-import { LoginRequestDto } from "../../../dto";
+import { LoginRequestDto } from "../../../../../common/dto";
 import { LoginViewmodel } from "../../../viewmodel";
 import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 

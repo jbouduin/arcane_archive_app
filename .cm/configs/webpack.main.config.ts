@@ -13,6 +13,9 @@ export const mainConfig: Configuration = {
   module: {
     rules,
   },
+  externals: {
+    keytar: 'commonjs keytar'
+  },
   plugins,
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],

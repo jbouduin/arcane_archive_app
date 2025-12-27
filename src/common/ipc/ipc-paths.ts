@@ -14,8 +14,9 @@ export class IpcPaths {
   public static readonly SETTINGS = "/settings";
   // #endregion
 
-  // #region Infra: Settings --------------------------------------------------
+  // #region Infra: Session ---------------------------------------------------
   public static readonly SESSION = "/session";
+  public static readonly CREDENTIAL = "/credential";
   // #endregion
 
   // #region Infra: Io --------------------------------------------------------

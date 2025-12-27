@@ -14,7 +14,6 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   private preferencesFilePath!: string;
   private appDirectory!: string;
   private homeDirectory!: string;
-  private useDarkTheme!: boolean;
   private _systemSettings!: SystemSettingsDto;
   private _apiConfiguration: ApiConfigurationDto | null;
   private _preferences!: PreferencesDto;
@@ -64,22 +63,22 @@ export class ConfigurationService extends BaseService implements IConfigurationS
 
   // #region IConfigurationService methods ------------------------------------
   public initialize(appDirectory: string, homeDirectory: string, useDarkTheme: boolean): void {
+    // TODO use correct directories
     this.appDirectory = appDirectory;
     this.homeDirectory = homeDirectory;
-    this.useDarkTheme = useDarkTheme;
     this.systemSettingsFilePath = join(appDirectory, "collection-manager.config.json");
     if (existsSync(this.systemSettingsFilePath)) {
       this._systemSettings = JSON.parse(readFileSync(this.systemSettingsFilePath, "utf-8")) as SystemSettingsDto;
       this._isFirstUsage = false;
     } else {
-      this._systemSettings = this.createConfigurationFactoryDefault();
+      this._systemSettings = this.createConfigurationFactoryDefault(appDirectory, homeDirectory);
       this._isFirstUsage = true;
     }
     this.preferencesFilePath = join(appDirectory, "collection-manager.preferences.json");
     if (existsSync(this.preferencesFilePath)) {
       this._preferences = JSON.parse(readFileSync(this.preferencesFilePath, "utf-8")) as PreferencesDto;
     } else {
-      this._preferences = this.createPreferencesFactoryDefault(this.useDarkTheme);
+      this._preferences = this.createPreferencesFactoryDefault(useDarkTheme);
     }
   }
 
@@ -99,7 +98,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   }
 
   public getSystemSettingsFactoryDefault(): Promise<IResult<SystemSettingsDto>> {
-    return this.resultFactory.createSuccessResultPromise(this.createConfigurationFactoryDefault());
+    return this.resultFactory.createSuccessResultPromise(this.createConfigurationFactoryDefault(this.appDirectory, this.homeDirectory));
   }
 
   public async getSettings(): Promise<IResult<SettingsDto>> {
@@ -134,12 +133,12 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   // #endregion
 
   // #region Auxiliary factory default methods --------------------------------
-  private createConfigurationFactoryDefault(): SystemSettingsDto {
+  private createConfigurationFactoryDefault(appDirectory: string, homeDirectory: string): SystemSettingsDto {
     const result: SystemSettingsDto = {
       discovery: "http://localhost:5402/api/public/discover",
       dataConfiguration: {
-        rootDataDirectory: join(this.homeDirectory, "mtg-collection-manager"),
-        cacheDirectory: join(this.appDirectory, ".cache"),
+        rootDataDirectory: join(homeDirectory, "mtg-collection-manager"),
+        cacheDirectory: join(appDirectory, ".cache"),
         databaseName: "magic-db.sqlite"
 
       }

@@ -1,7 +1,7 @@
 import { noop } from "lodash";
-import { LoginResponseDto } from "../../../../common/dto";
+import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
-import { LoginRequestDto, ProfileDto, RegisterRequestDto, UserDto } from "../../dto";
+import { ProfileDto, RegisterRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
 import { IConfigurationService, IServiceContainer } from "../interface";
 import { ISessionService } from "../interface/session.service";
@@ -127,6 +127,22 @@ export class SessionService implements ISessionService {
     return serviceContainer.collectionManagerProxy.putData<UserDto, UserDto>(
       "authentication", path, dto, false
     );
+  }
+
+  public saveCredentials(serviceContainer: IServiceContainer, loginRequest: LoginRequestDto): Promise<void> {
+    return serviceContainer.ipcProxy.postData<LoginRequestDto, never>(IpcPaths.CREDENTIAL, loginRequest);
+  }
+
+  public getSavedUserNames(serviceContainer: IServiceContainer): Promise<Array<string>> {
+    return serviceContainer.ipcProxy.getData<Array<string>>(IpcPaths.CREDENTIAL);
+  }
+
+  public getPassword(serviceContainer: IServiceContainer, username: string): Promise<string> {
+    return serviceContainer.ipcProxy.getData<string>(`${IpcPaths.CREDENTIAL}/${username}`);
+  }
+
+  public deleteSavedUser(serviceContainer: IServiceContainer, username: string): Promise<number> {
+    return serviceContainer.ipcProxy.deleteData(`${IpcPaths.CREDENTIAL}/${username}`);
   }
   // #endregion
 }

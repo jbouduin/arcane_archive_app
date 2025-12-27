@@ -10,9 +10,14 @@ import { ICardImageService, ICardSymbolService } from "../../library/interface";
 import { API, INFRASTRUCTURE, LIBRARY } from "../../service.tokens";
 import { IBootstrapService, IConfigurationService, ILogService, IRouterService, IWindowsService } from "../interface";
 
+// TODO rename to application service
 @injectable()
 export class BootstrapService implements IBootstrapService {
   // #region IBootstrapService methods ----------------------------------------
+  public get appName(): string {
+    return app.getName();
+  }
+
   /**
    * Boot sequence:
    * - create splash window

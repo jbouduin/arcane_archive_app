@@ -12,7 +12,6 @@ export * from "./library-cardface.dto";
 export * from "./library-external-reference.dto";
 export * from "./library-legality";
 export * from "./library-ruling.dto";
-export * from "./login-request.dto";
 export * from "./mtg-set-tree.dto";
 export * from "./mtg-set.dto";
 export * from "./profile.dto";

@@ -1,7 +1,7 @@
 import { Card } from "@blueprintjs/core";
 import classNames from "classnames";
 import { noop } from "lodash";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { LoginResponseDto } from "../../../common/dto";
 import { usePreferences, useServices } from "../../hooks";
@@ -15,7 +15,7 @@ import { PreferencesPanel } from "./panels/preferences-panel";
 import { RegisterPanel } from "./panels/register-panel";
 import { SystemPanel } from "./panels/system-panel";
 
-export function FirstTimeView(_props: FirstTimeViewProps) {
+export function FirstTimeView(props: FirstTimeViewProps) {
   // #region Hooks ------------------------------------------------------------
   const { themeClassName } = usePreferences();
   const nodeRef = useRef(null);
@@ -25,17 +25,27 @@ export function FirstTimeView(_props: FirstTimeViewProps) {
   // #region State ------------------------------------------------------------
   const [currentPanel, setCurrentPanel] = useState<PanelType>("intro");
   const [loginViewmodel, setLoginViewmodel] = useState<LoginViewmodel>(
-    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getLoginViewmodel(false)
+    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getInitialLoginViewmodel(false)
   );
   const [registrationViewmodel, setRegistrationViewmodel] = useState<RegisterViewmodel>(
     serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getRegisterViewmodel(false)
   );
   // this one is initialized with the factory default system settings
   const [systemSettingsViewmodel, setSystemSettingsViewmodel] = useState<SystemSettingsViewmodel>(
-    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getSystemSettingsViewmodel(_props.systemSettings, true)
+    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getSystemSettingsViewmodel(props.systemSettings, true)
   );
   const [preferencesViewmodel, setPreferencesViewmodel] = useState<PreferencesViewmodel>(
     serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(serviceContainer.configurationService.preferences)
+  );
+  // #endregion
+
+  // #region Effects ----------------------------------------------------------
+  useEffect(
+    () => {
+      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getLoginViewmodel(false, serviceContainer)
+        .then((model: LoginViewmodel) => setLoginViewmodel(model));
+    },
+    []
   );
   // #endregion
 

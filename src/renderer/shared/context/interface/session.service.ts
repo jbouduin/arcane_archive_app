@@ -1,5 +1,5 @@
-import { LoginResponseDto } from "../../../../common/dto";
-import { LoginRequestDto, RegisterRequestDto, UserDto } from "../../dto";
+import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
+import { RegisterRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
 import { SessionChangeListener } from "../providers";
 import { IConfigurationService } from "./configuration.service";
@@ -19,4 +19,8 @@ export interface ISessionService {
   logout(serviceContainer: IServiceContainer): Promise<void>;
   register(serviceContainer: IServiceContainer, registerDto: RegisterRequestDto): Promise<void>;
   saveUser(serviceContainer: IServiceContainer, dto: UserDto): Promise<UserDto>;
+  saveCredentials(serviceContainer: IServiceContainer, loginRequest: LoginRequestDto): Promise<void>;
+  getSavedUserNames(serviceContainer: IServiceContainer): Promise<Array<string>>;
+  getPassword(serviceContainer: IServiceContainer, username: string): Promise<string>;
+  deleteSavedUser(serviceContainer: IServiceContainer, username: string): Promise<number>;
 };

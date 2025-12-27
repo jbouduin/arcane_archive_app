@@ -6,6 +6,7 @@ import { RegisterViewmodel } from "../../../viewmodel";
 import { SaveCancelResetFooter } from "../../base/base-dialog";
 import { showLoginDialog } from "../factory";
 import { RegisterDialogFooterProps } from "./register-dialog-props";
+import { noop } from "lodash";
 
 export function RegisterDialogFooter(props: RegisterDialogFooterProps) {
   // #region Hooks ------------------------------------------------------------
@@ -15,18 +16,21 @@ export function RegisterDialogFooter(props: RegisterDialogFooterProps) {
   // #region Event handling ---------------------------------------------------
   function registerClick(e: React.SyntheticEvent<HTMLElement, Event>, dto: RegisterRequestDto) {
     return serviceContainer.sessionService.register(serviceContainer, dto)
-      .then(() => {
-        if (props.onClose) {
-          props.onClose(e);
-        }
-      });
+      .then(
+        () => {
+          if (props.onClose) {
+            props.onClose(e);
+          }
+        },
+        noop
+      );
   }
 
   function loginClick(e: React.MouseEvent<HTMLElement, MouseEvent>): void {
     if (props.onClose) {
       props.onClose(e);
     }
-    showLoginDialog(serviceContainer, false);
+    void showLoginDialog(serviceContainer, false);
   }
   // #endregion
 
