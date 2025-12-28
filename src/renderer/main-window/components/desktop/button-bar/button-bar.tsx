@@ -94,6 +94,10 @@ export function ButtonBar(props: ButtonBarProps) {
     return (
       <Menu size="small">
         <MenuItem onClick={() => showPreferencesDialog(serviceContainer)} text="Preferences" />
+        <MenuItem text="Cache">
+          <MenuItem onClick={() => serviceContainer.cardSymbolService.refreshCardSymbols(serviceContainer)} text="Refresh Card Symbols" />
+          <MenuItem onClick={() => serviceContainer.overlayService.showToast({ intent: "warning", message: "Feature not Implemented" })} text="Refresh Card Images" />
+        </MenuItem>
         <MenuItem onClick={() => showSystemSettingsDialog(serviceContainer, false)} text="System Settings" />
         {
           serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") &&

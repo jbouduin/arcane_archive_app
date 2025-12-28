@@ -1,3 +1,4 @@
+import { join } from "path";
 import { inject, singleton } from "tsyringe";
 import { ApiConfigurationDto, PreferencesDto, ResultDto, SettingsDto, SystemSettingsDto } from "../../../../common/dto";
 import { DiscoveryDto } from "../../../dto";
@@ -35,6 +36,10 @@ export class ConfigurationService extends BaseService implements IConfigurationS
 
   public get isFirstUsage(): boolean {
     return this._isFirstUsage;
+  }
+
+  public get cacheDatabaseFilePath(): string {
+    return join(this._systemSettings.dataConfiguration.cacheDirectory, "index.sqlite");
   }
   // #endregion
 

@@ -25,12 +25,19 @@ export class CardSymbolRouter extends BaseRouter implements IRouter {
   // #region IRouteDestinationService methods ---------------------------------
   public setRoutes(router: IRouterService): void {
     router.registerGetRoute(IpcPaths.CARD_SYMBOL_SVG, this.getCardSymbolSvg.bind(this) as RouteCallback);
+    router.registerPostRoute(IpcPaths.CARD_SYMBOL_REFRESH, this.refreshCardSymbols.bind(this) as RouteCallback);
   }
   // #endregion
 
   // #region private methods --------------------------------------------------
-  public getCardSymbolSvg(_request: RoutedRequest<void>): Promise<IResult<Map<string, string>>> {
+  private getCardSymbolSvg(_request: RoutedRequest<void>): Promise<IResult<Map<string, string>>> {
     return this.cardSymbolService.getCardSymbolSvg();
+  }
+
+  private async refreshCardSymbols(_request: RoutedRequest<void>): Promise<IResult<void>> {
+    const callBack = (s: string) => _request.sender.send("splash", s);
+    await this.cardSymbolService.cacheImages(callBack);
+    return this.resultFactory.createNoContentResultPromise();
   }
   // #endregion
 }

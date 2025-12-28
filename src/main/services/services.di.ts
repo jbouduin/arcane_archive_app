@@ -1,4 +1,5 @@
 import { ApiDi } from "./api/api.di";
+import { DatabaseDi } from "./database/database.di";
 import { InfraDi } from "./infra/infra.di";
 import { LibraryDi } from "./library/library.di";
 
@@ -7,5 +8,6 @@ export class ServicesDI {
     ApiDi.register();
     InfraDi.register();
     LibraryDi.register();
+    DatabaseDi.register();
   }
 }

@@ -14,7 +14,8 @@ export const mainConfig: Configuration = {
     rules,
   },
   externals: {
-    keytar: 'commonjs keytar'
+    keytar: 'commonjs keytar',
+    'better-sqlite3': 'commonjs better-sqlite3'
   },
   plugins,
   resolve: {

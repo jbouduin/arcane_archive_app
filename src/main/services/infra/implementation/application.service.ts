@@ -1,12 +1,13 @@
 import { app, dialog, ipcMain, IpcMainInvokeEvent, nativeTheme, protocol } from "electron";
+import { MigrationProvider } from "kysely";
 import { container, injectable } from "tsyringe";
-// import { MigrationDi } from "../../../database/migrations/migrations.di";
-// import { ICardRepository } from "../../../database/repo/interfaces";
 import { IpcChannel, IpcPaths, IpcRequest, ProgressCallback } from "../../../../common/ipc";
 import { IMtgCollectionClient } from "../../api/interface";
 import { IRouter } from "../../base";
+import { IDatabaseService } from "../../database/interface";
+import { MigrationDi } from "../../database/migration/migration.di";
 import { ICardImageService, ICardSymbolService } from "../../library/interface";
-import { API, INFRASTRUCTURE, LIBRARY } from "../../service.tokens";
+import { API, DATABASE, INFRASTRUCTURE, LIBRARY } from "../../service.tokens";
 import { IApplicationService, IConfigurationService, ILogService, IRouterService, IWindowsService } from "../interface";
 
 @injectable()
@@ -125,24 +126,15 @@ export class ApplicationService implements IApplicationService {
   private async bootFunction(callback: ProgressCallback, refreshCache: boolean): Promise<void> {
     callback("Initializing");
 
-    // const migrationContainer = MigrationDi.registerMigrations();
-    // await container.resolve<IDatabaseService>(INFRASTRUCTURE.DatabaseService)
-    //   .migrateToLatest(
-    //     migrationContainer.resolve<MigrationProvider>(DATABASE.CustomMigrationProvider),
-    //     (label: string) => splashWindow.webContents.send("splash", label)
-    //   )
-    //   .then((service: IDatabaseService) => service.connect())
-    //   .then(() => migrationContainer.dispose())
-    //   .then(() => {
-    //     const configurationService = container.resolve<IConfigurationService>(INFRASTRUCTURE.ConfigurationService);
-    //     const syncParam = configurationService.isFirstUsage
-    //       ? this.firstUseSyncParam()
-    //       : configurationService.configuration.syncAtStartupConfiguration;
-    //     return container
-    //       .resolve<IMtgSyncService>(MTG.SyncService)
-    //       .synchronize(syncParam, splashWindow.webContents);
-    //   })
-    //   .then(() => splashWindow.webContents.send("splash", "loading main program"));
+    const migrationContainer = MigrationDi.registerMigrations();
+    await container.resolve<IDatabaseService>(DATABASE.DatabaseService)
+      .migrateToLatest(
+        migrationContainer.resolve<MigrationProvider>(DATABASE.CustomMigrationProvider),
+        callback
+      )
+      .then((service: IDatabaseService) => service.connect())
+      .then(() => migrationContainer.dispose());
+
     if (refreshCache) {
       await this.refreshCache(callback);
     }

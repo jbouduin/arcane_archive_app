@@ -7,6 +7,7 @@ export interface IConfigurationService {
   readonly isFirstUsage: boolean;
   readonly configuration: SystemSettingsDto;
   readonly preferences: PreferencesDto;
+  readonly cacheDatabaseFilePath: string;
 
   getSystemSettings(): Promise<IResult<SystemSettingsDto>>;
   getSystemSettingsFactoryDefault(): Promise<IResult<SystemSettingsDto>>;

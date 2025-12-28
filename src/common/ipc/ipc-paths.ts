@@ -33,5 +33,6 @@ export class IpcPaths {
 
   // #region Library: Card Symbol ---------------------------------------------
   public static readonly CARD_SYMBOL_SVG = "/card-symbol/svg";
+  public static readonly CARD_SYMBOL_REFRESH = "/card-symbol/refresh";
   // #endregion
 }

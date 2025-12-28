@@ -1,6 +1,6 @@
 import { noop } from "lodash";
 import { IpcPaths } from "../../../../common/ipc";
-import { ICardSymbolService, IIpcProxyService } from "../interface";
+import { ICardSymbolService, IIpcProxyService, IServiceContainer } from "../interface";
 
 // LATER add sync card symbols method
 export class CardSymbolService implements ICardSymbolService {
@@ -31,6 +31,16 @@ export class CardSymbolService implements ICardSymbolService {
         },
         noop
       );
+  }
+
+  public async refreshCardSymbols(serviceContainer: IServiceContainer): Promise<void> {
+    serviceContainer.overlayService.showSplashScreen("Refreshing...");
+    await serviceContainer.ipcProxy.postEmptyBody<never>(IpcPaths.CARD_SYMBOL_REFRESH)
+      .then(
+        () => this.initialize(serviceContainer.ipcProxy),
+        noop
+      )
+      .finally(() => serviceContainer.overlayService.hideSplashSceen());
   }
   // #endregion
 }
