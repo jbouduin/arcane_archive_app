@@ -11,11 +11,11 @@ export class LogService implements ILogService {
   }
 
   public error(source: LogSource, message: string, ...args: Array<unknown>): void {
-    console.error(`\x1b[35m [${source}] `.concat(new Date().toISOString(), " - ", message).concat(" \x1b[0m"), ...args);
+    console.error(`\x1b[35m[${source}] `.concat(new Date().toISOString(), " \x1b[0m- ", message), ...args);
   }
 
   public warning(source: LogSource, message: string, ...args: Array<unknown>): void {
-    console.warn(`\x1b[33m [${source}] `.concat(new Date().toISOString(), " - ", message).concat(" \x1b[0m"), ...args);
+    console.warn(`\x1b[33m[${source}] `.concat(new Date().toISOString(), " \x1b[0m- ", message), ...args);
   }
 
   public debug(source: LogSource, message: string, ...args: Array<unknown>): void {

@@ -7,16 +7,15 @@ export const API = Object.freeze(
 
 export const INFRASTRUCTURE = Object.freeze(
   {
-    IoService: "IoService",
-    BootstrapService: "BootstrapService",
+    ApplicationService: "ApplicationService",
     ConfigurationService: "ConfigurationService",
+    IoService: "IoService",
     // DatabaseService: "DatabaseService",
-    // ImageCacheService: "ImageCacheService",
     LogService: "LogService",
     ResultFactory: "ResultFactory",
+    Router: "Router",
     RouterService: "RouterService",
     SessionService: "SessionService",
-    Router: "Router",
     WindowsService: "WindowsService"
   }
 );

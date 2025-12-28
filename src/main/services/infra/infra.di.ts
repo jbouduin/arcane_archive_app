@@ -1,7 +1,7 @@
 import { Lifecycle, container } from "tsyringe";
 import { IRouter } from "../base";
 import { INFRASTRUCTURE } from "../service.tokens";
-import { BootstrapService } from "./implementation/bootstrap.service";
+import { ApplicationService } from "./implementation/application.service";
 import { ConfigurationService } from "./implementation/configuration.service";
 import { IoService } from "./implementation/io.service";
 import { LogService } from "./implementation/log.service";
@@ -10,7 +10,7 @@ import { RouterService } from "./implementation/router.service";
 import { SessionService } from "./implementation/session.service";
 import { WindowsService } from "./implementation/windows.service";
 import {
-  IBootstrapService, IConfigurationService, IIoService, ILogService, IResultFactory, IRouterService,
+  IApplicationService, IConfigurationService, IIoService, ILogService, IResultFactory, IRouterService,
   ISessionService, IWindowsService
 } from "./interface";
 import { ApplicationRouter, ConfigurationRouter, IoRouter, SessionRouter, WindowsRouter } from "./router";
@@ -19,7 +19,7 @@ export class InfraDi {
   public static register(): void {
     // #region Services -------------------------------------------------------
     container.register<IIoService>(INFRASTRUCTURE.IoService, { useClass: IoService }, { lifecycle: Lifecycle.Singleton });
-    container.register<IBootstrapService>(INFRASTRUCTURE.BootstrapService, { useClass: BootstrapService });
+    container.register<IApplicationService>(INFRASTRUCTURE.ApplicationService, { useClass: ApplicationService });
     container.register<IConfigurationService>(INFRASTRUCTURE.ConfigurationService, { useClass: ConfigurationService }, { lifecycle: Lifecycle.Singleton });
     container.register<ILogService>(INFRASTRUCTURE.LogService, { useClass: LogService }, { lifecycle: Lifecycle.Singleton });
     container.register<IResultFactory>(INFRASTRUCTURE.ResultFactory, { useClass: ResultFactory }, { lifecycle: Lifecycle.Singleton });

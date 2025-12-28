@@ -1,20 +1,22 @@
-import { createWriteStream, existsSync, mkdirSync, readFileSync } from "fs";
-import path from "path";
+import { createWriteStream, existsSync, readFileSync } from "fs";
+import { join } from "path";
 import { inject, injectable } from "tsyringe";
 import { ProgressCallback } from "../../../../common/ipc";
 import { CardSymbolDto } from "../../../dto/card-symbol.dto";
 import { IMtgCollectionClient, IScryfallClient } from "../../api/interface";
 import { BaseService, IResult } from "../../base";
-import { IConfigurationService, ILogService, IResultFactory } from "../../infra/interface";
+import { IConfigurationService, IIoService, ILogService, IResultFactory } from "../../infra/interface";
 import { API, INFRASTRUCTURE } from "../../service.tokens";
 import { ICardSymbolService } from "../interface";
 
 @injectable()
 export class CardSymbolService extends BaseService implements ICardSymbolService {
   // #region Private fields ---------------------------------------------------
-  private readonly cacheDirectory: string;
   private readonly mtgCollectionClient: IMtgCollectionClient;
   private readonly scryfallClient: IScryfallClient;
+  private readonly configurationService: IConfigurationService;
+  private readonly cardSymbolCacheDirectory: string;
+  private readonly ioService: IIoService;
   // #endregion
 
   // #region Constructor ------------------------------------------------------
@@ -23,12 +25,15 @@ export class CardSymbolService extends BaseService implements ICardSymbolService
     @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory,
     @inject(INFRASTRUCTURE.ConfigurationService) configurationService: IConfigurationService,
     @inject(API.ApiClient) mtgCollectionClient: IMtgCollectionClient,
-    @inject(API.ScryfallClient) scryfallClient: IScryfallClient
+    @inject(API.ScryfallClient) scryfallClient: IScryfallClient,
+    @inject(INFRASTRUCTURE.IoService) ioService: IIoService
   ) {
     super(logService, resultFactory);
-    this.cacheDirectory = path.join(configurationService.configuration.dataConfiguration.cacheDirectory, "card-symbols");
     this.mtgCollectionClient = mtgCollectionClient;
     this.scryfallClient = scryfallClient;
+    this.configurationService = configurationService;
+    this.cardSymbolCacheDirectory = "card-symbols";
+    this.ioService = ioService;
   }
   // #endregion
 
@@ -36,6 +41,8 @@ export class CardSymbolService extends BaseService implements ICardSymbolService
   public async getCardSymbolSvg(): Promise<IResult<Map<string, string>>> {
     const result = new Map<string, string>();
     const cardSymbols = await this.mtgCollectionClient.getData<Array<CardSymbolDto>>("/public/card-symbol");
+    // TODO this retrieves all CardSymbolDto's again -> so there is currently no use in caching
+    // Solution: when caching store code and svguri fields of card symbols in the sqlite index database
     cardSymbols.data.forEach((cardSymbol: CardSymbolDto) => {
       const pathToFile = this.calculatedSymbolFileName(cardSymbol);
       if (existsSync(pathToFile)) {
@@ -53,10 +60,16 @@ export class CardSymbolService extends BaseService implements ICardSymbolService
   }
 
   public async cacheImages(_callBack: ProgressCallback): Promise<void> {
-    this.checkCacheDirectory();
+    this.ioService.createDirectoryIfNotExists(
+      join(
+        this.configurationService.configuration.dataConfiguration.cacheDirectory,
+        this.cardSymbolCacheDirectory
+      )
+    );
     const cardSymbols = await this.mtgCollectionClient.getData<Array<CardSymbolDto>>("/public/card-symbol");
     await Promise.all(cardSymbols.data.map(async (cardSymbol: CardSymbolDto) => {
       const pathToFile = this.calculatedSymbolFileName(cardSymbol);
+
       await this.scryfallClient.fetchArrayBuffer(cardSymbol.svgUri)
         .then((arrayBuffer: ArrayBuffer) => {
           const buffer = Buffer.from(arrayBuffer);
@@ -69,13 +82,11 @@ export class CardSymbolService extends BaseService implements ICardSymbolService
   // #region Auxiliary Methods ------------------------------------------------
   private calculatedSymbolFileName(cardSymbol: CardSymbolDto): string {
     const fileName = new URL(cardSymbol.svgUri).pathname.split("/").pop()!;
-    return path.join(this.cacheDirectory, fileName);
-  }
-
-  private checkCacheDirectory(): void {
-    if (!existsSync(this.cacheDirectory)) {
-      mkdirSync(this.cacheDirectory, { recursive: true });
-    }
+    return join(
+      this.configurationService.configuration.dataConfiguration.cacheDirectory,
+      this.cardSymbolCacheDirectory,
+      fileName
+    );
   }
   // #endregion
 }

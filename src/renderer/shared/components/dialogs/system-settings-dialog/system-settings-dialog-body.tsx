@@ -20,7 +20,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
           <Callout compact={true} intent="danger">
             Changes to these settings can break the application.
             <br />
-            Use at your own risk.
+            Change the default values at your own risk.
           </Callout>
         )
       }
@@ -57,20 +57,37 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
     </>
   );
 
-  function onSearchDirectory(target: "root" | "cache") {
-    let current = target == "root" ? props.viewmodel.rootDataDirectory : props.viewmodel.cacheDirectory;
-    if (current != "") {
-      current = "/" + encodeURIComponent(props.viewmodel.rootDataDirectory);
+  function onSearchDirectory(target: "data" | "cache" | "log") {
+    let current: string;
+
+    switch (target) {
+      case "data":
+        current = props.viewmodel.rootDataDirectory;
+        break;
+      case "cache":
+        current = props.viewmodel.cacheDirectory;
+        break;
+      case "log":
+        current = props.viewmodel.logDirectory;
+        break;
+      default:
+        throw (new Error("invalid target"));
     }
 
-    serviceContainer.ipcProxy.getData<string>(`${IpcPaths.IO_SELECT_DIRECTORY}${current}`)
+    serviceContainer.ipcProxy.getData<string>(`${IpcPaths.IO_SELECT_DIRECTORY}/${encodeURIComponent(current)}`)
       .then(
         (dir: string | undefined) => {
           if (dir) {
-            if (target == "root") {
-              props.viewmodel.rootDataDirectory = dir;
-            } else {
-              props.viewmodel.cacheDirectory = dir;
+            switch (target) {
+              case "data":
+                props.viewmodel.rootDataDirectory = dir;
+                break;
+              case "cache":
+                props.viewmodel.cacheDirectory = dir;
+                break;
+              case "log":
+                props.viewmodel.logDirectory = dir;
+                break;
             }
             props.viewmodelChanged(props.viewmodel);
           }
@@ -90,7 +107,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
           inputProps={{
             inputMode: "text",
             placeholder: "Enter a directory...",
-            rightElement: (<Button icon="search" size="small" onClick={() => onSearchDirectory("root")} />),
+            rightElement: (<Button icon="search" size="small" onClick={() => onSearchDirectory("data")} />),
             size: "small",
             type: "text",
             readOnly: true,
@@ -110,6 +127,21 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
             type: "text",
             readOnly: true,
             value: props.viewmodel.cacheDirectory
+          }}
+        />
+        <ValidatedInput
+          keyPrefix="log-dir"
+          label="Log Directory"
+          labelInfo="*"
+          validate={() => props.viewmodel.validateLogDirectory()}
+          inputProps={{
+            inputMode: "text",
+            placeholder: "Enter a directory...",
+            rightElement: (<Button icon="search" size="small" onClick={() => onSearchDirectory("log")} />),
+            size: "small",
+            type: "text",
+            readOnly: true,
+            value: props.viewmodel.logDirectory
           }}
         />
         <ValidatedInput

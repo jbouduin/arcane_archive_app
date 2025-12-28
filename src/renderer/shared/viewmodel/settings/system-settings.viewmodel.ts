@@ -91,6 +91,14 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
   public set databaseName(value: string) {
     this._dto.dataConfiguration.databaseName = value;
   }
+
+  public get logDirectory(): string {
+    return this._dto.dataConfiguration.logDirectory;
+  }
+
+  public set logDirectory(value: string) {
+    this._dto.dataConfiguration.logDirectory = value;
+  }
   // #endregion
 
   // #region Getters/Setters --------------------------------------------------
@@ -127,6 +135,18 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
       result = this.validValidation;
     } else {
       this.setFieldInvalid("cacheDirectory");
+      result = { helperText: "You must specify a directory", intent: "danger" };
+    }
+    return result;
+  }
+
+  public validateLogDirectory(): ValidationResult {
+    let result: ValidationResult;
+    if (stringNotNullOrEmpty(this._dto.dataConfiguration.logDirectory)) {
+      this.setFieldValid("logDirectory");
+      result = this.validValidation;
+    } else {
+      this.setFieldInvalid("logDirectory");
       result = { helperText: "You must specify a directory", intent: "danger" };
     }
     return result;

@@ -1,19 +1,14 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
-import { dirname, join } from "path";
 import { inject, singleton } from "tsyringe";
 import { ApiConfigurationDto, PreferencesDto, ResultDto, SettingsDto, SystemSettingsDto } from "../../../../common/dto";
 import { DiscoveryDto } from "../../../dto";
 import { BaseService, IResult } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
-import { IConfigurationService, ILogService, IResultFactory } from "../interface";
+import { IConfigurationService, IIoService, ILogService, IResultFactory } from "../interface";
 
 @singleton()
 export class ConfigurationService extends BaseService implements IConfigurationService {
   // #region private fields ---------------------------------------------------
-  private systemSettingsFilePath!: string;
-  private preferencesFilePath!: string;
-  private appDirectory!: string;
-  private homeDirectory!: string;
+  private readonly ioService: IIoService;
   private _systemSettings!: SystemSettingsDto;
   private _apiConfiguration: ApiConfigurationDto | null;
   private _preferences!: PreferencesDto;
@@ -41,44 +36,39 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   public get isFirstUsage(): boolean {
     return this._isFirstUsage;
   }
-
-  public get dataBaseFilePath(): string {
-    return join(
-      this._systemSettings.dataConfiguration.rootDataDirectory,
-      this._systemSettings.dataConfiguration.databaseName
-    );
-  }
   // #endregion
 
   // #region Constructor & C° -------------------------------------------------
   public constructor(
     @inject(INFRASTRUCTURE.LogService) logService: ILogService,
-    @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory
+    @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory,
+    @inject(INFRASTRUCTURE.IoService) ioService: IIoService,
   ) {
     super(logService, resultFactory);
+    this.ioService = ioService;
     this._apiConfiguration = null;
     this.discover = null;
   }
   // #endregion
 
   // #region IConfigurationService methods ------------------------------------
-  public initialize(appDirectory: string, homeDirectory: string, useDarkTheme: boolean): void {
-    // TODO use correct directories
-    this.appDirectory = appDirectory;
-    this.homeDirectory = homeDirectory;
-    this.systemSettingsFilePath = join(appDirectory, "collection-manager.config.json");
-    if (existsSync(this.systemSettingsFilePath)) {
-      this._systemSettings = JSON.parse(readFileSync(this.systemSettingsFilePath, "utf-8")) as SystemSettingsDto;
-      this._isFirstUsage = false;
-    } else {
-      this._systemSettings = this.createConfigurationFactoryDefault(appDirectory, homeDirectory);
+  public initialize(useDarkTheme: boolean): void {
+    const systemSettings = this.ioService.readSystemSettings<SystemSettingsDto>();
+    // --- system settings ---
+    if (systemSettings == null) {
+      this._systemSettings = this.createConfigurationFactoryDefault();
       this._isFirstUsage = true;
-    }
-    this.preferencesFilePath = join(appDirectory, "collection-manager.preferences.json");
-    if (existsSync(this.preferencesFilePath)) {
-      this._preferences = JSON.parse(readFileSync(this.preferencesFilePath, "utf-8")) as PreferencesDto;
     } else {
+      this._systemSettings = systemSettings;
+      this._isFirstUsage = false;
+    }
+    this.logService.debug("Main", "First time usage", this.isFirstUsage);
+    // --- preferences ---
+    const preferences = this.ioService.readPreferences<PreferencesDto>();
+    if (preferences == null) {
       this._preferences = this.createPreferencesFactoryDefault(useDarkTheme);
+    } else {
+      this._preferences = preferences;
     }
   }
 
@@ -98,7 +88,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   }
 
   public getSystemSettingsFactoryDefault(): Promise<IResult<SystemSettingsDto>> {
-    return this.resultFactory.createSuccessResultPromise(this.createConfigurationFactoryDefault(this.appDirectory, this.homeDirectory));
+    return this.resultFactory.createSuccessResultPromise(this.createConfigurationFactoryDefault());
   }
 
   public async getSettings(): Promise<IResult<SettingsDto>> {
@@ -117,30 +107,28 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   }
 
   public saveSystemSettings(configuration: SystemSettingsDto): Promise<IResult<SystemSettingsDto>> {
-    this.createDirectoryIfNotExists(dirname(this.systemSettingsFilePath));
-    writeFileSync(this.systemSettingsFilePath, JSON.stringify(configuration, null, 2));
+    this.ioService.saveSystemSettings(configuration);
     this._systemSettings = configuration;
     this._isFirstUsage = false;
     return this.resultFactory.createSuccessResultPromise<SystemSettingsDto>(configuration);
   }
 
   public savePreferences(preferences: PreferencesDto): Promise<IResult<PreferencesDto>> {
-    this.createDirectoryIfNotExists(dirname(this.preferencesFilePath));
-    writeFileSync(this.preferencesFilePath, JSON.stringify(preferences, null, 2));
+    this.ioService.savePreferences(preferences);
     this._preferences = preferences;
     return this.resultFactory.createSuccessResultPromise<PreferencesDto>(this._preferences);
   }
   // #endregion
 
   // #region Auxiliary factory default methods --------------------------------
-  private createConfigurationFactoryDefault(appDirectory: string, homeDirectory: string): SystemSettingsDto {
+  private createConfigurationFactoryDefault(): SystemSettingsDto {
     const result: SystemSettingsDto = {
       discovery: "http://localhost:5402/api/public/discover",
       dataConfiguration: {
-        rootDataDirectory: join(homeDirectory, "mtg-collection-manager"),
-        cacheDirectory: join(appDirectory, ".cache"),
-        databaseName: "magic-db.sqlite"
-
+        rootDataDirectory: this.ioService.defaultDataDirectory,
+        cacheDirectory: this.ioService.defaultCacheDirectory,
+        logDirectory: this.ioService.defaultLogDirectory,
+        databaseName: "arcane_archive.sqlite"
       }
     };
     return result;
@@ -169,10 +157,5 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   // #endregion
 
   // #region Auxiliary validation related methods -----------------------------
-  private createDirectoryIfNotExists(directory: string): void {
-    if (!existsSync(directory)) {
-      mkdirSync(directory, { recursive: true });
-    }
-  }
   // #endregion
 }

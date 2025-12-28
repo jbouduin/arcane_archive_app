@@ -3,7 +3,7 @@ import { inject, singleton } from "tsyringe";
 import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
 import { BaseService, IResult } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
-import { IBootstrapService, ILogService, IResultFactory, ISessionService } from "../interface";
+import { IApplicationService, ILogService, IResultFactory, ISessionService } from "../interface";
 
 @singleton()
 export class SessionService extends BaseService implements ISessionService {
@@ -16,11 +16,11 @@ export class SessionService extends BaseService implements ISessionService {
   public constructor(
     @inject(INFRASTRUCTURE.LogService) logService: ILogService,
     @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory,
-    @inject(INFRASTRUCTURE.BootstrapService) bootstrapService: IBootstrapService
+    @inject(INFRASTRUCTURE.ApplicationService) applicationService: IApplicationService
   ) {
     super(logService, resultFactory);
     this.data = null;
-    this.appName = bootstrapService.appName;
+    this.appName = applicationService.applicationName;
   }
   // #endregion
 

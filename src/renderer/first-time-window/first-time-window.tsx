@@ -87,6 +87,6 @@ void (async () => {
     </BlueprintProvider>
   );
   if (!windowShown) {
-    serviceContainer.ipcProxy.postEmptyBody<never>(IpcPaths.MAIN_WINDOW_SHOW);
+    serviceContainer.ipcProxy.postEmptyBody<never>(IpcPaths.FIRST_TIME_WINDOW_SHOW);
   }
 })();

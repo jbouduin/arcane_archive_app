@@ -4,9 +4,15 @@ import { join } from "path";
 import "reflect-metadata";
 import { container } from "tsyringe";
 import { updateElectronApp } from "update-electron-app/dist";
-import { IBootstrapService, IWindowsService } from "./services/infra/interface";
+import { IApplicationService, IWindowsService } from "./services/infra/interface";
 import { INFRASTRUCTURE } from "./services/service.tokens";
 import { ServicesDI } from "./services/services.di";
+
+// Override the default userData path on windows. Otherwise everything goes into AppData/roaming
+if (process.platform == "win32" && process.env.LOCALAPPDATA) {
+  const newUserDataPath = join(process.env.LOCALAPPDATA, app.getName());
+  app.setPath("userData", newUserDataPath);
+}
 
 // check for updates
 updateElectronApp();
@@ -29,7 +35,7 @@ void app.whenReady().then(async () => {
   ServicesDI.register();
   // --- run boot sequence ---
   await container
-    .resolve<IBootstrapService>(INFRASTRUCTURE.BootstrapService)
+    .resolve<IApplicationService>(INFRASTRUCTURE.ApplicationService)
     .boot();
 
   // --- create main window on activate if no window is available ---

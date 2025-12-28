@@ -1,20 +1,22 @@
 import { net } from "electron";
-import { createWriteStream, existsSync, mkdirSync } from "fs";
-import path from "path";
+import { createWriteStream, existsSync } from "fs";
+import { join } from "path";
 import { inject, injectable } from "tsyringe";
 import { CARD_IMAGE_FACE } from "../../../../common/types";
 import { IScryfallClient } from "../../api/interface";
 import { BaseService } from "../../base";
-import { IConfigurationService, ILogService, IResultFactory } from "../../infra/interface";
+import { IConfigurationService, IIoService, ILogService, IResultFactory } from "../../infra/interface";
 import { API, INFRASTRUCTURE } from "../../service.tokens";
 import { ICardImageService } from "../interface";
 
 @injectable()
 export class CardImageService extends BaseService implements ICardImageService {
   // #region Private fields ---------------------------------------------------
-  private readonly cacheDirectory: string;
   private readonly configurationService: IConfigurationService;
   private readonly scryfallClient: IScryfallClient;
+  private readonly ioService: IIoService;
+  private readonly imageCacheDirectory: string;
+  private readonly cardBackCacheDirectory: string;
   // #endregion
 
   // #region Constructor ------------------------------------------------------
@@ -22,12 +24,15 @@ export class CardImageService extends BaseService implements ICardImageService {
     @inject(INFRASTRUCTURE.LogService) logService: ILogService,
     @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory,
     @inject(INFRASTRUCTURE.ConfigurationService) configurationService: IConfigurationService,
+    @inject(INFRASTRUCTURE.IoService) ioService: IIoService,
     @inject(API.ScryfallClient) scryfallClient: IScryfallClient
   ) {
     super(logService, resultFactory);
-    this.cacheDirectory = path.join(configurationService.configuration.dataConfiguration.cacheDirectory, "card-images");
     this.configurationService = configurationService;
     this.scryfallClient = scryfallClient;
+    this.ioService = ioService;
+    this.imageCacheDirectory = "card-images";
+    this.cardBackCacheDirectory = "card-back";
   }
   // #endregion
 
@@ -48,26 +53,23 @@ export class CardImageService extends BaseService implements ICardImageService {
   // #region Auxiliary Methods ------------------------------------------------
   private calculateCachedImagePath(url: URL): string {
     let result: string;
+    const cacheDirectory = join(this.configurationService.configuration.dataConfiguration.cacheDirectory, this.imageCacheDirectory);
     if (url.host == CARD_IMAGE_FACE) {
       const [_cards, setCode, collectorNumber, language] = url.pathname.split("/").filter((p: string) => p != "");
 
-      const dirName = path.join(
-        this.cacheDirectory,
+      const dirName = join(
+        cacheDirectory,
         setCode.toLowerCase(),
         language);
-      if (!existsSync(dirName)) {
-        mkdirSync(dirName, { recursive: true });
-      }
-      result = path.join(
+      this.ioService.createDirectoryIfNotExists(dirName);
+      result = join(
         dirName,
         `${collectorNumber.padStart(6, "0")}.${url.searchParams.get("side")}.jpg`
       );
     } else {
-      const dirName = path.join(this.cacheDirectory, "card-back");
-      if (!existsSync(dirName)) {
-        mkdirSync(dirName, { recursive: true });
-      }
-      result = path.join(dirName, `${url.pathname}.jpg`);
+      const dirName = join(cacheDirectory, this.cardBackCacheDirectory);
+      this.ioService.createDirectoryIfNotExists(dirName);
+      result = join(dirName, `${url.pathname}.jpg`);
     }
     return result;
   }
@@ -87,7 +89,7 @@ export class CardImageService extends BaseService implements ICardImageService {
       }
       const arrayBuffer: ArrayBuffer = await this.scryfallClient.fetchArrayBuffer(imageUrl);
       const buffer = Buffer.from(arrayBuffer);
-
+      // TODO store required data in index database so we can "scan" for updates of images
       return new Promise((resolve, reject) => {
         if (buffer.length > 0) {
           const writeStream = createWriteStream(cachedImagePath);

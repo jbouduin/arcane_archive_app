@@ -10,6 +10,7 @@ export type PreferencesDto = {
    * for all views ->
    *  card columns to be displayed
    *  default sort order (possibilities depend on view)
+   *  page size
    * for collection -> how to display quantities:
    *   one single column with the total
    *   one single column with total foil and total non-foil

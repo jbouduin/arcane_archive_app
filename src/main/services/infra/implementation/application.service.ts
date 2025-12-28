@@ -1,5 +1,4 @@
 import { app, dialog, ipcMain, IpcMainInvokeEvent, nativeTheme, protocol } from "electron";
-import { homedir } from "os";
 import { container, injectable } from "tsyringe";
 // import { MigrationDi } from "../../../database/migrations/migrations.di";
 // import { ICardRepository } from "../../../database/repo/interfaces";
@@ -8,13 +7,12 @@ import { IMtgCollectionClient } from "../../api/interface";
 import { IRouter } from "../../base";
 import { ICardImageService, ICardSymbolService } from "../../library/interface";
 import { API, INFRASTRUCTURE, LIBRARY } from "../../service.tokens";
-import { IBootstrapService, IConfigurationService, ILogService, IRouterService, IWindowsService } from "../interface";
+import { IApplicationService, IConfigurationService, ILogService, IRouterService, IWindowsService } from "../interface";
 
-// TODO rename to application service
 @injectable()
-export class BootstrapService implements IBootstrapService {
+export class ApplicationService implements IApplicationService {
   // #region IBootstrapService methods ----------------------------------------
-  public get appName(): string {
+  public get applicationName(): string {
     return app.getName();
   }
 
@@ -25,7 +23,6 @@ export class BootstrapService implements IBootstrapService {
    * - run discovery
    * - if applicable: run first usage sequence. After closing first usage window, calls the boot sequence.
    * - otherwise: run boot sequence
-   * If discovery failed: show messagebox and exit
    */
   public async boot(): Promise<void> {
     const windowsService: IWindowsService = container.resolve(INFRASTRUCTURE.WindowsService);
@@ -54,7 +51,7 @@ export class BootstrapService implements IBootstrapService {
                   app.quit();
                 } else {
                   splashWindow.show();
-                  void this.bootFunction(callback, configurationService)
+                  void this.bootFunction(callback, true)
                     .then(() => windowsService.createMainWindow())
                     .catch((reason: Error) => {
                       logService.error("Main", "Error in boot function: " + reason.message, reason);
@@ -66,7 +63,7 @@ export class BootstrapService implements IBootstrapService {
               });
             } else {
               // --- 4b. run boot sequnce sequence ---
-              void this.bootFunction(callback, configurationService)
+              void this.bootFunction(callback, configurationService.preferences.refreshCacheAtStartup)
                 .then(() => windowsService.createMainWindow())
                 .catch((reason: Error) => {
                   logService.error("Main", "Error in boot function: " + reason.message, reason);
@@ -103,7 +100,7 @@ export class BootstrapService implements IBootstrapService {
    * @param configurationService the configuration service
    */
   private async preboot(configurationService: IConfigurationService): Promise<void> {
-    configurationService.initialize(app.getAppPath(), homedir(), nativeTheme.shouldUseDarkColors);
+    configurationService.initialize(nativeTheme.shouldUseDarkColors);
     const routerService: IRouterService = container.resolve(INFRASTRUCTURE.RouterService);
     container.resolveAll<IRouter>(INFRASTRUCTURE.Router).forEach((svc: IRouter) => svc.setRoutes(routerService));
     routerService.logRoutes();
@@ -125,7 +122,7 @@ export class BootstrapService implements IBootstrapService {
    * @param configurationService the, already initialized, configuration service
    * @param firstUsage
    */
-  private async bootFunction(callback: ProgressCallback, configurationService: IConfigurationService): Promise<void> {
+  private async bootFunction(callback: ProgressCallback, refreshCache: boolean): Promise<void> {
     callback("Initializing");
 
     // const migrationContainer = MigrationDi.registerMigrations();
@@ -146,7 +143,7 @@ export class BootstrapService implements IBootstrapService {
     //       .synchronize(syncParam, splashWindow.webContents);
     //   })
     //   .then(() => splashWindow.webContents.send("splash", "loading main program"));
-    if (configurationService.preferences.refreshCacheAtStartup || configurationService.isFirstUsage) {
+    if (refreshCache) {
       await this.refreshCache(callback);
     }
     callback("Loading main program");
