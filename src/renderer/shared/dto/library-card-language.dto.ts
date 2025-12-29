@@ -1,8 +1,9 @@
+import { ScryFallImageStatus } from "../../../common/types";
 import { LibraryExternalReferenceDto } from "./library-external-reference.dto";
 
 export type LibraryCardLanguageDto = {
   id: number;
   language: string;
-  imageStatus: string;
+  imageStatus: ScryFallImageStatus;
   externalReferences: Array<LibraryExternalReferenceDto>;
 };

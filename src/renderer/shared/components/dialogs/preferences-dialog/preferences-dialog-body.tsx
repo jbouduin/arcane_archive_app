@@ -1,5 +1,5 @@
 import { Callout, Checkbox, ControlGroup, FormGroup, HTMLSelect, HTMLTable, Icon, Tab, Tabs, Tooltip } from "@blueprintjs/core";
-import { CardSetGroupBy, CardSetSort } from "../../../../../common/types";
+import { CachedImageSize, CardSetGroupBy, CardSetSort } from "../../../../../common/types";
 import { useServices, useSession } from "../../../../hooks";
 import { SelectOption } from "../../../types";
 import { SetTreeSettingsViewmodel } from "../../../viewmodel/settings";
@@ -87,6 +87,21 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
         >
           Log server responses in console
         </Checkbox>
+        <FormGroup label="Size of cached images" labelFor="cached-image" fill={true}>
+          <HTMLSelect
+            id="cached-image"
+            minimal={true}
+            fill={true}
+            onChange={
+              handleValueChange((value: CachedImageSize) => {
+                props.viewmodel.cachedImageSize = value;
+                props.viewmodelChanged(props.viewmodel);
+              })
+            }
+            options={props.viewmodel.cachedImageSizeOptions}
+            value={props.viewmodel.cachedImageSize}
+          />
+        </FormGroup>
       </>
     );
   }

@@ -1,3 +1,4 @@
+import { ScryFallImageStatus } from "../../../../common/types";
 import { LibraryCardDto } from "../../dto";
 import { LibraryCardLanguageDto } from "../../dto/library-card-language.dto";
 import { LibraryCardfaceDto } from "../../dto/library-cardface.dto";
@@ -6,7 +7,7 @@ import { LibraryCardfaceViewmodel } from "./library-cardface.viewmodel";
 export class LibraryCardLanguageViewmodel {
   // #region Fields -----------------------------------------------------------
   public readonly cardLanguageId: number;
-  public readonly imageStatus: string;
+  public readonly imageStatus: ScryFallImageStatus;
   public readonly cardfaces: Map<number, LibraryCardfaceViewmodel>;
   // #endregion
 

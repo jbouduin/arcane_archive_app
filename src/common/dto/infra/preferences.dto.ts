@@ -1,3 +1,4 @@
+import { CachedImageSize } from "../../types";
 import { SetTreeSettingsDto } from "./set-tree-settings.dto";
 
 export type PreferencesDto = {
@@ -5,6 +6,7 @@ export type PreferencesDto = {
   useDarkTheme: boolean;
   logServerResponses: boolean;
   librarySetTreeSettings: SetTreeSettingsDto;
+  cachedImageSize: CachedImageSize;
   /*
    * FEATURE settings for all center panels
    * for all views ->

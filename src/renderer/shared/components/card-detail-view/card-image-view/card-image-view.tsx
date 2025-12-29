@@ -1,11 +1,11 @@
 import { Button, SectionCard } from "@blueprintjs/core";
 import classNames from "classnames";
 import * as React from "react";
+import { IpcPaths } from "../../../../../common/ipc";
 import { CARD_IMAGE_BACK, CARD_IMAGE_FACE } from "../../../../../common/types";
 import { compareClassNameProp } from "../../util";
 import { CardImageViewProps } from "./card-image-view.props";
 import { CardImageViewState } from "./card-image-view.state";
-import { IpcPaths } from "../../../../../common/ipc";
 
 export const CardImageView = React.memo(
   (props: CardImageViewProps) => {
@@ -103,7 +103,15 @@ export const CardImageView = React.memo(
     function calculateImageUrl(): string {
       let result: string;
       if (cardImageState.currentDisplayedSide == "front" || props.cardBackId == null) {
-        result = `${IpcPaths.CACHED_IMAGE}://${CARD_IMAGE_FACE}/cards/${props.setCode}/${props.collectorNumber}/${props.scryfallLanguage}?format=image&version=large&side=${cardImageState.currentDisplayedSide}`;
+        const queryParams = new Array<string>(
+          `version=${props.cachedImageSize}`,
+          "format=image",
+          `side=${cardImageState.currentDisplayedSide}`,
+          `status=${props.imageStatus.toString()}`
+        );
+
+        result = `${IpcPaths.CACHED_IMAGE}://${CARD_IMAGE_FACE}/cards/${props.setCode}/${props.collectorNumber}/${props.scryfallLanguage}?` +
+          queryParams.join("&");
       } else {
         result = `${IpcPaths.CACHED_IMAGE}://${CARD_IMAGE_BACK}/${props.cardBackId}`;
       }

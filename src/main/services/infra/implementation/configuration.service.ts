@@ -1,6 +1,7 @@
 import { join } from "path";
 import { inject, singleton } from "tsyringe";
 import { ApiConfigurationDto, PreferencesDto, ResultDto, SettingsDto, SystemSettingsDto } from "../../../../common/dto";
+import { ScryfallImageSize } from "../../../../common/types";
 import { DiscoveryDto } from "../../../dto";
 import { BaseService, IResult } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
@@ -142,6 +143,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   private createPreferencesFactoryDefault(useDarkTheme: boolean): PreferencesDto {
     const result: PreferencesDto = {
       refreshCacheAtStartup: false,
+      cachedImageSize: ScryfallImageSize.NORMAL,
       useDarkTheme: useDarkTheme,
       logServerResponses: false,
       librarySetTreeSettings: {

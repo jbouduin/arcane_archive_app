@@ -7,6 +7,7 @@ export const API = Object.freeze(
 
 export const DATABASE = Object.freeze(
   {
+    CardfaceRepository: "CardfaceRepository",
     CardSymbolRepository: "CardSymbolRepository",
     CustomMigrationProvider: "CustomMigrationProvider",
     DatabaseService: "DatabaseService",

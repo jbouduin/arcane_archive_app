@@ -1,5 +1,6 @@
 import { H5, Section, SectionCard, Tab, Tabs } from "@blueprintjs/core";
 import React from "react";
+import { ScryFallImageStatus } from "../../../../common/types";
 import { useServices } from "../../../hooks";
 import { LanguageDto, LibraryCardDto } from "../../dto";
 import { ScryfallLanguageMap } from "../../types";
@@ -91,10 +92,12 @@ export function CardDetailView(props: CardDetailViewProps) {
         }
         <CardImageView
           cardLayout={card.layout}
+          cachedImageSize={serviceContainer.configurationService.preferences.cachedImageSize}
           cardBackId={card.cardBackId}
           setCode={card.layout != "TOKEN" ? card.setCode : card.tokenSetCode}
           collectorNumber={card.collectorNumber}
           scryfallLanguage={ScryfallLanguageMap.get(currentLanguage.language) || "en"}
+          imageStatus={card.cardLanguages.get(currentLanguage.language)?.imageStatus || ScryFallImageStatus.UNKNOWN}
         />
       </Section>
     );
@@ -103,6 +106,7 @@ export function CardDetailView(props: CardDetailViewProps) {
   function renderFacesSection(card: LibraryCardViewmodel): Array<React.JSX.Element> {
     let result: Array<React.JSX.Element>;
     const languageViewModel = card.cardLanguages.get(currentLanguage.language);
+
     if (languageViewModel) {
       result = Array.of(...languageViewModel.cardfaces.values()).map((face: LibraryCardfaceViewmodel, idx: number) => {
         return (
