@@ -1,15 +1,14 @@
-import { ContextMenu, Menu, MenuItem, TreeNodeInfo } from "@blueprintjs/core";
+import { TreeNodeInfo } from "@blueprintjs/core";
 import classNames from "classnames";
 import { cloneDeep, isEqual, upperFirst } from "lodash";
 import React from "react";
 import { CardSetGroupBy, CardSetSort } from "../../../../common/types";
 import { useServices } from "../../../hooks";
-import { SyncParamDto } from "../../dto";
 import { MtgSetTreeConfigurationViewmodel } from "../../viewmodel";
 import { MtgSetTreeViewmodel } from "../../viewmodel/mtg-set/mtg-set-tree.viewmodel";
 import { BaseTreeView, BaseTreeViewProps } from "../base/base-tree-view";
-import { showSetDialog } from "../dialogs/factory";
 import { HeaderView } from "./header-view";
+import { SetTreeContextMenu } from "./set-tree-context-menu";
 import { SetTreeViewProps } from "./set-tree-view.props";
 
 const Treeview = React.memo(
@@ -19,8 +18,6 @@ const Treeview = React.memo(
   }
 );
 
-// BUG treeview does not rerender after log-in/log-out -> context menu is not updated
-// Consider only updating the context menu in mapViewModelToTreeItem, otherwise current selection would get lost
 export function SetTreeView(props: SetTreeViewProps) {
   // #region State ------------------------------------------------------------
   const [state, setState] = React.useState<MtgSetTreeConfigurationViewmodel>(props.configuration);
@@ -86,23 +83,6 @@ export function SetTreeView(props: SetTreeViewProps) {
     } else {
       return result;
     }
-  }
-
-  function synchronizeSet(setCode: string) {
-    const postData: SyncParamDto = {
-      tasks: [
-        {
-          target: "CARDS_OF_CARD_SET",
-          subTarget: setCode,
-          mode: "NORMAL",
-          dumpData: true
-        }
-      ],
-      allScryfallCatalogs: "SKIP",
-      allCardSets: "SKIP"
-    };
-    void serviceContainer.collectionManagerProxy.postData("library", "/admin/synchronization/partial", postData, true);
-    // .then()
   }
   // #endregion
 
@@ -203,48 +183,15 @@ export function SetTreeView(props: SetTreeViewProps) {
   }
 
   /*
-   * TODO this creates as much virtual targets as there are sets in the tree
-   * check how to put Contextmenu on tree itself and pass set under cursor to the methods
-   * This would also prevent changing the selection
+   * this creates as much virtual targets as there are sets in the tree.
    */
   function mapViewModelToTreeItem(cardSet: MtgSetTreeViewmodel): TreeNodeInfo<MtgSetTreeViewmodel> {
     const node: TreeNodeInfo<MtgSetTreeViewmodel> = {
       id: cardSet.id,
       label: (
-        <ContextMenu
-          key={`context-menu-${cardSet.id}`}
-          className="tree-view-item"
-          content={
-            (
-              <Menu key={`menu-${cardSet.id}`}>
-                {
-                  serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") &&
-                  (
-                    <MenuItem
-                      key={`sync-${cardSet.id}`}
-                      onClick={
-                        (e) => {
-                          e.preventDefault();
-                          synchronizeSet(cardSet.code);
-                        }
-                      }
-                      text="Synchronize cards"
-                    />
-                  )
-                }
-                <MenuItem
-                  key={`prop-${cardSet.id}`}
-                  onClick={
-                    (e) => {
-                      e.preventDefault();
-                      showSetDialog(serviceContainer, cardSet.id);
-                    }
-                  }
-                  text="Properties"
-                />
-              </Menu>
-            )
-          }
+        <SetTreeContextMenu
+          cardSetId={cardSet.id}
+          cardSetCode={cardSet.code}
         >
           <i
             key={`icon-${cardSet.id}`}
@@ -252,7 +199,7 @@ export function SetTreeView(props: SetTreeViewProps) {
           >
           </i>
           {cardSet.treeItemLabel}
-        </ContextMenu>
+        </SetTreeContextMenu>
       ),
       isExpanded: cardSet.isExpanded,
       isSelected: cardSet.isSelected,
