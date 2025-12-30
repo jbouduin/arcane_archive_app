@@ -1,4 +1,4 @@
-import { ScryFallImageStatus } from "../../../../common/types";
+import { ScryFallImageStatus } from "../../../../common/enums";
 import { LibraryCardDto } from "../../dto";
 import { LibraryCardLanguageDto } from "../../dto/library-card-language.dto";
 import { LibraryCardfaceDto } from "../../dto/library-cardface.dto";

@@ -1,12 +1,16 @@
+import { isEqual } from "lodash";
 import { SystemSettingsDto } from "../../../../common/dto";
+import { LogLevel } from "../../../../common/enums";
+import { LogSetting } from "../../../../common/types";
 import { stringNotNullOrEmpty } from "../../components/util";
-import { ValidationResult } from "../../types";
+import { SelectOption, ValidationResult } from "../../types";
 import { BaseViewmodel } from "../base.viewmodel";
 
 export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
   // #region Private fields ---------------------------------------------------
   private readonly invalidUrlResult: ValidationResult;
   private readonly _firstTime: boolean;
+  private readonly _logLevelOptions: Array<SelectOption<LogLevel>>;
   // #endregion
 
   // #region Getters/Setters apiConfiguration ---------------------------------
@@ -17,54 +21,6 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
   public set discovery(value: string) {
     this._dto.discovery = value;
   }
-
-  // public get libraryApiRoot(): string {
-  //   return this._dto.apiConfiguration.libraryApiRoot;
-  // }
-
-  // public set libraryApiRoot(value: string) {
-  //   this._dto.apiConfiguration.libraryApiRoot = value;
-  // }
-
-  // public get collectionApiRoot(): string {
-  //   return this._dto.apiConfiguration.collectionApiRoot;
-  // }
-
-  // public set collectionApiRoot(value: string) {
-  //   this._dto.apiConfiguration.collectionApiRoot = value;
-  // }
-
-  // public get deckApiRoot(): string {
-  //   return this._dto.apiConfiguration.deckApiRoot;
-  // }
-
-  // public set deckApiRoot(value: string) {
-  //   this._dto.apiConfiguration.deckApiRoot = value;
-  // }
-
-  // public get scryfallApiRoot(): string {
-  //   return this._dto.apiConfiguration.scryfallApiRoot;
-  // }
-
-  // public set scryfallApiRoot(value: string) {
-  //   this._dto.apiConfiguration.scryfallApiRoot = value;
-  // }
-
-  // public get scryfallCardBackRoot(): string {
-  //   return this._dto.apiConfiguration.scryfallCardBackRoot;
-  // }
-
-  // public set scryfallCardBackRoot(value: string) {
-  //   this._dto.apiConfiguration.scryfallCardBackRoot = value;
-  // }
-
-  // public get scryfallMinimumRequestTimeout(): number {
-  //   return this._dto.apiConfiguration.scryfallMinimumRequestTimeout;
-  // }
-
-  // public set scryfallMinimumRequestTimeout(value: number) {
-  //   this._dto.apiConfiguration.scryfallMinimumRequestTimeout = value;
-  // }
   // #endregion
 
   // #region Getters/Setters dataConfiguration --------------------------------
@@ -101,6 +57,51 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
   }
   // #endregion
 
+  // #region Getters/Setters logging ------------------------------------------
+  public get logLevelOptions(): Array<SelectOption<LogLevel>> {
+    return this._logLevelOptions;
+  }
+
+  public get rendererLogLevel(): LogLevel {
+    return this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "Renderer")!.level;
+  }
+
+  public set rendererLogLevel(value: LogLevel) {
+    this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "Renderer")!.level = value;
+  }
+
+  public get mainLogLevel(): LogLevel {
+    return this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "Main")!.level;
+  }
+
+  public set mainLogLevel(value: LogLevel) {
+    this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "Main")!.level = value;
+  }
+
+  public get apiLogLevel(): LogLevel {
+    return this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "API")!.level;
+  }
+
+  public set apiLogLevel(value: LogLevel) {
+    this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "API")!.level = value;
+  }
+
+  public get databaseLogLevel(): LogLevel {
+    return this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "DB")!.level;
+  }
+
+  public set databaseLogLevel(value: LogLevel) {
+    this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "DB")!.level = value;
+  }
+  // #endregion
+
+  // #region Getter -----------------------------------------------------------
+  public get restartRequired(): boolean {
+    return this._dto.discovery != this._org.discovery ||
+      !isEqual(this._dto.dataConfiguration, this._org.dataConfiguration);
+  }
+  // #endregion
+
   // #region Getters/Setters --------------------------------------------------
   public get firstTime(): boolean {
     return this._firstTime;
@@ -112,6 +113,14 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
     super(dto);
     this.invalidUrlResult = { helperText: "Please enter a valid internet address", intent: "danger" };
     this._firstTime = firstTime;
+    this._logLevelOptions = [
+      { value: LogLevel.None, label: "No logging" },
+      { value: LogLevel.Error, label: "Error (default)" },
+      { value: LogLevel.Warning, label: "Warning" },
+      { value: LogLevel.Info, label: "Info" },
+      { value: LogLevel.Debug, label: "Debug - pretty verbose" },
+      { value: LogLevel.Trace, label: "Trace - silly verbose" },
+    ];
   }
   // #endregion
 
@@ -182,110 +191,5 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
 
     return result;
   }
-
-  // public validateLibraryApiRoot(): ValidationResult {
-  //   let result: ValidationResult;
-  //   try {
-  //     const url = new URL(this._dto.apiConfiguration.libraryApiRoot);
-  //     if (url.protocol == "http:" || url.protocol == "https:") {
-  //       this.setFieldValid("libraryApiRoot");
-  //       result = this.validValidation;
-  //     } else {
-  //       this.setFieldInvalid("libraryApiRoot");
-  //       result = this.invalidUrlResult;
-  //     }
-  //   } catch {
-  //     this.setFieldInvalid("libraryApiRoot");
-  //     result = this.invalidUrlResult;
-  //   }
-  //   return result;
-  // }
-
-  // public validateCollectionApiRoot(): ValidationResult {
-  //   let result: ValidationResult;
-  //   try {
-  //     const url = new URL(this._dto.apiConfiguration.collectionApiRoot);
-  //     if (url.protocol == "http:" || url.protocol == "https:") {
-  //       this.setFieldValid("collectionApiRoot");
-  //       result = this.validValidation;
-  //     } else {
-  //       this.setFieldInvalid("collectionApiRoot");
-  //       result = this.invalidUrlResult;
-  //     }
-  //   } catch {
-  //     this.setFieldInvalid("collectionApiRoot");
-  //     result = this.invalidUrlResult;
-  //   }
-  //   return result;
-  // }
-
-  // public validateDeckApiRoot(): ValidationResult {
-  //   let result: ValidationResult;
-  //   try {
-  //     const url = new URL(this._dto.apiConfiguration.deckApiRoot);
-  //     if (url.protocol == "http:" || url.protocol == "https:") {
-  //       this.setFieldValid("deckApiRoot");
-  //       result = this.validValidation;
-  //     } else {
-  //       this.setFieldInvalid("deckApiRoot");
-  //       result = this.invalidUrlResult;
-  //     }
-  //   } catch {
-  //     this.setFieldInvalid("deckApiRoot");
-  //     result = this.invalidUrlResult;
-  //   }
-  //   return result;
-  // }
-
-  // public validateScryfallApiRoot(): ValidationResult {
-  //   let result: ValidationResult;
-  //   try {
-  //     const url = new URL(this._dto.apiConfiguration.scryfallApiRoot);
-  //     if (url.protocol == "http:" || url.protocol == "https:") {
-  //       this.setFieldValid("scryfallApiRoot");
-  //       result = this.validValidation;
-  //     } else {
-  //       this.setFieldInvalid("scryfallApiRoot");
-  //       result = this.invalidUrlResult;
-  //     }
-  //   } catch {
-  //     this.setFieldInvalid("scryfallApiRoot");
-  //     result = this.invalidUrlResult;
-  //   }
-  //   return result;
-  // }
-
-  // public validateScryfallCardBackRoot(): ValidationResult {
-  //   let result: ValidationResult;
-  //   try {
-  //     const url = new URL(this._dto.apiConfiguration.scryfallCardBackRoot);
-  //     if (url.protocol == "http:" || url.protocol == "https:") {
-  //       this.setFieldValid("scryfallCardBackRoot");
-  //       result = this.validValidation;
-  //     } else {
-  //       this.setFieldInvalid("scryfallCardBackRoot");
-  //       result = this.invalidUrlResult;
-  //     }
-  //   } catch {
-  //     this.setFieldInvalid("scryfallCardBackRoot");
-  //     result = this.invalidUrlResult;
-  //   }
-  //   return result;
-  // }
-
-  // public validateScryfallMinimumRequestTimeout(): ValidationResult {
-  //   let result: ValidationResult;
-  //   if (this._dto.apiConfiguration.scryfallMinimumRequestTimeout < 50) {
-  //     this.setFieldInvalid("scryfallMinimumRequestTimeout");
-  //     result = { helperText: "The time out should be greater than or equal to 50 milliseconds", intent: "danger" };
-  //   } else if (this._dto.apiConfiguration.scryfallMinimumRequestTimeout < 60) {
-  //     this.setFieldValid("scryfallMinimumRequestTimeout");
-  //     result = { helperText: "A value less than 60 milliseconds could result in rejected requests", intent: "warning" };
-  //   } else {
-  //     this.setFieldValid("scryfallMinimumRequestTimeout");
-  //     result = this.validValidation;
-  //   }
-  //   return result;
-  // }
   // #endregion
 }

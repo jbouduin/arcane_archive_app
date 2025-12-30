@@ -1,5 +1,6 @@
 import { PreferencesDto } from "../../../../common/dto";
-import { CachedImageSize, ScryfallImageSize } from "../../../../common/types";
+import { ScryfallImageSize } from "../../../../common/enums";
+import { CachedImageSize } from "../../../../common/types";
 import { SelectOption } from "../../types";
 import { BaseViewmodel } from "../base.viewmodel";
 import { SetTreeSettingsViewmodel } from "./set-tree-settings.viewmodel";

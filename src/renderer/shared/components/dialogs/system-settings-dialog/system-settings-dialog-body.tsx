@@ -1,62 +1,19 @@
-import { Button, Callout, Tab, Tabs } from "@blueprintjs/core";
+import { Button, Callout, FormGroup, HTMLSelect, Tab, Tabs } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { IpcPaths } from "../../../../../common/ipc";
 import { useServices } from "../../../../hooks";
 import { handleStringChange } from "../../util";
 import { ValidatedInput } from "../../validated-input/validated-input";
 import { SystemSettingsDialogBodyProps } from "./system-settings-dialog-props";
+import { LogLevel } from "../../../../../common/enums";
+import { handleValueChange } from "../../util/handle-value-change";
 
 export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
 
-  // #region Rendering --------------------------------------------------------
-  return (
-    <>
-      {
-        props.viewmodel.firstTime &&
-        (
-          <Callout compact={true} intent="danger">
-            Changes to these settings can break the application.
-            <br />
-            Change the default values at your own risk.
-          </Callout>
-        )
-      }
-      {
-        !props.viewmodel.firstTime &&
-        (
-          <Callout compact={true} intent="danger">
-            Changes to these settings can break the application.
-            <br />
-            Use at your own risk.
-            <br />
-            Any change requires a restart of the application.
-          </Callout>
-        )
-      }
-      <Tabs
-        animate={true}
-        defaultSelectedTabId="local-storage"
-        renderActiveTabPanelOnly={true}
-      >
-        <Tab
-          id="local-storage"
-          key="local-storage"
-          title="Local Storage"
-          panel={renderLocalStorage()}
-        />
-        <Tab
-          id="api"
-          key="api"
-          title="API"
-          panel={renderApi()}
-        />
-      </Tabs>
-    </>
-  );
-
+  // #region Event Handling ---------------------------------------------------
   function onSearchDirectory(target: "data" | "cache" | "log") {
     let current: string;
 
@@ -95,8 +52,146 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
         noop
       );
   }
+  // #endregion
 
-  function renderLocalStorage(): React.JSX.Element {
+  // #region Rendering --------------------------------------------------------
+  return (
+    <>
+      {
+        props.viewmodel.firstTime &&
+        (
+          <Callout compact={true} intent="danger">
+            Changes to Local Storage and API settings can break the application.
+            <br />
+            Change those default values at your own risk.
+          </Callout>
+        )
+      }
+      {
+        !props.viewmodel.firstTime &&
+        (
+          <Callout compact={true} intent="danger">
+            Changes to Local Storage and API settings can break the application and require a restart.
+            <br />
+            Change them at your own risk.
+          </Callout>
+        )
+      }
+      <Tabs
+        animate={true}
+        defaultSelectedTabId="logging"
+        renderActiveTabPanelOnly={true}
+      >
+        <Tab
+          id="logging"
+          key="logging"
+          title="Logging"
+          panel={renderLogging}
+        />
+        <Tab
+          id="local-storage"
+          key="local-storage"
+          title="Local Storage"
+          panel={renderLocalStorage()}
+        />
+        <Tab
+          id="api"
+          key="api"
+          title="API"
+          panel={renderApi()}
+        />
+      </Tabs>
+    </>
+  );
+
+  function renderLogging(): JSX.Element {
+    return (
+      <>
+        <FormGroup
+          key="log-main"
+          label="Log level for main process"
+          labelFor="log-main-select"
+          fill={true}
+        >
+          <HTMLSelect
+            id="log-main-select"
+            minimal={true}
+            fill={true}
+            onChange={
+              handleValueChange((value: LogLevel) => {
+                props.viewmodel.mainLogLevel = value;
+                props.viewmodelChanged(props.viewmodel);
+              })
+            }
+            options={props.viewmodel.logLevelOptions}
+            value={props.viewmodel.mainLogLevel}
+          />
+        </FormGroup>
+        <FormGroup
+          key="log-db"
+          label="Log level for database layer"
+          labelFor="log-db-select"
+          fill={true}
+        >
+          <HTMLSelect
+            id="log-db-select"
+            minimal={true}
+            fill={true}
+            onChange={
+              handleValueChange((value: LogLevel) => {
+                props.viewmodel.databaseLogLevel = value;
+                props.viewmodelChanged(props.viewmodel);
+              })
+            }
+            options={props.viewmodel.logLevelOptions}
+            value={props.viewmodel.databaseLogLevel}
+          />
+        </FormGroup>
+        <FormGroup
+          key="log-api"
+          label="Log level for API (3rd party)"
+          labelFor="log-api-select"
+          fill={true}
+        >
+          <HTMLSelect
+            id="log-api-select"
+            minimal={true}
+            fill={true}
+            onChange={
+              handleValueChange((value: LogLevel) => {
+                props.viewmodel.apiLogLevel = value;
+                props.viewmodelChanged(props.viewmodel);
+              })
+            }
+            options={props.viewmodel.logLevelOptions}
+            value={props.viewmodel.apiLogLevel}
+          />
+          <FormGroup
+            key="log-renderer"
+            label="Log level for renderer"
+            labelFor="log-renderer-select"
+            fill={true}
+          >
+            <HTMLSelect
+              id="log-renderer-select"
+              minimal={true}
+              fill={true}
+              onChange={
+                handleValueChange((value: LogLevel) => {
+                  props.viewmodel.rendererLogLevel = value;
+                  props.viewmodelChanged(props.viewmodel);
+                })
+              }
+              options={props.viewmodel.logLevelOptions}
+              value={props.viewmodel.rendererLogLevel}
+            />
+          </FormGroup>
+        </FormGroup>
+      </>
+    );
+  }
+
+  function renderLocalStorage(): JSX.Element {
     return (
       <>
         <ValidatedInput
@@ -165,7 +260,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
     );
   }
 
-  function renderApi(): React.JSX.Element {
+  function renderApi(): JSX.Element {
     return (
       <>
         <ValidatedInput

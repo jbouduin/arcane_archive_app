@@ -1,4 +1,5 @@
-import { CachedImageSize, ScryFallImageStatus } from "../../../../common/types";
+import { ScryFallImageStatus } from "../../../../common/enums";
+import { CachedImageSize } from "../../../../common/types";
 import { CardSide } from "../../../../renderer/shared/types";
 import { IResult } from "../../base";
 import { CardfaceInsertDto, CardfaceQueryDto, CardfaceUpdateDto } from "../schema";

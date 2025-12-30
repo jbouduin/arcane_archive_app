@@ -1,7 +1,7 @@
 import { join } from "path";
 import { inject, singleton } from "tsyringe";
 import { ApiConfigurationDto, PreferencesDto, ResultDto, SettingsDto, SystemSettingsDto } from "../../../../common/dto";
-import { ScryfallImageSize } from "../../../../common/types";
+import { LogLevel, ScryfallImageSize } from "../../../../common/enums";
 import { DiscoveryDto } from "../../../dto";
 import { BaseService, IResult } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
@@ -68,6 +68,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
       this._systemSettings = systemSettings;
       this._isFirstUsage = false;
     }
+    this.logService.setLogSettings(this._systemSettings.loggingConfiguration);
     this.logService.debug("Main", "First time usage", this.isFirstUsage);
     // --- preferences ---
     const preferences = this.ioService.readPreferences<PreferencesDto>();
@@ -116,6 +117,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     this.ioService.saveSystemSettings(configuration);
     this._systemSettings = configuration;
     this._isFirstUsage = false;
+    this.logService.setLogSettings(configuration.loggingConfiguration);
     return this.resultFactory.createSuccessResultPromise<SystemSettingsDto>(configuration);
   }
 
@@ -135,7 +137,13 @@ export class ConfigurationService extends BaseService implements IConfigurationS
         cacheDirectory: this.ioService.defaultCacheDirectory,
         logDirectory: this.ioService.defaultLogDirectory,
         databaseName: "arcane_archive.sqlite"
-      }
+      },
+      loggingConfiguration: [
+        { source: "API", level: LogLevel.Info },
+        { source: "DB", level: LogLevel.Info },
+        { source: "Main", level: LogLevel.Info },
+        { source: "Renderer", level: LogLevel.Info }
+      ]
     };
     return result;
   }

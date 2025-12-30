@@ -1,4 +1,4 @@
-import { ScryFallImageStatus } from "../../../common/types";
+import { ScryFallImageStatus } from "../../../common/enums";
 import { LibraryExternalReferenceDto } from "./library-external-reference.dto";
 
 export type LibraryCardLanguageDto = {

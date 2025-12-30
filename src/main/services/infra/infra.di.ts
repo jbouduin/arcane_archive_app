@@ -13,7 +13,7 @@ import {
   IApplicationService, IConfigurationService, IIoService, ILogService, IResultFactory, IRouterService,
   ISessionService, IWindowsService
 } from "./interface";
-import { ApplicationRouter, ConfigurationRouter, IoRouter, SessionRouter, WindowsRouter } from "./router";
+import { ApplicationRouter, ConfigurationRouter, IoRouter, LogRouter, SessionRouter, WindowsRouter } from "./router";
 
 export class InfraDi {
   public static register(): void {
@@ -30,8 +30,9 @@ export class InfraDi {
 
     // #region Routers --------------------------------------------------------
     container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: ApplicationRouter }, { lifecycle: Lifecycle.Singleton });
-    container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: IoRouter }, { lifecycle: Lifecycle.Singleton });
     container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: ConfigurationRouter }, { lifecycle: Lifecycle.Singleton });
+    container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: IoRouter }, { lifecycle: Lifecycle.Singleton });
+    container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: LogRouter }, { lifecycle: Lifecycle.Singleton });
     container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: SessionRouter }, { lifecycle: Lifecycle.Singleton });
     container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: WindowsRouter }, { lifecycle: Lifecycle.Singleton });
     // #endregion

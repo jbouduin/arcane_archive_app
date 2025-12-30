@@ -13,10 +13,14 @@ export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProp
   // #endregion
 
   // #region Event handling ---------------------------------------------------
-  function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: SystemSettingsDto): Promise<void> {
+  function saveClick(_event: React.SyntheticEvent<HTMLElement, Event>, dto: SystemSettingsDto): Promise<void> {
     return serviceContainer.configurationService.saveSystemSettings(dto)
       .then(
-        (_r: SystemSettingsDto) => serviceContainer.configurationService.restart(),
+        (_r: SystemSettingsDto) => {
+          if (props.viewmodel.restartRequired) {
+            serviceContainer.configurationService.restart();
+          }
+        },
         noop
       );
   }
@@ -37,7 +41,7 @@ export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProp
   return (
     <SaveCancelResetFooter<SystemSettingsDto, SystemSettingsViewmodel>
       {...props}
-      commitButtonLabel="Save and Restart"
+      commitButtonLabel={props.viewmodel.restartRequired ? "Save and Restart" : "Save"}
       showResetButton={true}
       additionalLeftButtons={additionalLeftButtons()}
       onCommitButtonClick={saveClick}

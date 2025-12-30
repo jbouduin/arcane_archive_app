@@ -4,5 +4,3 @@ export enum ScryfallImageSize {
   NORMAL = "normal",
   SMALL = "small"
 }
-
-export type CachedImageSize = ScryfallImageSize.PNG | ScryfallImageSize.LARGE | ScryfallImageSize.NORMAL;

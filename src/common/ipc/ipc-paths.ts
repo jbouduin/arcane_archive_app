@@ -24,6 +24,14 @@ export class IpcPaths {
   public static readonly IO_SELECT_DIRECTORY = "/select-directory";
   // #endregion
 
+  // #region Infra: Logging ---------------------------------------------------
+  public static readonly LOG_INFO = "/log/info";
+  public static readonly LOG_WARNING = "/log/warning";
+  public static readonly LOG_ERROR = "/log/error";
+  public static readonly LOG_DEGUG = "/log/debug";
+  public static readonly LOG_TRACE = "/log/trace";
+  // #endregion
+
   // #region Infra: Windows ---------------------------------------------------
   public static readonly MAIN_WINDOW_SHOW = "/window/main/show";
   public static readonly SPLASH_WINDOW_SHOW = "/window/splash/show";

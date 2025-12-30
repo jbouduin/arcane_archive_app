@@ -2,7 +2,6 @@ import { noop } from "lodash";
 import { IpcPaths } from "../../../../common/ipc";
 import { ICardSymbolService, IIpcProxyService, IServiceContainer } from "../interface";
 
-// LATER add sync card symbols method
 export class CardSymbolService implements ICardSymbolService {
   // #region Private fields ---------------------------------------------------
   private cardSymbols: Map<string, string>;

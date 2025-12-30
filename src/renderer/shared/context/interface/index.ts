@@ -7,6 +7,7 @@ export * from "./configuration.service";
 export * from "./display-value.service";
 export * from "./ipc-proxy.service";
 export * from "./language.service";
+export * from "./log.service";
 export * from "./mtg-set.service";
 export * from "./overlay.service";
 export * from "./preferences-context-type";

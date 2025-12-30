@@ -1,6 +1,5 @@
 import { H5, Section, SectionCard, Tab, Tabs } from "@blueprintjs/core";
 import React from "react";
-import { ScryFallImageStatus } from "../../../../common/types";
 import { useServices } from "../../../hooks";
 import { LanguageDto, LibraryCardDto } from "../../dto";
 import { ScryfallLanguageMap } from "../../types";
@@ -14,6 +13,7 @@ import { CardImageView } from "./card-image-view/card-image-view";
 import { LanguageButtonBar } from "./language-button-bar/language-button-bar";
 import { LegalitiesView } from "./legalities-view/legalities-view";
 import { RulingsView } from "./rulings-view/rulings-view";
+import { ScryFallImageStatus } from "../../../../common/enums";
 
 export function CardDetailView(props: CardDetailViewProps) {
   // #region State ------------------------------------------------------------

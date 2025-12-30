@@ -10,6 +10,7 @@ import { IConfigurationService } from "./configuration.service";
 import { IDisplayValueService } from "./display-value.service";
 import { IIpcProxyService } from "./ipc-proxy.service";
 import { ILanguageService } from "./language.service";
+import { ILogService } from "./log.service";
 import { IMtgSetService } from "./mtg-set.service";
 import { IOverlayService } from "./overlay.service";
 import { ISessionService } from "./session.service";
@@ -55,6 +56,11 @@ export interface IServiceContainer {
    * Proxy to use Ipc Channels. Processes the response and displays a toast in case of error response.
    */
   readonly ipcProxy: IIpcProxyService;
+
+  /**
+   * Log service
+   */
+  readonly logService: ILogService;
 
   /**
    * Service that caches all available {@link _MtgSetTreeDto MtgSetDto}

@@ -3,7 +3,7 @@ import { SettingsDto } from "../../../../common/dto";
 import { InitializeServiceContainerOptions, ShowToastFn } from "../../types";
 import {
   ICardSearchService, ICardSymbolService, ICollectionManagerProxyService, IColorService, IConfigurationService,
-  IDisplayValueService, IIpcProxyService, ILanguageService, IMtgSetService,
+  IDisplayValueService, IIpcProxyService, ILanguageService, ILogService, IMtgSetService,
   IOverlayService, IServiceContainer, ISessionService, IViewmodelFactoryService
 } from "../interface";
 import { InitializationResult } from "../types";
@@ -19,6 +19,7 @@ import { MtgSetService } from "./mtg-set.service";
 import { OverlayService } from "./overlay.service";
 import { SessionService } from "./session.service";
 import { ViewmodelFactoryService } from "./viewmodel-factory.service";
+import { LogService } from "./log.service";
 
 export class ServiceContainer implements IServiceContainer {
   // #region Private fields ---------------------------------------------------
@@ -31,6 +32,7 @@ export class ServiceContainer implements IServiceContainer {
   private _overlayService: IOverlayService;
   private _ipcProxy: IIpcProxyService;
   private _languageService: ILanguageService;
+  private _logService: ILogService;
   private _mtgSetService: IMtgSetService;
   private _sessionService: ISessionService;
   private _viewmodelFactoryService: IViewmodelFactoryService;
@@ -47,6 +49,7 @@ export class ServiceContainer implements IServiceContainer {
     this._overlayService = new OverlayService();
     this._ipcProxy = new IpcProxyService();
     this._languageService = new LanguageService();
+    this._logService = new LogService();
     this._mtgSetService = new MtgSetService();
     this._sessionService = new SessionService();
     this._viewmodelFactoryService = new ViewmodelFactoryService();
@@ -90,6 +93,10 @@ export class ServiceContainer implements IServiceContainer {
     return this._languageService;
   }
 
+  public get logService(): ILogService {
+    return this._logService;
+  }
+
   public get mtgSetService(): IMtgSetService {
     return this._mtgSetService;
   }
@@ -121,9 +128,12 @@ export class ServiceContainer implements IServiceContainer {
       result.errors.push(props);
     };
 
-    // -- initialize IpcProxy with initialization show toast --
+    // --- initialize Proxies with initialization show toast ---
     this._ipcProxy.setShowToast(initializationShowToast);
     this._collectionManagerProxy.setShowToast(initializationShowToast);
+
+    // --- initialize log service ---
+    this._logService.initialize(this._ipcProxy);
 
     // !!! all services should be able to handle a second initialization call !!!
     await this._configurationService.initialize(this._ipcProxy)
@@ -173,7 +183,7 @@ export class ServiceContainer implements IServiceContainer {
         },
         () => result.isOk = false // configuration could not be retrieved
       ).finally(() => {
-        // -- set real toast in services --
+        // --- set real toast in services ---
         this._overlayService.setShowToast(showToast);
         this._ipcProxy.setShowToast(showToast);
         this._collectionManagerProxy.setShowToast(showToast);

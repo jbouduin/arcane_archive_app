@@ -1,6 +1,7 @@
 import { Props } from "@blueprintjs/core";
-import { CachedImageSize, ScryFallImageStatus } from "../../../../../common/types";
+import { CachedImageSize } from "../../../../../common/types";
 import { CardLayout } from "../../../types";
+import { ScryFallImageStatus } from "../../../../../common/enums";
 
 export interface CardImageViewProps extends Props {
   cardLayout: CardLayout;

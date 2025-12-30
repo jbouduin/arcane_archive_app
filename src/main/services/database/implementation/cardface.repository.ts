@@ -1,6 +1,6 @@
 import { DeleteResult, InsertResult, UpdateResult } from "kysely";
 import { inject, injectable } from "tsyringe";
-import { CachedImageSize, ScryFallImageStatus } from "../../../../common/types";
+import { CachedImageSize } from "../../../../common/types";
 import { CardSide } from "../../../../renderer/shared/types";
 import { IResult } from "../../base";
 import { ILogService, IResultFactory } from "../../infra/interface";
@@ -9,6 +9,7 @@ import { ICardfaceRepository, IDatabaseService, queryPageOptions, QueryPageResul
 import { CardfaceInsertDto, CardfaceQueryDto, CardfaceUpdateDto } from "../schema";
 import { BaseRepository } from "./base.repository";
 import { traceCompilable } from "./log-compilable";
+import { ScryFallImageStatus } from "../../../../common/enums";
 
 @injectable()
 export class CardfaceRepository extends BaseRepository implements ICardfaceRepository {

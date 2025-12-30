@@ -1,5 +1,6 @@
 export * from "./api-configuration.dto";
 export * from "./data-configuration.dto";
+export * from "./log-request.dto";
 export * from "./login-request.dto";
 export * from "./login-response.dto";
 export * from "./preferences.dto";

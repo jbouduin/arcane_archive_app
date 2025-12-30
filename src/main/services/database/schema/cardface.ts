@@ -1,7 +1,8 @@
 import { ColumnType, Insertable, Selectable, Updateable } from "kysely";
 import { Synchronized } from "./base-types";
-import { CachedImageSize, ScryFallImageStatus } from "../../../../common/types";
+import { CachedImageSize } from "../../../../common/types";
 import { CardSide } from "../../../../renderer/shared/types";
+import { ScryFallImageStatus } from "../../../../common/enums";
 
 export interface CardfaceTable extends Synchronized {
   path: ColumnType<string, string, never>;
