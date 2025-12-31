@@ -1,8 +1,9 @@
 import { Callout, Checkbox, ControlGroup, FormGroup, HTMLSelect, HTMLTable, Icon, Tab, Tabs, Tooltip } from "@blueprintjs/core";
 import { CachedImageSize, CardSetGroupBy, CardSetSort } from "../../../../../common/types";
 import { useServices, useSession } from "../../../../hooks";
-import { SelectOption } from "../../../types";
+import { CardSortField, SelectOption } from "../../../types";
 import { SetTreeSettingsViewmodel } from "../../../viewmodel/settings";
+import { SortDirection } from "../../base/base-table";
 import { handleBooleanChange } from "../../util/handle-boolean-change";
 import { handleValueChange } from "../../util/handle-value-change";
 import { PreferencesDialogBodyProps } from "./preferences-dialog.props";
@@ -87,21 +88,78 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
         >
           Log server responses in console
         </Checkbox>
-        <FormGroup label="Size of cached images" labelFor="cached-image" fill={true}>
-          <HTMLSelect
-            id="cached-image"
-            minimal={true}
-            fill={true}
-            onChange={
-              handleValueChange((value: CachedImageSize) => {
-                props.viewmodel.cachedImageSize = value;
-                props.viewmodelChanged(props.viewmodel);
-              })
-            }
-            options={props.viewmodel.cachedImageSizeOptions}
-            value={props.viewmodel.cachedImageSize}
-          />
-        </FormGroup>
+        <ControlGroup
+          key="group-1"
+          fill={true}
+          vertical={false}
+        >
+          <FormGroup label="Size of cached images" labelFor="cached-image" fill={true}>
+            <HTMLSelect
+              id="cached-image"
+              minimal={true}
+              fill={true}
+              onChange={
+                handleValueChange((value: CachedImageSize) => {
+                  props.viewmodel.cachedImageSize = value;
+                  props.viewmodelChanged(props.viewmodel);
+                })
+              }
+              options={props.viewmodel.cachedImageSizeOptions}
+              value={props.viewmodel.cachedImageSize}
+            />
+          </FormGroup>
+          <FormGroup label="Default Page size" labelFor="page-size" fill={true}>
+            <HTMLSelect
+              id="page-size"
+              minimal={true}
+              fill={true}
+              onChange={
+                handleValueChange((value: number) => {
+                  props.viewmodel.defaultPageSize = value;
+                  props.viewmodelChanged(props.viewmodel);
+                })
+              }
+              options={props.viewmodel.pageSizeOptions}
+              value={props.viewmodel.defaultPageSize}
+            />
+          </FormGroup>
+        </ControlGroup>
+        <ControlGroup
+          key="group-2"
+          fill={true}
+          vertical={false}
+        >
+          <FormGroup label="Default Sort field (Cards)" labelFor="card-sort-field" fill={true}>
+            <HTMLSelect
+              id="card-sort-field"
+              minimal={true}
+              fill={true}
+              onChange={
+                handleValueChange((value: CardSortField) => {
+                  props.viewmodel.defaultCardSortField = value;
+                  props.viewmodelChanged(props.viewmodel);
+                })
+              }
+              options={props.viewmodel.cardSortFieldOptions}
+              value={props.viewmodel.defaultCardSortField}
+            />
+          </FormGroup>
+          <FormGroup label="Sort Direction" labelFor="card-sort-direction" fill={true}>
+            <HTMLSelect
+              id="card-sort-direction"
+              minimal={true}
+              fill={true}
+              onChange={
+                handleValueChange((value: SortDirection) => {
+                  props.viewmodel.defaultCardSortDirection = value;
+                  props.viewmodelChanged(props.viewmodel);
+                })
+              }
+              options={props.viewmodel.sortDirectionOptions}
+              value={props.viewmodel.defaultCardSortDirection}
+            />
+          </FormGroup>
+        </ControlGroup>
       </>
     );
   }

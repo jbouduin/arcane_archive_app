@@ -145,7 +145,7 @@ export class ServiceContainer implements IServiceContainer {
             // Skippable services do not reject
             const skippableServices = new Array<Promise<void>>();
             if (!options.skipCardSearchService) {
-              skippableServices.push(this._cardSearchService.initialize(this._collectionManagerProxy));
+              skippableServices.push(this._cardSearchService.initialize(this._collectionManagerProxy, configuration.preferences));
             }
             if (!options.skipCardSymbolService) {
               skippableServices.push(this._cardSymbolService.initialize(this._ipcProxy));

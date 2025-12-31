@@ -1,4 +1,5 @@
 import { noop } from "lodash";
+import { PreferencesDto } from "../../../../common/dto";
 import { CardFilterParamsDto, CardQueryParamsDto, ColorDto, LibraryCardListDto, MtgSetTreeDto, QueryResultDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { ICardSearchService, ICollectionManagerProxyService } from "../interface";
@@ -88,7 +89,6 @@ export class CardSearchService implements ICardSearchService {
     };
     this._cardQueryParams = {
       pageNumber: 0,
-      // TODO store this in preferences, and preference context
       pageSize: 100,
       sortField: "collectorNumberSortValue",
       sortDirection: "ASC",
@@ -156,8 +156,11 @@ export class CardSearchService implements ICardSearchService {
     return this._toughnessValueSelectOptions;
   }
 
-  public initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void> {
+  public initialize(collectionManagerProxy: ICollectionManagerProxyService, preferences: PreferencesDto): Promise<void> {
     this.collectionManagerProxy = collectionManagerProxy;
+    this.cardQueryParams.pageSize = preferences.defaultPageSize;
+    this.cardQueryParams.sortField = preferences.defaultCardSortField;
+    this.cardQueryParams.sortDirection = preferences.defaultCardSortDirection;
     return Promise.all([
       collectionManagerProxy.getData<Array<string>>("library", "/public/card-super-type"),
       collectionManagerProxy.getData<Array<string>>("library", "/public/card-type"),

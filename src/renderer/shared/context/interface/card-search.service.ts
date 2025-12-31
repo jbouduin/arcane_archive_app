@@ -1,3 +1,4 @@
+import { PreferencesDto } from "../../../../common/dto";
 import { CardFilterParamsDto, CardQueryParamsDto, LibraryCardListDto, MtgSetTreeDto, QueryResultDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { ICollectionManagerProxyService } from "./collection-manager-proxy.service";
@@ -24,5 +25,5 @@ export interface ICardSearchService {
   getCardSuperTypeSelectOptions(): Array<SelectOption<string>>;
   getPowerValueSelectOptions(): Array<SelectOption<string>>;
   getToughnessValueSelectOptions(): Array<SelectOption<string>>;
-  initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void>;
+  initialize(collectionManagerProxy: ICollectionManagerProxyService, preferences: PreferencesDto): Promise<void>;
 }

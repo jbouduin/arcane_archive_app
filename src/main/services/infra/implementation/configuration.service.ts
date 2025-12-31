@@ -154,6 +154,9 @@ export class ConfigurationService extends BaseService implements IConfigurationS
       cachedImageSize: ScryfallImageSize.NORMAL,
       useDarkTheme: useDarkTheme,
       logServerResponses: false,
+      defaultCardSortField: "collectorNumberSortValue",
+      defaultCardSortDirection: "ASC",
+      defaultPageSize: 50,
       librarySetTreeSettings: {
         cardSetSort: "releaseDateDescending",
         cardSetGroupBy: "parent",

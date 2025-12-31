@@ -1,3 +1,5 @@
+import { SortDirection } from "../../../renderer/shared/components/base/base-table";
+import { CardSortField } from "../../../renderer/shared/types";
 import { CachedImageSize } from "../../types";
 import { SetTreeSettingsDto } from "./set-tree-settings.dto";
 
@@ -7,6 +9,10 @@ export type PreferencesDto = {
   logServerResponses: boolean;
   librarySetTreeSettings: SetTreeSettingsDto;
   cachedImageSize: CachedImageSize;
+  defaultCardSortField: CardSortField;
+  defaultCardSortDirection: SortDirection;
+  defaultPageSize: number;
+
   /*
    * FEATURE settings for all center panels
    * for all views ->
