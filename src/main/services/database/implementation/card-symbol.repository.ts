@@ -48,6 +48,7 @@ export class CardSymbolRepository extends BaseRepository implements ICardSymbolR
         if (queryExisting) {
           await trx.updateTable("card_symbol")
             .set({ svg_uri: svgUri, last_synced_at: new Date().toISOString() })
+            .where("code", "=", code)
             .executeTakeFirstOrThrow();
         } else {
           await trx.insertInto("card_symbol")

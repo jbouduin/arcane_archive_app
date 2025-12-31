@@ -53,7 +53,7 @@ export class CardImageService extends BaseService implements ICardImageService {
     const currentStatus = statusParam
       ? ScryFallImageStatus[statusParam as keyof typeof ScryFallImageStatus]
       : ScryFallImageStatus.UNKNOWN;
-    this.logService.debug("Main", "requesting image:", url);
+    this.logService.trace("Main", "requesting image:", url);
     const cardfaceResult = await this.cardfaceRepository.findByPathAndSide(`${url.host}/${url.pathname}`, url.searchParams.get("side") as CardSide || "back");
     const recordFound = cardfaceResult.status != EIpcStatus.NotFound;
     const cachedImagePath = this.calculateCachedImagePath(url, requestedSize);

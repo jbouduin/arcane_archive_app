@@ -69,7 +69,8 @@ export class ConfigurationService extends BaseService implements IConfigurationS
       this._isFirstUsage = false;
     }
     this.logService.setLogSettings(this._systemSettings.loggingConfiguration);
-    this.logService.debug("Main", "First time usage", this.isFirstUsage);
+    this.logService.trace("Main", "Loaded system settings:", this._systemSettings);
+    this.logService.trace("Main", "First time usage:", this.isFirstUsage);
     // --- preferences ---
     const preferences = this.ioService.readPreferences<PreferencesDto>();
     if (preferences == null) {
@@ -77,6 +78,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     } else {
       this._preferences = preferences;
     }
+    this.logService.trace("Main", "Loaded preferences:", this._preferences);
   }
 
   public async runDiscovery(discover: () => Promise<ResultDto<DiscoveryDto>>): Promise<void> {
