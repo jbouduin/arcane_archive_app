@@ -4,7 +4,8 @@ import { LoginViewmodel, RegisterViewmodel, UserViewmodel } from "../../authenti
 
 export interface IAuthenticationViewmodelFactory {
   getInitialLoginViewmodel(showRegisterButton: boolean): LoginViewmodel;
+  getInitialRegisterViewmodel(showLoginButton: boolean): RegisterViewmodel;
   getLoginViewmodel(showRegisterButton: boolean, serviceContainer: IServiceContainer): Promise<LoginViewmodel>;
-  getRegisterViewmodel(showLoginButton: boolean): RegisterViewmodel;
+  getRegisterViewmodel(showLoginButton: boolean, serviceContainer: IServiceContainer): Promise<RegisterViewmodel>;
   getUserViewmodel(userDto: UserDto): UserViewmodel;
 }

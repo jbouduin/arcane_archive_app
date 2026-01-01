@@ -33,7 +33,7 @@ export abstract class BaseViewmodel<T extends object> {
     this._dto = dto;
     this._org = cloneDeep(dto);
     this.invalidFields = new Array<string>();
-    this.validValidation = { helperText: undefined, intent: "none" };
+    this.validValidation = { intent: "none" };
   }
   // #endregion
 

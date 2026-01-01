@@ -2,6 +2,7 @@ import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
 import { RegisterRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
 import { SessionChangeListener } from "../providers";
+import { ICollectionManagerProxyService } from "./collection-manager-proxy.service";
 import { IConfigurationService } from "./configuration.service";
 import { IIpcProxyService } from "./ipc-proxy.service";
 import { IServiceContainer } from "./service-container";
@@ -10,6 +11,8 @@ export interface ISessionService {
   readonly jwt: string | null;
   readonly loggedIn: boolean;
   readonly userName: string | null;
+
+  getNewUserName(collectionManagerProxy: ICollectionManagerProxyService): Promise<string>;
   hasRole(role: ApplicationRole): boolean;
   hasAnyRole(...roles: Array<ApplicationRole>): boolean;
   initialize(ipcProxy: IIpcProxyService, configurationService: IConfigurationService): Promise<void>;
@@ -23,4 +26,5 @@ export interface ISessionService {
   getSavedUserNames(serviceContainer: IServiceContainer): Promise<Array<string>>;
   getPassword(serviceContainer: IServiceContainer, username: string): Promise<string>;
   deleteSavedUser(serviceContainer: IServiceContainer, username: string): Promise<number>;
+  userExists(serviceContainer: IServiceContainer, userName: string): Promise<boolean>;
 };

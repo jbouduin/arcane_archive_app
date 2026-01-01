@@ -3,14 +3,15 @@ import { RegisterDialogBody } from "../register-dialog/register-dialog-body";
 import { RegisterDialogFooter } from "../register-dialog/register-dialog-footer";
 import { RegisterDialogBodyProps, RegisterDialogFooterProps, RegisterDialogProps } from "../register-dialog/register-dialog-props";
 
-export function showRegisterDialog(serviceContainer: IServiceContainer, showLoginButton: boolean): void {
+export async function showRegisterDialog(serviceContainer: IServiceContainer, showLoginButton: boolean): Promise<void> {
+  const viewmodel = await serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getRegisterViewmodel(showLoginButton, serviceContainer);
   const loginDialogProps: RegisterDialogProps = {
     isOpen: true,
     isCloseButtonShown: true,
     canEscapeKeyClose: true,
     canOutsideClickClose: false,
     title: "Register",
-    viewmodel: serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getRegisterViewmodel(showLoginButton),
+    viewmodel: viewmodel,
     bodyRenderer: (bodyProps: RegisterDialogBodyProps) => {
       return (<RegisterDialogBody {...bodyProps} />);
     },

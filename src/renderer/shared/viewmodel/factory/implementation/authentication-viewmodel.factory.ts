@@ -1,4 +1,3 @@
-import { random } from "lodash";
 import { IServiceContainer } from "../../../context";
 import { RegisterRequestDto, UserDto } from "../../../dto";
 import { LoginViewmodel, RegisterViewmodel, UserViewmodel } from "../../authentication";
@@ -15,6 +14,19 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
       showRegisterButton,
       knownUsers
     );
+  }
+
+  public getInitialRegisterViewmodel(showLoginButton: boolean): RegisterViewmodel {
+    const registerDto: RegisterRequestDto = {
+      userName: "",
+      password: "",
+      passwordRepeat: "",
+      email: "",
+      emailRepeat: "",
+      firstName: "",
+      lastName: ""
+    };
+    return new RegisterViewmodel(registerDto, showLoginButton);
   }
 
   public async getLoginViewmodel(showRegisterButton: boolean, serviceContainer: IServiceContainer): Promise<LoginViewmodel> {
@@ -45,15 +57,14 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
     return result;
   }
 
-  public getRegisterViewmodel(showLoginButton: boolean): RegisterViewmodel {
-    // TODO create empty register viewmodel, eventually go to server to generate a username
-    const nr = random(100000, 999999);
+  public async getRegisterViewmodel(showLoginButton: boolean, serviceContainer: IServiceContainer): Promise<RegisterViewmodel> {
+    const newUserName = await serviceContainer.sessionService.getNewUserName(serviceContainer.collectionManagerProxy);
     const registerDto: RegisterRequestDto = {
-      userName: "usr_" + nr.toString(),
-      password: "usr_" + nr.toString(),
-      passwordRepeat: "usr_" + nr.toString(),
-      email: "usr_" + nr.toString() + "@b.com",
-      emailRepeat: "usr_" + nr.toString() + "@b.com",
+      userName: newUserName.valueOf(),
+      password: "",
+      passwordRepeat: "",
+      email: "",
+      emailRepeat: "",
       firstName: "",
       lastName: ""
     };

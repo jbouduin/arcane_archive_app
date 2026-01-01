@@ -3,7 +3,7 @@ import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
 import { ProfileDto, RegisterRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
-import { IConfigurationService, IServiceContainer } from "../interface";
+import { ICollectionManagerProxyService, IConfigurationService, IServiceContainer } from "../interface";
 import { ISessionService } from "../interface/session.service";
 import { SessionChangeListener } from "../providers";
 import { IpcProxyService } from "./ipc-proxy.service";
@@ -46,6 +46,14 @@ export class SessionService implements ISessionService {
   // #endregion
 
   // #region ISessionService Members ------------------------------------------
+  public getNewUserName(collectionManagerProxy: ICollectionManagerProxyService): Promise<string> {
+    /* eslint-disable @typescript-eslint/no-wrapper-object-types */
+    return collectionManagerProxy
+      .getData<String>("authentication", "/public/account/new-user")
+      .then((resp: String) => resp.valueOf());
+    /* eslint-enable @typescript-eslint/no-wrapper-object-types */
+  }
+
   public hasRole(role: ApplicationRole): boolean {
     return this.roles.has(role);
   }
@@ -143,6 +151,14 @@ export class SessionService implements ISessionService {
 
   public deleteSavedUser(serviceContainer: IServiceContainer, username: string): Promise<number> {
     return serviceContainer.ipcProxy.deleteData(`${IpcPaths.CREDENTIAL}/${username}`);
+  }
+
+  public userExists(serviceContainer: IServiceContainer, userName: string): Promise<boolean> {
+    /* eslint-disable @typescript-eslint/no-wrapper-object-types */
+    return serviceContainer.collectionManagerProxy
+      .getData<Boolean>("authentication", `/public/account/user-exist?user=${userName}`)
+      .then((resp: Boolean) => resp.valueOf());
+    /* eslint-enable @typescript-eslint/no-wrapper-object-types */
   }
   // #endregion
 }

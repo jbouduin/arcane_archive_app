@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, IconName, InputGroup, Menu, MenuDivider, MenuItem, Popover } from "@blueprintjs/core";
 import React from "react";
 import { useServices } from "../../../hooks";
-import { IServiceContainer } from "../../context";
+import { IDisplayValueService } from "../../context";
 import { compareClassNameProp } from "../util";
 import { HeaderViewProps } from "./header-view.props";
 
@@ -9,11 +9,15 @@ type PopoverKey = "card-set-group-by-menu" | "card-set-sort-menu" | "card-set-ty
 
 function headerView(props: HeaderViewProps) {
   // #region State ------------------------------------------------------------
+  /**
+   * The text filter component itself does not use state. Propagating the change
+   * to the parent is delayed.
+   */
   const [textFilterValue, setTextFilterValue] = React.useState<string | null>(null);
   // #endregion
 
   // #region Hooks ------------------------------------------------------------
-  const serviceContainer: IServiceContainer = useServices();
+  const displayValueService: IDisplayValueService = useServices().displayValueService;
   // #endregion
 
   // #region Event handling ---------------------------------------------------
@@ -196,7 +200,7 @@ function headerView(props: HeaderViewProps) {
         onClick={() => props.onCardSetTypeFilterChanged(setType)}
         roleStructure="listoption"
         selected={props.cardSetTypeFilter.has(setType)}
-        text={serviceContainer.displayValueService.getDisplayValue("setType", setType)}
+        text={displayValueService.getDisplayValue("setType", setType)}
       />
     );
   }

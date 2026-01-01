@@ -6,8 +6,6 @@ import { IServiceContainer, ServiceContainerContext } from "../../../../shared/c
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
 import { ButtonBarButtonProps } from "./button-bar-button.props";
 
-// TODO memoize button because after login, desktopview switch etc svg's are retrieved again
-// and/or pass the svg as prop
 export function ButtonBarButton(props: ButtonBarButtonProps) {
   // #region State ------------------------------------------------------------
   const [svg, setSvg] = React.useState<string | undefined>(undefined);

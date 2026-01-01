@@ -1,10 +1,13 @@
 import { ControlGroup, FormGroup, InputGroup, SectionCard } from "@blueprintjs/core";
+import { useServices } from "../../../../hooks";
 import { PasswordInput } from "../../password-input/password-input";
 import { handleStringChange } from "../../util";
 import { ValidatedInput } from "../../validated-input/validated-input";
+import { PwdSecurityBar } from "./pwd-security-bar";
 import { RegisterDialogBodyProps } from "./register-dialog-props";
 
 export function RegisterDialogBody(props: RegisterDialogBodyProps) {
+  const serviceContainer = useServices();
   // #region Rendering --------------------------------------------------------
   return (
     <SectionCard padded={false}>
@@ -12,7 +15,10 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
         keyPrefix="user-name"
         label="Username"
         labelInfo="*"
-        validate={() => props.viewmodel.validateUserName()}
+        validateAsync={() => props.viewmodel.validateUserName(serviceContainer)}
+        debounceMs={500}
+        touched={true}
+        useRightElement={true}
         inputProps={{
           required: true,
           value: props.viewmodel.userName,
@@ -74,7 +80,6 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
           keyPrefix="password"
           label="Password"
           labelInfo="*"
-          validate={() => props.viewmodel.validatePassword()}
           inputProps={{
             required: true,
             onChange: handleStringChange((newValue: string) => {
@@ -101,6 +106,12 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
           }}
         />
       </ControlGroup>
+      <PwdSecurityBar
+        score={props.viewmodel.score}
+        guessesLog10={props.viewmodel.guessesLog10}
+        warning={props.viewmodel.warning}
+        suggestions={props.viewmodel.suggestions}
+      />
       <ControlGroup
         key="name-group"
         fill={true}

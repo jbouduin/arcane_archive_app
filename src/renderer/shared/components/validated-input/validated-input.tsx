@@ -1,23 +1,47 @@
-import { FormGroup, InputGroup, NumericInput } from "@blueprintjs/core";
-import { useMemo, useState } from "react";
+import { Colors, FormGroup, Icon, InputGroup, NumericInput, Spinner } from "@blueprintjs/core";
+import { useEffect, useState } from "react";
 import { ValidationResult } from "../../types";
 import { ValidatedInputProps } from "./validated-input.props";
 
 export function ValidatedInput(props: ValidatedInputProps) {
   // #region State ------------------------------------------------------------
-  const [touched, setTouched] = useState<boolean>(false);
+  const [touched, setTouched] = useState<boolean>(props.touched || false);
+  const [validation, setValidation] = useState<ValidationResult>({ intent: "none" });
+  const [loading, setLoading] = useState<boolean>(false);
+  const [controller, setController] = useState<AbortController | null>(null);
   // #endregion
 
-  // #region Memo -------------------------------------------------------------
-  const validation = useMemo(
+  // #region Effect: Debounced Validation -------------------------------------
+  useEffect(
     () => {
-      let result: ValidationResult;
-      if (touched) {
-        result = props.validate();
-      } else {
-        result = { helperText: undefined, intent: "none" };
-      }
-      return result;
+      if (!touched) return;
+
+      const handler = setTimeout(
+        () => {
+          // Cancel previous request if async validation is used
+          if (controller) controller.abort();
+
+          if (props.validateAsync) {
+            const newController = new AbortController();
+            setController(newController);
+
+            setLoading(true);
+            props.validateAsync(newController.signal)
+              .then(result => setValidation(result))
+              .catch((err) => {
+                if (err.name !== "AbortError") {
+                  setValidation({ helperText: "Validation failed", intent: "danger" });
+                }
+              })
+              .finally(() => setLoading(false));
+          } else if (props.validate) {
+            setValidation(props.validate());
+          }
+        },
+        props.debounceMs || 0
+      );
+
+      return () => clearTimeout(handler);
     },
     [touched, props.inputProps?.value, props.numericInputProps?.value]
   );
@@ -41,8 +65,14 @@ export function ValidatedInput(props: ValidatedInputProps) {
           <InputGroup
             {...props.inputProps}
             id={props.keyPrefix + "-input"}
-            onBlur={() => setTouched(true)}
+            onBlur={() => {
+              setTouched(true);
+              if (props.onTouchedChanged) {
+                props.onTouchedChanged(true);
+              }
+            }}
             size={props.inputProps.size || "small"}
+            rightElement={props.inputProps.rightElement || rightElement()}
           />
         )
       }
@@ -57,8 +87,20 @@ export function ValidatedInput(props: ValidatedInputProps) {
           />
         )
       }
-
     </FormGroup>
   );
+
+  function rightElement(): JSX.Element | undefined {
+    if (!props.useRightElement) {
+      return undefined;
+    }
+    if (loading) {
+      return (<Spinner size={16} />);
+    } else if (validation.intent == "none") {
+      return (<Icon icon="tick" size={20} color={Colors.GREEN1} />);
+    } else {
+      return (<Icon icon="cross" size={20} color={Colors.RED1} />);
+    }
+  }
   // #endregion
 }

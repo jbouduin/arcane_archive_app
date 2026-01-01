@@ -188,3 +188,36 @@ img.rotate-180 {
   margin-left: 5px;
   margin-right: 5px;
 }
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.barContainer {
+  flex: 1;
+  height: 8px;
+  background: #dfdfe7;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.textValue {
+  margin-top: -10px;
+  width: 100%;
+}
+
+.fillerBackground {
+  height: inherit;
+  transition: "width 2s ease-i-out";
+  background: linear-gradient(to right, #ff0000, #ffa500, #ffff00, #00ff00);
+}
+
+.filler {
+  transition: "width 2s ease-i-out";
+  height: inherit;
+  border-radius: inherit;
+  overflow: hidden;
+}

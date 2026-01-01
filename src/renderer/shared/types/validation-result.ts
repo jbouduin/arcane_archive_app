@@ -1,6 +1,6 @@
 import { Intent } from "@blueprintjs/core";
 
 export type ValidationResult = {
-  helperText: string | undefined;
+  helperText?: string;
   intent: Intent;
 };

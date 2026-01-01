@@ -28,7 +28,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
     serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getInitialLoginViewmodel(false)
   );
   const [registrationViewmodel, setRegistrationViewmodel] = useState<RegisterViewmodel>(
-    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getRegisterViewmodel(false)
+    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getInitialRegisterViewmodel(false)
   );
   // this one is initialized with the factory default system settings
   const [systemSettingsViewmodel, setSystemSettingsViewmodel] = useState<SystemSettingsViewmodel>(
@@ -42,8 +42,17 @@ export function FirstTimeView(props: FirstTimeViewProps) {
   // #region Effects ----------------------------------------------------------
   useEffect(
     () => {
-      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getLoginViewmodel(false, serviceContainer)
+      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
+        .getLoginViewmodel(false, serviceContainer)
         .then((model: LoginViewmodel) => setLoginViewmodel(model));
+    },
+    []
+  );
+  useEffect(
+    () => {
+      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
+        .getRegisterViewmodel(false, serviceContainer)
+        .then((model: RegisterViewmodel) => setRegistrationViewmodel(model));
     },
     []
   );
