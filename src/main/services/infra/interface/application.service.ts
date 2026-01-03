@@ -13,4 +13,8 @@ export interface IApplicationService {
    * Relaunch the application. Works in packaged app only.
    */
   restart(): void;
+
+  deleteSessionCookie(): Promise<void>;
+  restoreSessionCookie(): Promise<void>;
+  saveSessionCookie(): Promise<void>;
 }

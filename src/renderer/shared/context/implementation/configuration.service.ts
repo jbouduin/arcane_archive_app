@@ -71,6 +71,7 @@ export class ConfigurationService implements IConfigurationService {
     if (serviceContainer.sessionService.loggedIn) {
       promises.push(serviceContainer.collectionManagerProxy.putData<PreferencesDto, PreferencesDto>("authentication", "/app/account/preferences", preferences, true));
     }
+    serviceContainer.ipcProxy.logServerResponses = preferences.logServerResponses;
     return Promise.all(promises)
       .then(
         (saved: Array<PreferencesDto>) => {

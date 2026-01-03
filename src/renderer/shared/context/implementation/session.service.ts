@@ -3,10 +3,9 @@ import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
 import { ProfileDto, RegisterRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
-import { ICollectionManagerProxyService, IConfigurationService, IServiceContainer } from "../interface";
+import { ICollectionManagerProxyService, IServiceContainer } from "../interface";
 import { ISessionService } from "../interface/session.service";
 import { SessionChangeListener } from "../providers";
-import { IpcProxyService } from "./ipc-proxy.service";
 
 export class SessionService implements ISessionService {
   // #region Private fields ---------------------------------------------------
@@ -15,6 +14,8 @@ export class SessionService implements ISessionService {
   private _userName: string | null;
   private listeners: Array<SessionChangeListener>;
   private _profile: ProfileDto | null;
+  private refreshTimeout: NodeJS.Timeout | null;
+  private _refreshToken: string | null;
   // #endregion
 
   // #region ISessionService Members (getters) --------------------------------
@@ -42,6 +43,8 @@ export class SessionService implements ISessionService {
     this._profile = null;
     this.roles = new Set<ApplicationRole>();
     this.listeners = new Array<SessionChangeListener>();
+    this.refreshTimeout = null;
+    this._refreshToken = null;
   }
   // #endregion
 
@@ -62,32 +65,17 @@ export class SessionService implements ISessionService {
     return roles.some((role: ApplicationRole) => this.roles.has(role));
   }
 
-  public async initialize(ipcProxy: IpcProxyService, configurationService: IConfigurationService): Promise<void> {
-    return ipcProxy.getData<LoginResponseDto>(IpcPaths.SESSION)
+  public async initialize(serviceContainer: IServiceContainer): Promise<void> {
+    return serviceContainer.ipcProxy.getData<LoginResponseDto>(IpcPaths.SESSION)
       .then(
         (r: LoginResponseDto) => {
           if (r) {
-            this.setSessionData(r);
-            configurationService.preferences = r.profile.preferences;
+            this.setSessionData(r, serviceContainer);
+            serviceContainer.configurationService.preferences = r.profile.preferences;
           }
-        }, noop);
-  }
-
-  public setSessionData(data: LoginResponseDto | null): void {
-    if (data != null) {
-      this._jwt = data.token;
-      const payload = this._jwt.split(".")[1];
-      const raw = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
-      this.roles = new Set<ApplicationRole>(raw["roles"]);
-      this._userName = raw["sub"];
-      this._profile = data.profile;
-    } else {
-      this._jwt = null;
-      this._userName = null;
-      this._profile = null;
-      this.roles.clear();
-    }
-    this.listeners.forEach((l: SessionChangeListener) => l(data));
+        },
+        noop
+      );
   }
 
   public subscribe(listener: SessionChangeListener): () => void {
@@ -103,9 +91,10 @@ export class SessionService implements ISessionService {
         "authentication", "/auth/login", loginRequest, true
       ).then(
         (r: LoginResponseDto) => {
-          this.setSessionData(r);
+          this.setSessionData(r, serviceContainer);
           serviceContainer.configurationService.preferences = r.profile.preferences;
           serviceContainer.ipcProxy.postData<LoginResponseDto, never>(IpcPaths.SESSION, r);
+          // TODO handle difference between local preferences and stored preferences
           return r;
         }
       );
@@ -116,7 +105,7 @@ export class SessionService implements ISessionService {
       .postData<never, never>("authentication", "/auth/logout", null, false)
       .then(
         (_r: never) => {
-          this.setSessionData(null);
+          this.setSessionData(null, null);
           serviceContainer.ipcProxy.deleteData(IpcPaths.SESSION);
         }
       );
@@ -159,6 +148,57 @@ export class SessionService implements ISessionService {
       .getData<Boolean>("authentication", `/public/account/user-exist?user=${userName}`)
       .then((resp: Boolean) => resp.valueOf());
     /* eslint-enable @typescript-eslint/no-wrapper-object-types */
+  }
+
+  public refreshToken(serviceContainer: IServiceContainer): void {
+    if (this._refreshToken != null) {
+      void serviceContainer.collectionManagerProxy!
+        .postData<never, LoginResponseDto>("authentication", `/auth/refresh-token/${this._refreshToken}`, null, true)
+        .then(
+          (refreshData: LoginResponseDto) => {
+            this.setSessionData(refreshData, serviceContainer);
+            serviceContainer.configurationService.preferences = refreshData.profile.preferences;
+            serviceContainer.ipcProxy.postData<LoginResponseDto, never>(IpcPaths.SESSION, refreshData);
+          },
+          () => {
+            this.setSessionData(null, null);
+            serviceContainer.ipcProxy.deleteData(IpcPaths.SESSION);
+          }
+        );
+    }
+  }
+  // #endregion
+
+  // #region Auxiliary Methods ------------------------------------------------
+  private setSessionData(data: LoginResponseDto | null, serviceContainer: IServiceContainer | null): void {
+    if (data != null && serviceContainer != null) {
+      this._jwt = data.token;
+      const payload = this._jwt.split(".")[1];
+      const raw = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
+      this.roles = new Set<ApplicationRole>(raw["roles"]);
+      this._userName = raw["sub"];
+      this._refreshToken = data.refreshToken;
+      this._profile = data.profile;
+      const expiry = (raw["exp"] as number) * 1000;
+      const now = Date.now();
+      if (this.refreshTimeout != null) {
+        clearTimeout(this.refreshTimeout);
+      }
+      this.refreshTimeout = setTimeout(
+        () => this.refreshToken(serviceContainer),
+        Math.max(0, expiry - now) * 0.9 //  Max -> Just in case token has expired, but session not
+      );
+    } else {
+      this._jwt = null;
+      this._userName = null;
+      this._profile = null;
+      this._refreshToken = null;
+      this.roles.clear();
+      if (this.refreshTimeout != null) {
+        clearTimeout(this.refreshTimeout);
+      }
+    }
+    this.listeners.forEach((l: SessionChangeListener) => l(data));
   }
   // #endregion
 }

@@ -15,11 +15,11 @@ import { ConfigurationService } from "./configuration.service";
 import { DisplayValueService } from "./display-value.service";
 import { IpcProxyService } from "./ipc-proxy.service";
 import { LanguageService } from "./language.service";
+import { LogService } from "./log.service";
 import { MtgSetService } from "./mtg-set.service";
 import { OverlayService } from "./overlay.service";
 import { SessionService } from "./session.service";
 import { ViewmodelFactoryService } from "./viewmodel-factory.service";
-import { LogService } from "./log.service";
 
 export class ServiceContainer implements IServiceContainer {
   // #region Private fields ---------------------------------------------------
@@ -163,7 +163,7 @@ export class ServiceContainer implements IServiceContainer {
               skippableServices.push(this._mtgSetService.initialize(this._collectionManagerProxy));
             }
             if (!options.skipSessionService) {
-              skippableServices.push(this._sessionService.initialize(this._ipcProxy, this._configurationService));
+              skippableServices.push(this._sessionService.initialize(this));
             }
 
             await Promise.all(skippableServices)

@@ -2,6 +2,7 @@ import { app, dialog } from "electron";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { homedir } from "os";
 import { dirname, join } from "path";
+import { cwd, resourcesPath } from "process";
 import { inject, injectable } from "tsyringe";
 import { BaseService, IResult } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
@@ -46,9 +47,22 @@ export class IoService extends BaseService implements IIoService {
   }
 
   public async getAsset(path: string): Promise<IResult<string>> {
-    if (existsSync(path)) {
+    /**
+     * In dev: path should be valid
+     * Packaged: join(resourcesPath, path) should be valid
+     * Fallback: join(cwd(), path)
+     */
+    let couldbePath = path;
+    if (!existsSync(couldbePath)) {
+      couldbePath = join(resourcesPath, path);
+    }
+    if (!existsSync(couldbePath)) {
+      couldbePath = join(cwd(), path);
+    }
+
+    if (existsSync(couldbePath)) {
       try {
-        return this.resultFactory.createSuccessResultPromise<string>(readFileSync(path, { encoding: "utf-8" }));
+        return this.resultFactory.createSuccessResultPromise<string>(readFileSync(couldbePath, { encoding: "utf-8" }));
       } catch (err) {
         return this.resultFactory.createExceptionResultPromise<string>(err);
       }

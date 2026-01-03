@@ -1,20 +1,29 @@
-import type { ForgeConfig } from "@electron-forge/shared-types";
-import { MakerSquirrel } from "@electron-forge/maker-squirrel";
-import { MakerZIP } from "@electron-forge/maker-zip";
 import { MakerDeb } from "@electron-forge/maker-deb";
 import { MakerRpm } from "@electron-forge/maker-rpm";
+import { MakerSquirrel } from "@electron-forge/maker-squirrel";
+import { MakerZIP } from "@electron-forge/maker-zip";
 import { AutoUnpackNativesPlugin } from "@electron-forge/plugin-auto-unpack-natives";
-import { WebpackPlugin } from "@electron-forge/plugin-webpack";
 import { FusesPlugin } from "@electron-forge/plugin-fuses";
+import { WebpackPlugin } from "@electron-forge/plugin-webpack";
+import type { ForgeConfig } from "@electron-forge/shared-types";
 import { FuseV1Options, FuseVersion } from "@electron/fuses";
-
 import { mainConfig } from "./.cm/configs/webpack.main.config";
 import { rendererConfig } from "./.cm/configs/webpack.renderer.config";
 
-const config : ForgeConfig = {
+const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
-    icon: "/assets/icons/collection_manager_512"
+    icon: "/assets/icons/collection_manager_512",
+    ignore: [
+      /node_modules\/(?!(better-sqlite3|keytar|bindings|file-uri-to-path)\/)/
+    ],
+    extraResource: ["assets"]
+    // following did not work to get the native dependencies unpacked,
+    // the ignore above did solve the issue
+    // asarUnpack: [
+    // "**/node_modules/better-sqlite3/**",
+    // "**/node_modules/keytar/**"
+    // ]
   },
   rebuildConfig: {},
   makers: [
@@ -41,7 +50,7 @@ const config : ForgeConfig = {
     }
   ],
   plugins: [
-   new AutoUnpackNativesPlugin({}),
+    new AutoUnpackNativesPlugin({}),
     new WebpackPlugin({
       devContentSecurityPolicy: "default-src 'self' 'unsafe-inline' data:; " +
         "script-src 'self' 'unsafe-eval' 'unsafe-inline' data:;" +

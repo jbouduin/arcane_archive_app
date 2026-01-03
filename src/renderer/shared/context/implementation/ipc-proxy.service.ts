@@ -40,7 +40,7 @@ export class IpcProxyService implements IIpcProxyService {
           if (response.status >= EIpcStatus.BadRequest) {
             return this.processIpcErrorResponse("DELETE", path, response);
           } else {
-            return this.processIpcResponse(response);
+            return this.processIpcResponse(path, response);
           }
         },
         (reason: Error) => this.processIpcRejection("DELETE", path, reason)
@@ -58,7 +58,7 @@ export class IpcProxyService implements IIpcProxyService {
           if (response.status >= EIpcStatus.BadRequest) {
             return this.processIpcErrorResponse("GET", path, response);
           } else {
-            return this.processIpcResponse(response);
+            return this.processIpcResponse(path, response);
           }
         },
         (reason: Error) => this.processIpcRejection("GET", path, reason)
@@ -85,7 +85,7 @@ export class IpcProxyService implements IIpcProxyService {
           if (response.status >= EIpcStatus.BadRequest) {
             return this.processIpcErrorResponse("PUT", path, response);
           } else {
-            return this.processIpcResponse(response);
+            return this.processIpcResponse(path, response);
           }
         },
         (reason: Error) => this.processIpcRejection("PUT", path, reason)
@@ -104,7 +104,7 @@ export class IpcProxyService implements IIpcProxyService {
           if (response.status >= EIpcStatus.BadRequest) {
             return this.processIpcErrorResponse("PATCH", path, response);
           } else {
-            return this.processIpcResponse(response);
+            return this.processIpcResponse(path, response);
           }
         },
         (reason: Error) => this.processIpcRejection("PATCH", path, reason)
@@ -125,7 +125,7 @@ export class IpcProxyService implements IIpcProxyService {
           if (response.status >= EIpcStatus.BadRequest) {
             return this.processIpcErrorResponse("POST", path, response);
           } else {
-            return this.processIpcResponse(response);
+            return this.processIpcResponse(path, response);
           }
         },
         (reason: Error) => this.processIpcRejection<Res>("POST", path, reason)
@@ -135,7 +135,7 @@ export class IpcProxyService implements IIpcProxyService {
   private processIpcErrorResponse<Dto>(channel: IpcChannel, path: string, response: IpcResponse<Dto>): Promise<never> {
     if (this.logServerResponses) {
       // eslint-disable-next-line no-console
-      console.log(response);
+      console.log({ path: path, response: response });
     }
     let errorMessage: string | undefined = undefined;
     switch (response.status) {
@@ -185,10 +185,10 @@ export class IpcProxyService implements IIpcProxyService {
     return Promise.reject(new Error(`Server error: ${response.status}`));
   }
 
-  private processIpcResponse<Dto>(response: IpcResponse<Dto>): Dto {
+  private processIpcResponse<Dto>(path: string, response: IpcResponse<Dto>): Dto {
     if (this.logServerResponses) {
       // eslint-disable-next-line no-console
-      console.log(response);
+      console.log({ path: path, response: response });
     }
     return response.data!;
   }
@@ -196,7 +196,7 @@ export class IpcProxyService implements IIpcProxyService {
   private processIpcRejection<T>(channel: IpcChannel, path: string, reason: Error): Promise<T> {
     if (this.logServerResponses) {
       // eslint-disable-next-line no-console
-      console.log(reason);
+      console.log({ path: path, response: reason });
     }
     void this.showToast(
       {

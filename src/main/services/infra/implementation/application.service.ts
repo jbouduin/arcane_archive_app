@@ -1,4 +1,4 @@
-import { app, dialog, ipcMain, IpcMainInvokeEvent, nativeTheme, protocol } from "electron";
+import { app, Cookie, dialog, ipcMain, IpcMainInvokeEvent, nativeTheme, protocol, session } from "electron";
 import { MigrationProvider } from "kysely";
 import { container, injectable } from "tsyringe";
 import { IpcChannel, IpcPaths, IpcRequest, ProgressCallback } from "../../../../common/ipc";
@@ -12,6 +12,26 @@ import { IApplicationService, IConfigurationService, ILogService, IRouterService
 
 @injectable()
 export class ApplicationService implements IApplicationService {
+  // LATER once packaged cookie handling does not work anymore
+  // #region Private fields ---------------------------------------------------
+  private sessionCookie: Cookie | undefined;
+  private readonly sessionCookieJarKey: string;
+  private readonly sessionCookieUrl: string;
+  // #endregion
+
+  // #region Constructor ------------------------------------------------------
+  public constructor() {
+    this.sessionCookie = undefined;
+    if (app.isPackaged) {
+      this.sessionCookieJarKey = "file://api";
+      this.sessionCookieUrl = "file://";
+    } else {
+      this.sessionCookieJarKey = "http://localhost/api";
+      this.sessionCookieUrl = "http://localhost:3000";
+    }
+  }
+  // #endregion
+
   // #region IBootstrapService methods ----------------------------------------
   public get applicationName(): string {
     return app.getName();
@@ -89,6 +109,41 @@ export class ApplicationService implements IApplicationService {
       app.relaunch();
     }
     app.exit();
+  }
+
+  public deleteSessionCookie(): Promise<void> {
+    return session.defaultSession.cookies
+      .remove(this.sessionCookieJarKey, "SESSION")
+      .then(() => {
+        this.sessionCookie = undefined;
+      });
+  }
+
+  public saveSessionCookie(): Promise<void> {
+    // once packed this returns no cookies at all
+    // session.defaultSession.cookies
+    //   .get({})
+    //   .then((cookies: Array<Cookie>) => {
+
+    //     cookies.forEach((c: Cookie) => console.log(c))
+    //     this.sessionCookie = cookies.shift();
+    //   });
+    return session.defaultSession.cookies
+      .get({ url: this.sessionCookieJarKey, name: "SESSION" })
+      .then((cookies: Array<Cookie>) => {
+        this.sessionCookie = cookies.shift();
+      });
+  }
+
+  public restoreSessionCookie(): Promise<void> {
+    if (this.sessionCookie) {
+      return session.defaultSession.cookies.set({
+        url: this.sessionCookieUrl,
+        ...this.sessionCookie
+      });
+    } else {
+      return Promise.resolve();
+    }
   }
   // #endregion
 

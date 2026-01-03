@@ -5,9 +5,11 @@ import { BaseService, IResult } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
 import { IApplicationService, ILogService, IResultFactory, ISessionService } from "../interface";
 
+// const keytar = require("keytar");
 @singleton()
 export class SessionService extends BaseService implements ISessionService {
   // #region Private fields ---------------------------------------------------
+  private applicationService: IApplicationService;
   private data: LoginResponseDto | null | null;
   private appName: string;
   // #endregion
@@ -19,6 +21,7 @@ export class SessionService extends BaseService implements ISessionService {
     @inject(INFRASTRUCTURE.ApplicationService) applicationService: IApplicationService
   ) {
     super(logService, resultFactory);
+    this.applicationService = applicationService;
     this.data = null;
     this.appName = applicationService.applicationName;
   }
@@ -26,17 +29,27 @@ export class SessionService extends BaseService implements ISessionService {
 
   // #region ISessionService Members ------------------------------------------
   public deleteSessionData(): Promise<IResult<number>> {
-    this.data = null;
-    return this.resultFactory.createSuccessResultPromise(1);
+    return this.applicationService
+      .deleteSessionCookie()
+      .then(() => {
+        this.data = null;
+        return this.resultFactory.createSuccessResult(1);
+      });
   }
 
   public getSessionData(): Promise<IResult<LoginResponseDto | null>> {
-    return this.resultFactory.createSuccessResultPromise(this.data);
+    return this.applicationService
+      .restoreSessionCookie()
+      .then(() => this.resultFactory.createSuccessResultPromise(this.data));
   }
 
   public setSessionData(data: LoginResponseDto): Promise<IResult<void>> {
-    this.data = data;
-    return this.resultFactory.createNoContentResultPromise();
+    return this.applicationService
+      .saveSessionCookie()
+      .then(() => {
+        this.data = data;
+        return this.resultFactory.createNoContentResult();
+      });
   }
 
   public async getStoredUserNames(): Promise<IResult<Array<string>>> {

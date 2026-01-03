@@ -1,4 +1,4 @@
-import { H1 } from "@blueprintjs/core";
+import { Button, H1 } from "@blueprintjs/core";
 import { useServices, useSession } from "../../../hooks";
 import { NotLoggedInView } from "../../../shared/components/not-logged-view/not-logged-in-view";
 import { DeckViewProps } from "./deck-view.props";
@@ -19,6 +19,13 @@ export function DeckView(props: DeckViewProps) {
             <p>
               {"You are logged in as " + serviceContainer.sessionService.userName}
             </p>
+            <div style={{ alignContent: "center" }}>
+              <Button
+                onClick={() => serviceContainer.sessionService.refreshToken(serviceContainer)}
+              >
+                Test Refresh JWT
+              </Button>
+            </div>
           </div>
         )
       }

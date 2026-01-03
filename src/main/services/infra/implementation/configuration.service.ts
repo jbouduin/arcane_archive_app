@@ -66,6 +66,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
       this._isFirstUsage = true;
     } else {
       this._systemSettings = systemSettings;
+      // TODO handle "new" preferences which are not stored yet in the file
       this._isFirstUsage = false;
     }
     this.logService.setLogSettings(this._systemSettings.loggingConfiguration);
@@ -77,6 +78,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
       this._preferences = this.createPreferencesFactoryDefault(useDarkTheme);
     } else {
       this._preferences = preferences;
+      // TODO handle "new" preferences which are not stored yet in the file
     }
     this.logService.trace("Main", "Loaded preferences:", this._preferences);
   }

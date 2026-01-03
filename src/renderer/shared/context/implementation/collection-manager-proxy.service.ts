@@ -144,7 +144,7 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
   private processRejection<T>(path: string, reason: Error, suppressErrorMessage: boolean): Promise<T> {
     if (this.logServerResponses) {
       // eslint-disable-next-line no-console
-      console.log(reason);
+      console.log({ path: path, response: reason });
     }
 
     let message: string;
@@ -179,7 +179,7 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
   private processErrorResponse<T>(path: string, response: ResultDto<T>, suppressErrorMessage: boolean): Promise<T> {
     if (this.logServerResponses) {
       // eslint-disable-next-line no-console
-      console.log(response);
+      console.log({ path: path, response: response });
     }
 
     let message: Array<string>;
@@ -211,7 +211,7 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
   private processSuccessResponse<T>(path: string, resultDto: ResultDto<T>, suppressSuccessMessage: boolean): T {
     if (this.logServerResponses) {
       // eslint-disable-next-line no-console
-      console.log(resultDto);
+      console.log({ path: path, response: resultDto });
     }
     if (resultDto.successMessage && !suppressSuccessMessage) {
       void this.showToast(
@@ -242,7 +242,8 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
         {
           method: verb,
           body: (data != null) ? JSON.stringify(data) : null,
-          headers: this.buildHeaders()
+          headers: this.buildHeaders(),
+          credentials: server == "authentication" ? "include" : undefined
         })
         .then(
           async (response: Response) => {
@@ -277,7 +278,6 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
       "accept": "application/json",
       "Content-Type": "application/json"
     };
-    // if (this.sessionService.jwt != null) {
     if (this.jwt != null) {
       headers["Authorization"] = "Bearer " + this.jwt;
     }

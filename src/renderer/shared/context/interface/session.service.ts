@@ -3,8 +3,6 @@ import { RegisterRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
 import { SessionChangeListener } from "../providers";
 import { ICollectionManagerProxyService } from "./collection-manager-proxy.service";
-import { IConfigurationService } from "./configuration.service";
-import { IIpcProxyService } from "./ipc-proxy.service";
 import { IServiceContainer } from "./service-container";
 
 export interface ISessionService {
@@ -15,8 +13,7 @@ export interface ISessionService {
   getNewUserName(collectionManagerProxy: ICollectionManagerProxyService): Promise<string>;
   hasRole(role: ApplicationRole): boolean;
   hasAnyRole(...roles: Array<ApplicationRole>): boolean;
-  initialize(ipcProxy: IIpcProxyService, configurationService: IConfigurationService): Promise<void>;
-  setSessionData(data: LoginResponseDto | null): void;
+  initialize(serviceContainer: IServiceContainer): Promise<void>;
   subscribe(listener: SessionChangeListener): () => void;
   login(serviceContainer: IServiceContainer, loginRequest: LoginRequestDto): Promise<LoginResponseDto>;
   logout(serviceContainer: IServiceContainer): Promise<void>;
@@ -27,4 +24,5 @@ export interface ISessionService {
   getPassword(serviceContainer: IServiceContainer, username: string): Promise<string>;
   deleteSavedUser(serviceContainer: IServiceContainer, username: string): Promise<number>;
   userExists(serviceContainer: IServiceContainer, userName: string): Promise<boolean>;
+  refreshToken(serviceContainer: IServiceContainer): void;
 };
