@@ -58,7 +58,7 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
   }
 
   public async getRegisterViewmodel(showLoginButton: boolean, serviceContainer: IServiceContainer): Promise<RegisterViewmodel> {
-    const newUserName = await serviceContainer.sessionService.getNewUserName(serviceContainer.collectionManagerProxy);
+    const newUserName = await serviceContainer.sessionService.getNewUserName(serviceContainer.arcaneArchiveProxy);
     const registerDto: RegisterRequestDto = {
       userName: newUserName.valueOf(),
       password: "",

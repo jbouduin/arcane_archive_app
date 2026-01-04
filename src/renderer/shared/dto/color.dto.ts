@@ -1,4 +1,4 @@
-import { MasterDataDto } from "../../../common/dto/mtg-collection";
+import { MasterDataDto } from "../../../common/dto";
 
 export type ColorDto = MasterDataDto<string> & {
   sequence: number;

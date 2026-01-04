@@ -280,7 +280,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
             value: props.viewmodel.discovery
           }}
         />
-        {/* LATER: display these values also or have a separate dialog which also displays status of all services
+        {/* TODO: display these values also or have a separate dialog which also displays status of all services
         <ValidatedInput
           keyPrefix="auth-url"
           label="Authentication Service Internet Address"

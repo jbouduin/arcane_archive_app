@@ -4,7 +4,7 @@ import { inject, injectable } from "tsyringe";
 import { ProgressCallback } from "../../../../common/ipc";
 import { runSerial } from "../../../../common/util";
 import { CardSymbolDto } from "../../../dto/card-symbol.dto";
-import { IMtgCollectionClient, IScryfallClient } from "../../api/interface";
+import { IArcaneArchiveClient, IScryfallClient } from "../../api/interface";
 import { BaseService, IResult } from "../../base";
 import { ICardSymbolRepository } from "../../database/interface";
 import { CardSymbolQueryDto } from "../../database/schema";
@@ -15,7 +15,7 @@ import { ICardSymbolService } from "../interface";
 @injectable()
 export class CardSymbolService extends BaseService implements ICardSymbolService {
   // #region Private fields ---------------------------------------------------
-  private readonly mtgCollectionClient: IMtgCollectionClient;
+  private readonly arcaneArchiveClient: IArcaneArchiveClient;
   private readonly scryfallClient: IScryfallClient;
   private readonly configurationService: IConfigurationService;
   private readonly cardSymbolRepository: ICardSymbolRepository;
@@ -28,13 +28,13 @@ export class CardSymbolService extends BaseService implements ICardSymbolService
     @inject(INFRASTRUCTURE.LogService) logService: ILogService,
     @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory,
     @inject(INFRASTRUCTURE.ConfigurationService) configurationService: IConfigurationService,
-    @inject(API.ApiClient) mtgCollectionClient: IMtgCollectionClient,
+    @inject(API.ArcaneArchiveClient) arcaneArchiveClient: IArcaneArchiveClient,
     @inject(API.ScryfallClient) scryfallClient: IScryfallClient,
     @inject(INFRASTRUCTURE.IoService) ioService: IIoService,
     @inject(DATABASE.CardSymbolRepository) cardSymbolRepository: ICardSymbolRepository
   ) {
     super(logService, resultFactory);
-    this.mtgCollectionClient = mtgCollectionClient;
+    this.arcaneArchiveClient = arcaneArchiveClient;
     this.scryfallClient = scryfallClient;
     this.configurationService = configurationService;
     this.cardSymbolRepository = cardSymbolRepository;
@@ -70,7 +70,7 @@ export class CardSymbolService extends BaseService implements ICardSymbolService
         this.cardSymbolCacheDirectory
       )
     );
-    const cardSymbols = await this.mtgCollectionClient.getData<Array<CardSymbolDto>>("/public/card-symbol");
+    const cardSymbols = await this.arcaneArchiveClient.getData<Array<CardSymbolDto>>("/public/card-symbol");
     await runSerial(
       cardSymbols.data,
       async (cardSymbol: CardSymbolDto, idx: number, total: number) => {

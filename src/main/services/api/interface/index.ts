@@ -1,2 +1,2 @@
-export * from "./mtg-collection.client";
+export * from "./arcane-archive.client";
 export * from "./scryfall.client";

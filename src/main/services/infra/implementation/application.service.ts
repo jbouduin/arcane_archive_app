@@ -2,7 +2,7 @@ import { app, Cookie, dialog, ipcMain, IpcMainInvokeEvent, nativeTheme, protocol
 import { MigrationProvider } from "kysely";
 import { container, injectable } from "tsyringe";
 import { IpcChannel, IpcPaths, IpcRequest, ProgressCallback } from "../../../../common/ipc";
-import { IMtgCollectionClient } from "../../api/interface";
+import { IArcaneArchiveClient } from "../../api/interface";
 import { IRouter } from "../../base";
 import { IDatabaseService } from "../../database/interface";
 import { MigrationDi } from "../../database/migration/migration.di";
@@ -58,7 +58,7 @@ export class ApplicationService implements IApplicationService {
     splashWindow.on("ready-to-show", () => {
       splashWindow.show();
       callback("Running discovery");
-      const apiClient = container.resolve<IMtgCollectionClient>(API.ApiClient);
+      const apiClient = container.resolve<IArcaneArchiveClient>(API.ArcaneArchiveClient);
       // --- 3. run discovery ---
       void configurationService.runDiscovery(() => apiClient.discover())
         .then(

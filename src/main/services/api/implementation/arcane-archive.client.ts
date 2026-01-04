@@ -1,14 +1,14 @@
 import { isError } from "lodash";
 import { inject, injectable } from "tsyringe";
-import { ResultDto, ValidationErrorDto } from "../../../../common/dto/mtg-collection";
+import { ResultDto, ValidationErrorDto } from "../../../../common/dto";
 import { DiscoveryDto } from "../../../dto";
 import { BaseService } from "../../base";
 import { IConfigurationService, ILogService, IResultFactory } from "../../infra/interface";
 import { INFRASTRUCTURE } from "../../service.tokens";
-import { IMtgCollectionClient } from "../interface";
+import { IArcaneArchiveClient } from "../interface";
 
 @injectable()
-export class MtgCollectionClient extends BaseService implements IMtgCollectionClient {
+export class ArcaneArchiveClient extends BaseService implements IArcaneArchiveClient {
   // #region Private fields ---------------------------------------------------
   private readonly configurationService: IConfigurationService;
   // #endregion
@@ -24,7 +24,7 @@ export class MtgCollectionClient extends BaseService implements IMtgCollectionCl
   }
   // #endregion
 
-  // #region IMtgCollectionData Members ---------------------------------------
+  // #region IarcaneArchiveProxy Members --------------------------------------
   public async discover(): Promise<ResultDto<DiscoveryDto>> {
     return this.sendRequest(this.configurationService.configuration.discovery);
   }

@@ -1,4 +1,4 @@
-import { MasterDataDto } from "../../../common/dto/mtg-collection";
+import { MasterDataDto } from "../../../common/dto";
 
 export type LibraryCardListDto = MasterDataDto<string> & {
   id: number;

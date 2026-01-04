@@ -1,4 +1,4 @@
-import { AuditableDto, MasterDataDto } from "../../../common/dto/mtg-collection";
+import { AuditableDto, MasterDataDto } from "../../../common/dto";
 
 export type MtgSetDto = AuditableDto & MasterDataDto<string> & {
   // #region proprietary fields ------------------------------------------------

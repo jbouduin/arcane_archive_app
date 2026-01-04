@@ -2,7 +2,7 @@
   "name": "arcane_archive",
   "productName": "Arcane Archive",
   "version": "0.0.1",
-  "description": "MTG Collection manager",
+  "description": "MTG Collection and deck manager",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
@@ -14,7 +14,7 @@
   "keywords": [],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jbouduin/mtg_collection_front_end.git"
+    "url": "git+https://github.com/jbouduin/arcane_archive_app.git"
   },
   "author": {
     "name": "Johan Bouduin",

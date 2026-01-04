@@ -24,7 +24,7 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps) {
       allScryfallCatalogs: "SKIP",
       allCardSets: "SKIP"
     };
-    void serviceContainer.collectionManagerProxy.postData("library", "/admin/synchronization/partial", postData, true);
+    void serviceContainer.arcaneArchiveProxy.postData("library", "/admin/synchronization/partial", postData, true);
     // .then()
   }
   // #endregion

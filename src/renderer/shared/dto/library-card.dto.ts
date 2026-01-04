@@ -1,4 +1,4 @@
-import { AuditableDto, MasterDataDto } from "../../../common/dto/mtg-collection";
+import { AuditableDto, MasterDataDto } from "../../../common/dto";
 import { CardLayout } from "../types/card-layout";
 import { LibraryCardLanguageDto } from "./library-card-language.dto";
 import { LibraryCardfaceDto } from "./library-cardface.dto";

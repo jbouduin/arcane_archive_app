@@ -15,9 +15,9 @@ export function ServerNotAvailable(props: ServerNotAvailableProps) {
         props.nextTry != 0 &&
         (
           <H3>
-            retrying in
+            retrying in&nbsp;
             {props.nextTry}
-            seconds
+            &nbsp;seconds
           </H3>
         )
       }

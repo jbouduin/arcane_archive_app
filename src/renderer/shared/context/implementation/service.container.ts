@@ -2,14 +2,14 @@ import { ToastProps } from "@blueprintjs/core";
 import { SettingsDto } from "../../../../common/dto";
 import { InitializeServiceContainerOptions, ShowToastFn } from "../../types";
 import {
-  ICardSearchService, ICardSymbolService, ICollectionManagerProxyService, IColorService, IConfigurationService,
+  ICardSearchService, ICardSymbolService, IArcaneArchiveProxyService, IColorService, IConfigurationService,
   IDisplayValueService, IIpcProxyService, ILanguageService, ILogService, IMtgSetService,
   IOverlayService, IServiceContainer, ISessionService, IViewmodelFactoryService
 } from "../interface";
 import { InitializationResult } from "../types";
 import { CardSearchService } from "./card-search.service";
 import { CardSymbolService } from "./card-symbol.service";
-import { CollectionManagerProxyService } from "./collection-manager-proxy.service";
+import { ArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
 import { ColorService } from "./color.service";
 import { ConfigurationService } from "./configuration.service";
 import { DisplayValueService } from "./display-value.service";
@@ -25,7 +25,7 @@ export class ServiceContainer implements IServiceContainer {
   // #region Private fields ---------------------------------------------------
   private _cardSearchService: ICardSearchService;
   private _cardSymbolService: ICardSymbolService;
-  private _collectionManagerProxy: ICollectionManagerProxyService;
+  private _arcaneArchiveProxy: IArcaneArchiveProxyService;
   private _colorService: IColorService;
   private _configurationService: IConfigurationService;
   private _displayValueService: IDisplayValueService;
@@ -42,7 +42,7 @@ export class ServiceContainer implements IServiceContainer {
   public constructor() {
     this._cardSearchService = new CardSearchService();
     this._cardSymbolService = new CardSymbolService();
-    this._collectionManagerProxy = new CollectionManagerProxyService();
+    this._arcaneArchiveProxy = new ArcaneArchiveProxyService();
     this._colorService = new ColorService();
     this._configurationService = new ConfigurationService();
     this._displayValueService = new DisplayValueService();
@@ -65,8 +65,8 @@ export class ServiceContainer implements IServiceContainer {
     return this._cardSymbolService;
   }
 
-  public get collectionManagerProxy(): ICollectionManagerProxyService {
-    return this._collectionManagerProxy;
+  public get arcaneArchiveProxy(): IArcaneArchiveProxyService {
+    return this._arcaneArchiveProxy;
   }
 
   public get colorService(): IColorService {
@@ -130,7 +130,7 @@ export class ServiceContainer implements IServiceContainer {
 
     // --- initialize Proxies with initialization show toast ---
     this._ipcProxy.setShowToast(initializationShowToast);
-    this._collectionManagerProxy.setShowToast(initializationShowToast);
+    this._arcaneArchiveProxy.setShowToast(initializationShowToast);
 
     // --- initialize log service ---
     this._logService.initialize(this._ipcProxy);
@@ -139,28 +139,29 @@ export class ServiceContainer implements IServiceContainer {
     await this._configurationService.initialize(this._ipcProxy)
       .then(
         async (configuration: SettingsDto) => {
-          this._collectionManagerProxy.initialize(this.sessionService, configuration);
-          const apiStatus = await this._collectionManagerProxy.startRefreshing();
+          this._arcaneArchiveProxy.initialize(this._configurationService, this._sessionService, configuration);
+          this._ipcProxy.initialize(this._configurationService, configuration.preferences);
+          const apiStatus = await this._arcaneArchiveProxy.startRefreshing();
           if (apiStatus.get("library") != null) {
-            // Skippable services do not reject
+            // Skippable services do (should) not reject
             const skippableServices = new Array<Promise<void>>();
             if (!options.skipCardSearchService) {
-              skippableServices.push(this._cardSearchService.initialize(this._collectionManagerProxy, configuration.preferences));
+              skippableServices.push(this._cardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences));
             }
             if (!options.skipCardSymbolService) {
               skippableServices.push(this._cardSymbolService.initialize(this._ipcProxy));
             }
             if (!options.skipColorService) {
-              skippableServices.push(this._colorService.initialize(this._collectionManagerProxy));
+              skippableServices.push(this._colorService.initialize(this._arcaneArchiveProxy));
             }
             if (!options.skipDisplayValueService) {
-              skippableServices.push(this._displayValueService.initialize(this._collectionManagerProxy));
+              skippableServices.push(this._displayValueService.initialize(this._arcaneArchiveProxy));
             }
             if (!options.skipLanguageService) {
-              skippableServices.push(this._languageService.initialize(this._collectionManagerProxy));
+              skippableServices.push(this._languageService.initialize(this._arcaneArchiveProxy));
             }
             if (!options.skipMtgSetService) {
-              skippableServices.push(this._mtgSetService.initialize(this._collectionManagerProxy));
+              skippableServices.push(this._mtgSetService.initialize(this._arcaneArchiveProxy));
             }
             if (!options.skipSessionService) {
               skippableServices.push(this._sessionService.initialize(this));
@@ -186,7 +187,7 @@ export class ServiceContainer implements IServiceContainer {
         // --- set real toast in services ---
         this._overlayService.setShowToast(showToast);
         this._ipcProxy.setShowToast(showToast);
-        this._collectionManagerProxy.setShowToast(showToast);
+        this._arcaneArchiveProxy.setShowToast(showToast);
       }
       );
     return result;

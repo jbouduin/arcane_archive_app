@@ -1,16 +1,16 @@
 import { ToastProps } from "@blueprintjs/core";
 import { isError, noop } from "lodash";
-import { LoginResponseDto, ResultDto, SettingsDto, ValidationErrorDto } from "../../../../common/dto";
+import { LoginResponseDto, PreferencesDto, ResultDto, SettingsDto, ValidationErrorDto } from "../../../../common/dto";
 import { runSerial } from "../../../../common/util";
 import { ApiInfoDto } from "../../dto";
 import { MtgServer, ShowToastFn } from "../../types";
-import { ICollectionManagerProxyService, ISessionService } from "../interface";
+import { IArcaneArchiveProxyService, IConfigurationService, ISessionService } from "../interface";
 import { ApiStatusChangeListener } from "../providers";
 
-export class CollectionManagerProxyService implements ICollectionManagerProxyService {
+export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
   // #region Private fields ---------------------------------------------------
   private readonly refreshInterval: number;
-  private _logServerResponses: boolean;
+  private logServerResponses: boolean;
   private showToast!: (props: ToastProps, key?: string) => void;
   private apiRoots: Map<MtgServer, string>;
   private _apiStatus: Map<MtgServer, ApiInfoDto | null>;
@@ -19,6 +19,7 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
   private intervalId: NodeJS.Timeout | null;
   private jwt: string | null;
   private unsubscribeSession: (() => void) | null;
+  private unsubscribePreferences: (() => void) | null;
   // #endregion
 
   // #region Getters/Setters --------------------------------------------------
@@ -29,7 +30,7 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
 
   // #region Constructor ------------------------------------------------------
   public constructor() {
-    this._logServerResponses = false;
+    this.logServerResponses = false;
     this.apiRoots = new Map<MtgServer, string>();
     this._apiStatus = new Map<MtgServer, ApiInfoDto>();
     this.listeners = new Array<ApiStatusChangeListener>();
@@ -38,14 +39,15 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
     this.refreshInterval = 60000;
     this.jwt = null;
     this.unsubscribeSession = null;
+    this.unsubscribePreferences = null;
   }
 
   // #endregion
 
-  // #region ICollectionManagerProxyService Members ---------------------------
-  public get logServerResponses(): boolean {
-    return this._logServerResponses;
-  }
+  // #region IArcaneArchiveProxyService Members ---------------------------
+  // public get logServerResponses(): boolean {
+  //   return this._logServerResponses;
+  // }
 
   public async getData<T extends object>(
     server: MtgServer,
@@ -57,15 +59,22 @@ export class CollectionManagerProxyService implements ICollectionManagerProxySer
   }
 
   public initialize(
+    configurationService: IConfigurationService,
     sessionService: ISessionService,
     configuration: SettingsDto
   ): void {
-    this._logServerResponses = configuration.preferences.logServerResponses;
+    this.logServerResponses = configuration.preferences.logServerResponses;
     if (this.unsubscribeSession == null) {
       this.unsubscribeSession = sessionService.subscribe((data: LoginResponseDto | null) => {
         this.jwt = data ? data.token : null;
       });
     }
+    if (this.unsubscribePreferences == null) {
+      this.unsubscribePreferences = configurationService.subscribe((data: PreferencesDto) => {
+        this.logServerResponses = data.logServerResponses;
+      });
+    }
+
     if (configuration.apiConfiguration != null) {
       this.apiRoots.set("authentication", configuration.apiConfiguration.authenticationApiRoot);
       this.apiRoots.set("library", configuration.apiConfiguration.libraryApiRoot);

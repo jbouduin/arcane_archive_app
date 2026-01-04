@@ -2,14 +2,15 @@ import { SettingsDto } from "../../../../common/dto";
 import { ApiInfoDto } from "../../dto";
 import { MtgServer, ShowToastFn } from "../../types";
 import { ApiStatusChangeListener } from "../providers";
+import { IConfigurationService } from "./configuration.service";
 import { ISessionService } from "./session.service";
 
-export interface ICollectionManagerProxyService {
+export interface IArcaneArchiveProxyService {
   readonly apiStatus: Map<MtgServer, ApiInfoDto | null>;
   /**
    * Log server responses in console
    */
-  readonly logServerResponses: boolean;
+  // readonly logServerResponses: boolean;
   /**
    * Fetch data from backend
    * @param path the path
@@ -22,12 +23,14 @@ export interface ICollectionManagerProxyService {
   ): Promise<T>;
 
   /**
-   * Initialize the CollectionManagerProxy
+   * Initialize the Arcane Archive Proxy
+   * @param configurationService The configuration service, used to subscribe to preferences changes
    * @param sessionService The session service, used to subscribe to session changes
    * @param configuration The system configuration.
    * @param showToast the function to show toasts
    */
   initialize(
+    configurationService: IConfigurationService,
     sessionService: ISessionService,
     configuration: SettingsDto
   ): void;

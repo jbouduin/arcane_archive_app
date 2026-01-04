@@ -13,7 +13,7 @@ import { rendererConfig } from "./.cm/configs/webpack.renderer.config";
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
-    icon: "/assets/icons/collection_manager_512",
+    icon: "/assets/icons/arcane_archive_512",
     ignore: [
       /node_modules\/(?!(better-sqlite3|keytar|bindings|file-uri-to-path)\/)/
     ],
@@ -29,7 +29,7 @@ const config: ForgeConfig = {
   makers: [
     new MakerSquirrel(
       {
-        certificateFile: "./.cm/collection_manager.pfx",
+        certificateFile: "./.cm/arcane_archive.pfx",
         certificatePassword: process.env.CERTIFICATE_PASSWORD
       }),
     new MakerZIP({}, ["darwin"]),
@@ -42,7 +42,7 @@ const config: ForgeConfig = {
       config: {
         repository: {
           owner: "jbouduin",
-          name: "mtg_collection_front_end"
+          name: "arcane_archive_app"
         },
         prerelease: false,
         draft: true

@@ -2,7 +2,7 @@ import { noop } from "lodash";
 import { PreferencesDto } from "../../../../common/dto";
 import { CardFilterParamsDto, CardQueryParamsDto, ColorDto, LibraryCardListDto, MtgSetTreeDto, QueryResultDto } from "../../dto";
 import { SelectOption } from "../../types";
-import { ICardSearchService, ICollectionManagerProxyService } from "../interface";
+import { ICardSearchService, IArcaneArchiveProxyService } from "../interface";
 
 export class CardSearchService implements ICardSearchService {
   // #region Private fields: SelectOptions ------------------------------------
@@ -21,7 +21,7 @@ export class CardSearchService implements ICardSearchService {
   // #endregion
 
   // #region Private fields ---------------------------------------------------
-  private collectionManagerProxy!: ICollectionManagerProxyService;
+  private arcaneArchiveProxy!: IArcaneArchiveProxyService;
   // #endregion
 
   // #region ICardSearchParamService Getters/Setters --------------------------
@@ -124,12 +124,12 @@ export class CardSearchService implements ICardSearchService {
       cardFilterParams.toughnesses.forEach((toughness: string) => params.append("tn", toughness));
     }
     cardSetFilter.forEach((set: MtgSetTreeDto) => params.append("set", set.id.toString()));
-    // TODO  cardnames, and wordbank catalogs
+    // LATER cardnames, and wordbank catalogs
     if (params.size > 0) {
       params.append("pn", cardQueryParams.pageNumber.toString());
       params.append("ps", cardQueryParams.pageSize.toString());
       params.append("sort", `${cardQueryParams.sortField}:${cardQueryParams.sortDirection}`);
-      return this.collectionManagerProxy.getData<QueryResultDto<LibraryCardListDto>>("library", path + "?" + params.toString());
+      return this.arcaneArchiveProxy.getData<QueryResultDto<LibraryCardListDto>>("library", path + "?" + params.toString());
     } else {
       return Promise.resolve({
         currentPageNumber: 0,
@@ -156,16 +156,16 @@ export class CardSearchService implements ICardSearchService {
     return this._toughnessValueSelectOptions;
   }
 
-  public initialize(collectionManagerProxy: ICollectionManagerProxyService, preferences: PreferencesDto): Promise<void> {
-    this.collectionManagerProxy = collectionManagerProxy;
+  public initialize(arcaneArchiveProxy: IArcaneArchiveProxyService, preferences: PreferencesDto): Promise<void> {
+    this.arcaneArchiveProxy = arcaneArchiveProxy;
     this.cardQueryParams.pageSize = preferences.defaultPageSize;
     this.cardQueryParams.sortField = preferences.defaultCardSortField;
     this.cardQueryParams.sortDirection = preferences.defaultCardSortDirection;
     return Promise.all([
-      collectionManagerProxy.getData<Array<string>>("library", "/public/card-super-type"),
-      collectionManagerProxy.getData<Array<string>>("library", "/public/card-type"),
-      collectionManagerProxy.getData<Array<string>>("library", "/public/catalog/POWERS/item"),
-      collectionManagerProxy.getData<Array<string>>("library", "/public/catalog/TOUGHNESSES/item")])
+      arcaneArchiveProxy.getData<Array<string>>("library", "/public/card-super-type"),
+      arcaneArchiveProxy.getData<Array<string>>("library", "/public/card-type"),
+      arcaneArchiveProxy.getData<Array<string>>("library", "/public/catalog/POWERS/item"),
+      arcaneArchiveProxy.getData<Array<string>>("library", "/public/catalog/TOUGHNESSES/item")])
       .then(
         (r: [Array<string>, Array<string>, Array<string>, Array<string>]) => {
           this._cardSuperTypeSelectOptions = r[0].sort().map((s: string) => ({ label: s, value: s }));

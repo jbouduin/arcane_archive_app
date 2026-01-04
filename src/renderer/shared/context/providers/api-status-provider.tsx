@@ -7,7 +7,7 @@ import { ProviderProps } from "./provider.props";
 
 export function ApiStatusProvider(props: ProviderProps) {
   // #region State ------------------------------------------------------------
-  const proxyService = useServices().collectionManagerProxy;
+  const proxyService = useServices().arcaneArchiveProxy;
   const [apiStatus, setApiStatus] = useState(proxyService.apiStatus);
   // #endregion
 

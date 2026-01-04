@@ -1,7 +1,7 @@
 import { noop } from "lodash";
 import { ColorDto } from "../../dto";
 import { SelectOption } from "../../types";
-import { ICollectionManagerProxyService, IColorService } from "../interface";
+import { IArcaneArchiveProxyService, IColorService } from "../interface";
 
 export class ColorService implements IColorService {
   // #region Private fields ---------------------------------------------------
@@ -28,8 +28,8 @@ export class ColorService implements IColorService {
       .map((c: ColorDto) => ({ label: c.name["ENGLISH"], value: c }));
   }
 
-  public initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void> {
-    return collectionManagerProxy.getData<Array<ColorDto>>("library", "/public/color", true, false)
+  public initialize(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<void> {
+    return arcaneArchiveProxy.getData<Array<ColorDto>>("library", "/public/color", true, false)
       .then(
         (allColors: Array<ColorDto>) => allColors
           .sort((a: ColorDto, b: ColorDto) => a.sequence - b.sequence)

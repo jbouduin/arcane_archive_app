@@ -1,7 +1,7 @@
-import { ResultDto } from "../../../../common/dto/mtg-collection";
+import { ResultDto } from "../../../../common/dto";
 import { DiscoveryDto } from "../../../dto";
 
-export interface IMtgCollectionClient {
+export interface IArcaneArchiveClient {
   getData<T>(path: string): Promise<ResultDto<T>>;
   discover(): Promise<ResultDto<DiscoveryDto>>;
 };

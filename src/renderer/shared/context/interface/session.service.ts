@@ -2,7 +2,7 @@ import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
 import { RegisterRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
 import { SessionChangeListener } from "../providers";
-import { ICollectionManagerProxyService } from "./collection-manager-proxy.service";
+import { IArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
 import { IServiceContainer } from "./service-container";
 
 export interface ISessionService {
@@ -10,7 +10,7 @@ export interface ISessionService {
   readonly loggedIn: boolean;
   readonly userName: string | null;
 
-  getNewUserName(collectionManagerProxy: ICollectionManagerProxyService): Promise<string>;
+  getNewUserName(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<string>;
   hasRole(role: ApplicationRole): boolean;
   hasAnyRole(...roles: Array<ApplicationRole>): boolean;
   initialize(serviceContainer: IServiceContainer): Promise<void>;

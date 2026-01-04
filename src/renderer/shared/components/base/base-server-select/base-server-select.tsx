@@ -34,7 +34,7 @@ export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
       if (queryString != "") {
         const timeOutId = setTimeout(
           () => {
-            void serviceContainer.collectionManagerProxy
+            void serviceContainer.arcaneArchiveProxy
               .getData<Array<T>>(props.server, `${props.serverBaseUrl}?q=${queryString}`)
               .then(
                 (r: Array<T>) => {

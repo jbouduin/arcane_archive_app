@@ -6,7 +6,7 @@ import { ProfileDialogFooter } from "../profile-dialog/profile-dialog-footer";
 import { ProfileDialogBodyProps, ProfileDialogFooterProps, ProfileDialogProps } from "../profile-dialog/profile-dialog-props";
 
 export function showProfileDialog(serviceContainer: IServiceContainer): void {
-  void serviceContainer.collectionManagerProxy
+  void serviceContainer.arcaneArchiveProxy
     .getData<UserDto>("authentication", "/app/account")
     .then(
       (userDto: UserDto) => {

@@ -8,7 +8,7 @@ import { MtgSetDialogFooter } from "../mtg-set-dialog/mtg-set-dialog-footer";
 import { MtgSetDialogBodyProps, MtgSetDialogFooterProps, MtgSetDialogProps } from "../mtg-set-dialog/mtg-set-dialog.props";
 
 export function showSetDialog(serviceContainer: IServiceContainer, setId: number): void {
-  void serviceContainer.collectionManagerProxy.getData<MtgSetDto>("library", `/public/mtg-set/${setId}`)
+  void serviceContainer.arcaneArchiveProxy.getData<MtgSetDto>("library", `/public/mtg-set/${setId}`)
     .then(
       (setDto: MtgSetDto) => {
         const viewmodel: MtgSetDetailViewmodel = serviceContainer.viewmodelFactoryService.mtgSetViewmodelFactory.getMtgSetDetailViewmodel(setDto);

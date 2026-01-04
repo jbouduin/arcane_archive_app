@@ -4,7 +4,7 @@ import { InitializeServiceContainerOptions, ShowToastFn } from "../../types";
 import { InitializationResult } from "../types";
 import { ICardSearchService } from "./card-search.service";
 import { ICardSymbolService } from "./card-symbol.service";
-import { ICollectionManagerProxyService } from "./collection-manager-proxy.service";
+import { IArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
 import { IColorService } from "./color.service";
 import { IConfigurationService } from "./configuration.service";
 import { IDisplayValueService } from "./display-value.service";
@@ -28,9 +28,9 @@ export interface IServiceContainer {
   readonly cardSymbolService: ICardSymbolService;
 
   /**
-   * Collection Manager back end proxy
+   * Arcane Archive back end proxy
    */
-  readonly collectionManagerProxy: ICollectionManagerProxyService;
+  readonly arcaneArchiveProxy: IArcaneArchiveProxyService;
 
   /**
    * Service that caches ColorDtos

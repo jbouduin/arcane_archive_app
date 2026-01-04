@@ -1,6 +1,6 @@
 export const API = Object.freeze(
   {
-    ApiClient: "ApiClient",
+    ArcaneArchiveClient: "ArcaneArchiveClient",
     ScryfallClient: "ScryfallClient"
   }
 );

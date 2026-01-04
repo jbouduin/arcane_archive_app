@@ -1,7 +1,7 @@
 import { noop } from "lodash";
 import { MtgSetTreeDto } from "../../dto";
 import { SelectOption } from "../../types";
-import { ICollectionManagerProxyService } from "../interface";
+import { IArcaneArchiveProxyService } from "../interface";
 import { IMtgSetService } from "../interface/mtg-set.service";
 
 export class MtgSetService implements IMtgSetService {
@@ -32,8 +32,8 @@ export class MtgSetService implements IMtgSetService {
     return this.setMap.get(id);
   }
 
-  public async initialize(collectionManagerProxy: ICollectionManagerProxyService): Promise<void> {
-    return collectionManagerProxy.getData<Array<MtgSetTreeDto>>("library", "/public/mtg-set")
+  public async initialize(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<void> {
+    return arcaneArchiveProxy.getData<Array<MtgSetTreeDto>>("library", "/public/mtg-set")
       .then(
         (data: Array<MtgSetTreeDto>) => {
           data.forEach((set: MtgSetTreeDto) => this.setMap.set(set.id, set));

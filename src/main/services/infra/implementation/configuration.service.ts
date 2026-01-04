@@ -6,6 +6,7 @@ import { DiscoveryDto } from "../../../dto";
 import { BaseService, IResult } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
 import { IConfigurationService, IIoService, ILogService, IResultFactory } from "../interface";
+import { mergeWithChangeDetails } from "../../../../common/util";
 
 @singleton()
 export class ConfigurationService extends BaseService implements IConfigurationService {
@@ -65,8 +66,11 @@ export class ConfigurationService extends BaseService implements IConfigurationS
       this._systemSettings = this.createConfigurationFactoryDefault();
       this._isFirstUsage = true;
     } else {
-      this._systemSettings = systemSettings;
-      // TODO handle "new" preferences which are not stored yet in the file
+      const mergeResult = mergeWithChangeDetails(this.createConfigurationFactoryDefault(), systemSettings);
+      if (mergeResult.changed) {
+        void this.ioService.saveSystemSettings(mergeResult.merged);
+      }
+      this._systemSettings = mergeResult.merged;
       this._isFirstUsage = false;
     }
     this.logService.setLogSettings(this._systemSettings.loggingConfiguration);
@@ -77,8 +81,11 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     if (preferences == null) {
       this._preferences = this.createPreferencesFactoryDefault(useDarkTheme);
     } else {
-      this._preferences = preferences;
-      // TODO handle "new" preferences which are not stored yet in the file
+      const mergeResult = mergeWithChangeDetails(this.createPreferencesFactoryDefault(useDarkTheme), preferences);
+      if (mergeResult.changed) {
+        this.ioService.savePreferences(preferences);
+      }
+      this._preferences = mergeResult.merged;
     }
     this.logService.trace("Main", "Loaded preferences:", this._preferences);
   }

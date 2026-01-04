@@ -1,7 +1,8 @@
 import { ToastProps } from "@blueprintjs/core";
+import { PreferencesDto } from "../../../../common/dto";
 import { EIpcStatus, IpcChannel, IpcRequest, IpcResponse } from "../../../../common/ipc";
 import { ShowToastFn } from "../../types";
-import { IIpcProxyService } from "../interface";
+import { IConfigurationService, IIpcProxyService } from "../interface";
 
 export class IpcProxyService implements IIpcProxyService {
   // #region private fields ---------------------------------------------------
@@ -11,19 +12,30 @@ export class IpcProxyService implements IIpcProxyService {
   private patchRequestCounter = 0;
   private postRequestCounter = 0;
   private putRequestCounter = 0;
+  private unsubscribePreferences: (() => void) | null;
+  private logServerResponses: boolean;
   // #endregion
 
   // #region Public fields ----------------------------------------------------
-  public logServerResponses: boolean;
   // #endregion
 
   // #region Constructor & C° -------------------------------------------------
   public constructor() {
     this.logServerResponses = false;
+    this.unsubscribePreferences = null;
   }
   // #endregion
 
   // #region IPC-proxy methods ------------------------------------------------
+  public initialize(configurationService: IConfigurationService, preferences: PreferencesDto): void {
+    this.logServerResponses = preferences.logServerResponses;
+    if (this.unsubscribePreferences == null) {
+      this.unsubscribePreferences = configurationService.subscribe((data: PreferencesDto) => {
+        this.logServerResponses = data.logServerResponses;
+      });
+    }
+  }
+
   public setShowToast(showToast: ShowToastFn): void {
     this.showToast = showToast;
   }

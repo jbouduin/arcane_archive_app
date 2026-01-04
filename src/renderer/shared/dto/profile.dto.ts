@@ -1,5 +1,4 @@
-import { PreferencesDto } from "../../../common/dto";
-import { AuditableDto } from "../../../common/dto/mtg-collection";
+import { AuditableDto, PreferencesDto } from "../../../common/dto";
 
 export type ProfileDto = AuditableDto & {
   email: string;
