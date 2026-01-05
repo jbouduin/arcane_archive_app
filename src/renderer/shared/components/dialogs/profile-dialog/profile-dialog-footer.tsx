@@ -1,9 +1,9 @@
 import { noop } from "lodash";
 import { useServices } from "../../../../hooks";
 import { UserDto } from "../../../dto";
-import { SaveCancelResetFooter } from "../../base/base-dialog";
-import { ProfileDialogFooterProps } from "./profile-dialog-props";
 import { UserViewmodel } from "../../../viewmodel";
+import { SaveCancelResetFooter } from "../../base/base-dialog";
+import { ProfileDialogFooterProps } from "./profile-dialog.props";
 
 export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
   // #region Hooks ------------------------------------------------------------

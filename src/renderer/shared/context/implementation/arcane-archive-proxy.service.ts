@@ -12,7 +12,7 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
   private readonly refreshInterval: number;
   private logServerResponses: boolean;
   private showToast!: (props: ToastProps, key?: string) => void;
-  private apiRoots: Map<MtgServer, string>;
+  private _apiRoots: Map<MtgServer, string>;
   private _apiStatus: Map<MtgServer, ApiInfoDto | null>;
   private listeners: Array<ApiStatusChangeListener>;
   private refreshing: Promise<void> | null;
@@ -26,12 +26,16 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
   public get apiStatus(): Map<MtgServer, ApiInfoDto | null> {
     return this._apiStatus;
   }
+
+  public get apiRoots(): Map<MtgServer, string> {
+    return this._apiRoots;
+  }
   // #endregion
 
   // #region Constructor ------------------------------------------------------
   public constructor() {
     this.logServerResponses = false;
-    this.apiRoots = new Map<MtgServer, string>();
+    this._apiRoots = new Map<MtgServer, string>();
     this._apiStatus = new Map<MtgServer, ApiInfoDto>();
     this.listeners = new Array<ApiStatusChangeListener>();
     this.refreshing = null;
@@ -76,10 +80,10 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
     }
 
     if (configuration.apiConfiguration != null) {
-      this.apiRoots.set("authentication", configuration.apiConfiguration.authenticationApiRoot);
-      this.apiRoots.set("library", configuration.apiConfiguration.libraryApiRoot);
-      this.apiRoots.set("collection", configuration.apiConfiguration.collectionApiRoot);
-      this.apiRoots.set("deck", configuration.apiConfiguration.deckApiRoot);
+      this._apiRoots.set("authentication", configuration.apiConfiguration.authenticationApiRoot);
+      this._apiRoots.set("library", configuration.apiConfiguration.libraryApiRoot);
+      this._apiRoots.set("collection", configuration.apiConfiguration.collectionApiRoot);
+      this._apiRoots.set("deck", configuration.apiConfiguration.deckApiRoot);
     }
   }
 
@@ -279,7 +283,7 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
     if (!path.startsWith("/")) {
       path = "/" + path;
     }
-    return this.apiRoots.get(server) + path;
+    return this._apiRoots.get(server) + path;
   }
 
   private buildHeaders(): Record<string, string> {
@@ -295,7 +299,7 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
 
   private async refreshApiStatus(): Promise<void> {
     if (this.refreshing == null) {
-      const taskParameters = Array.of(...this.apiRoots.keys());
+      const taskParameters = Array.of(...this._apiRoots.keys());
       this.refreshing = runSerial(
         taskParameters,
         (server: MtgServer) => {

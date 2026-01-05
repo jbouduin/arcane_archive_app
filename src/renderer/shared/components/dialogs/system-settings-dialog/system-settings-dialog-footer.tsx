@@ -5,7 +5,7 @@ import { SystemSettingsDto } from "../../../../../common/dto";
 import { useServices } from "../../../../hooks";
 import { SystemSettingsViewmodel } from "../../../viewmodel";
 import { SaveCancelResetFooter } from "../../base/base-dialog";
-import { SystemSettingsDialogFooterProps } from "./system-settings-dialog-props";
+import { SystemSettingsDialogFooterProps } from "./system-settings-dialog.props";
 
 export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProps) {
   // #region Hooks ------------------------------------------------------------

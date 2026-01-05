@@ -5,10 +5,11 @@
   "description": "MTG Collection and deck manager",
   "main": ".webpack/main",
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
+    "prebuild": "node prebuild.js",
+    "start": "npm run prebuild && electron-forge start",
+    "package": "npm run prebuild &&electron-forge package",
+    "make": "npm run prebuild && electron-forge make",
+    "publish": "npm run prebuild && electron-forge publish",
     "lint": "eslint ./src"
   },
   "keywords": [],

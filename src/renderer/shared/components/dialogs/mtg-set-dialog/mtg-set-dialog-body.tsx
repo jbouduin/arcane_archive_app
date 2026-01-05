@@ -1,11 +1,12 @@
 import { Checkbox, ControlGroup, FormGroup, HTMLTable, InputGroup, NumericInput, Tab, Tabs, Text, TextAlignment } from "@blueprintjs/core";
 import classNames from "classnames";
+import { useState } from "react";
 import { LanguageDto } from "../../../dto";
 import { AuditFields } from "../../base/audit-fields/audit-fields";
 import { LanguageButtonBar } from "../../card-detail-view/language-button-bar/language-button-bar";
 import { MtgSetDialogBodyProps } from "./mtg-set-dialog.props";
-import { useState } from "react";
 
+// TODO if readonly (non sys-admin render using label-value-panel)
 export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
   // #region State ------------------------------------------------------------
   const [currentLanguage, setCurrentLanguage] = useState<LanguageDto>(props.viewmodel.languages[0]);

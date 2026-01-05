@@ -1,6 +1,6 @@
 import { ButtonGroup, Menu, MenuItem, ToastProps } from "@blueprintjs/core";
 import { useApiStatus, useServices, useSession } from "../../../../hooks";
-import { showLoginDialog, showPreferencesDialog, showProfileDialog, showSystemSettingsDialog } from "../../../../shared/components/dialogs/factory";
+import { showLoginDialog, showPreferencesDialog, showProfileDialog, showSystemInfoDialog, showSystemSettingsDialog } from "../../../../shared/components/dialogs/factory";
 import { EDesktopView } from "../desktop-view.enum";
 import { ButtonBarButton } from "./button-bar-button";
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
@@ -98,11 +98,14 @@ export function ButtonBar(props: ButtonBarProps) {
           <MenuItem onClick={() => serviceContainer.cardSymbolService.refreshCardSymbols(serviceContainer)} text="Refresh Card Symbols" />
           <MenuItem onClick={() => serviceContainer.overlayService.showToast({ intent: "warning", message: "Feature not Implemented" })} text="Refresh Card Images" />
         </MenuItem>
-        <MenuItem onClick={() => showSystemSettingsDialog(serviceContainer, false)} text="System Settings" />
-        {
-          serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") &&
-          <MenuItem onClick={adminClick} text="Admin" />
-        }
+        <MenuItem text="System">
+          <MenuItem onClick={() => showSystemSettingsDialog(serviceContainer, false)} text="Settings" />
+          <MenuItem onClick={() => showSystemInfoDialog(serviceContainer)} text="Info" />
+          {
+            serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") &&
+            <MenuItem onClick={adminClick} text="Admin" />
+          }
+        </MenuItem>
       </Menu>
     );
   }

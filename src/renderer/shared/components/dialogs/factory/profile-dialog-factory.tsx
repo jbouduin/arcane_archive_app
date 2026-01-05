@@ -3,9 +3,10 @@ import { IServiceContainer } from "../../../context";
 import { UserDto } from "../../../dto";
 import { ProfileDialogBody } from "../profile-dialog/profile-dialog-body";
 import { ProfileDialogFooter } from "../profile-dialog/profile-dialog-footer";
-import { ProfileDialogBodyProps, ProfileDialogFooterProps, ProfileDialogProps } from "../profile-dialog/profile-dialog-props";
+import { ProfileDialogBodyProps, ProfileDialogFooterProps, ProfileDialogProps } from "../profile-dialog/profile-dialog.props";
 
 export function showProfileDialog(serviceContainer: IServiceContainer): void {
+  // TODO viewmodel factory should call backend, not dialog factory
   void serviceContainer.arcaneArchiveProxy
     .getData<UserDto>("authentication", "/app/account")
     .then(

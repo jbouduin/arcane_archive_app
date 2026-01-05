@@ -6,7 +6,7 @@ import { AuditFields } from "../../base/audit-fields/audit-fields";
 import { BaseMultiSelect } from "../../base/base-multi-select/base-multi-select";
 import { handleStringChange } from "../../util";
 import { ValidatedInput } from "../../validated-input/validated-input";
-import { ProfileDialogBodyProps } from "./profile-dialog-props";
+import { ProfileDialogBodyProps } from "./profile-dialog.props";
 
 export function ProfileDialogBody(props: ProfileDialogBodyProps) {
   // #region Hooks ------------------------------------------------------------

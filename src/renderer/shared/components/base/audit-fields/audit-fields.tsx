@@ -1,6 +1,7 @@
 import { ControlGroup, FormGroup, InputGroup } from "@blueprintjs/core";
 import { AuditFieldsProps } from "./audit-fields.props";
 
+// TODO render using label-value-panel
 export function AuditFields(props: AuditFieldsProps) {
   // #region Rendering --------------------------------------------------------
   return (

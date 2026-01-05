@@ -1,7 +1,9 @@
 import { PreferencesDto, SystemSettingsDto } from "../../../../../common/dto";
-import { PreferencesViewmodel, SystemSettingsViewmodel } from "../../settings";
+import { IServiceContainer } from "../../../context";
+import { PreferencesViewmodel, SystemInfoViewmodel, SystemSettingsViewmodel } from "../../settings";
 
 export interface ISettingsViewmodelFactory {
   getPreferencesViewmodel(dto: PreferencesDto): PreferencesViewmodel;
   getSystemSettingsViewmodel(dto: SystemSettingsDto, firstTime: boolean): SystemSettingsViewmodel;
+  getSystemInfoViewmodel(serviceContainer: IServiceContainer): SystemInfoViewmodel;
 }

@@ -1,5 +1,7 @@
 import { PreferencesDto, SystemSettingsDto } from "../../../../../common/dto";
-import { PreferencesViewmodel, SystemSettingsViewmodel } from "../../settings";
+import { IServiceContainer } from "../../../context";
+import { SystemInfoDto } from "../../../dto";
+import { PreferencesViewmodel, SystemInfoViewmodel, SystemSettingsViewmodel } from "../../settings";
 import { ISettingsViewmodelFactory } from "../interface";
 
 export class SettingsViewmodelFactory implements ISettingsViewmodelFactory {
@@ -10,6 +12,14 @@ export class SettingsViewmodelFactory implements ISettingsViewmodelFactory {
 
   public getSystemSettingsViewmodel(dto: SystemSettingsDto, firstTime: boolean): SystemSettingsViewmodel {
     return new SystemSettingsViewmodel(dto, firstTime);
+  }
+
+  public getSystemInfoViewmodel(serviceContainer: IServiceContainer): SystemInfoViewmodel {
+    const dto: SystemInfoDto = {
+      apiRoots: serviceContainer.arcaneArchiveProxy.apiRoots,
+      apiStatus: serviceContainer.arcaneArchiveProxy.apiStatus
+    };
+    return new SystemInfoViewmodel(dto);
   }
   // #endregion
 }

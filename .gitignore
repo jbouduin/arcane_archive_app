@@ -92,3 +92,4 @@ typings/
 out/
 
 # config files
+src/common/dto/arcane-archive/version-info.ts

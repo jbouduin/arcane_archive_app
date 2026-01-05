@@ -1,12 +1,12 @@
 import { Button } from "@blueprintjs/core";
+import { noop } from "lodash";
 import { ReactNode } from "react";
 import { useServices } from "../../../../hooks";
 import { RegisterRequestDto } from "../../../dto";
 import { RegisterViewmodel } from "../../../viewmodel";
 import { SaveCancelResetFooter } from "../../base/base-dialog";
 import { showLoginDialog } from "../factory";
-import { RegisterDialogFooterProps } from "./register-dialog-props";
-import { noop } from "lodash";
+import { RegisterDialogFooterProps } from "./register-dialog.props";
 
 export function RegisterDialogFooter(props: RegisterDialogFooterProps) {
   // #region Hooks ------------------------------------------------------------

@@ -221,3 +221,15 @@ img.rotate-180 {
   border-radius: inherit;
   overflow: hidden;
 }
+
+.label-value-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 16px;
+}
+
+.label-value-panel>div {
+  display: flex;
+  justify-content: space-between;
+}

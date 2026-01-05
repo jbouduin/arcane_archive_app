@@ -4,10 +4,13 @@ import { PasswordInput } from "../../password-input/password-input";
 import { handleStringChange } from "../../util";
 import { ValidatedInput } from "../../validated-input/validated-input";
 import { PwdSecurityBar } from "./pwd-security-bar";
-import { RegisterDialogBodyProps } from "./register-dialog-props";
+import { RegisterDialogBodyProps } from "./register-dialog.props";
 
 export function RegisterDialogBody(props: RegisterDialogBodyProps) {
+  // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
+  // #endregion
+
   // #region Rendering --------------------------------------------------------
   return (
     <SectionCard padded={false}>

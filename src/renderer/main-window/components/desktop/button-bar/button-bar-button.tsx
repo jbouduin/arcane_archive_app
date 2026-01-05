@@ -68,6 +68,7 @@ export function ButtonBarButton(props: ButtonBarButtonProps) {
         }
         openOnTargetFocus={false}
         placement="right"
+        // TODO position="" and other placements
         usePortal={true}
       >
         <Button>

@@ -5,9 +5,10 @@ import { IpcPaths } from "../../../../../common/ipc";
 import { IServiceContainer } from "../../../context";
 import { SystemSettingsDialogBody } from "../system-settings-dialog/system-settings-dialog-body";
 import { SystemSettingsDialogFooter } from "../system-settings-dialog/system-settings-dialog-footer";
-import { SystemSettingsDialogBodyProps, SystemSettingsDialogFooterProps, SystemSettingsDialogProps } from "../system-settings-dialog/system-settings-dialog-props";
+import { SystemSettingsDialogBodyProps, SystemSettingsDialogFooterProps, SystemSettingsDialogProps } from "../system-settings-dialog/system-settings-dialog.props";
 
 export function showSystemSettingsDialog(serviceContainer: IServiceContainer, firstTime: boolean): void {
+  // TODO viewmodel factory should call backend, not dialog factory
   serviceContainer.ipcProxy.getData<SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS)
     .then(
       (configuration: SystemSettingsDto) => {

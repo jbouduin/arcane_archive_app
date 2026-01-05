@@ -7,6 +7,8 @@ import { ISessionService } from "./session.service";
 
 export interface IArcaneArchiveProxyService {
   readonly apiStatus: Map<MtgServer, ApiInfoDto | null>;
+  readonly apiRoots: Map<MtgServer, string>;
+
   /**
    * Log server responses in console
    */
