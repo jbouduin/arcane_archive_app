@@ -1,9 +1,9 @@
-import { Checkbox, ControlGroup, FormGroup, HTMLTable, InputGroup, Tab, Tabs } from "@blueprintjs/core";
+import { Checkbox, ControlGroup, FormGroup, HTMLTable, InputGroup, Tab, Tabs, Text } from "@blueprintjs/core";
 import { useMemo } from "react";
 import { useServices } from "../../../../hooks";
 import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption } from "../../../types";
-import { AuditFields } from "../../base/audit-fields/audit-fields";
 import { BaseMultiSelect } from "../../base/base-multi-select/base-multi-select";
+import { LabelValuePanel } from "../../label-value-panel/label-value-panel";
 import { handleStringChange } from "../../util";
 import { ValidatedInput } from "../../validated-input/validated-input";
 import { ProfileDialogBodyProps } from "./profile-dialog.props";
@@ -151,6 +151,14 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
   }
 
   function renderAdditionalInfoPanel(): React.JSX.Element {
+    const items = new Map<string, JSX.Element | null>([
+      ["Id", (<Text>{props.viewmodel.id}</Text>)],
+      ["empty", null],
+      ["Created at", (<Text>{props.viewmodel.createdAt.toLocaleString()}</Text>)],
+      ["Created by", (<Text>{props.viewmodel.createdBy}</Text>)],
+      ["Modified at", (<Text>{props.viewmodel.modifiedAt.toLocaleString()}</Text>)],
+      ["Modified by", (<Text>{props.viewmodel.modifiedBy}</Text>)]
+    ]);
     return (
       <>
         <HTMLTable
@@ -197,7 +205,7 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
             </tr>
           </tbody>
         </HTMLTable>
-        <AuditFields auditFields={props.viewmodel} />
+        <LabelValuePanel items={items} columns={2} style={{ padding: "0px" }} />
       </>
     );
   }

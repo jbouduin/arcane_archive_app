@@ -222,11 +222,19 @@ img.rotate-180 {
   overflow: hidden;
 }
 
+.label-value-column-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: stretch;
+}
+
 .label-value-panel {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   padding: 8px 16px;
+  width: 100%;
 }
 
 .label-value-panel>div {

@@ -37,6 +37,16 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps) {
       content={
         (
           <Menu key={`menu-${props.cardSetId}`}>
+            <MenuItem
+              key={`prop-${props.cardSetId}`}
+              onClick={
+                (e) => {
+                  e.preventDefault();
+                  showSetDialog(serviceContainer, props.cardSetId);
+                }
+              }
+              text="Properties"
+            />
             {
               loggedIn &&
               serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") &&
@@ -53,17 +63,6 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps) {
                 />
               )
             }
-
-            <MenuItem
-              key={`prop-${props.cardSetId}`}
-              onClick={
-                (e) => {
-                  e.preventDefault();
-                  showSetDialog(serviceContainer, props.cardSetId);
-                }
-              }
-              text="Properties"
-            />
           </Menu>
         )
       }

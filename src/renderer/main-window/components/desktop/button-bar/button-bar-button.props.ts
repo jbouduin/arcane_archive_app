@@ -1,5 +1,4 @@
-import { Intent, Props } from "@blueprintjs/core";
-
+import { Intent, Placement, PopoverPosition, Props } from "@blueprintjs/core";
 import { EDesktopView } from "../desktop-view.enum";
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
 
@@ -11,4 +10,6 @@ export interface ButtonBarButtonProps extends Props {
   tooltip?: React.JSX.Element;
   onButtonClick?: (desktopView: EDesktopView) => void;
   menu?: React.JSX.Element;
+  position?: PopoverPosition;
+  placement?: Placement;
 }

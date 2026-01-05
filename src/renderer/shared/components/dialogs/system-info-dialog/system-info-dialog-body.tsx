@@ -1,8 +1,9 @@
-import { Classes, Icon, MaybeElement, Section } from "@blueprintjs/core";
+import { Icon, MaybeElement, Section, Text } from "@blueprintjs/core";
 import { cloneDeep } from "lodash";
 import { useState } from "react";
 import { versionInfo } from "../../../../../common/dto/arcane-archive/version-info";
 import { MtgServer } from "../../../types";
+import { LabelValuePanel } from "../../label-value-panel/label-value-panel";
 import { SystemInfoDialogBodyProps } from "./system-info-dialog.props";
 
 type SectionCardKey = MtgServer | "application";
@@ -53,6 +54,12 @@ export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps) {
     return Array.from(props.viewmodel.apiRoots.keys())
       .map((mtgServer: MtgServer) => {
         const status = props.viewmodel.apiStatus.get(mtgServer);
+        const items = new Map<string, JSX.Element>([
+          ["URL", (<Text>{props.viewmodel.apiRoots.get(mtgServer)}</Text>)],
+          ["Status", (<Text>{status ? "Online" : "Offline"}</Text>)],
+          ["Version", (<Text>{status ? status.version : "-"}</Text>)],
+          ["Environment", (<Text>{status ? status.environment : "-"}</Text>)]
+        ]);
         return (
           <Section
             key={mtgServer}
@@ -65,24 +72,7 @@ export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps) {
             icon={renderIcon(mtgServer)}
             title={mtgServerToTitle(mtgServer)}
           >
-            <div className="label-value-panel">
-              <div>
-                <span className={Classes.TEXT_MUTED}>URL</span>
-                {props.viewmodel.apiRoots.get(mtgServer)}
-              </div>
-              <div>
-                <span className={Classes.TEXT_MUTED}>Status</span>
-                {status ? "Online" : "Offline"}
-              </div>
-              <div>
-                <span className={Classes.TEXT_MUTED}>Version</span>
-                {status ? status.version : "-"}
-              </div>
-              <div>
-                <span className={Classes.TEXT_MUTED}>Environment</span>
-                {status ? status.environment : "-"}
-              </div>
-            </div>
+            <LabelValuePanel items={items} />
           </Section>
         );
       });
@@ -101,6 +91,13 @@ export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps) {
   }
 
   function renderAppSection(): JSX.Element {
+    const items = new Map<string, JSX.Element>([
+      ["Arcane Archive Version", (<Text>{versionInfo.version}</Text>)],
+      ["Chrome Version", (<Text>{window.versions.chrome()}</Text>)],
+      ["Electron Version", (<Text>{window.versions.electron()}</Text>)],
+      ["Node Version", (<Text>{window.versions.node()}</Text>)]
+    ]);
+
     return (
       <Section
         key="app"
@@ -113,24 +110,7 @@ export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps) {
         icon={renderIcon("application")}
         title={mtgServerToTitle("application")}
       >
-        <div className="label-value-panel">
-          <div>
-            <span className={Classes.TEXT_MUTED}>Arcane Archive Version</span>
-            {versionInfo.version}
-          </div>
-          <div>
-            <span className={Classes.TEXT_MUTED}>Chrome Version</span>
-            {window.versions.chrome()}
-          </div>
-          <div>
-            <span className={Classes.TEXT_MUTED}>Electron Version</span>
-            {window.versions.electron()}
-          </div>
-          <div>
-            <span className={Classes.TEXT_MUTED}>Node Version</span>
-            {window.versions.node()}
-          </div>
-        </div>
+        <LabelValuePanel items={items} />
       </Section>
     );
   }

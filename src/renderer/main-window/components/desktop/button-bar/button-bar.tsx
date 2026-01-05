@@ -84,6 +84,7 @@ export function ButtonBar(props: ButtonBarProps) {
             assetPath="assets/img/settings.svg"
             buttonType={EButtonBarButtonType.MenuButton}
             menu={renderSettingsMenu()}
+            position="top-right"
           />
         </ButtonGroup>
       </div>

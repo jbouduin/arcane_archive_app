@@ -67,8 +67,8 @@ export function ButtonBarButton(props: ButtonBarButtonProps) {
           { arrow: { enabled: false } }
         }
         openOnTargetFocus={false}
-        placement="right"
-        // TODO position="" and other placements
+        placement={props.placement}
+        position={props.position}
         usePortal={true}
       >
         <Button>
@@ -87,7 +87,8 @@ export function ButtonBarButton(props: ButtonBarButtonProps) {
         content={props.tooltip}
         key={props.desktopView}
         openOnTargetFocus={false}
-        placement="right"
+        placement={props.placement}
+        position={props.position}
         usePortal={true}
       >
         <Button onClick={onButtonClick} intent={props.intent}>
