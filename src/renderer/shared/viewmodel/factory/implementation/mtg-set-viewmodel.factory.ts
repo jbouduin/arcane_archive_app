@@ -1,8 +1,7 @@
 import { IDisplayValueService, ILanguageService } from "../../../context";
 import { MtgSetDto, MtgSetTreeDto } from "../../../dto";
-import { MtgSetDetailViewmodel } from "../../mtg-set";
-import { MtgSetTreeViewmodel } from "../../mtg-set/mtg-set-tree.viewmodel";
-import { IMtgSetViewmodelFactory } from "../interface/mtg-set-viewmodel.factory";
+import { MtgSetDetailViewmodel, MtgSetTreeViewmodel } from "../../mtg-set";
+import { IMtgSetViewmodelFactory } from "../interface";
 
 export class MtgSetViewmodelFactory implements IMtgSetViewmodelFactory {
   // #region Private fields ---------------------------------------------------

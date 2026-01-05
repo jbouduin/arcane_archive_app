@@ -5,8 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { LoginResponseDto } from "../../../common/dto";
 import { usePreferences, useServices } from "../../hooks";
-import { LoginViewmodel, RegisterViewmodel } from "../../shared/viewmodel";
-import { PreferencesViewmodel, SystemSettingsViewmodel } from "../../shared/viewmodel/settings";
+import { LoginViewmodel, PreferencesViewmodel, RegisterViewmodel, SystemSettingsViewmodel } from "../../shared/viewmodel";
 import { FirstTimeViewProps } from "./first-time-view.props";
 import { IntroPanel } from "./panels/intro-panel";
 import { LoginPanel } from "./panels/login-panel";
@@ -32,7 +31,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
   );
   // this one is initialized with the factory default system settings
   const [systemSettingsViewmodel, setSystemSettingsViewmodel] = useState<SystemSettingsViewmodel>(
-    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getSystemSettingsViewmodel(props.systemSettings, true)
+    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getSystemSettingsViewmodelFromDto(props.systemSettings, true)
   );
   const [preferencesViewmodel, setPreferencesViewmodel] = useState<PreferencesViewmodel>(
     serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(serviceContainer.configurationService.preferences)

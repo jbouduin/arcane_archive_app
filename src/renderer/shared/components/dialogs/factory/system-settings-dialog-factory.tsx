@@ -1,17 +1,16 @@
 import { Icon } from "@blueprintjs/core";
 import { noop } from "lodash";
-import { SystemSettingsDto } from "../../../../../common/dto";
-import { IpcPaths } from "../../../../../common/ipc";
 import { IServiceContainer } from "../../../context";
+import { SystemSettingsViewmodel } from "../../../viewmodel";
 import { SystemSettingsDialogBody } from "../system-settings-dialog/system-settings-dialog-body";
 import { SystemSettingsDialogFooter } from "../system-settings-dialog/system-settings-dialog-footer";
 import { SystemSettingsDialogBodyProps, SystemSettingsDialogFooterProps, SystemSettingsDialogProps } from "../system-settings-dialog/system-settings-dialog.props";
 
 export function showSystemSettingsDialog(serviceContainer: IServiceContainer, firstTime: boolean): void {
-  // TODO viewmodel factory should call backend, not dialog factory
-  serviceContainer.ipcProxy.getData<SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS)
+  void serviceContainer.viewmodelFactoryService.settingsViewmodelFactory
+    .getSystemSettingsViewmodel(serviceContainer.ipcProxy, firstTime)
     .then(
-      (configuration: SystemSettingsDto) => {
+      (viewmodel: SystemSettingsViewmodel) => {
         const uiSettingsProps: SystemSettingsDialogProps = {
           isOpen: true,
           isCloseButtonShown: true,
@@ -19,10 +18,7 @@ export function showSystemSettingsDialog(serviceContainer: IServiceContainer, fi
           canOutsideClickClose: false,
           title: "System Settings",
           icon: (<Icon icon="warning-sign" intent="danger" />),
-          viewmodel: serviceContainer
-            .viewmodelFactoryService
-            .settingsViewmodelFactory
-            .getSystemSettingsViewmodel(configuration, firstTime),
+          viewmodel: viewmodel,
           bodyRenderer: (bodyProps: SystemSettingsDialogBodyProps) => {
             return (<SystemSettingsDialogBody {...bodyProps} />);
           },

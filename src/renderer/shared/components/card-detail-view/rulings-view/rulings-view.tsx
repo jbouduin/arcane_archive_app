@@ -3,8 +3,7 @@ import classNames from "classnames";
 import { noop } from "lodash";
 import * as React from "react";
 import { useServices } from "../../../../hooks/use-services";
-import { LibraryRulingDto } from "../../../dto";
-import { LibraryRulingViewmodel } from "../../../viewmodel/mtg-card";
+import { LibraryRulingViewmodel } from "../../../viewmodel";
 import { compareClassNameProp } from "../../util";
 import { RulingsViewProps } from "./rulings-view.props";
 
@@ -21,9 +20,10 @@ export const RulingsView = React.memo(
     // #region Effects --------------------------------------------------------
     React.useEffect(
       () => {
-        void serviceContainer.arcaneArchiveProxy.getData<Array<LibraryRulingDto>>("library", "/public/ruling/" + props.oracleId)
+        void serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory
+          .getRulingsViewmodel(serviceContainer.arcaneArchiveProxy, props.oracleId)
           .then(
-            (data: Array<LibraryRulingDto>) => setRulings(serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getRulingsViewmodel(data)),
+            (data: Array<LibraryRulingViewmodel>) => setRulings(data),
             noop
           );
       },

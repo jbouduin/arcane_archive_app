@@ -1,5 +1,4 @@
-import { IServiceContainer } from "../../../context";
-import { UserDto } from "../../../dto";
+import { IArcaneArchiveProxyService, IServiceContainer } from "../../../context";
 import { LoginViewmodel, RegisterViewmodel, UserViewmodel } from "../../authentication";
 
 export interface IAuthenticationViewmodelFactory {
@@ -7,5 +6,5 @@ export interface IAuthenticationViewmodelFactory {
   getInitialRegisterViewmodel(showLoginButton: boolean): RegisterViewmodel;
   getLoginViewmodel(showRegisterButton: boolean, serviceContainer: IServiceContainer): Promise<LoginViewmodel>;
   getRegisterViewmodel(showLoginButton: boolean, serviceContainer: IServiceContainer): Promise<RegisterViewmodel>;
-  getUserViewmodel(userDto: UserDto): UserViewmodel;
+  getUserViewmodel(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<UserViewmodel>;
 }

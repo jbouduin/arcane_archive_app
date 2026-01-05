@@ -1,4 +1,4 @@
-import { IColorService, IDisplayValueService, ILanguageService, IMtgSetService } from "../../../context";
+import { IArcaneArchiveProxyService, IColorService, IDisplayValueService, ILanguageService, IMtgSetService } from "../../../context";
 import { LibraryCardDto, LibraryCardListDto, LibraryRulingDto } from "../../../dto";
 import { LibraryCardViewmodel, LibraryCardListViewmodel, LibraryRulingViewmodel } from "../../mtg-card";
 import { IMtgCardViewmodelFactory } from "../interface";
@@ -26,18 +26,23 @@ export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
   // #endregion
 
   // #region IMtgCardViewmodelFactory Members ---------------------------------
-  public getMtgCardDetailViewmodel(dto: LibraryCardDto): LibraryCardViewmodel {
-    return new LibraryCardViewmodel(this.colorService, this.displayValueService, this.languageService, this.mtgSetService, dto);
+  public getLibraryCardDetailViewmodel(arcaneArchiveProxy: IArcaneArchiveProxyService, cardId: number): Promise<LibraryCardViewmodel> {
+    return arcaneArchiveProxy
+      .getData<LibraryCardDto>("library", "/public/card/" + cardId)
+      .then((dto: LibraryCardDto) => new LibraryCardViewmodel(this.colorService, this.displayValueService, this.languageService, this.mtgSetService, dto));
   }
 
   public getMtgCardListViewmodel(dto: LibraryCardListDto): LibraryCardListViewmodel {
     return new LibraryCardListViewmodel(this.colorService, this.displayValueService, this.languageService, this.mtgSetService, dto);
   }
 
-  public getRulingsViewmodel(dtos: Array<LibraryRulingDto>): Array<LibraryRulingViewmodel> {
-    return dtos
-      .map((dto: LibraryRulingDto) => new LibraryRulingViewmodel(dto))
-      .sort((a: LibraryRulingViewmodel, b: LibraryRulingViewmodel) => b.publishedAt.getTime() - a.publishedAt.getTime());
+  public getRulingsViewmodel(arcaneArchiveProxy: IArcaneArchiveProxyService, oracleId: string): Promise<Array<LibraryRulingViewmodel>> {
+    return arcaneArchiveProxy
+      .getData<Array<LibraryRulingDto>>("library", "/public/ruling/" + oracleId)
+      .then((dtos: Array<LibraryRulingDto>) => dtos
+        .map((dto: LibraryRulingDto) => new LibraryRulingViewmodel(dto))
+        .sort((a: LibraryRulingViewmodel, b: LibraryRulingViewmodel) => b.publishedAt.getTime() - a.publishedAt.getTime())
+      );
   }
   // #endregion
 }

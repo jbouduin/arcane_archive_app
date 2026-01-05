@@ -15,7 +15,7 @@ export function ButtonBar(props: ButtonBarProps) {
 
   // #region Event handling -------------------------------------------------------------
   function loginClick(): void {
-    void showLoginDialog(serviceContainer, true);
+    showLoginDialog(serviceContainer, true);
   }
 
   function logoutClick(): void {

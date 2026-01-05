@@ -1,10 +1,10 @@
 import { H5, Section, SectionCard, Tab, Tabs } from "@blueprintjs/core";
 import React from "react";
+import { ScryFallImageStatus } from "../../../../common/enums";
 import { useServices } from "../../../hooks";
-import { LanguageDto, LibraryCardDto } from "../../dto";
+import { LanguageDto } from "../../dto";
 import { ScryfallLanguageMap } from "../../types";
-import { LibraryCardViewmodel } from "../../viewmodel/mtg-card";
-import { LibraryCardfaceViewmodel } from "../../viewmodel/mtg-card/library-cardface.viewmodel";
+import { LibraryCardfaceViewmodel, LibraryCardViewmodel } from "../../viewmodel";
 import { CardSymbolRenderer } from "../card-symbol-renderer";
 import { CardDetailViewProps } from "./card-detail-view.props";
 import { CardfaceView } from "./card-face-view/cardface-view";
@@ -13,7 +13,6 @@ import { CardImageView } from "./card-image-view/card-image-view";
 import { LanguageButtonBar } from "./language-button-bar/language-button-bar";
 import { LegalitiesView } from "./legalities-view/legalities-view";
 import { RulingsView } from "./rulings-view/rulings-view";
-import { ScryFallImageStatus } from "../../../../common/enums";
 
 export function CardDetailView(props: CardDetailViewProps) {
   // #region State ------------------------------------------------------------
@@ -35,15 +34,17 @@ export function CardDetailView(props: CardDetailViewProps) {
   React.useEffect(
     () => {
       if (props.cardId) {
-        void serviceContainer.arcaneArchiveProxy.getData<LibraryCardDto>("library", "/public/card/" + props.cardId)
+        void serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory
+          .getLibraryCardDetailViewmodel(serviceContainer.arcaneArchiveProxy, props.cardId)
           .then(
-            (dto: LibraryCardDto) => {
-              const viewmodel: LibraryCardViewmodel = serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory.getMtgCardDetailViewmodel(dto);
+            (viewmodel: LibraryCardViewmodel) => {
               setCardviewmodel(viewmodel);
               setCurrentLanguage(viewmodel.languages[0]);
             },
             () => setCardviewmodel(null)
           );
+      } else {
+        setCardviewmodel(null);
       }
     },
     [props.cardId]

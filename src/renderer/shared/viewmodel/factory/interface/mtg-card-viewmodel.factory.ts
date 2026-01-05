@@ -1,9 +1,9 @@
-import { LibraryCardDto, LibraryCardListDto, LibraryRulingDto } from "../../../dto";
-import { LibraryCardViewmodel, LibraryCardListViewmodel } from "../../mtg-card";
-import { LibraryRulingViewmodel } from "../../mtg-card/library-ruling.viewmodel";
+import { IArcaneArchiveProxyService } from "../../../context";
+import { LibraryCardListDto } from "../../../dto";
+import { LibraryCardListViewmodel, LibraryCardViewmodel, LibraryRulingViewmodel } from "../../mtg-card";
 
 export interface IMtgCardViewmodelFactory {
   getMtgCardListViewmodel(dto: LibraryCardListDto): LibraryCardListViewmodel;
-  getMtgCardDetailViewmodel(dto: LibraryCardDto): LibraryCardViewmodel;
-  getRulingsViewmodel(dtos: Array<LibraryRulingDto>): Array<LibraryRulingViewmodel>;
+  getLibraryCardDetailViewmodel(arcaneArchiveProxy: IArcaneArchiveProxyService, cardId: number): Promise<LibraryCardViewmodel>;
+  getRulingsViewmodel(arcaneArchiveProxy: IArcaneArchiveProxyService, oracleId: string): Promise<Array<LibraryRulingViewmodel>>;
 }

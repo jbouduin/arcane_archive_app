@@ -1,4 +1,4 @@
-import { IServiceContainer } from "../../../context";
+import { IArcaneArchiveProxyService, IServiceContainer } from "../../../context";
 import { RegisterRequestDto, UserDto } from "../../../dto";
 import { LoginViewmodel, RegisterViewmodel, UserViewmodel } from "../../authentication";
 import { IAuthenticationViewmodelFactory } from "../interface";
@@ -71,8 +71,10 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
     return new RegisterViewmodel(registerDto, showLoginButton);
   }
 
-  public getUserViewmodel(userDto: UserDto): UserViewmodel {
-    return new UserViewmodel(userDto);
+  public getUserViewmodel(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<UserViewmodel> {
+    return arcaneArchiveProxy
+      .getData<UserDto>("authentication", "/app/account")
+      .then((userDto: UserDto) => new UserViewmodel(userDto));
   }
   // #endregion
 }

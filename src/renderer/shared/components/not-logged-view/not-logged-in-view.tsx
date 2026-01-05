@@ -11,7 +11,7 @@ export function NotLoggedInView(props: NotLoggedInViewProps) {
 
   // #region Event handling ---------------------------------------------------
   function loginClick(): void {
-    void showLoginDialog(serviceContainer, true);
+    showLoginDialog(serviceContainer, true);
   }
 
   function registerClick(): void {

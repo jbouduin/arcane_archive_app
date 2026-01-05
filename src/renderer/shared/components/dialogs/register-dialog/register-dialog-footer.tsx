@@ -30,7 +30,7 @@ export function RegisterDialogFooter(props: RegisterDialogFooterProps) {
     if (props.onClose) {
       props.onClose(e);
     }
-    void showLoginDialog(serviceContainer, false);
+    showLoginDialog(serviceContainer, false);
   }
   // #endregion
 
