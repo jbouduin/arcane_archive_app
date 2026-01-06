@@ -241,3 +241,10 @@ img.rotate-180 {
   display: flex;
   justify-content: space-between;
 }
+
+.disabled-tag-div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+}

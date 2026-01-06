@@ -1,6 +1,6 @@
-import { FormGroup, MenuItem } from "@blueprintjs/core";
+import { FormGroup, MenuItem, Tag } from "@blueprintjs/core";
 import { ItemRendererProps, MultiSelect } from "@blueprintjs/select";
-import * as React from "react";
+import { ReactNode, useCallback } from "react";
 import { SelectOption } from "../../../types";
 import { HighlightText } from "../highlight-text/highlight-text";
 import { BaseMultiSelectProps } from "./base-multi-select.props";
@@ -10,7 +10,7 @@ import { BaseMultiSelectProps } from "./base-multi-select.props";
  */
 export function BaseMultiSelect<T>(props: BaseMultiSelectProps<T>) {
   // #region Memo --------------------------------------------------------------
-  const optionIsSelected = React.useCallback(
+  const optionIsSelected = useCallback(
     (item: SelectOption<T>) => props.selectedOptions.findIndex(
       (value: SelectOption<T>) => props.itemComparer ? props.itemComparer(item.value, value.value) : item.value == value.value
     ) >= 0,
@@ -35,36 +35,47 @@ export function BaseMultiSelect<T>(props: BaseMultiSelectProps<T>) {
         key={props.formGroupLabel}
         label={props.formGroupLabel}
       >
-        {/* LATER: solve the issue that taginput has no readonly property, so we have to disable.  */}
-        <MultiSelect<SelectOption<T>>
-          initialContent={null}
-          disabled={props.disabled}
-          itemListPredicate={filterOptionList}
-          itemRenderer={(item: SelectOption<T>, itemProps: ItemRendererProps) => itemRenderer(item, itemProps)}
-          items={props.allItems}
-          itemsEqual={
-            (a: SelectOption<T>, b: SelectOption<T>) => {
-              return props.itemComparer ? props.itemComparer(a.value, b.value) : a.value == b.value;
-            }
-          }
-          key={props.formGroupLabel}
-          noResults={<MenuItem disabled={true} roleStructure="listoption" text="No results." />}
-          onClear={props.onClearSelectedOptions}
-          onItemSelect={(item: SelectOption<T>) => onSelect(item)}
-          onRemove={props.onOptionRemoved}
-          popoverProps={{
-            matchTargetWidth: true,
-            minimal: true,
-            modifiers: {
-              eventListeners: {
-                enabled: false
+        {
+          !props.disabled &&
+          (
+            <MultiSelect<SelectOption<T>>
+              initialContent={null}
+              disabled={props.disabled}
+              itemListPredicate={filterOptionList}
+              itemRenderer={(item: SelectOption<T>, itemProps: ItemRendererProps) => itemRenderer(item, itemProps)}
+              items={props.allItems}
+              itemsEqual={
+                (a: SelectOption<T>, b: SelectOption<T>) => {
+                  return props.itemComparer ? props.itemComparer(a.value, b.value) : a.value == b.value;
+                }
               }
-            }
-          }}
-          resetOnSelect={true}
-          selectedItems={props.selectedOptions}
-          tagRenderer={(item: SelectOption<T>) => tagRenderer(item)}
-        />
+              key={props.formGroupLabel}
+              noResults={<MenuItem disabled={true} roleStructure="listoption" text="No results." />}
+              onClear={props.onClearSelectedOptions}
+              onItemSelect={(item: SelectOption<T>) => onSelect(item)}
+              onRemove={props.onOptionRemoved}
+              popoverProps={{
+                matchTargetWidth: true,
+                minimal: true,
+                modifiers: {
+                  eventListeners: {
+                    enabled: false
+                  }
+                }
+              }}
+              resetOnSelect={true}
+              selectedItems={props.selectedOptions}
+              tagRenderer={(item: SelectOption<T>) => tagRenderer(item)}
+            />
+          )
+        }
+        {
+          props.disabled && (
+            <div className="disabled-tag-div">
+              {renderReadOnlyTags()}
+            </div>
+          )
+        }
       </FormGroup>
     </div>
   );
@@ -95,13 +106,19 @@ export function BaseMultiSelect<T>(props: BaseMultiSelectProps<T>) {
     );
   }
 
-  function tagRenderer(item: SelectOption<T>): React.ReactNode {
+  function tagRenderer(item: SelectOption<T>): ReactNode {
     return (
       <div key={item.label} style={{ display: "flex" }}>
         {props.preTextElement?.(item)}
         {item.label}
       </div>
     );
+  }
+
+  function renderReadOnlyTags(): Array<JSX.Element> {
+    return props.selectedOptions.map((value: SelectOption<T>, idx: number) => {
+      return (<Tag key={"tag_" + idx.toString()}>{tagRenderer(value)}</Tag>);
+    });
   }
   // #endregion
 

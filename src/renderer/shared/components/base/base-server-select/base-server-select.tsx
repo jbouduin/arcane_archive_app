@@ -1,6 +1,6 @@
-import { FormGroup, MenuItem } from "@blueprintjs/core";
+import { FormGroup, MenuItem, Tag } from "@blueprintjs/core";
 import { ItemRendererProps, MultiSelect } from "@blueprintjs/select";
-import * as React from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useServices } from "../../../../hooks/use-services";
 import { SelectOption } from "../../../types";
 import { HighlightText } from "../highlight-text/highlight-text";
@@ -11,7 +11,7 @@ import { BaseServerSelectProps } from "./base-server-select.props";
  */
 export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
   // #region Memo --------------------------------------------------------------
-  const optionsIsSelected = React.useCallback(
+  const optionsIsSelected = useCallback(
     (item: SelectOption<T>) => props.selectedOptions.findIndex(
       (value: SelectOption<T>) => props.itemComparer ? props.itemComparer(item.value, value.value) : item.value == value.value
     ) >= 0,
@@ -20,8 +20,8 @@ export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
   // #endregion
 
   // #region State ------------------------------------------------------------
-  const [items, setItems] = React.useState(new Array<SelectOption<T>>());
-  const [queryString, setQueryString] = React.useState<string>("");
+  const [items, setItems] = useState(new Array<SelectOption<T>>());
+  const [queryString, setQueryString] = useState<string>("");
   // #endregion
 
   // #region Context ----------------------------------------------------------
@@ -29,7 +29,7 @@ export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
   // #endregion
 
   // #region Effects ----------------------------------------------------------
-  React.useEffect(
+  useEffect(
     () => {
       if (queryString != "") {
         const timeOutId = setTimeout(
@@ -70,28 +70,39 @@ export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
         key={props.keyString}
         label={props.formGroupLabel}
       >
-        {/* LATER: solve the issue that taginput has no readonly property, so we have to disable.  */}
-        <MultiSelect<SelectOption<T>>
-          initialContent={null}
-          itemRenderer={(item: SelectOption<T>, itemProps: ItemRendererProps) => itemRenderer(item, itemProps)}
-          disabled={props.disabled}
-          items={items}
-          itemsEqual={
-            (a: SelectOption<T>, b: SelectOption<T>) => {
-              return props.itemComparer ? props.itemComparer(a.value, b.value) : a.value == b.value;
-            }
-          }
-          key={props.keyString}
-          noResults={<MenuItem disabled={true} roleStructure="listoption" text="No results." />}
-          onClear={props.onClearSelectedOptions}
-          onItemSelect={(item: SelectOption<T>) => onSelect(item)}
-          onQueryChange={onQueryChange}
-          onRemove={props.onOptionsRemoved}
-          popoverProps={{ matchTargetWidth: true, minimal: true }}
-          resetOnSelect={true}
-          selectedItems={props.selectedOptions}
-          tagRenderer={tagRenderer}
-        />
+        {
+          !props.disabled &&
+          (
+            <MultiSelect<SelectOption<T>>
+              initialContent={null}
+              itemRenderer={(item: SelectOption<T>, itemProps: ItemRendererProps) => itemRenderer(item, itemProps)}
+              disabled={props.disabled}
+              items={items}
+              itemsEqual={
+                (a: SelectOption<T>, b: SelectOption<T>) => {
+                  return props.itemComparer ? props.itemComparer(a.value, b.value) : a.value == b.value;
+                }
+              }
+              key={props.keyString}
+              noResults={<MenuItem disabled={true} roleStructure="listoption" text="No results." />}
+              onClear={props.onClearSelectedOptions}
+              onItemSelect={(item: SelectOption<T>) => onSelect(item)}
+              onQueryChange={onQueryChange}
+              onRemove={props.onOptionsRemoved}
+              popoverProps={{ matchTargetWidth: true, minimal: true }}
+              resetOnSelect={true}
+              selectedItems={props.selectedOptions}
+              tagRenderer={tagRenderer}
+            />
+          )
+        }
+        {
+          props.disabled && (
+            <div className="disabled-tag-div">
+              {renderReadOnlyTags()}
+            </div>
+          )
+        }
       </FormGroup>
     </div>
   );
@@ -127,6 +138,12 @@ export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
         {item.label}
       </div>
     );
+  }
+
+  function renderReadOnlyTags(): Array<JSX.Element> {
+    return props.selectedOptions.map((value: SelectOption<T>, idx: number) => {
+      return (<Tag key={"tag_" + idx.toString()}>{tagRenderer(value)}</Tag>);
+    });
   }
   // #endregion
 
