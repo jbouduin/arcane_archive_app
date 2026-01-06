@@ -27,7 +27,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
     serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getInitialLoginViewmodel(false)
   );
   const [registrationViewmodel, setRegistrationViewmodel] = useState<RegisterViewmodel>(
-    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getInitialRegisterViewmodel(false)
+    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getInitialRegisterViewmodel(false, serviceContainer.configurationService.preferences)
   );
   // this one is initialized with the factory default system settings
   const [systemSettingsViewmodel, setSystemSettingsViewmodel] = useState<SystemSettingsViewmodel>(

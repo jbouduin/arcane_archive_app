@@ -1,3 +1,5 @@
+import { PreferencesDto } from "../../../common/dto";
+
 export type RegisterRequestDto = {
   userName: string;
   password: string;
@@ -6,5 +8,5 @@ export type RegisterRequestDto = {
   emailRepeat: string;
   firstName: string | null;
   lastName: string | null;
-  // TODO add preferences
+  preferences: PreferencesDto;
 };

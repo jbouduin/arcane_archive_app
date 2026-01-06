@@ -1,3 +1,4 @@
+import { PreferencesDto } from "../../../../../common/dto";
 import { IArcaneArchiveProxyService, IServiceContainer } from "../../../context";
 import { RegisterRequestDto, UserDto } from "../../../dto";
 import { LoginViewmodel, RegisterViewmodel, UserViewmodel } from "../../authentication";
@@ -16,7 +17,7 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
     );
   }
 
-  public getInitialRegisterViewmodel(showLoginButton: boolean): RegisterViewmodel {
+  public getInitialRegisterViewmodel(showLoginButton: boolean, preferences: PreferencesDto): RegisterViewmodel {
     const registerDto: RegisterRequestDto = {
       userName: "",
       password: "",
@@ -24,7 +25,8 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
       email: "",
       emailRepeat: "",
       firstName: "",
-      lastName: ""
+      lastName: "",
+      preferences: preferences
     };
     return new RegisterViewmodel(registerDto, showLoginButton);
   }
@@ -66,7 +68,8 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
       email: "",
       emailRepeat: "",
       firstName: "",
-      lastName: ""
+      lastName: "",
+      preferences: serviceContainer.configurationService.preferences
     };
     return new RegisterViewmodel(registerDto, showLoginButton);
   }
