@@ -1,0 +1,33 @@
+import { PreferencesDto } from "../../../../../common/dto";
+import { useServices } from "../../../../hooks";
+import { PreferencesViewmodel } from "../../../viewmodel";
+import { SaveCancelResetFooter } from "../../base/base-dialog";
+import { PreferencesDialogFooterProps } from "./preferences-dialog.props";
+
+export function PreferencesDialogFooter(props: PreferencesDialogFooterProps) {
+  // #region Hooks ------------------------------------------------------------
+  const serviceContainer = useServices();
+  // #endregion
+
+  // #region Event handling ---------------------------------------------------
+  function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, _dto: PreferencesDto): Promise<void> {
+    serviceContainer.configurationService.savePreferences(serviceContainer, props.viewmodel.dto);
+    if (props.onClose) {
+      props.onClose(event);
+    }
+    return Promise.resolve();
+  }
+  // #endregion
+
+  // #region Rendering --------------------------------------------------------
+  return (
+    <SaveCancelResetFooter<PreferencesDto, PreferencesViewmodel>
+      {...props}
+      showResetButton={true}
+      commitButtonLabel="Save"
+      commitButtonIcon="floppy-disk"
+      onCommitButtonClick={saveClick}
+    />
+  );
+  // #endregion
+}

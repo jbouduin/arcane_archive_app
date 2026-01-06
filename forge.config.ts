@@ -1,0 +1,112 @@
+import { MakerDeb } from "@electron-forge/maker-deb";
+import { MakerRpm } from "@electron-forge/maker-rpm";
+import { MakerSquirrel } from "@electron-forge/maker-squirrel";
+import { MakerZIP } from "@electron-forge/maker-zip";
+import { AutoUnpackNativesPlugin } from "@electron-forge/plugin-auto-unpack-natives";
+import { FusesPlugin } from "@electron-forge/plugin-fuses";
+import { WebpackPlugin } from "@electron-forge/plugin-webpack";
+import type { ForgeConfig } from "@electron-forge/shared-types";
+import { FuseV1Options, FuseVersion } from "@electron/fuses";
+import { mainConfig } from "./.cm/configs/webpack.main.config";
+import { rendererConfig } from "./.cm/configs/webpack.renderer.config";
+
+const config: ForgeConfig = {
+  packagerConfig: {
+    asar: true,
+    icon: "/assets/icons/arcane_archive_512",
+    ignore: [
+      /node_modules\/(?!(better-sqlite3|keytar|bindings|file-uri-to-path)\/)/
+    ],
+    extraResource: ["assets"]
+    // following did not work to get the native dependencies unpacked,
+    // the ignore above did solve the issue
+    // asarUnpack: [
+    // "**/node_modules/better-sqlite3/**",
+    // "**/node_modules/keytar/**"
+    // ]
+  },
+  rebuildConfig: {},
+  makers: [
+    new MakerSquirrel(
+      {
+        certificateFile: "./.cm/arcane_archive.pfx",
+        certificatePassword: process.env.CERTIFICATE_PASSWORD
+      }),
+    new MakerZIP({}, ["darwin"]),
+    new MakerRpm({}),
+    new MakerDeb({})
+  ],
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "jbouduin",
+          name: "arcane_archive_app"
+        },
+        prerelease: false,
+        draft: true
+      }
+    }
+  ],
+  plugins: [
+    new AutoUnpackNativesPlugin({}),
+    new WebpackPlugin({
+      devContentSecurityPolicy: "default-src 'self' 'unsafe-inline' data:; " +
+        "script-src 'self' 'unsafe-eval' 'unsafe-inline' data:;" +
+        "connect-src 'self' http://localhost:5401 http://localhost:5402 http://localhost:5403 http://localhost:5403 ws://localhost:3000;" +
+        "img-src * data: cached-image: asset:",
+      mainConfig,
+      renderer: {
+        config: rendererConfig,
+        entryPoints: [
+          {
+            html: "./src/renderer/main-window/main-window.html",
+            js: "./src/renderer/main-window/main-window.renderer.ts",
+            name: "main_window",
+            preload: {
+              js: "./src/renderer/shared/preload.ts",
+            },
+          },
+          // {
+          //   html: "./src/renderer/deck-window/deck-window.html",
+          //   js: "./src/renderer/deck-window/deck-window-renderer.ts",
+          //   name: "deck_window",
+          //   preload: {
+          //     js: "./src/renderer/shared/preload.ts",
+          //   },
+          // },
+          {
+            html: "./src/renderer/first-time-window/first-time-window.html",
+            js: "./src/renderer/first-time-window/first-time-window-renderer.ts",
+            name: "first_time",
+            preload: {
+              js: "./src/renderer/shared/preload.ts",
+            },
+          },
+          {
+            html: "./src/renderer/splash-window/splash-window.html",
+            js: "./src/renderer/splash-window/splash-window-renderer.ts",
+            name: "splash_window",
+            preload: {
+              js: "./src/renderer/shared/preload.ts",
+            },
+          }
+        ],
+      },
+    }),
+    // Fuses are used to enable/disable various Electron functionality
+    // at package time, before code signing the application
+    new FusesPlugin({
+      version: FuseVersion.V1,
+      [FuseV1Options.RunAsNode]: false,
+      [FuseV1Options.EnableCookieEncryption]: true,
+      [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
+      [FuseV1Options.EnableNodeCliInspectArguments]: false,
+      [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
+      [FuseV1Options.OnlyLoadAppFromAsar]: true,
+    }),
+  ],
+};
+
+export default config;

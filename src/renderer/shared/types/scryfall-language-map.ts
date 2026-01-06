@@ -1,0 +1,21 @@
+export const ScryfallLanguageMap: Map<string, string> = new Map<string, string>([
+  ["ENGLISH", "en"],
+  ["ANCIENT_GREEK", "grc"],
+  ["ARABIC", "ar"],
+  ["CHINESE_TRADITIONAL", "zht"],
+  ["CHINESE_SIMPLIFIED", "zhs"],
+  ["FRENCH", "fr"],
+  ["GERMAN", "de"],
+  ["HEBREW", "he"],
+  ["ITALIAN", "it"],
+  ["JAPANESE", "ja"],
+  ["KOREAN", "ko"],
+  ["LATIN", "la"],
+  ["PHYREXIAN", "ph"],
+  ["PORTUGUESE", "pt"],
+  ["QUENYA", "qya"],
+  ["RUSSIAN", "ru"],
+  ["SANSKRIT", "sa"],
+  ["SPANISH", "es"],
+  ["UNKNOWN", "en"]
+]);

@@ -1,0 +1,85 @@
+@import "normalize.css";
+@import "react-mosaic-component/react-mosaic-component.css";
+@import "@blueprintjs/core/lib/css/blueprint.css";
+@import "@blueprintjs/table/lib/css/table.css";
+@import "@blueprintjs/select/lib/css/blueprint-select.css";
+@import "../shared/shared.css";
+
+.desktop-wrapper {
+  padding: 0px;
+  display: flex;
+  flex-direction: row;
+}
+
+.button-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.button-bar-image {
+  width: 30px;
+  height: 30px;
+}
+
+.main-panel {
+  flex: 1;
+  overflow: auto;
+}
+
+.cards-table-wrapper {
+  height: 100%;
+  overflow: auto;
+  flex: 1 1 auto;
+}
+
+.tree-view-item {
+  display: flex;
+  flex-direction: row;
+}
+
+.tree-view-image {
+  padding-right: 5px;
+}
+
+.bp6-tab-panel.left-panel-tab-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  border: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.left-panel-search-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  border: none;
+  height: 100%;
+  overflow-y: auto;
+  margin-top: 5px;
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-bottom: 10px;
+}
+
+.base-tree {
+  overflow-x: auto;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  height: 100%;
+}
+
+.bp6-tree-root:last-child {
+  margin-bottom: 10px;
+}
+
+.dialog-footer-button-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

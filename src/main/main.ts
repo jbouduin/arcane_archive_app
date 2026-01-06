@@ -1,0 +1,79 @@
+import { app, BrowserWindow, globalShortcut, session } from "electron";
+import { existsSync } from "fs";
+import { join } from "path";
+import "reflect-metadata";
+import { container } from "tsyringe";
+import { updateElectronApp } from "update-electron-app/dist";
+import { IApplicationService, IWindowsService } from "./services/infra/interface";
+import { INFRASTRUCTURE } from "./services/service.tokens";
+import { ServicesDI } from "./services/services.di";
+
+// Override the default userData path on windows. Otherwise everything goes into AppData/roaming
+if (process.platform == "win32" && process.env.LOCALAPPDATA) {
+  const newUserDataPath = join(process.env.LOCALAPPDATA, app.getName());
+  app.setPath("userData", newUserDataPath);
+}
+
+// check for updates
+updateElectronApp();
+
+/*
+ * Handle creating/removing shortcuts on Windows when installing/uninstalling.
+ */
+/* eslint-disable-next-line @typescript-eslint/no-require-imports */
+if (require("electron-squirrel-startup")) {
+  app.quit();
+}
+
+/*
+ * This method will be called when Electron has finished
+ * initialization and is ready to create browser windows.
+ * Some APIs can only be used after this event occurs.
+ */
+void app.whenReady().then(async () => {
+  // --- Initialize DI container ---
+  ServicesDI.register();
+  // --- run boot sequence ---
+  await container
+    .resolve<IApplicationService>(INFRASTRUCTURE.ApplicationService)
+    .boot();
+
+  // --- create main window on activate if no window is available ---
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      container.resolve<IWindowsService>(INFRASTRUCTURE.WindowsService).createMainWindow();
+    }
+  });
+
+  // --- register the shortcut to open devtools (required because menu is not avaiable) ---
+  globalShortcut.register(
+    "CommandOrControl+Shift+I",
+    () => {
+      const win = BrowserWindow.getFocusedWindow();
+      if (win) {
+        win.webContents.openDevTools();
+      }
+    }
+  );
+
+  /*
+   * this used to be const reactDevToolsPath = join(process.env.LOCALAPPDATA, "Google", "Chrome", "User Data", "Default", "Extensions", "fmkadmapgofadopljbjfkapdkoienihi", "5.2.0_0");
+   * after putting latest build -> loading failed because electron can not handle V3 manifest
+   * so as a hack: downloaded an old version of the dev tools and use that one
+   */
+  const reactDevToolsPath = join(process.env.LOCALAPPDATA || "", "Google", "Chrome", "User Data", "Default", "Extensions", "react-dev-tools-hack");
+  if (!app.isPackaged && existsSync(reactDevToolsPath)) {
+    await session.defaultSession.loadExtension(reactDevToolsPath);
+  }
+});
+
+/*
+ * Quit when all windows are closed, except on macOS. There, it"s common
+ * for applications and their menu bar to stay active until the user quits
+ * explicitly with Cmd + Q.
+ */
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});

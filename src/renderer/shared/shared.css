@@ -1,0 +1,250 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  margin: auto;
+  font-size: small;
+}
+
+#root {
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+.mana-cost-image-in-table {
+  margin-right: 3px;
+  margin-bottom: -2px
+}
+
+.mana-cost-image-in-title {
+  margin-right: 3px;
+  margin-bottom: -3px
+}
+
+.mana-cost-image-in-text {
+  margin-right: 3px;
+  margin-bottom: -3px
+}
+
+.mana-cost-image-in-text:first-child {
+  margin-left: 3px
+}
+
+.ruling-line-paragraph {
+  border-bottom-width: thin;
+  border-bottom-style: solid;
+  padding-bottom: 10px;
+}
+
+.card-view-wrapper {
+  height: 100vh;
+  overflow: auto;
+}
+
+.card-image {
+  display: block;
+  margin: auto;
+  max-height: 400px;
+}
+
+.card-header-line-1 {
+  display: flex;
+  flex-direction: row;
+}
+
+img.rotate-90 {
+  transform: rotate(90deg);
+}
+
+img.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.ruling-divider {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.rarity-rare {
+  color: gold;
+}
+
+.rarity-uncommon {
+  color: silver
+}
+
+.rarity-mythic {
+  color: darkorange;
+}
+
+.card-view-section-card {
+  padding-top: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.left-panel-button-group {
+  flex: 0 1 auto;
+}
+
+.left-panel-tabs {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.splash-window {
+  width: 900px;
+}
+
+.splash-wrapper {
+  background-image: url("/assets/img/Splash.webp");
+  background-size: cover;
+  max-height: 506px;
+  max-width: 900px;
+  padding: 20px;
+  padding-top: 375px;
+  color: white;
+}
+
+.committable-input-wrapper {
+  display: flex;
+  flex-flow: column;
+}
+
+.committable-input-buttons {
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-end;
+}
+
+.bp6-dark .ss-common {
+  color: white !important;
+}
+
+.bp6-control-group:not(.bp6-vertical)> :not(:last-child) {
+  margin-right: 4px;
+}
+
+.bp6-control-group:not(.bp6-vertical)> :not(:first-child) {
+  margin-left: 4px;
+}
+
+.mosaic-tile-content-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.mosaic-root {
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+}
+
+.mosaic-tile {
+  margin: 0px;
+}
+
+.paging-view {
+  flex: 0 1 auto;
+}
+
+.layout-isolation {
+  position: relative;
+  /* overflow: hidden; */
+}
+
+.not-logged-in-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.server-not-available {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.existing-users-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.existing-users-div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.user-name-tag {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.barContainer {
+  flex: 1;
+  height: 8px;
+  background: #dfdfe7;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.textValue {
+  margin-top: -10px;
+  width: 100%;
+}
+
+.fillerBackground {
+  height: inherit;
+  transition: "width 2s ease-i-out";
+  background: linear-gradient(to right, #ff0000, #ffa500, #ffff00, #00ff00);
+}
+
+.filler {
+  transition: "width 2s ease-i-out";
+  height: inherit;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.label-value-column-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.label-value-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 16px;
+  width: 100%;
+}
+
+.label-value-panel>div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.disabled-tag-div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+}
