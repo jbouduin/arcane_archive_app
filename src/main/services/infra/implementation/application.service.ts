@@ -12,7 +12,7 @@ import { IApplicationService, IConfigurationService, ILogService, IRouterService
 
 @injectable()
 export class ApplicationService implements IApplicationService {
-  // LATER once packaged cookie handling does not work anymore
+  // BUG once packaged cookie handling does not work anymore
   // #region Private fields ---------------------------------------------------
   private sessionCookie: Cookie | undefined;
   private readonly sessionCookieJarKey: string;
