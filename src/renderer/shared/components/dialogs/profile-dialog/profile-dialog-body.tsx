@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useServices } from "../../../../hooks";
 import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption } from "../../../types";
 import { BaseMultiSelect } from "../../base/base-multi-select/base-multi-select";
-import { LabelValuePanel } from "../../label-value-panel/label-value-panel";
+import { LabelValuePanel, renderBoolean } from "../../base/label-value-panel";
 import { handleStringChange } from "../../util";
 import { ValidatedInput } from "../../validated-input/validated-input";
 import { ProfileDialogBodyProps } from "./profile-dialog.props";
@@ -151,60 +151,71 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
   }
 
   function renderAdditionalInfoPanel(): React.JSX.Element {
-    const items = new Map<string, JSX.Element | null>([
-      ["Id", (<Text>{props.viewmodel.id}</Text>)],
-      ["empty", null],
-      ["Created at", (<Text>{props.viewmodel.createdAt.toLocaleString()}</Text>)],
-      ["Created by", (<Text>{props.viewmodel.createdBy}</Text>)],
-      ["Modified at", (<Text>{props.viewmodel.modifiedAt.toLocaleString()}</Text>)],
-      ["Modified by", (<Text>{props.viewmodel.modifiedBy}</Text>)]
-    ]);
+    const items = new Map<string, JSX.Element | null>();
+    if (!isSysAdmin) {
+      items.set("Account Locked", renderBoolean(props.viewmodel.accountLocked));
+      items.set("Account active", renderBoolean(props.viewmodel.accountActive));
+      items.set("Account expired", renderBoolean(props.viewmodel.accountExpired));
+      items.set("Password Expired", renderBoolean(props.viewmodel.passwordExpired));
+    }
+    items.set("Id", (<Text>{props.viewmodel.id}</Text>));
+    items.set("empty", null);
+    items.set("Created at", (<Text>{props.viewmodel.createdAt.toLocaleString()}</Text>));
+    items.set("Created by", (<Text>{props.viewmodel.createdBy}</Text>));
+    items.set("Modified at", (<Text>{props.viewmodel.modifiedAt.toLocaleString()}</Text>));
+    items.set("Modified by", (<Text>{props.viewmodel.modifiedBy}</Text>));
+
     return (
       <>
-        <HTMLTable
-          bordered={false}
-          compact={true}
-          width="100%"
-        >
-          <tbody>
-            <tr>
-              <td style={{ paddingLeft: "0px" }}>
-                <Checkbox
-                  checked={props.viewmodel.accountLocked}
-                  readOnly={!isSysAdmin}
-                >
-                  Account Locked
-                </Checkbox>
-              </td>
-              <td>
-                <Checkbox
-                  checked={props.viewmodel.accountActive}
-                  readOnly={!isSysAdmin}
-                >
-                  Account Active
-                </Checkbox>
-              </td>
-            </tr>
-            <tr>
-              <td style={{ paddingLeft: "0px" }}>
-                <Checkbox
-                  checked={props.viewmodel.accountExpired}
-                  readOnly={!isSysAdmin}
-                >
-                  Account Expired
-                </Checkbox>
-              </td>
-              <td>
-                <Checkbox
-                  checked={props.viewmodel.passwordExpired}
-                  readOnly={!isSysAdmin}
-                >
-                  Password Expired
-                </Checkbox>
-              </td>
-            </tr>
-          </tbody>
-        </HTMLTable>
+        {
+          isSysAdmin &&
+          (
+            <HTMLTable
+              bordered={false}
+              compact={true}
+              width="100%"
+            >
+              <tbody>
+                <tr>
+                  <td style={{ paddingLeft: "0px" }}>
+                    <Checkbox
+                      checked={props.viewmodel.accountLocked}
+                      readOnly={!isSysAdmin}
+                    >
+                      Account Locked
+                    </Checkbox>
+                  </td>
+                  <td>
+                    <Checkbox
+                      checked={props.viewmodel.accountActive}
+                      readOnly={!isSysAdmin}
+                    >
+                      Account Active
+                    </Checkbox>
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ paddingLeft: "0px" }}>
+                    <Checkbox
+                      checked={props.viewmodel.accountExpired}
+                      readOnly={!isSysAdmin}
+                    >
+                      Account Expired
+                    </Checkbox>
+                  </td>
+                  <td>
+                    <Checkbox
+                      checked={props.viewmodel.passwordExpired}
+                      readOnly={!isSysAdmin}
+                    >
+                      Password Expired
+                    </Checkbox>
+                  </td>
+                </tr>
+              </tbody>
+            </HTMLTable>
+          )
+        }
         <LabelValuePanel items={items} columns={2} style={{ padding: "0px" }} />
       </>
     );

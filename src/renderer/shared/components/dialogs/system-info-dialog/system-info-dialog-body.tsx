@@ -3,7 +3,7 @@ import { cloneDeep } from "lodash";
 import { useState } from "react";
 import { versionInfo } from "../../../../../common/dto/arcane-archive/version-info";
 import { MtgServer } from "../../../types";
-import { LabelValuePanel } from "../../label-value-panel/label-value-panel";
+import { LabelValuePanel } from "../../base/label-value-panel";
 import { SystemInfoDialogBodyProps } from "./system-info-dialog.props";
 
 type SectionCardKey = MtgServer | "application";
@@ -69,7 +69,7 @@ export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps) {
               onToggle: () => toggleAccordeon(mtgServer)
             }}
             compact={true}
-            icon={renderIcon(mtgServer)}
+            icon={renderSectionIcon(mtgServer)}
             title={mtgServerToTitle(mtgServer)}
           >
             <LabelValuePanel items={items} />
@@ -78,7 +78,7 @@ export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps) {
       });
   }
 
-  function renderIcon(sectionCardKey: SectionCardKey): MaybeElement {
+  function renderSectionIcon(sectionCardKey: SectionCardKey): MaybeElement {
     if (sectionCardKey == "application" || props.viewmodel.apiStatus.get(sectionCardKey) != null) {
       return (
         <Icon icon="cloud-tick" intent="success" />
@@ -107,7 +107,7 @@ export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps) {
           onToggle: () => toggleAccordeon("application")
         }}
         compact={true}
-        icon={renderIcon("application")}
+        icon={renderSectionIcon("application")}
         title={mtgServerToTitle("application")}
       >
         <LabelValuePanel items={items} />

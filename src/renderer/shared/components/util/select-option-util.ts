@@ -15,12 +15,14 @@ export function addSelectOption<T>(
 }
 
 export function removeSelectOption<T>(dtoArray: Array<T>, viewmodelArray: Array<SelectOption<T>>, option: SelectOption<T>): void {
-  // LATER: this is a dangerous call!
   let idx = dtoArray.indexOf(option.value);
-  dtoArray.splice(idx, 1);
-  // LATER: this is a dangerous call! also
+  if (idx >= 0) {
+    dtoArray.splice(idx, 1);
+  }
   idx = viewmodelArray.findIndex((so: SelectOption<T>) => so.value == option.value);
-  viewmodelArray.splice(idx, 1);
+  if (idx >= 0) {
+    viewmodelArray.splice(idx, 1);
+  }
 }
 
 export function clearSelection<T>(dtoArray: Array<T>, viewmodelArray: Array<SelectOption<T>>): void {

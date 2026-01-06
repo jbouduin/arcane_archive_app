@@ -1,9 +1,9 @@
-import { Checkbox, ControlGroup, FormGroup, HTMLTable, Icon, InputGroup, NumericInput, Tab, Tabs, Text, TextAlignment } from "@blueprintjs/core";
+import { Checkbox, ControlGroup, FormGroup, HTMLTable, InputGroup, NumericInput, Tab, Tabs, Text, TextAlignment } from "@blueprintjs/core";
 import { useState } from "react";
 import { useServices } from "../../../../hooks";
 import { LanguageDto } from "../../../dto";
+import { LabelValuePanel, renderBoolean } from "../../base/label-value-panel";
 import { LanguageButtonBar } from "../../card-detail-view/language-button-bar/language-button-bar";
-import { LabelValuePanel } from "../../label-value-panel/label-value-panel";
 import { MtgSetDialogBodyProps } from "./mtg-set-dialog.props";
 
 export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
@@ -39,7 +39,6 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
   function renderSetDetailsPanel(readOnly: boolean): React.JSX.Element {
     return (
       <>
-        {/* {renderSetDetailsLanguageHeader()} */}
         {
           readOnly && renderReadOnlyDetails()
         }
@@ -183,15 +182,6 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
       ["Paper Only", renderBoolean(props.viewmodel.paperOnly)]
     ]);
     return (<LabelValuePanel items={items} columns={2} style={{ padding: "0px" }} />);
-  }
-
-  function renderBoolean(value: boolean): JSX.Element {
-    return (
-      <Icon
-        icon={value ? "tick" : "cross"}
-        intent={value ? "success" : "danger"}
-      />
-    );
   }
 
   function renderReadWriteDetails(): JSX.Element {
