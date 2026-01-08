@@ -23,7 +23,7 @@ const TreeView = memo(
 export function CollectionTreeView(props: CollectionTreeViewProps) {
   // #region State ------------------------------------------------------------
   const [collections, setCollections] = useState<Array<CollectionTreeViewmodel>>(new Array<CollectionTreeViewmodel>());
-  // TODO store expanded nodes and selected node and check if we solve the bug with that
+  // TODO store expanded nodes and selected node and check if we solve the bug in basetreeeview with that
   // const [collectionSvg, setCollectionSvg] = useState<string | undefined>(undefined);
   // #endregion
 

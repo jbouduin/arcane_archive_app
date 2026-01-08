@@ -1,4 +1,4 @@
-import { Boundary, BreadcrumbProps, Breadcrumbs, FormGroup, InputGroup, Text } from "@blueprintjs/core";
+import { Boundary, BreadcrumbProps, Breadcrumbs, FormGroup, InputGroup, Label, Text, TextArea } from "@blueprintjs/core";
 import { useEffect, useMemo, useState } from "react";
 import { ValidationResult } from "../../../types";
 import { LabelValuePanel } from "../../base/label-value-panel";
@@ -72,7 +72,7 @@ export function CollectionDialogBody(props: CollectionDialogBodyProps) {
           key="bc-crumbs"
           items={breadcrumbProps}
           collapseFrom={Boundary.START}
-          // BUG list does not collapse
+          // BUG list does not collapse. If it does not work at all, consider displaying path and name as two components.
           overflowListProps={{ alwaysRenderOverflow: false }}
           currentBreadcrumbRenderer={
             (_crumbProps: BreadcrumbProps) => {
@@ -94,6 +94,19 @@ export function CollectionDialogBody(props: CollectionDialogBodyProps) {
           }
         />
       </FormGroup>
+      <Label>
+        Description
+        <TextArea
+          fill={true}
+          maxLength={2048}
+          onChange={handleStringChange((value: string) => {
+            props.viewmodel.description = value;
+            props.viewmodelChanged(props.viewmodel);
+          })}
+          placeholder="Enter description"
+          value={props.viewmodel.description}
+        />
+      </Label>
       <LabelValuePanel items={items} columns={2} style={{ padding: "0px" }} />
     </>
   );

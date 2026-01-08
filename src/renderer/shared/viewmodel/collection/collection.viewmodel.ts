@@ -32,6 +32,10 @@ export class CollectionViewmodel extends BaseViewmodel<CollectionDto> {
     this._dto.code = value;
   }
 
+  public get description(): string {
+    return this._dto.name["ENGLISH"] || "";
+  }
+
   public set description(value: string) {
     if (value.trim().length == 0) {
       delete this._dto.name["ENGLISH"];
