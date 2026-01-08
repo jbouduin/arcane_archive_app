@@ -54,7 +54,8 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps) {
     (option: SelectOption<MtgSetTreeDto>) => (
       <i
         key={`icon-${option.value.keyruneCode}`}
-        className={classNames("tree-view-image", "ss", "ss-" + option.value.keyruneCode.toLowerCase())}
+        className={classNames("ss", "ss-" + option.value.keyruneCode.toLowerCase())}
+        style={{ paddingRight: "5px" }}
       >
       </i>
     ),

@@ -77,19 +77,23 @@ export class UserViewmodel extends BaseViewmodel<UserDto> implements IAuditField
   }
 
   public get createdBy(): string {
-    return this._dto.profile.createdBy;
+    return this._dto.profile.createdBy || "-";
   }
 
-  public get createdAt(): Date {
-    return new Date(this._dto.profile.createdAt);
+  public get createdAtString(): string {
+    return this._dto.profile.createdAt != null
+      ? new Date(this._dto.profile.createdAt).toLocaleString()
+      : "-";
   }
 
   public get modifiedBy(): string {
-    return this._dto.profile.modifiedBy;
+    return this._dto.profile.modifiedBy || "-";
   }
 
-  public get modifiedAt(): Date {
-    return new Date(this._dto.profile.modifiedAt);
+  public get modifiedAtString(): string {
+    return this._dto.profile.modifiedAt != null
+      ? new Date(this._dto.profile.modifiedAt).toLocaleString()
+      : "-";
   }
 
   public get selectedRoles(): Array<SelectOption<ApplicationRole>> {

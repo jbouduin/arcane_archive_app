@@ -85,9 +85,9 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
     const items = new Map<string, JSX.Element>([
       ["Id", (<Text>{props.viewmodel.id}</Text>)],
       ["Token Set Code", (<Text>{props.viewmodel.tokenSetCode}</Text>)],
-      ["Created at", (<Text>{props.viewmodel.createdAt.toLocaleString()}</Text>)],
+      ["Created at", (<Text>{props.viewmodel.createdAtString}</Text>)],
       ["Created by", (<Text>{props.viewmodel.createdBy}</Text>)],
-      ["Modified at", (<Text>{props.viewmodel.modifiedAt.toLocaleString()}</Text>)],
+      ["Modified at", (<Text>{props.viewmodel.modifiedAtString}</Text>)],
       ["Modified by", (<Text>{props.viewmodel.modifiedBy}</Text>)]
     ]);
     return (<LabelValuePanel items={items} columns={2} style={{ padding: "0px" }} />);
@@ -97,9 +97,9 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
     const items = new Map<string, JSX.Element | null>([
       ["Id", (<Text>{props.viewmodel.id}</Text>)],
       ["Empty", null],
-      ["Created at", (<Text>{props.viewmodel.createdAt.toLocaleString()}</Text>)],
+      ["Created at", (<Text>{props.viewmodel.createdAtString}</Text>)],
       ["Created by", (<Text>{props.viewmodel.createdBy}</Text>)],
-      ["Modified at", (<Text>{props.viewmodel.modifiedAt.toLocaleString()}</Text>)],
+      ["Modified at", (<Text>{props.viewmodel.modifiedAtString}</Text>)],
       ["Modified by", (<Text>{props.viewmodel.modifiedBy}</Text>)]
     ]);
     return (
@@ -169,7 +169,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
   function renderReadOnlyDetails(): JSX.Element {
     const items = new Map<string, JSX.Element>([
       ["Set Code", (<Text>{props.viewmodel.code}</Text>)],
-      ["Release Date", (<Text>{props.viewmodel.releaseDate.toLocaleDateString()}</Text>)],
+      ["Release Date", (<Text>{props.viewmodel.releaseDate}</Text>)],
       ["Set Type", (<Text>{props.viewmodel.type}</Text>)],
       ["Block", (<Text>{props.viewmodel.block ?? ""}</Text>)],
       ["Base Set Size", (<Text>{props.viewmodel.baseSetSize}</Text>)],
@@ -217,7 +217,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
               readOnly={true}
               size="small"
               type="text"
-              value={props.viewmodel.releaseDate.toLocaleDateString()}
+              value={props.viewmodel.releaseDate}
             />
           </FormGroup>
         </ControlGroup>

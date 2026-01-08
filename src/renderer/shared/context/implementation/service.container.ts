@@ -4,7 +4,8 @@ import { InitializeServiceContainerOptions, ShowToastFn } from "../../types";
 import {
   ICardSearchService, ICardSymbolService, IArcaneArchiveProxyService, IColorService, IConfigurationService,
   IDisplayValueService, IIpcProxyService, ILanguageService, ILogService, IMtgSetService,
-  IOverlayService, IServiceContainer, ISessionService, IViewmodelFactoryService
+  IOverlayService, IServiceContainer, ISessionService, IViewmodelFactoryService,
+  ICollectionService
 } from "../interface";
 import { InitializationResult } from "../types";
 import { CardSearchService } from "./card-search.service";
@@ -20,12 +21,14 @@ import { MtgSetService } from "./mtg-set.service";
 import { OverlayService } from "./overlay.service";
 import { SessionService } from "./session.service";
 import { ViewmodelFactoryService } from "./viewmodel-factory.service";
+import { CollectionService } from "./collection.service";
 
 export class ServiceContainer implements IServiceContainer {
   // #region Private fields ---------------------------------------------------
   private _cardSearchService: ICardSearchService;
   private _cardSymbolService: ICardSymbolService;
   private _arcaneArchiveProxy: IArcaneArchiveProxyService;
+  private _collectionSerivce: ICollectionService;
   private _colorService: IColorService;
   private _configurationService: IConfigurationService;
   private _displayValueService: IDisplayValueService;
@@ -43,6 +46,7 @@ export class ServiceContainer implements IServiceContainer {
     this._cardSearchService = new CardSearchService();
     this._cardSymbolService = new CardSymbolService();
     this._arcaneArchiveProxy = new ArcaneArchiveProxyService();
+    this._collectionSerivce = new CollectionService();
     this._colorService = new ColorService();
     this._configurationService = new ConfigurationService();
     this._displayValueService = new DisplayValueService();
@@ -67,6 +71,10 @@ export class ServiceContainer implements IServiceContainer {
 
   public get arcaneArchiveProxy(): IArcaneArchiveProxyService {
     return this._arcaneArchiveProxy;
+  }
+
+  public get collectionService(): ICollectionService {
+    return this._collectionSerivce;
   }
 
   public get colorService(): IColorService {
@@ -169,12 +177,14 @@ export class ServiceContainer implements IServiceContainer {
 
             await Promise.all(skippableServices)
               .then(
-                () => this._viewmodelFactoryService.initialize(
-                  this._colorService,
-                  this._displayValueService,
-                  this._languageService,
-                  this._mtgSetService
-                ),
+                () => {
+                  this._viewmodelFactoryService.initialize(
+                    this._colorService,
+                    this._displayValueService,
+                    this._languageService,
+                    this._mtgSetService
+                  );
+                },
                 () => result.isOk = false
               );
           } else {

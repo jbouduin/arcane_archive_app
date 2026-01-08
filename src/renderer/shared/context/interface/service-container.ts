@@ -15,6 +15,7 @@ import { IMtgSetService } from "./mtg-set.service";
 import { IOverlayService } from "./overlay.service";
 import { ISessionService } from "./session.service";
 import { IViewmodelFactoryService } from "./viewmodel-factory.service";
+import { ICollectionService } from "./collection.service";
 
 export interface IServiceContainer {
   /**
@@ -31,6 +32,11 @@ export interface IServiceContainer {
    * Arcane Archive back end proxy
    */
   readonly arcaneArchiveProxy: IArcaneArchiveProxyService;
+
+  /**
+   * Collection service
+   */
+  readonly collectionService: ICollectionService;
 
   /**
    * Service that caches ColorDtos

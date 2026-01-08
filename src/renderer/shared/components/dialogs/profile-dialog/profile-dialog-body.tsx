@@ -160,9 +160,9 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
     }
     items.set("Id", (<Text>{props.viewmodel.id}</Text>));
     items.set("empty", null);
-    items.set("Created at", (<Text>{props.viewmodel.createdAt.toLocaleString()}</Text>));
+    items.set("Created at", (<Text>{props.viewmodel.createdAtString}</Text>));
     items.set("Created by", (<Text>{props.viewmodel.createdBy}</Text>));
-    items.set("Modified at", (<Text>{props.viewmodel.modifiedAt.toLocaleString()}</Text>));
+    items.set("Modified at", (<Text>{props.viewmodel.modifiedAtString.toLocaleString()}</Text>));
     items.set("Modified by", (<Text>{props.viewmodel.modifiedBy}</Text>));
 
     return (

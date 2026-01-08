@@ -1,6 +1,6 @@
 export type AuditableDto = {
-  createdAt: Date;
-  createdBy: string;
-  modifiedAt: Date;
-  modifiedBy: string;
+  createdAt: Date | null;
+  createdBy: string | null;
+  modifiedAt: Date | null;
+  modifiedBy: string | null;
 };

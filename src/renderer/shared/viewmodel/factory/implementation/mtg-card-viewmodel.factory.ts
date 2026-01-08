@@ -41,7 +41,7 @@ export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
       .getData<Array<LibraryRulingDto>>("library", "/public/ruling/" + oracleId)
       .then((dtos: Array<LibraryRulingDto>) => dtos
         .map((dto: LibraryRulingDto) => new LibraryRulingViewmodel(dto))
-        .sort((a: LibraryRulingViewmodel, b: LibraryRulingViewmodel) => b.publishedAt.getTime() - a.publishedAt.getTime())
+        .sort((a: LibraryRulingViewmodel, b: LibraryRulingViewmodel) => b.publishedAtDate.getTime() - a.publishedAtDate.getTime())
       );
   }
   // #endregion

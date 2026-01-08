@@ -44,7 +44,7 @@ export const RulingsView = React.memo(
       return (
         <div key={`r-${idx}`}>
           <p>
-            {ruling.publishedAt.toLocaleDateString(navigator.language, { day: "2-digit", month: "2-digit", year: "numeric" }) + " - " + ruling.source}
+            {ruling.publishedAtString + " - " + ruling.source}
           </p>
           <p className={Classes.RUNNING_TEXT}>{ruling.rulingText}</p>
           {

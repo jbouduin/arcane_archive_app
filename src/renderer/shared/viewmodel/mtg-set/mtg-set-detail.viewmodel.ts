@@ -67,28 +67,33 @@ export class MtgSetDetailViewmodel extends BaseViewmodel<MtgSetDto> implements I
     return this._dto.keyruneCode;
   }
 
-  public get releaseDate(): Date {
-    return new Date(this.dto.releaseDate);
+  public get releaseDate(): string {
+    return new Date(this.dto.releaseDate)
+      .toLocaleDateString(navigator.language, { day: "2-digit", month: "2-digit", year: "numeric" });
   }
 
   public get setName(): string {
     return this._dto.setName;
   }
 
-  public get createdAt(): Date {
-    return new Date(this.dto.createdAt);
+  public get createdAtString(): string {
+    return this._dto.createdAt != null
+      ? new Date(this._dto.createdAt).toLocaleString()
+      : "-";
   }
 
   public get createdBy(): string {
-    return this._dto.createdBy;
+    return this._dto.createdBy || "-";
   }
 
-  public get modifiedAt(): Date {
-    return new Date(this.dto.modifiedAt);
+  public get modifiedAtString(): string {
+    return this._dto.modifiedAt != null
+      ? new Date(this._dto.modifiedAt).toLocaleString()
+      : "-";
   }
 
   public get modifiedBy(): string {
-    return this._dto.modifiedBy;
+    return this._dto.modifiedBy || "-";
   }
 
   public get languages(): Array<LanguageDto> {

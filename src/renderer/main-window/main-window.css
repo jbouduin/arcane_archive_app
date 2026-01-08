@@ -39,10 +39,6 @@
   flex-direction: row;
 }
 
-.tree-view-image {
-  padding-right: 5px;
-}
-
 .bp6-tab-panel.left-panel-tab-panel {
   display: flex;
   flex-direction: column;

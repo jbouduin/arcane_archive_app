@@ -12,7 +12,8 @@ export const CardHeaderView = React.memo(
         <div className="card-header-line-1">
           <i
             key={`icon-${props.keyruneCode}`}
-            className={classNames("tree-view-image", "ss", "ss-" + props.keyruneCode.toLowerCase(), props.rarity != "COMMON" ? "ss-" + props.rarity.toLowerCase() : "", "ss-2x")}
+            className={classNames("ss", "ss-" + props.keyruneCode.toLowerCase(), props.rarity != "COMMON" ? "ss-" + props.rarity.toLowerCase() : "", "ss-2x")}
+            style={{ paddingRight: "5px" }}
           >
           </i>
           <H3>{props.cardName}</H3>

@@ -37,7 +37,8 @@ void (async () => {
       skipCardSymbolService: true,
       skipLanguageService: true,
       skipMtgSetService: true,
-      skipSessionService: true,
+      skipSessionService: true
+      // skipCollectionService: true
     }
   );
 

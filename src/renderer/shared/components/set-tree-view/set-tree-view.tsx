@@ -195,7 +195,8 @@ export function SetTreeView(props: SetTreeViewProps) {
         >
           <i
             key={`icon-${cardSet.id}`}
-            className={classNames("tree-view-image", "ss", "ss-" + cardSet.keyRuneCode.toLowerCase())}
+            className={classNames("ss", "ss-" + cardSet.keyRuneCode.toLowerCase())}
+            style={{ paddingRight: "5px" }}
           >
           </i>
           {cardSet.treeItemLabel}

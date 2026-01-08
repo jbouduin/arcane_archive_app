@@ -25,7 +25,8 @@ export function showSetDialog(serviceContainer: IServiceContainer, setId: number
             <>
               <i
                 key={`icon-${viewmodel.dto.id}`}
-                className={classNames("tree-view-image", "ss", "ss-" + viewmodel.keyruneCode.toLowerCase())}
+                className={classNames("ss", "ss-" + viewmodel.keyruneCode.toLowerCase(), "ss-2x")}
+                style={{ paddingRight: "10px" }}
               >
               </i>
               {viewmodel.setName}

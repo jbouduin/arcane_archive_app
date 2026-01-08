@@ -1,4 +1,4 @@
-import { IAuthenticationViewmodelFactory, IMtgCardViewmodelFactory, IMtgSetViewmodelFactory } from "../../viewmodel/factory/interface";
+import { IAuthenticationViewmodelFactory, ICollectionViewmodelFactory, IMtgCardViewmodelFactory, IMtgSetViewmodelFactory } from "../../viewmodel/factory/interface";
 import { ISettingsViewmodelFactory } from "../../viewmodel/factory/interface/settings-viewmodel.factory";
 import { IColorService } from "./color.service";
 import { IDisplayValueService } from "./display-value.service";
@@ -7,6 +7,7 @@ import { IMtgSetService } from "./mtg-set.service";
 
 export interface IViewmodelFactoryService {
   readonly authenticationViewmodelFactory: IAuthenticationViewmodelFactory;
+  readonly collectionViewmodelFactory: ICollectionViewmodelFactory;
   readonly mtgSetViewmodelFactory: IMtgSetViewmodelFactory;
   readonly mtgCardViewmodelFactory: IMtgCardViewmodelFactory;
   readonly settingsViewmodelFactory: ISettingsViewmodelFactory;

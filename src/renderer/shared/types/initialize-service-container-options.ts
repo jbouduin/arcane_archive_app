@@ -6,4 +6,5 @@ export type InitializeServiceContainerOptions = {
   skipLanguageService?: boolean;
   skipSessionService?: boolean;
   skipMtgSetService?: boolean;
+  // skipCollectionService?: boolean;
 };

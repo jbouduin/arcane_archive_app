@@ -3,6 +3,7 @@ export * from "./advanced-card-search.dto";
 export * from "./api-info.dto";
 export * from "./card-filter-params.dto";
 export * from "./card-query-params.dto";
+export * from "./collection.dto";
 export * from "./color.dto";
 export * from "./language.dto";
 export * from "./library-card-list.dto";

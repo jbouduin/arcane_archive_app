@@ -41,7 +41,8 @@ export class CardSetColumn<T> extends BaseColumn<T, CardSetLookupResult> {
         <Cell>
           <i
             key={`icon-${cellValue.cardSetName}`}
-            className={classNames("tree-view-image", "ss", "ss-" + cellValue.keyruneCode.toLowerCase(), "ss-" + cellValue.rarity.toLowerCase())}
+            className={classNames("ss", "ss-" + cellValue.keyruneCode.toLowerCase(), "ss-" + cellValue.rarity.toLowerCase())}
+            style={{ paddingRight: "5px" }}
           >
           </i>
           {cellValue.cardSetName}
