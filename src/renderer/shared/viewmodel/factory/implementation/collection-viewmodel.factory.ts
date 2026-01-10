@@ -1,4 +1,5 @@
 import { CollectionDto } from "../../../dto";
+import { CollectionType } from "../../../types";
 import { CollectionTreeViewmodel, CollectionViewmodel } from "../../collection";
 import { ICollectionViewmodelFactory } from "../interface";
 
@@ -12,17 +13,16 @@ export class CollectionViewmodelFactory implements ICollectionViewmodelFactory {
     return new CollectionViewmodel(dto, parentDto, parentPath);
   }
 
-  public getNewCollectionViewmodel(folder: boolean, parentDto: CollectionDto | null, parentPath: Array<string>): CollectionViewmodel {
+  public getNewCollectionViewmodel(type: CollectionType, parentDto: CollectionDto | null, parentPath: Array<string>): CollectionViewmodel {
     const newCollection: CollectionDto = {
       code: "",
-      folder: folder,
+      type: type,
       name: {},
-      id: -1,
-      createdAt: new Date(),
-      createdBy: "",
+      createdAt: null,
+      createdBy: null,
       modifiedAt: null,
       modifiedBy: null,
-      parentId: parentDto != null ? parentDto.id : null
+      parentId: parentDto != null ? parentDto.id! : null
     };
     return new CollectionViewmodel(newCollection, parentDto, parentPath);
   }

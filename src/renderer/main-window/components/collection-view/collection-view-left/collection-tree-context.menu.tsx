@@ -26,7 +26,7 @@ export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps)
               text="Edit"
             />
             {
-              !props.collection.folder &&
+              props.collection.type != "FOLDER" &&
               (
                 <MenuItem
                   key="details"
@@ -34,7 +34,7 @@ export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps)
                   onClick={
                     (e) => {
                       e.preventDefault();
-                      onShowDetails(props.collection.id);
+                      onShowDetails(props.collection.id!);
                     }
                   }
                   text="Details"
@@ -42,7 +42,7 @@ export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps)
               )
             }
             {
-              props.collection.folder &&
+              props.collection.type == "FOLDER" &&
               (
                 <>
                   <MenuDivider key="sep-1" />

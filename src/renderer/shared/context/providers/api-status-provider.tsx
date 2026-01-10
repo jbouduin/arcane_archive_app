@@ -14,7 +14,7 @@ export function ApiStatusProvider(props: ProviderProps) {
   // #region Effects ----------------------------------------------------------
   useEffect(
     () => {
-      const unsubscribe = proxyService.subscribe(
+      const unsubscribe = proxyService.subscribeApiStatusChangeListener(
         (status: Map<MtgServer, ApiInfoDto | null>) => setApiStatus(new Map(status))
       );
       return unsubscribe;

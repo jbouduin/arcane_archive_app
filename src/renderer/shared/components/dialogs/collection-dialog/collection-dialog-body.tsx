@@ -61,7 +61,7 @@ export function CollectionDialogBody(props: CollectionDialogBodyProps) {
   return (
     <>
       <FormGroup
-        label={props.viewmodel.isFolder ? "Folder Name" : "Collection Name"}
+        label={props.viewmodel.type == "FOLDER" ? "Folder Name" : "Collection Name"}
         key="bc-group"
         labelInfo="*"
         fill={true}

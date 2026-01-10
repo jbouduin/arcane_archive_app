@@ -2,15 +2,18 @@ import { ToastProps } from "@blueprintjs/core";
 import { SettingsDto } from "../../../../common/dto";
 import { InitializeServiceContainerOptions, ShowToastFn } from "../../types";
 import {
-  ICardSearchService, ICardSymbolService, IArcaneArchiveProxyService, IColorService, IConfigurationService,
+  IArcaneArchiveProxyService,
+  ICardSearchService, ICardSymbolService,
+  ICollectionService,
+  IColorService, IConfigurationService,
   IDisplayValueService, IIpcProxyService, ILanguageService, ILogService, IMtgSetService,
-  IOverlayService, IServiceContainer, ISessionService, IViewmodelFactoryService,
-  ICollectionService
+  IOverlayService, IServiceContainer, ISessionService, IViewmodelFactoryService
 } from "../interface";
 import { InitializationResult } from "../types";
+import { ArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
 import { CardSearchService } from "./card-search.service";
 import { CardSymbolService } from "./card-symbol.service";
-import { ArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
+import { CollectionService } from "./collection.service";
 import { ColorService } from "./color.service";
 import { ConfigurationService } from "./configuration.service";
 import { DisplayValueService } from "./display-value.service";
@@ -21,7 +24,6 @@ import { MtgSetService } from "./mtg-set.service";
 import { OverlayService } from "./overlay.service";
 import { SessionService } from "./session.service";
 import { ViewmodelFactoryService } from "./viewmodel-factory.service";
-import { CollectionService } from "./collection.service";
 
 export class ServiceContainer implements IServiceContainer {
   // #region Private fields ---------------------------------------------------
@@ -178,6 +180,7 @@ export class ServiceContainer implements IServiceContainer {
             await Promise.all(skippableServices)
               .then(
                 () => {
+                  this._collectionSerivce.initialize(this._arcaneArchiveProxy);
                   this._viewmodelFactoryService.initialize(
                     this._colorService,
                     this._displayValueService,
@@ -192,14 +195,17 @@ export class ServiceContainer implements IServiceContainer {
             result.isOk = false;
           }
         },
-        () => result.isOk = false // configuration could not be retrieved
-      ).finally(() => {
+        () => {
+          result.isOk = false; // configuration could not be retrieved}
+          result.errors.push({ message: "Could not load configuration" });
+        }
+      )
+      .finally(() => {
         // --- set real toast in services ---
         this._overlayService.setShowToast(showToast);
         this._ipcProxy.setShowToast(showToast);
         this._arcaneArchiveProxy.setShowToast(showToast);
-      }
-      );
+      });
     return result;
   }
   // #endregion

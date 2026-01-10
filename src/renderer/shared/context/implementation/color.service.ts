@@ -29,7 +29,7 @@ export class ColorService implements IColorService {
   }
 
   public initialize(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<void> {
-    return arcaneArchiveProxy.getData<Array<ColorDto>>("library", "/public/color", true, false)
+    return arcaneArchiveProxy.getData<Array<ColorDto>>("library", "/public/color")
       .then(
         (allColors: Array<ColorDto>) => allColors
           .sort((a: ColorDto, b: ColorDto) => a.sequence - b.sequence)

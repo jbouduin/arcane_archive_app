@@ -54,7 +54,7 @@ const config: ForgeConfig = {
     new WebpackPlugin({
       devContentSecurityPolicy: "default-src 'self' 'unsafe-inline' data:; " +
         "script-src 'self' 'unsafe-eval' 'unsafe-inline' data:;" +
-        "connect-src 'self' http://localhost:5401 http://localhost:5402 http://localhost:5403 http://localhost:5403 ws://localhost:3000;" +
+        "connect-src 'self' http://localhost:5401 http://localhost:5402 http://localhost:5403 http://localhost:5404 ws://localhost:3000;" +
         "img-src * data: cached-image: asset:",
       mainConfig,
       renderer: {

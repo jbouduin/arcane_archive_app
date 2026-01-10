@@ -1,6 +1,6 @@
 import { stringHasMinimalLength } from "../../components/util";
 import { CollectionDto } from "../../dto";
-import { ValidationResult } from "../../types";
+import { CollectionType, ValidationResult } from "../../types";
 import { BaseViewmodel } from "../base.viewmodel";
 
 export class CollectionViewmodel extends BaseViewmodel<CollectionDto> {
@@ -10,6 +10,7 @@ export class CollectionViewmodel extends BaseViewmodel<CollectionDto> {
   // #endregion
 
   // #region Getters/Setters - Parent -----------------------------------------
+  // TODO these getters are not used anymore remove them, propably also remove parentCollection dto completely
   public get hasParent(): boolean {
     return this.parentCollection != null;
   }
@@ -19,7 +20,7 @@ export class CollectionViewmodel extends BaseViewmodel<CollectionDto> {
   }
 
   public get parentIsFolder(): boolean {
-    return this.parentCollection?.folder || false;
+    return this.parentCollection?.type == "FOLDER" || false;
   }
   // #endregion
 
@@ -45,15 +46,15 @@ export class CollectionViewmodel extends BaseViewmodel<CollectionDto> {
   }
 
   public get id(): string {
-    if (this._dto.id < 0) {
-      return "-";
-    } else {
+    if (this._dto.id) {
       return this._dto.id.toString();
+    } else {
+      return "-";
     }
   }
 
-  public get isFolder(): boolean {
-    return this._dto.folder;
+  public get type(): CollectionType {
+    return this._dto.type;
   }
 
   public get createdAtString(): string {

@@ -2,6 +2,7 @@ import { Icon } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { IServiceContainer } from "../../../context";
 import { CollectionDto } from "../../../dto";
+import { CollectionType } from "../../../types";
 import { CollectionViewmodel } from "../../../viewmodel";
 import { BaseDialogFooterProps } from "../../base/base-dialog";
 import { CollectionDialogBody } from "../collection-dialog/collection-dialog-body";
@@ -34,8 +35,8 @@ export function showEditCollectionDialog(
     },
     title: (
       <>
-        {collection.folder && <Icon icon="folder-close" />}
-        {!collection.folder && <Icon icon="box" />}
+        {collection.type == "FOLDER" && <Icon icon="folder-close" />}
+        {collection.type != "FOLDER" && <Icon icon="box" />}
         Edit&nbsp;'
         <i>
           {viewmodel.code}
@@ -49,13 +50,13 @@ export function showEditCollectionDialog(
 
 export function showNewCollectionDialog(
   serviceContainer: IServiceContainer,
-  folder: boolean,
+  type: CollectionType,
   parentCollection: CollectionDto | null,
   parentPath: Array<string>,
   onCollectionAdded: (dto: CollectionDto) => void
 ): void {
   const viewmodel = serviceContainer.viewmodelFactoryService.collectionViewmodelFactory
-    .getNewCollectionViewmodel(folder, parentCollection, parentPath);
+    .getNewCollectionViewmodel(type, parentCollection, parentPath);
   const dialogProps: CollectionDialogProps = {
     isOpen: true,
     viewmodel: viewmodel,
@@ -73,8 +74,8 @@ export function showNewCollectionDialog(
     },
     title: (
       <>
-        {folder && <Icon icon="folder-close" />}
-        {!folder && <Icon icon="box" />}
+        {type == "FOLDER" && <Icon icon="folder-close" />}
+        {type != "FOLDER" && <Icon icon="box" />}
         New
       </>
     )

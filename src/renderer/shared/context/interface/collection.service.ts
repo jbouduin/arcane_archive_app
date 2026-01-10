@@ -1,4 +1,5 @@
 import { CollectionDto } from "../../dto";
+import { IArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
 
 export interface ICollectionService {
   createCollection(collection: CollectionDto): Promise<CollectionDto>;
@@ -9,4 +10,5 @@ export interface ICollectionService {
   getCollections(): Promise<Array<CollectionDto>>;
   // TODO use CollectionCardListDto
   getCollectionCards(collectionId: number): Promise<Array<unknown>>;
+  initialize(arcaneArchiveProxy: IArcaneArchiveProxyService): void;
 }

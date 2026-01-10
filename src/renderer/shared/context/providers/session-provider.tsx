@@ -13,7 +13,7 @@ export function SessionProvider(props: ProviderProps) {
   // #region Effects ----------------------------------------------------------
   useEffect(
     () => {
-      const unsubscribe = sessionService.subscribe(
+      const unsubscribe = sessionService.subscribeSessionChangeListener(
         (data: LoginResponseDto | null) => setLoggedIn(data != null)
       );
       return unsubscribe;

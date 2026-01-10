@@ -41,8 +41,7 @@ export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
   // #endregion
 
   // #region Rendering --------------------------------------------------------
-  const isNew: boolean = props.viewmodel.dto.id < 0;
-  if (isNew) {
+  if (!props.viewmodel.dto.id) {
     return (
       <SaveCancelResetFooter<CollectionDto, CollectionViewmodel>
         {...props}

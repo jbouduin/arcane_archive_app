@@ -2,6 +2,7 @@ import { SettingsDto } from "../../../../common/dto";
 import { ApiInfoDto } from "../../dto";
 import { MtgServer, ShowToastFn } from "../../types";
 import { ApiStatusChangeListener } from "../providers";
+import { ArcaneArchiveRequestOptions, InvalidSessionListener } from "../types";
 import { IConfigurationService } from "./configuration.service";
 import { ISessionService } from "./session.service";
 
@@ -9,10 +10,8 @@ export interface IArcaneArchiveProxyService {
   readonly apiStatus: Map<MtgServer, ApiInfoDto | null>;
   readonly apiRoots: Map<MtgServer, string>;
 
-  /**
-   * Log server responses in console
-   */
-  // readonly logServerResponses: boolean;
+  delete(server: MtgServer, path: string): Promise<number>;
+
   /**
    * Fetch data from backend
    * @param path the path
@@ -20,8 +19,7 @@ export interface IArcaneArchiveProxyService {
   getData<T extends object>(
     server: MtgServer,
     path: string,
-    supressSuccessMessage?: boolean,
-    supressErrorMessage?: boolean
+    options?: ArcaneArchiveRequestOptions
   ): Promise<T>;
 
   /**
@@ -41,19 +39,20 @@ export interface IArcaneArchiveProxyService {
     server: MtgServer,
     path: string,
     data: Req | null,
-    supressSuccessMessage: boolean
+    options?: ArcaneArchiveRequestOptions
   ): Promise<Res>;
 
   putData<Req extends object, Res extends object>(
     server: MtgServer,
     path: string,
     data: Req | null,
-    supressSuccessMessage: boolean
+    options?: ArcaneArchiveRequestOptions
   ): Promise<Res>;
 
   forceRefresh(): Promise<Map<MtgServer, ApiInfoDto | null>>;
   startRefreshing(): Promise<Map<MtgServer, ApiInfoDto | null>>;
   stopRefreshing(): boolean;
-  subscribe(listener: ApiStatusChangeListener): () => void;
+  subscribeApiStatusChangeListener(listener: ApiStatusChangeListener): () => void;
+  subscribeInvalidSessionListener(listener: InvalidSessionListener): () => void;
   setShowToast(showToast: ShowToastFn): void;
 }

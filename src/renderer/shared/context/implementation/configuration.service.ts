@@ -68,7 +68,9 @@ export class ConfigurationService implements IConfigurationService {
     const promises = new Array<Promise<PreferencesDto>>();
     promises.push(this.ipcProxy.postData<PreferencesDto, PreferencesDto>(IpcPaths.PREFERENCES, preferences));
     if (serviceContainer.sessionService.loggedIn) {
-      promises.push(serviceContainer.arcaneArchiveProxy.putData<PreferencesDto, PreferencesDto>("authentication", "/app/account/preferences", preferences, true));
+      promises.push(serviceContainer.arcaneArchiveProxy.putData<PreferencesDto, PreferencesDto>(
+        "authentication", "/app/account/preferences", preferences
+      ));
     }
     return Promise.all(promises)
       .then(

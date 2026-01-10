@@ -2,6 +2,7 @@ export * from "./application-role";
 export * from "./card-layout";
 export * from "./card-side";
 export * from "./card-sort-field";
+export * from "./collection-type";
 export * from "./color-type";
 export * from "./display-value-dictionary-key";
 export * from "./external-reference-source";

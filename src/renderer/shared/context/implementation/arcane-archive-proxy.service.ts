@@ -6,6 +6,7 @@ import { ApiInfoDto } from "../../dto";
 import { MtgServer, ShowToastFn } from "../../types";
 import { IArcaneArchiveProxyService, IConfigurationService, ISessionService } from "../interface";
 import { ApiStatusChangeListener } from "../providers";
+import { ArcaneArchiveRequestOptions, InvalidSessionListener } from "../types";
 
 export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
   // #region Private fields ---------------------------------------------------
@@ -14,12 +15,13 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
   private showToast!: (props: ToastProps, key?: string) => void;
   private _apiRoots: Map<MtgServer, string>;
   private _apiStatus: Map<MtgServer, ApiInfoDto | null>;
-  private listeners: Array<ApiStatusChangeListener>;
+  private statusChangeListeners: Array<ApiStatusChangeListener>;
   private refreshing: Promise<void> | null;
   private intervalId: NodeJS.Timeout | null;
   private jwt: string | null;
   private unsubscribeSession: (() => void) | null;
   private unsubscribePreferences: (() => void) | null;
+  private invalidSessionListeners: Array<InvalidSessionListener>;
   // #endregion
 
   // #region Getters/Setters --------------------------------------------------
@@ -37,29 +39,37 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
     this.logServerResponses = false;
     this._apiRoots = new Map<MtgServer, string>();
     this._apiStatus = new Map<MtgServer, ApiInfoDto>();
-    this.listeners = new Array<ApiStatusChangeListener>();
+    this.statusChangeListeners = new Array<ApiStatusChangeListener>();
     this.refreshing = null;
     this.intervalId = null;
     this.refreshInterval = 60000;
     this.jwt = null;
     this.unsubscribeSession = null;
     this.unsubscribePreferences = null;
+    this.invalidSessionListeners = new Array<InvalidSessionListener>();
   }
 
   // #endregion
 
   // #region IArcaneArchiveProxyService Members ---------------------------
-  // public get logServerResponses(): boolean {
-  //   return this._logServerResponses;
-  // }
+  public delete(server: MtgServer, path: string): Promise<number> {
+    return this.sendRequest<never, never>("DELETE", server, path, null)
+      .then(() => 1);
+  }
 
-  public async getData<T extends object>(
+  public subscribeInvalidSessionListener(listener: InvalidSessionListener): () => void {
+    this.invalidSessionListeners.push(listener);
+    return () => {
+      this.invalidSessionListeners = this.invalidSessionListeners.filter(l => l !== listener);
+    };
+  }
+
+  public getData<T extends object>(
     server: MtgServer,
     path: string,
-    suppressSuccessMessage = true,
-    supressErrorMessage = false
+    options?: ArcaneArchiveRequestOptions
   ): Promise<T> {
-    return this.sendRequest("GET", server, path, null, suppressSuccessMessage, supressErrorMessage);
+    return this.sendRequest("GET", server, path, null, options);
   }
 
   public initialize(
@@ -69,7 +79,7 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
   ): void {
     this.logServerResponses = configuration.preferences.logServerResponses;
     if (this.unsubscribeSession == null) {
-      this.unsubscribeSession = sessionService.subscribe((data: LoginResponseDto | null) => {
+      this.unsubscribeSession = sessionService.subscribeSessionChangeListener((data: LoginResponseDto | null) => {
         this.jwt = data ? data.token : null;
       });
     }
@@ -91,12 +101,21 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
     this.showToast = showToast;
   }
 
-  public postData<Req extends object, Res extends object>(server: MtgServer, path: string, data: Req | null, suppressSuccessMessage: boolean): Promise<Res> {
-    return this.sendRequest("POST", server, path, data, suppressSuccessMessage, false);
+  public postData<Req extends object, Res extends object>(
+    server: MtgServer,
+    path: string, data: Req | null,
+    options?: ArcaneArchiveRequestOptions
+  ): Promise<Res> {
+    return this.sendRequest("POST", server, path, data, options);
   }
 
-  public putData<Req extends object, Res extends object>(server: MtgServer, path: string, data: Req | null, suppressSuccessMessage: boolean): Promise<Res> {
-    return this.sendRequest("PUT", server, path, data, suppressSuccessMessage, false);
+  public putData<Req extends object, Res extends object>(
+    server: MtgServer,
+    path: string,
+    data: Req | null,
+    options?: ArcaneArchiveRequestOptions
+  ): Promise<Res> {
+    return this.sendRequest("PUT", server, path, data, options);
   }
 
   public async forceRefresh(): Promise<Map<MtgServer, ApiInfoDto | null>> {
@@ -137,10 +156,10 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
     return result;
   }
 
-  public subscribe(listener: ApiStatusChangeListener): () => void {
-    this.listeners.push(listener);
+  public subscribeApiStatusChangeListener(listener: ApiStatusChangeListener): () => void {
+    this.statusChangeListeners.push(listener);
     return () => {
-      this.listeners = this.listeners.filter(l => l !== listener);
+      this.statusChangeListeners = this.statusChangeListeners.filter(l => l !== listener);
     };
   }
   // #endregion
@@ -171,7 +190,7 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
     if (!suppressErrorMessage) {
       void this.showToast(
         {
-          message: message,
+          message: `${(message ?? "Some error occurred")} (${path})`,
           intent: "danger",
           isCloseButtonShown: true,
           icon: "warning-sign"
@@ -189,28 +208,48 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
    * @param response the resultDto
    * @returns    A rejected promise
    */
-  private processErrorResponse<T>(path: string, response: ResultDto<T>, suppressErrorMessage: boolean): Promise<T> {
+  private processErrorResponse<T>(
+    path: string,
+    response: ResultDto<T>,
+    suppressErrorMessage: boolean,
+    suppressInvalidSessionHandling: boolean): Promise<T> {
     if (this.logServerResponses) {
       // eslint-disable-next-line no-console
       console.log({ path: path, response: response });
     }
-
-    let message: Array<string>;
-    if (response.errors) {
-      message = response.errors;
+    if (response.status == "UNAUTHORIZED") {
+      // TODO check if we can differentiate between expired sessions, JWT's or just a call to a method requiring a session
+      this.invalidSessionListeners.forEach(l => l());
+      if (!suppressInvalidSessionHandling) {
+        this.showToast(
+          {
+            message: "Your session has expired, please login again",
+            intent: "warning",
+            icon: "warning-sign",
+            timeout: 0, // do not close automatically
+            isCloseButtonShown: true
+          }
+        );
+      }
     } else {
-      message = response.validationErrors.map((v: ValidationErrorDto) => v.errorMessage);
-    }
-    if (!suppressErrorMessage) {
-      this.showToast(
-        {
-          message: message ?? "Some error occurred",
-          intent: "danger",
-          isCloseButtonShown: true,
-          icon: "warning-sign"
-        },
-        path
-      );
+      let message: Array<string>;
+      if (response.errors) {
+        message = response.errors;
+      } else {
+        message = response.validationErrors.map((v: ValidationErrorDto) => v.errorMessage);
+      }
+
+      if (!suppressErrorMessage) {
+        this.showToast(
+          {
+            message: `${(message ?? "Some error occurred")} (${path})`,
+            intent: "danger",
+            isCloseButtonShown: true,
+            icon: "warning-sign"
+          },
+          path
+        );
+      }
     }
     return Promise.reject(new Error(`Server error: ${response.status}`));
   }
@@ -241,13 +280,15 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
   }
 
   private sendRequest<Req extends object, Res extends object>(
-    verb: "GET" | "POST" | "PUT" | "PATCH",
+    verb: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
     server: MtgServer,
     path: string,
     data: Req | null,
-    suppressSuccessMessage: boolean,
-    suppressErrorMessage: boolean
+    options?: ArcaneArchiveRequestOptions
   ): Promise<Res> {
+    const suppressSuccessMessage = options?.suppressSuccessMessage || true;
+    const suppressErrorMessage = options?.suppressErrorMessage || false;
+    const suppressInvalidSessionHandling = options?.suppressInvalidSessionHandling || false;
     let result: Promise<Res>;
     try {
       return fetch(
@@ -260,9 +301,14 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
         })
         .then(
           async (response: Response) => {
-            const resultDto: ResultDto<Res> = (await response.json()) as ResultDto<Res>;
+            let resultDto: ResultDto<Res>;
+            if (response.status == 204) {
+              resultDto = { status: "204" } as ResultDto<Res>;
+            } else {
+              resultDto = (await response.json()) as ResultDto<Res>;
+            }
             if (response.status >= 400) {
-              return this.processErrorResponse(path, resultDto, suppressErrorMessage);
+              return this.processErrorResponse(path, resultDto, suppressErrorMessage, suppressInvalidSessionHandling);
             } else {
               return this.processSuccessResponse(path, resultDto, suppressSuccessMessage);
             }
@@ -303,7 +349,11 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
       this.refreshing = runSerial(
         taskParameters,
         (server: MtgServer) => {
-          return this.getData<ApiInfoDto>(server, "/public/system/info", true, true)
+          return this.getData<ApiInfoDto>(
+            server,
+            "/public/system/info",
+            { suppressSuccessMessage: true, suppressErrorMessage: true, suppressInvalidSessionHandling: server == "library" }
+          )
             .then(
               (info: ApiInfoDto) => this._apiStatus.set(server, info),
               () => this._apiStatus.set(server, null)
@@ -311,7 +361,7 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
             .then(noop);
         }
       ).then(() => {
-        this.listeners.forEach((listener: ApiStatusChangeListener) => listener(this._apiStatus));
+        this.statusChangeListeners.forEach((listener: ApiStatusChangeListener) => listener(this._apiStatus));
       });
 
       await this.refreshing.finally(() => this.refreshing = null);

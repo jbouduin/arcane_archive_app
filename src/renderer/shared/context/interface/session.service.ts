@@ -14,7 +14,7 @@ export interface ISessionService {
   hasRole(role: ApplicationRole): boolean;
   hasAnyRole(...roles: Array<ApplicationRole>): boolean;
   initialize(serviceContainer: IServiceContainer): Promise<void>;
-  subscribe(listener: SessionChangeListener): () => void;
+  subscribeSessionChangeListener(listener: SessionChangeListener): () => void;
   login(serviceContainer: IServiceContainer, loginRequest: LoginRequestDto): Promise<LoginResponseDto>;
   logout(serviceContainer: IServiceContainer): Promise<void>;
   register(serviceContainer: IServiceContainer, registerDto: RegisterRequestDto): Promise<void>;
@@ -24,5 +24,4 @@ export interface ISessionService {
   getPassword(serviceContainer: IServiceContainer, username: string): Promise<string>;
   deleteSavedUser(serviceContainer: IServiceContainer, username: string): Promise<number>;
   userExists(serviceContainer: IServiceContainer, userName: string): Promise<boolean>;
-  refreshToken(serviceContainer: IServiceContainer): void;
 };

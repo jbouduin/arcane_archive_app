@@ -64,7 +64,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps) {
       ),
       onConfirm: () => {
         serviceContainer.collectionService
-          .deleteCollection(collection.id)
+          .deleteCollection(collection.id!)
           .then((resp: number) => {
             if (resp > 0) {
               setCollections(collections.filter((vm: CollectionTreeViewmodel) => vm.id != collection.id));
@@ -80,11 +80,11 @@ export function CollectionTreeView(props: CollectionTreeViewProps) {
   }
 
   function onAddFolder(parentCollection: CollectionDto | null, parentPath: Array<string>): void {
-    showNewCollectionDialog(serviceContainer, true, parentCollection, parentPath, onCollectionAdded);
+    showNewCollectionDialog(serviceContainer, "FOLDER", parentCollection, parentPath, onCollectionAdded);
   }
 
   function onAddCollection(parentCollection: CollectionDto | null, parentPath: Array<string>): void {
-    showNewCollectionDialog(serviceContainer, false, parentCollection, parentPath, onCollectionAdded);
+    showNewCollectionDialog(serviceContainer, "COLLECTION", parentCollection, parentPath, onCollectionAdded);
   }
   // #endregion
 

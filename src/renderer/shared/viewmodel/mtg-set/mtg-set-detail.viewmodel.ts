@@ -12,7 +12,7 @@ export class MtgSetDetailViewmodel extends BaseViewmodel<MtgSetDto> implements I
 
   // #region Readonly Members -------------------------------------------------
   public get id(): number {
-    return this._dto.id;
+    return this._dto.id!;
   }
 
   public get code(): string {

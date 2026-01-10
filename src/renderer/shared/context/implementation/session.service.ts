@@ -4,7 +4,7 @@ import { IpcPaths } from "../../../../common/ipc";
 import { mergeWithChangeDetails } from "../../../../common/util";
 import { RegisterRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
-import { IArcaneArchiveProxyService, IServiceContainer } from "../interface";
+import { IArcaneArchiveProxyService, IIpcProxyService, IServiceContainer } from "../interface";
 import { ISessionService } from "../interface/session.service";
 import { SessionChangeListener } from "../providers";
 
@@ -13,9 +13,10 @@ export class SessionService implements ISessionService {
   private _jwt: string | null;
   private roles: Set<ApplicationRole>;
   private _userName: string | null;
-  private listeners: Array<SessionChangeListener>;
+  private sessionChangeListeners: Array<SessionChangeListener>;
   private refreshTimeout: NodeJS.Timeout | null;
   private _refreshToken: string | null;
+  private unsubscribeInvalidSession: (() => void) | null;
   // #endregion
 
   // #region ISessionService Members (getters) --------------------------------
@@ -37,9 +38,10 @@ export class SessionService implements ISessionService {
     this._jwt = null;
     this._userName = null;
     this.roles = new Set<ApplicationRole>();
-    this.listeners = new Array<SessionChangeListener>();
+    this.sessionChangeListeners = new Array<SessionChangeListener>();
     this.refreshTimeout = null;
     this._refreshToken = null;
+    this.unsubscribeInvalidSession = null;
   }
   // #endregion
 
@@ -61,6 +63,11 @@ export class SessionService implements ISessionService {
   }
 
   public async initialize(serviceContainer: IServiceContainer): Promise<void> {
+    if (this.unsubscribeInvalidSession == null) {
+      this.unsubscribeInvalidSession = serviceContainer.arcaneArchiveProxy.subscribeInvalidSessionListener(
+        () => this.clearSessionData(serviceContainer.ipcProxy)
+      );
+    }
     return serviceContainer.ipcProxy.getData<LoginResponseDto>(IpcPaths.SESSION)
       .then(
         (r: LoginResponseDto) => {
@@ -73,17 +80,17 @@ export class SessionService implements ISessionService {
       );
   }
 
-  public subscribe(listener: SessionChangeListener): () => void {
-    this.listeners.push(listener);
+  public subscribeSessionChangeListener(listener: SessionChangeListener): () => void {
+    this.sessionChangeListeners.push(listener);
     return () => {
-      this.listeners = this.listeners.filter(l => l !== listener);
+      this.sessionChangeListeners = this.sessionChangeListeners.filter(l => l !== listener);
     };
   }
 
   public login(serviceContainer: IServiceContainer, loginRequest: LoginRequestDto): Promise<LoginResponseDto> {
     return serviceContainer.arcaneArchiveProxy
       .postData<LoginRequestDto, LoginResponseDto>(
-        "authentication", "/auth/login", loginRequest, true
+        "authentication", "/auth/login", loginRequest, { suppressSuccessMessage: true }
       ).then(
         async (r: LoginResponseDto) => {
           const mergePreferencesResult = mergeWithChangeDetails(
@@ -104,18 +111,21 @@ export class SessionService implements ISessionService {
 
   public logout(serviceContainer: IServiceContainer): Promise<void> {
     return serviceContainer.arcaneArchiveProxy
-      .postData<never, never>("authentication", "/auth/logout", null, false)
+      .postData<never, never>(
+        "authentication",
+        "/auth/logout",
+        null,
+        { suppressSuccessMessage: false, suppressErrorMessage: false, suppressInvalidSessionHandling: true }
+      )
       .then(
-        (_r: never) => {
-          this.setSessionData(null, null);
-          serviceContainer.ipcProxy.deleteData(IpcPaths.SESSION);
-        }
+        () => this.clearSessionData(serviceContainer.ipcProxy),
+        () => this.clearSessionData(serviceContainer.ipcProxy)
       );
   }
 
   public register(serviceContainer: IServiceContainer, registerDto: RegisterRequestDto): Promise<void> {
     return serviceContainer.arcaneArchiveProxy
-      .postData<RegisterRequestDto, never>("authentication", "/public/account", registerDto, false);
+      .postData<RegisterRequestDto, never>("authentication", "/public/account", registerDto);
   }
 
   public saveUser(serviceContainer: IServiceContainer, dto: UserDto): Promise<UserDto> {
@@ -124,7 +134,7 @@ export class SessionService implements ISessionService {
       ? "/admin/acount"
       : "/app/account";
     return serviceContainer.arcaneArchiveProxy.putData<UserDto, UserDto>(
-      "authentication", path, dto, false
+      "authentication", path, dto
     );
   }
 
@@ -152,10 +162,48 @@ export class SessionService implements ISessionService {
     /* eslint-enable @typescript-eslint/no-wrapper-object-types */
   }
 
+  public clearSessionData(ipcProxy: IIpcProxyService): void {
+    this._jwt = null;
+    this._userName = null;
+    // this._profile = null;
+    this._refreshToken = null;
+    this.roles.clear();
+    if (this.refreshTimeout != null) {
+      clearTimeout(this.refreshTimeout);
+    }
+    ipcProxy.deleteData(IpcPaths.SESSION);
+    document.title = "Arcane Archive";
+    this.sessionChangeListeners.forEach((l: SessionChangeListener) => l(null));
+  }
+  // #endregion
+
+  // #region Auxiliary Methods ------------------------------------------------
+  private setSessionData(data: LoginResponseDto, serviceContainer: IServiceContainer): void {
+    this._jwt = data.token;
+    const payload = this._jwt.split(".")[1];
+    const raw = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
+    this.roles = new Set<ApplicationRole>(raw["roles"]);
+    this._userName = raw["sub"];
+    this._refreshToken = data.refreshToken;
+    const expiry = (raw["exp"] as number) * 1000;
+    const now = Date.now();
+    if (this.refreshTimeout != null) {
+      clearTimeout(this.refreshTimeout);
+    }
+    if (data.refreshToken != null) {
+      this.refreshTimeout = setTimeout(
+        () => this.refreshToken(serviceContainer),
+        Math.max(0, expiry - now) * 0.9 //  Max -> Just in case token has expired, but session not
+      );
+    }
+    document.title = `Arcane Archive - (logged in as ${this._userName}})`;
+    this.sessionChangeListeners.forEach((l: SessionChangeListener) => l(data));
+  }
+
   public refreshToken(serviceContainer: IServiceContainer): void {
     if (this._refreshToken != null) {
       void serviceContainer.arcaneArchiveProxy!
-        .postData<never, LoginResponseDto>("authentication", `/auth/refresh-token/${this._refreshToken}`, null, true)
+        .postData<never, LoginResponseDto>("authentication", `/auth/refresh-token/${this._refreshToken}`, null)
         .then(
           (refreshData: LoginResponseDto) => {
             this.setSessionData(refreshData, serviceContainer);
@@ -163,45 +211,10 @@ export class SessionService implements ISessionService {
             serviceContainer.ipcProxy.postData<LoginResponseDto, never>(IpcPaths.SESSION, refreshData);
           },
           () => {
-            this.setSessionData(null, null);
-            serviceContainer.ipcProxy.deleteData(IpcPaths.SESSION);
+            this.clearSessionData(serviceContainer.ipcProxy);
           }
         );
     }
-  }
-  // #endregion
-
-  // #region Auxiliary Methods ------------------------------------------------
-  private setSessionData(data: LoginResponseDto | null, serviceContainer: IServiceContainer | null): void {
-    if (data != null && serviceContainer != null) {
-      this._jwt = data.token;
-      const payload = this._jwt.split(".")[1];
-      const raw = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
-      this.roles = new Set<ApplicationRole>(raw["roles"]);
-      this._userName = raw["sub"];
-      this._refreshToken = data.refreshToken;
-      const expiry = (raw["exp"] as number) * 1000;
-      const now = Date.now();
-      if (this.refreshTimeout != null) {
-        clearTimeout(this.refreshTimeout);
-      }
-      if (data.refreshToken != null) {
-        this.refreshTimeout = setTimeout(
-          () => this.refreshToken(serviceContainer),
-          Math.max(0, expiry - now) * 0.9 //  Max -> Just in case token has expired, but session not
-        );
-      }
-    } else {
-      this._jwt = null;
-      this._userName = null;
-      // this._profile = null;
-      this._refreshToken = null;
-      this.roles.clear();
-      if (this.refreshTimeout != null) {
-        clearTimeout(this.refreshTimeout);
-      }
-    }
-    this.listeners.forEach((l: SessionChangeListener) => l(data));
   }
   // #endregion
 }

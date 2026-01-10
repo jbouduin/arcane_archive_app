@@ -12,7 +12,7 @@ export class CollectionTreeViewmodel implements IBaseTreeNodeViewmodel {
 
   // #region Getters/Setters ---------------------------------------------------
   public get id(): number {
-    return this._dto.id;
+    return this._dto.id!;
   }
 
   public get parentId(): number | null {
@@ -24,7 +24,7 @@ export class CollectionTreeViewmodel implements IBaseTreeNodeViewmodel {
   }
 
   public get folder(): boolean {
-    return this._dto.folder;
+    return this._dto.type == "FOLDER";
   }
 
   public get dto(): CollectionDto {
