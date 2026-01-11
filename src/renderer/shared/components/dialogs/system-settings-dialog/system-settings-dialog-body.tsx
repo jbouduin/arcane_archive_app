@@ -30,7 +30,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
       default:
         throw (new Error("invalid target"));
     }
-
+    // TODO move at least this call to configuration service, better move all
     serviceContainer.ipcProxy.getData<string>(`${IpcPaths.IO_SELECT_DIRECTORY}/${encodeURIComponent(current)}`)
       .then(
         (dir: string | undefined) => {
@@ -46,7 +46,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
                 props.viewmodel.logDirectory = dir;
                 break;
             }
-            props.viewmodelChanged(props.viewmodel);
+            props.viewmodelChanged();
           }
         },
         noop
@@ -58,7 +58,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
   return (
     <>
       {
-        props.viewmodel.firstTime &&
+        props.viewmodel.mode == "create" &&
         (
           <Callout compact={true} intent="danger">
             Changes to Local Storage and API settings can break the application.
@@ -68,7 +68,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
         )
       }
       {
-        !props.viewmodel.firstTime &&
+        props.viewmodel.mode == "update" &&
         (
           <Callout compact={true} intent="danger">
             Changes to Local Storage and API settings can break the application and require a restart.
@@ -120,7 +120,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
             onChange={
               handleValueChange((value: LogLevel) => {
                 props.viewmodel.mainLogLevel = value;
-                props.viewmodelChanged(props.viewmodel);
+                props.viewmodelChanged();
               })
             }
             options={props.viewmodel.logLevelOptions}
@@ -140,7 +140,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
             onChange={
               handleValueChange((value: LogLevel) => {
                 props.viewmodel.databaseLogLevel = value;
-                props.viewmodelChanged(props.viewmodel);
+                props.viewmodelChanged();
               })
             }
             options={props.viewmodel.logLevelOptions}
@@ -160,7 +160,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
             onChange={
               handleValueChange((value: LogLevel) => {
                 props.viewmodel.apiLogLevel = value;
-                props.viewmodelChanged(props.viewmodel);
+                props.viewmodelChanged();
               })
             }
             options={props.viewmodel.logLevelOptions}
@@ -179,7 +179,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
               onChange={
                 handleValueChange((value: LogLevel) => {
                   props.viewmodel.rendererLogLevel = value;
-                  props.viewmodelChanged(props.viewmodel);
+                  props.viewmodelChanged();
                 })
               }
               options={props.viewmodel.logLevelOptions}
@@ -198,7 +198,11 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
           keyPrefix="data-root"
           label="Root Data Directory"
           labelInfo="*"
+          validationResult={props.viewmodel.getValidation("rootDataDirectory")}
           validate={() => props.viewmodel.validateRootDataDirectory()}
+          startValidation={() => props.viewmodel.startValidation()}
+          endValidation={() => props.viewmodel.endValidation()}
+          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
             inputMode: "text",
             placeholder: "Enter a directory...",
@@ -213,7 +217,11 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
           keyPrefix="cache-dir"
           label="Cache Directory"
           labelInfo="*"
+          validationResult={props.viewmodel.getValidation("cacheDirectory")}
           validate={() => props.viewmodel.validateCacheDataDirectory()}
+          startValidation={() => props.viewmodel.startValidation()}
+          endValidation={() => props.viewmodel.endValidation()}
+          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
             inputMode: "text",
             placeholder: "Enter a directory...",
@@ -228,7 +236,11 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
           keyPrefix="log-dir"
           label="Log Directory"
           labelInfo="*"
+          validationResult={props.viewmodel.getValidation("logDirectory")}
           validate={() => props.viewmodel.validateLogDirectory()}
+          startValidation={() => props.viewmodel.startValidation()}
+          endValidation={() => props.viewmodel.endValidation()}
+          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
             inputMode: "text",
             placeholder: "Enter a directory...",
@@ -243,7 +255,11 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
           keyPrefix="db-name"
           label="Database Name"
           labelInfo="*"
+          validationResult={props.viewmodel.getValidation("databaseName")}
           validate={() => props.viewmodel.validateDatabaseName()}
+          startValidation={() => props.viewmodel.startValidation()}
+          endValidation={() => props.viewmodel.endValidation()}
+          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
             inputMode: "text",
             placeholder: "Enter a name...",
@@ -251,7 +267,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
             type: "text",
             onChange: handleStringChange((newValue: string) => {
               props.viewmodel.databaseName = newValue;
-              props.viewmodelChanged(props.viewmodel);
+              props.viewmodelChanged();
             }),
             value: props.viewmodel.databaseName
           }}
@@ -267,7 +283,11 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
           keyPrefix="auth-url"
           label="Discovery Internet Address"
           labelInfo="*"
+          validationResult={props.viewmodel.getValidation("discovery")}
           validate={() => props.viewmodel.validateDiscovery()}
+          startValidation={() => props.viewmodel.startValidation()}
+          endValidation={() => props.viewmodel.endValidation()}
+          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
             inputMode: "text",
             placeholder: "Enter an internet address...",
@@ -275,7 +295,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
             type: "text",
             onChange: handleStringChange((newValue: string) => {
               props.viewmodel.discovery = newValue;
-              props.viewmodelChanged(props.viewmodel);
+              props.viewmodelChanged();
             }),
             value: props.viewmodel.discovery
           }}

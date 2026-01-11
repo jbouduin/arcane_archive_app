@@ -1,8 +1,10 @@
 import { Button, ButtonGroup } from "@blueprintjs/core";
-import { SaveCancelResetFooterProps } from "./save-cancel-reset-footer.props";
 import { BaseViewmodel } from "../../../viewmodel/base.viewmodel";
+import { SaveCancelResetFooterProps } from "./save-cancel-reset-footer.props";
 
-export function SaveCancelResetFooter<Dto extends object, Vm extends BaseViewmodel<Dto>>(props: SaveCancelResetFooterProps<Dto, Vm>) {
+export function SaveCancelResetFooter<Dto extends object, Fn extends string, Vm extends BaseViewmodel<Dto, Fn>>(
+  props: SaveCancelResetFooterProps<Dto, Fn, Vm>
+) {
   // #region Set defaults -----------------------------------------------------
   const { showCommitButton = true } = props;
   // #endregion
@@ -19,7 +21,7 @@ export function SaveCancelResetFooter<Dto extends object, Vm extends BaseViewmod
               disabled={!props.viewmodel.hasChanges}
               onClick={() => {
                 props.viewmodel.cancelChanges();
-                props.viewmodelChanged(props.viewmodel);
+                props.viewmodelChanged();
               }}
               icon={props.resetButtonIcon ?? "refresh"}
             >
@@ -45,7 +47,7 @@ export function SaveCancelResetFooter<Dto extends object, Vm extends BaseViewmod
           (
             <Button
               key="commitButton"
-              disabled={props.viewmodel.hasChanges && props.viewmodel.isValid ? false : true}
+              disabled={!props.viewmodel.canCommit}
               onClick={
                 (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
                   if (props.viewmodel.isValid) {

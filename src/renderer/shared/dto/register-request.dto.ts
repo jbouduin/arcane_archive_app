@@ -1,10 +1,7 @@
 import { PreferencesDto } from "../../../common/dto";
+import { PasswordDto } from "./password.dto";
 
-export type RegisterRequestDto = {
-  userName: string;
-  password: string;
-  passwordRepeat: string;
-  email: string;
+export type RegisterRequestDto = PasswordDto & {
   emailRepeat: string;
   firstName: string | null;
   lastName: string | null;

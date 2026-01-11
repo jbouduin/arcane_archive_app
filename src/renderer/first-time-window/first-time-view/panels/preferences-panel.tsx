@@ -1,13 +1,14 @@
 import { Button, DialogBody, DialogFooter } from "@blueprintjs/core";
-import { cloneDeep } from "lodash";
-import { PreferencesDto } from "../../../../common/dto";
+import { useReducer } from "react";
 import { useServices, useSession } from "../../../hooks";
 import { PreferencesDialogBody } from "../../../shared/components/dialogs/preferences-dialog/preferences-dialog-body";
-import { BaseViewmodel } from "../../../shared/viewmodel/base.viewmodel";
-import { PreferencesViewmodel } from "../../../shared/viewmodel/settings";
 import { PreferencePanelProps } from "./preferences-panel.props";
 
 export function PreferencesPanel(props: PreferencePanelProps) {
+  // #region State ------------------------------------------------------------
+  const [_forceUpdate, forceUpdate] = useReducer(x => x + 1, 0);
+  // #endregion
+
   // #region Hooks ------------------------------------------------------------
   const { loggedIn } = useSession();
   const serviceContainer = useServices();
@@ -29,10 +30,9 @@ export function PreferencesPanel(props: PreferencePanelProps) {
     <>
       <DialogBody className="first-time-view-panel-body">
         <PreferencesDialogBody
-          viewmodelChanged={(v: BaseViewmodel<PreferencesDto>) => {
-            props.viewmodelChanged(cloneDeep(v as PreferencesViewmodel));
-          }}
+          viewmodelChanged={() => props.viewmodelChanged()}
           viewmodel={props.viewmodel}
+          onValidationCompleted={forceUpdate}
           isOpen={true}
         />
       </DialogBody>

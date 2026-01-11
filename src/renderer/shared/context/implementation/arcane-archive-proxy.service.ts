@@ -286,9 +286,9 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
     data: Req | null,
     options?: ArcaneArchiveRequestOptions
   ): Promise<Res> {
-    const suppressSuccessMessage = options?.suppressSuccessMessage || true;
-    const suppressErrorMessage = options?.suppressErrorMessage || false;
-    const suppressInvalidSessionHandling = options?.suppressInvalidSessionHandling || false;
+    const suppressSuccessMessage = options?.suppressSuccessMessage != undefined ? options?.suppressSuccessMessage : true;
+    const suppressErrorMessage = options?.suppressErrorMessage != undefined ? options?.suppressErrorMessage : false;
+    const suppressInvalidSessionHandling = options?.suppressInvalidSessionHandling != undefined ? options?.suppressInvalidSessionHandling : false;
     let result: Promise<Res>;
     try {
       return fetch(

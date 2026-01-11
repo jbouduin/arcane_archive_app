@@ -23,7 +23,7 @@ export function LoginDialogBody(props: LoginDialogBodyProps) {
         },
         noop
       )
-      .finally(() => props.viewmodelChanged(props.viewmodel));
+      .finally(() => props.viewmodelChanged());
   }
 
   function onRemoveUser(username: string) {
@@ -44,7 +44,7 @@ export function LoginDialogBody(props: LoginDialogBodyProps) {
           }
         },
         noop)
-      .finally(() => props.viewmodelChanged(props.viewmodel));
+      .finally(() => props.viewmodelChanged());
   }
   // #endregion
 
@@ -55,7 +55,11 @@ export function LoginDialogBody(props: LoginDialogBodyProps) {
         keyPrefix="user"
         label="Username or email"
         labelInfo="*"
+        validationResult={props.viewmodel.getValidation("user")}
         validate={() => props.viewmodel.validateUser()}
+        startValidation={() => props.viewmodel.startValidation()}
+        endValidation={() => props.viewmodel.endValidation()}
+        onValidationComplete={() => props.onValidationCompleted()}
         inputProps={{
           required: true,
           inputMode: "text",
@@ -63,7 +67,7 @@ export function LoginDialogBody(props: LoginDialogBodyProps) {
           onChange:
             handleStringChange((newValue: string) => {
               props.viewmodel.user = newValue;
-              props.viewmodelChanged(props.viewmodel);
+              props.viewmodelChanged();
             }),
           value: props.viewmodel.user
         }}
@@ -72,13 +76,17 @@ export function LoginDialogBody(props: LoginDialogBodyProps) {
         keyPrefix="password"
         label="Password"
         labelInfo="*"
+        validationResult={props.viewmodel.getValidation("password")}
         validate={() => props.viewmodel.validatePassword()}
+        startValidation={() => props.viewmodel.startValidation()}
+        endValidation={() => props.viewmodel.endValidation()}
+        onValidationComplete={() => props.onValidationCompleted()}
         inputProps={{
           required: true,
           value: props.viewmodel.password,
           onChange: handleStringChange((newValue: string) => {
             props.viewmodel.password = newValue;
-            props.viewmodelChanged(props.viewmodel);
+            props.viewmodelChanged();
           })
         }}
       />

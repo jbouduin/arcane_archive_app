@@ -1,6 +1,5 @@
 import { PreferencesDto } from "../../../../../common/dto";
 import { useServices } from "../../../../hooks";
-import { PreferencesViewmodel } from "../../../viewmodel";
 import { SaveCancelResetFooter } from "../../base/base-dialog";
 import { PreferencesDialogFooterProps } from "./preferences-dialog.props";
 
@@ -21,7 +20,7 @@ export function PreferencesDialogFooter(props: PreferencesDialogFooterProps) {
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter<PreferencesDto, PreferencesViewmodel>
+    <SaveCancelResetFooter
       {...props}
       showResetButton={true}
       commitButtonLabel="Save"

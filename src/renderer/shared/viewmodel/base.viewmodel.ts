@@ -1,39 +1,73 @@
 import { cloneDeep, isEqual } from "lodash";
 import { ValidationResult } from "../types";
 
-export abstract class BaseViewmodel<T extends object> {
+export type viewmodelMode = "read-only" | "create" | "update";
+
+export abstract class BaseViewmodel<Dto extends object, Fn extends string> {
   // #region Private fields ---------------------------------------------------
-  private invalidFields: Array<string>;
+  private invalidFields: Array<Fn>;
+  private pendingValidations: number;
+  private validationResults: Map<Fn, ValidationResult>;
+  private readonly _mode: viewmodelMode;
   // #endregion
 
   // #region protected fields -------------------------------------------------
-  protected _dto: T;
-  protected readonly _org: T;
+  protected _dto: Dto;
+  protected readonly _org: Dto;
   protected readonly validValidation: ValidationResult;
   // #endregion
 
-  // #region Abstract Members -------------------------------------------------
+  // #region Auxiliary getters ------------------------------------------------
   public get isValid(): boolean {
     return this.invalidFields.length == 0;
   }
-  // #endregion
 
-  // #region Auxiliary getters ------------------------------------------------
-  public get dto(): Readonly<T> {
+  public get dto(): Readonly<Dto> {
     return this._dto;
   }
 
   public get hasChanges(): boolean {
     return !isEqual(this._dto, this._org);
   }
+
+  public get canCommit(): boolean {
+    return !isEqual(this._dto, this._org) && this.invalidFields.length == 0 && !this.isValidationInProgress;
+  }
+
+  public get isValidationInProgress(): boolean {
+    return this.pendingValidations > 0;
+  }
+
+  public get mode(): viewmodelMode {
+    return this._mode;
+  }
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: T) {
+  public constructor(dto: Dto, mode?: viewmodelMode) {
     this._dto = dto;
     this._org = cloneDeep(dto);
-    this.invalidFields = new Array<string>();
+    this._mode = mode || "read-only";
+    this.invalidFields = new Array<Fn>();
     this.validValidation = { intent: "none" };
+    this.pendingValidations = 0;
+    this.validationResults = new Map<Fn, ValidationResult>();
+  }
+  // #endregion
+
+  // #region Protected methods ------------------------------------------------
+  protected setFieldInvalid(fieldName: Fn, validationResult: ValidationResult | null) {
+    if (this.invalidFields.indexOf(fieldName) < 0) {
+      this.invalidFields.push(fieldName);
+    }
+    if (validationResult != null) {
+      this.validationResults.set(fieldName, validationResult);
+    }
+  }
+
+  protected setFieldValid(fieldName: Fn) {
+    this.invalidFields = this.invalidFields.filter((ivf: string) => ivf != fieldName);
+    this.validationResults.delete(fieldName);
   }
   // #endregion
 
@@ -43,17 +77,16 @@ export abstract class BaseViewmodel<T extends object> {
     this.invalidFields.slice(0);
   }
 
-  public setFieldInvalid(fieldName: string) {
-    if (this.invalidFields.indexOf(fieldName) < 0) {
-      this.invalidFields.push(fieldName);
-    }
+  public startValidation(): void {
+    this.pendingValidations++;
   }
 
-  public setFieldValid(fieldName: string) {
-    const idx = this.invalidFields.indexOf(fieldName);
-    if (idx >= 0) {
-      this.invalidFields.splice(idx, 1);
-    }
+  public endValidation(): void {
+    this.pendingValidations = Math.max(0, this.pendingValidations - 1);
+  }
+
+  public getValidation(fieldName: Fn): ValidationResult {
+    return this.validationResults.get(fieldName) ?? this.validValidation;
   }
   // #endregion
 }

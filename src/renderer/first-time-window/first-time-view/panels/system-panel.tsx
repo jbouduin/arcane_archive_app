@@ -1,13 +1,14 @@
 import { Button, DialogBody, DialogFooter } from "@blueprintjs/core";
-import { cloneDeep } from "lodash";
-import { SystemSettingsDto } from "../../../../common/dto";
+import { useReducer } from "react";
 import { useServices, useSession } from "../../../hooks";
 import { SystemSettingsDialogBody } from "../../../shared/components/dialogs/system-settings-dialog/system-settings-dialog-body";
-import { BaseViewmodel } from "../../../shared/viewmodel/base.viewmodel";
-import { SystemSettingsViewmodel } from "../../../shared/viewmodel/settings";
 import { SystemPanelProps } from "./system-panel.props";
 
 export function SystemPanel(props: SystemPanelProps) {
+  // #region State ------------------------------------------------------------
+  const [_forceUpdate, forceUpdate] = useReducer(x => x + 1, 0);
+  // #endregion
+
   // #region Hooks ------------------------------------------------------------
   const { loggedIn } = useSession();
   const serviceContainer = useServices();
@@ -29,17 +30,21 @@ export function SystemPanel(props: SystemPanelProps) {
     <>
       <DialogBody className="first-time-view-panel-body">
         <SystemSettingsDialogBody
-          viewmodelChanged={(v: BaseViewmodel<SystemSettingsDto>) => {
-            props.viewmodelChanged(cloneDeep(v as SystemSettingsViewmodel));
-          }}
+          viewmodelChanged={() => props.viewmodelChanged()}
           viewmodel={props.viewmodel}
           isOpen={true}
+          onValidationCompleted={forceUpdate}
         />
       </DialogBody>
       <DialogFooter>
         <div className="dialog-footer-button-bar">
           <Button onClick={backClick}>Back</Button>
-          <Button onClick={() => props.navigateTo("preferences")}>Next</Button>
+          <Button
+            disabled={!props.viewmodel.canCommit}
+            onClick={() => props.navigateTo("preferences")}
+          >
+            Next
+          </Button>
         </div>
       </DialogFooter>
     </>

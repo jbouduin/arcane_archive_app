@@ -4,7 +4,8 @@ import { AdvancedCardSearchDto, ColorDto, MtgSetTreeDto } from "../../dto";
 import { ColorType, SelectOption } from "../../types";
 import { BaseViewmodel } from "../base.viewmodel";
 
-export class AdvancedCardSearchViewmodel extends BaseViewmodel<AdvancedCardSearchDto> {
+// TODO check why this is a BaseViewmodel descendant. Is this really needed
+export class AdvancedCardSearchViewmodel extends BaseViewmodel<AdvancedCardSearchDto, string> {
   // #region Private fields ---------------------------------------------------
   private _allCardSets: Array<SelectOption<MtgSetTreeDto>>;
   private _allColors: Array<SelectOption<ColorDto>>;

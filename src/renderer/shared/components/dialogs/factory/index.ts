@@ -1,3 +1,4 @@
+export * from "./change-password-dialog-factory";
 export * from "./collection-dialog-factory";
 export * from "./login-dialog-factory";
 export * from "./preferences-dialog-factory";

@@ -3,7 +3,11 @@ import { LanguageDto, MtgSetDto } from "../../dto";
 import { IAuditFieldsViewmodel } from "../audit-fields.viewmodel";
 import { BaseViewmodel } from "../base.viewmodel";
 
-export class MtgSetDetailViewmodel extends BaseViewmodel<MtgSetDto> implements IAuditFieldsViewmodel {
+export type MtgSetDetailViewmodelField = string;
+/**
+ * SetDetailViewmodel, implemented as BaseViewmodel because it is used in a dialog
+ */
+export class MtgSetDetailViewmodel extends BaseViewmodel<MtgSetDto, MtgSetDetailViewmodelField> implements IAuditFieldsViewmodel {
   // #region Private fields ---------------------------------------------------
   private readonly sortedLanguages: Array<LanguageDto>;
   private readonly _name: Map<string, string>;

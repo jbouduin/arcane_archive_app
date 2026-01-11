@@ -10,7 +10,7 @@ export class CollectionViewmodelFactory implements ICollectionViewmodelFactory {
   }
 
   public getCollectionViewmodel(dto: CollectionDto, parentDto: CollectionDto | null, parentPath: Array<string>): CollectionViewmodel {
-    return new CollectionViewmodel(dto, parentDto, parentPath);
+    return new CollectionViewmodel(dto, parentDto, parentPath, "update");
   }
 
   public getNewCollectionViewmodel(type: CollectionType, parentDto: CollectionDto | null, parentPath: Array<string>): CollectionViewmodel {
@@ -24,7 +24,7 @@ export class CollectionViewmodelFactory implements ICollectionViewmodelFactory {
       modifiedBy: null,
       parentId: parentDto != null ? parentDto.id! : null
     };
-    return new CollectionViewmodel(newCollection, parentDto, parentPath);
+    return new CollectionViewmodel(newCollection, parentDto, parentPath, "create");
   }
 
   public getCollectionDetailViewmodel(_dto: unknown): unknown {

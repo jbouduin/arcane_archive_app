@@ -1,20 +1,19 @@
 import { noop } from "lodash";
 import { useServices } from "../../../../hooks";
-import { UserDto } from "../../../dto";
+import { ChangePasswordRequestDto } from "../../../dto";
 import { SaveCancelResetFooter } from "../../base/base-dialog";
-import { ProfileDialogFooterProps } from "./profile-dialog.props";
+import { ChangePasswordDialogFooterProps } from "./change-password-dialog.props";
 
-export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
+export function ChangePasswordDialogFooter(props: ChangePasswordDialogFooterProps) {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
 
   // #region Event handling ---------------------------------------------------
-  function onSaveClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: UserDto): Promise<void> {
-    return serviceContainer.sessionService
-      .saveUser(serviceContainer, dto)
+  function changeClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: ChangePasswordRequestDto): Promise<void> {
+    return serviceContainer.sessionService.changePassword(serviceContainer.arcaneArchiveProxy, dto)
       .then(
-        (_r: object) => {
+        () => {
           if (props.onClose) {
             props.onClose(event);
           }
@@ -28,8 +27,9 @@ export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
   return (
     <SaveCancelResetFooter
       {...props}
-      showResetButton={true}
-      onCommitButtonClick={onSaveClick}
+      showResetButton={false}
+      commitButtonLabel="Change password"
+      onCommitButtonClick={changeClick}
     />
   );
   // #endregion

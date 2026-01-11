@@ -1,7 +1,6 @@
 import { noop } from "lodash";
 import { useServices } from "../../../../hooks";
 import { CollectionDto } from "../../../dto";
-import { CollectionViewmodel } from "../../../viewmodel";
 import { SaveCancelResetFooter } from "../../base/base-dialog";
 import { CollectionDialogFooterProps } from "./collection-dialog.props";
 
@@ -43,7 +42,7 @@ export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
   // #region Rendering --------------------------------------------------------
   if (!props.viewmodel.dto.id) {
     return (
-      <SaveCancelResetFooter<CollectionDto, CollectionViewmodel>
+      <SaveCancelResetFooter
         {...props}
         showResetButton={false}
         commitButtonLabel="Create"
@@ -52,7 +51,7 @@ export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
     );
   } else {
     return (
-      <SaveCancelResetFooter<CollectionDto, CollectionViewmodel>
+      <SaveCancelResetFooter
         {...props}
         showResetButton={true}
         commitButtonLabel="Save"

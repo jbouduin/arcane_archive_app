@@ -6,7 +6,9 @@ import { CardSortField, SelectOption } from "../../types";
 import { BaseViewmodel } from "../base.viewmodel";
 import { SetTreeSettingsViewmodel } from "./set-tree-settings.viewmodel";
 
-export class PreferencesViewmodel extends BaseViewmodel<PreferencesDto> {
+export type PreferencesViewmodelField = string;
+
+export class PreferencesViewmodel extends BaseViewmodel<PreferencesDto, PreferencesViewmodelField> {
   // #region Private fields ---------------------------------------------------
   private _librarySetTreeSettingsViewmodel: SetTreeSettingsViewmodel;
   private readonly _cachedImageSizeOptions: Array<SelectOption<CachedImageSize>>;

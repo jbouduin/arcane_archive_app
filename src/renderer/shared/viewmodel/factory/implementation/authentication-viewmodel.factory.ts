@@ -2,10 +2,21 @@ import { PreferencesDto } from "../../../../../common/dto";
 import { IArcaneArchiveProxyService, IServiceContainer } from "../../../context";
 import { RegisterRequestDto, UserDto } from "../../../dto";
 import { LoginViewmodel, RegisterViewmodel, UserViewmodel } from "../../authentication";
+import { ChangePasswordViewmodel } from "../../authentication/change-password.viewmodel";
 import { IAuthenticationViewmodelFactory } from "../interface";
 
 export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelFactory {
   // #region IAuthenticationViewmodelFactory Members --------------------------
+  public getChangePasswordViewmodel(userName: string, email: string): ChangePasswordViewmodel {
+    return new ChangePasswordViewmodel({
+      userName: userName,
+      email: email,
+      oldPassword: "",
+      password: "",
+      passwordRepeat: ""
+    });
+  }
+
   public getInitialLoginViewmodel(showRegisterButton: boolean, knownUsers: Array<string> = new Array<string>()): LoginViewmodel {
     return new LoginViewmodel(
       {

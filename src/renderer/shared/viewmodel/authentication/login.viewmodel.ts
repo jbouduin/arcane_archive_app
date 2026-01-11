@@ -1,9 +1,10 @@
 import { LoginRequestDto } from "../../../../common/dto";
 import { stringCouldBeEmail, stringHasMinimalLength } from "../../components/util";
-import { ValidationResult } from "../../types";
 import { BaseViewmodel } from "../base.viewmodel";
 
-export class LoginViewmodel extends BaseViewmodel<LoginRequestDto> {
+export type LoginViewmodelField = "password" | "user";
+
+export class LoginViewmodel extends BaseViewmodel<LoginRequestDto, LoginViewmodelField> {
   // #region Private fields ---------------------------------------------------
   private _selectedExistingPassword: string | null;
   // #endregion
@@ -53,28 +54,26 @@ export class LoginViewmodel extends BaseViewmodel<LoginRequestDto> {
   // #endregion
 
   // #region Auxiliary Validation Methods -------------------------------------
-  public validatePassword(): ValidationResult {
-    let result: ValidationResult;
+  public validatePassword(): void {
     if (stringHasMinimalLength(this._dto.password, 8)) {
       this.setFieldValid("password");
-      result = this.validValidation;
     } else {
-      this.setFieldInvalid("password");
-      result = { helperText: "Password length must be 8 or more", intent: "danger" };
+      this.setFieldInvalid(
+        "password",
+        { helperText: "Password length must be 8 or more", intent: "danger" }
+      );
     }
-    return result;
   }
 
-  public validateUser(): ValidationResult {
-    let result: ValidationResult;
+  public validateUser(): void {
     if (stringHasMinimalLength(this._dto.user, 8) || stringCouldBeEmail(this._dto.user)) {
       this.setFieldValid("user");
-      result = this.validValidation;
     } else {
-      this.setFieldInvalid("user");
-      result = { helperText: "Please enter a valid user name or email address", intent: "danger" };
+      this.setFieldInvalid(
+        "user",
+        { helperText: "Please enter a valid user name or email address", intent: "danger" }
+      );
     }
-    return result;
   }
   // #endregion
 }

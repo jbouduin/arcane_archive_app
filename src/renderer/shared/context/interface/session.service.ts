@@ -1,15 +1,16 @@
 import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
-import { RegisterRequestDto, UserDto } from "../../dto";
+import { ChangePasswordRequestDto, RegisterRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
 import { SessionChangeListener } from "../providers";
 import { IArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
 import { IServiceContainer } from "./service-container";
 
 export interface ISessionService {
-  readonly jwt: string | null;
   readonly loggedIn: boolean;
   readonly userName: string | null;
+  readonly email: string | null;
 
+  changePassword(arcaneArchiveProxy: IArcaneArchiveProxyService, changePasswordRequest: ChangePasswordRequestDto): Promise<void>;
   getNewUserName(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<string>;
   hasRole(role: ApplicationRole): boolean;
   hasAnyRole(...roles: Array<ApplicationRole>): boolean;

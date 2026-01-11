@@ -18,7 +18,11 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
         keyPrefix="user-name"
         label="Username"
         labelInfo="*"
+        validationResult={props.viewmodel.getValidation("userName")}
         validateAsync={() => props.viewmodel.validateUserName(serviceContainer)}
+        startValidation={() => props.viewmodel.startValidation()}
+        endValidation={() => props.viewmodel.endValidation()}
+        onValidationComplete={() => props.onValidationCompleted()}
         debounceMs={500}
         touched={true}
         useRightElement={true}
@@ -27,7 +31,7 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
           value: props.viewmodel.userName,
           onChange: handleStringChange((newValue: string) => {
             props.viewmodel.userName = newValue;
-            props.viewmodelChanged(props.viewmodel);
+            props.viewmodelChanged();
           }),
           placeholder: "Enter a username..."
         }}
@@ -41,7 +45,11 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
           keyPrefix="email"
           label="Email"
           labelInfo="*"
+          validationResult={props.viewmodel.getValidation("email")}
           validate={() => props.viewmodel.validateEmail()}
+          startValidation={() => props.viewmodel.startValidation()}
+          endValidation={() => props.viewmodel.endValidation()}
+          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
             required: true,
             inputMode: "email",
@@ -49,7 +57,7 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
             onChange:
               handleStringChange((newValue: string) => {
                 props.viewmodel.email = newValue;
-                props.viewmodelChanged(props.viewmodel);
+                props.viewmodelChanged();
               }),
             type: "email",
             value: props.viewmodel.email
@@ -59,7 +67,11 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
           keyPrefix="repeat-email"
           label="Repeat Email"
           labelInfo="*"
+          validationResult={props.viewmodel.getValidation("emailRepeat")}
           validate={() => props.viewmodel.validateEmailRepeat()}
+          startValidation={() => props.viewmodel.startValidation()}
+          endValidation={() => props.viewmodel.endValidation()}
+          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
             required: true,
             inputMode: "email",
@@ -67,7 +79,7 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
             onChange:
               handleStringChange((newValue: string) => {
                 props.viewmodel.emailRepeat = newValue;
-                props.viewmodelChanged(props.viewmodel);
+                props.viewmodelChanged();
               }),
             type: "email",
             value: props.viewmodel.emailRepeat
@@ -83,11 +95,15 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
           keyPrefix="password"
           label="Password"
           labelInfo="*"
+          validationResult={props.viewmodel.getValidation("password")}
+          startValidation={() => props.viewmodel.startValidation()}
+          endValidation={() => props.viewmodel.endValidation()}
+          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
             required: true,
             onChange: handleStringChange((newValue: string) => {
               props.viewmodel.password = newValue;
-              props.viewmodelChanged(props.viewmodel);
+              props.viewmodelChanged();
             }),
             placeholder: "Enter your password",
             value: (props.viewmodel).password
@@ -97,14 +113,18 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
           keyPrefix="repeat-password"
           label="Repeat Password"
           labelInfo="*"
+          validationResult={props.viewmodel.getValidation("passwordRepeat")}
           validate={() => props.viewmodel.validatePasswordRepeat()}
+          startValidation={() => props.viewmodel.startValidation()}
+          endValidation={() => props.viewmodel.endValidation()}
+          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
             required: true,
             placeholder: "Repeat your password",
             value: (props.viewmodel).passwordRepeat,
             onChange: handleStringChange((newValue: string) => {
               props.viewmodel.passwordRepeat = newValue;
-              props.viewmodelChanged(props.viewmodel);
+              props.viewmodelChanged();
             })
           }}
         />
@@ -132,7 +152,7 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
             onChange={
               handleStringChange((newValue: string) => {
                 props.viewmodel.firstName = newValue;
-                props.viewmodelChanged(props.viewmodel);
+                props.viewmodelChanged();
               })
             }
             size="small"
@@ -152,7 +172,7 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
             onChange={
               handleStringChange((newValue: string) => {
                 props.viewmodel.lastName = newValue;
-                props.viewmodelChanged(props.viewmodel);
+                props.viewmodelChanged();
               })
             }
             size="small"

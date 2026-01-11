@@ -1,6 +1,9 @@
 import { ButtonGroup, Menu, MenuItem, ToastProps } from "@blueprintjs/core";
 import { useApiStatus, useServices, useSession } from "../../../../hooks";
-import { showLoginDialog, showPreferencesDialog, showProfileDialog, showSystemInfoDialog, showSystemSettingsDialog } from "../../../../shared/components/dialogs/factory";
+import {
+  showChangePasswordDialog, showLoginDialog, showPreferencesDialog,
+  showProfileDialog, showSystemInfoDialog, showSystemSettingsDialog
+} from "../../../../shared/components/dialogs/factory";
 import { EDesktopView } from "../desktop-view.enum";
 import { ButtonBarButton } from "./button-bar-button";
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
@@ -115,6 +118,7 @@ export function ButtonBar(props: ButtonBarProps) {
     return (
       <Menu size="small">
         <MenuItem onClick={() => showProfileDialog(serviceContainer)} text="User Profile" />
+        <MenuItem onClick={() => showChangePasswordDialog(serviceContainer)} text="Change Password" />
         <MenuItem onClick={logoutClick} text="Log out" />
       </Menu>
     );

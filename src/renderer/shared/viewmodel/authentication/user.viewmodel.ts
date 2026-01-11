@@ -1,10 +1,12 @@
 import { addSelectOption, clearSelection, removeSelectOption, stringCouldBeEmail, stringHasMinimalLength, stringNotNullOrEmpty } from "../../components/util";
 import { UserDto } from "../../dto";
-import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption, ValidationResult } from "../../types";
+import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption } from "../../types";
 import { IAuditFieldsViewmodel } from "../audit-fields.viewmodel";
 import { BaseViewmodel } from "../base.viewmodel";
 
-export class UserViewmodel extends BaseViewmodel<UserDto> implements IAuditFieldsViewmodel {
+export type UserViewmodelField = "accountName" | "email";
+
+export class UserViewmodel extends BaseViewmodel<UserDto, UserViewmodelField> implements IAuditFieldsViewmodel {
   // #region Private fields ---------------------------------------------------
   private _selectedRoles: Array<SelectOption<ApplicationRole>>;
   // #endregion
@@ -103,13 +105,14 @@ export class UserViewmodel extends BaseViewmodel<UserDto> implements IAuditField
 
   // #region Constructor ------------------------------------------------------
   public constructor(userDto: UserDto) {
-    super(userDto);
+    super(userDto, "update");
     this._selectedRoles = new Array<SelectOption<ApplicationRole>>();
     ROLES_SELECT_OPTIONS.forEach((option: SelectOption<ApplicationRole>) => {
       if (userDto.account.roles.includes(option.value)) {
         this._selectedRoles.push(option);
       }
     });
+    this.validateEmail();
   }
 
   // #region Add remove role --------------------------------------------------
@@ -127,28 +130,26 @@ export class UserViewmodel extends BaseViewmodel<UserDto> implements IAuditField
   // #endregion
 
   // #region Validation methods -----------------------------------------------
-  public validateAccountName(): ValidationResult {
-    let result: ValidationResult;
+  public validateAccountName(): void {
     if (stringHasMinimalLength(this._dto.account.accountName, 8)) {
       this.setFieldValid("accountName");
-      result = this.validValidation;
     } else {
-      this.setFieldInvalid("accountName");
-      result = { helperText: "Username length must be 8 or more", intent: "danger" };
+      this.setFieldInvalid(
+        "accountName",
+        { helperText: "Username length must be 8 or more", intent: "danger" }
+      );
     }
-    return result;
   }
 
-  public validateEmail(): ValidationResult {
-    let result: ValidationResult;
+  public validateEmail(): void {
     if (stringCouldBeEmail(this._dto.profile.email)) {
       this.setFieldValid("email");
-      result = this.validValidation;
     } else {
-      this.setFieldInvalid("email");
-      result = { helperText: "Please enter a valid email address", intent: "danger" };
+      this.setFieldInvalid(
+        "email",
+        { helperText: "Please enter a valid email address", intent: "danger" }
+      );
     }
-    return result;
   }
   // #endregion
 }

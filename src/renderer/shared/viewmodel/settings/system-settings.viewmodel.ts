@@ -4,12 +4,14 @@ import { LogLevel } from "../../../../common/enums";
 import { LogSetting } from "../../../../common/types";
 import { stringNotNullOrEmpty } from "../../components/util";
 import { SelectOption, ValidationResult } from "../../types";
-import { BaseViewmodel } from "../base.viewmodel";
+import { BaseViewmodel, viewmodelMode } from "../base.viewmodel";
 
-export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
+export type SystemSettingsViewmodelField = "rootDataDirectory" | "cacheDirectory" | "logDirectory" | "databaseName" | "discovery";
+
+export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto, SystemSettingsViewmodelField> {
   // #region Private fields ---------------------------------------------------
   private readonly invalidUrlResult: ValidationResult;
-  private readonly _firstTime: boolean;
+  // private readonly _firstTime: boolean;
   private readonly _logLevelOptions: Array<SelectOption<LogLevel>>;
   // #endregion
 
@@ -103,16 +105,16 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
   // #endregion
 
   // #region Getters/Setters --------------------------------------------------
-  public get firstTime(): boolean {
-    return this._firstTime;
-  }
+  // public get firstTime(): boolean {
+  //   return this._firstTime;
+  // }
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: SystemSettingsDto, firstTime: boolean) {
-    super(dto);
+  public constructor(dto: SystemSettingsDto, mode: viewmodelMode) {
+    super(dto, mode);
     this.invalidUrlResult = { helperText: "Please enter a valid internet address", intent: "danger" };
-    this._firstTime = firstTime;
+    // this._firstTime = firstTime;
     this._logLevelOptions = [
       { value: LogLevel.None, label: "No logging" },
       { value: LogLevel.Error, label: "Error (default)" },
@@ -125,71 +127,61 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
   // #endregion
 
   // #region Validations ------------------------------------------------------
-  public validateRootDataDirectory(): ValidationResult {
-    let result: ValidationResult;
+  public validateRootDataDirectory(): void {
     if (stringNotNullOrEmpty(this._dto.dataConfiguration.rootDataDirectory)) {
       this.setFieldValid("rootDataDirectory");
-      result = this.validValidation;
     } else {
-      this.setFieldInvalid("rootDataDirectory");
-      result = { helperText: "You must specify a directory", intent: "danger" };
+      this.setFieldInvalid(
+        "rootDataDirectory",
+        { helperText: "You must specify a directory", intent: "danger" }
+      );
     }
-    return result;
   }
 
-  public validateCacheDataDirectory(): ValidationResult {
-    let result: ValidationResult;
+  public validateCacheDataDirectory(): void {
     if (stringNotNullOrEmpty(this._dto.dataConfiguration.cacheDirectory)) {
       this.setFieldValid("cacheDirectory");
-      result = this.validValidation;
     } else {
-      this.setFieldInvalid("cacheDirectory");
-      result = { helperText: "You must specify a directory", intent: "danger" };
+      this.setFieldInvalid(
+        "cacheDirectory",
+        { helperText: "You must specify a directory", intent: "danger" }
+      );
     }
-    return result;
   }
 
-  public validateLogDirectory(): ValidationResult {
-    let result: ValidationResult;
+  public validateLogDirectory(): void {
     if (stringNotNullOrEmpty(this._dto.dataConfiguration.logDirectory)) {
       this.setFieldValid("logDirectory");
-      result = this.validValidation;
     } else {
-      this.setFieldInvalid("logDirectory");
-      result = { helperText: "You must specify a directory", intent: "danger" };
+      this.setFieldInvalid(
+        "logDirectory",
+        { helperText: "You must specify a directory", intent: "danger" }
+      );
     }
-    return result;
   }
 
-  public validateDatabaseName(): ValidationResult {
-    let result: ValidationResult;
+  public validateDatabaseName(): void {
     if (stringNotNullOrEmpty(this._dto.dataConfiguration.databaseName)) {
       this.setFieldValid("databaseName");
-      result = this.validValidation;
     } else {
-      this.setFieldInvalid("databaseName");
-      result = { helperText: "You must specify a database name", intent: "danger" };
+      this.setFieldInvalid(
+        "databaseName",
+        { helperText: "You must specify a database name", intent: "danger" }
+      );
     }
-    return result;
   }
 
-  public validateDiscovery(): ValidationResult {
-    let result: ValidationResult;
+  public validateDiscovery(): void {
     try {
       const url = new URL(this._dto.discovery);
       if (url.protocol == "http:" || url.protocol == "https:") {
         this.setFieldValid("discovery");
-        result = this.validValidation;
       } else {
-        this.setFieldInvalid("discovery");
-        result = this.invalidUrlResult;
+        this.setFieldInvalid("discovery", this.invalidUrlResult);
       }
     } catch {
-      this.setFieldInvalid("discovery");
-      result = this.invalidUrlResult;
+      this.setFieldInvalid("discovery", this.invalidUrlResult);
     }
-
-    return result;
   }
   // #endregion
 }

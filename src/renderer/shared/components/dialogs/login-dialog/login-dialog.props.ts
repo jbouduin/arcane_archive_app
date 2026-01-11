@@ -1,7 +1,7 @@
 import { LoginRequestDto } from "../../../../../common/dto";
-import { LoginViewmodel } from "../../../viewmodel";
+import { LoginViewmodel, LoginViewmodelField } from "../../../viewmodel";
 import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 
-export type LoginDialogProps = BaseDialogProps<LoginRequestDto, LoginViewmodel>;
-export type LoginDialogBodyProps = BaseDialogBodyProps<LoginRequestDto, LoginViewmodel>;
-export type LoginDialogFooterProps = BaseDialogFooterProps<LoginRequestDto, LoginViewmodel>;
+export type LoginDialogProps = BaseDialogProps<LoginRequestDto, LoginViewmodelField, LoginViewmodel>;
+export type LoginDialogBodyProps = BaseDialogBodyProps<LoginRequestDto, LoginViewmodelField, LoginViewmodel>;
+export type LoginDialogFooterProps = BaseDialogFooterProps<LoginRequestDto, LoginViewmodelField, LoginViewmodel>;

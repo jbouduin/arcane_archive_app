@@ -30,7 +30,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
     serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getInitialRegisterViewmodel(false, serviceContainer.configurationService.preferences)
   );
   // this one is initialized with the factory default system settings
-  const [systemSettingsViewmodel, setSystemSettingsViewmodel] = useState<SystemSettingsViewmodel>(
+  const [systemSettingsViewmodel, _setSystemSettingsViewmodel] = useState<SystemSettingsViewmodel>(
     serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getSystemSettingsViewmodelFromDto(props.systemSettings, true)
   );
   const [preferencesViewmodel, setPreferencesViewmodel] = useState<PreferencesViewmodel>(
@@ -102,7 +102,8 @@ export function FirstTimeView(props: FirstTimeViewProps) {
             navigateTo={setCurrentPanel}
             afterLogin={(dto: LoginResponseDto) => setPreferencesViewmodel(serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(dto.profile.preferences))}
             viewmodel={loginViewmodel}
-            viewmodelChanged={setLoginViewmodel}
+            // TODO correct this and the other viewmodelchanged
+            viewmodelChanged={noop}
           />
         );
       case "register":
@@ -110,7 +111,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
           <RegisterPanel
             navigateTo={setCurrentPanel}
             viewmodel={registrationViewmodel}
-            viewmodelChanged={setRegistrationViewmodel}
+            viewmodelChanged={noop}
           />
         );
       case "system":
@@ -118,7 +119,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
           <SystemPanel
             navigateTo={setCurrentPanel}
             viewmodel={systemSettingsViewmodel}
-            viewmodelChanged={setSystemSettingsViewmodel}
+            viewmodelChanged={noop}
           />
         );
       case "preferences":
@@ -127,7 +128,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
             navigateTo={setCurrentPanel}
             onGo={onGo}
             viewmodel={preferencesViewmodel}
-            viewmodelChanged={setPreferencesViewmodel}
+            viewmodelChanged={noop}
           />
         );
     }

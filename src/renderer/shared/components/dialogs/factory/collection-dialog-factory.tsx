@@ -3,7 +3,7 @@ import { noop } from "lodash";
 import { IServiceContainer } from "../../../context";
 import { CollectionDto } from "../../../dto";
 import { CollectionType } from "../../../types";
-import { CollectionViewmodel } from "../../../viewmodel";
+import { CollectionViewmodel, CollectionViewmodelField } from "../../../viewmodel";
 import { BaseDialogFooterProps } from "../../base/base-dialog";
 import { CollectionDialogBody } from "../collection-dialog/collection-dialog-body";
 import { CollectionDialogFooter } from "../collection-dialog/collection-dialog-footer";
@@ -24,7 +24,7 @@ export function showEditCollectionDialog(
     bodyRenderer: (bodyProps: CollectionDialogBodyProps) => {
       return (<CollectionDialogBody {...bodyProps} />);
     },
-    footerRenderer: (footerProps: BaseDialogFooterProps<CollectionDto, CollectionViewmodel>) => {
+    footerRenderer: (footerProps: BaseDialogFooterProps<CollectionDto, CollectionViewmodelField, CollectionViewmodel>) => {
       return (
         <CollectionDialogFooter
           {...footerProps}
@@ -63,7 +63,7 @@ export function showNewCollectionDialog(
     bodyRenderer: (bodyProps: CollectionDialogBodyProps) => {
       return (<CollectionDialogBody {...bodyProps} />);
     },
-    footerRenderer: (footerProps: BaseDialogFooterProps<CollectionDto, CollectionViewmodel>) => {
+    footerRenderer: (footerProps: BaseDialogFooterProps<CollectionDto, CollectionViewmodelField, CollectionViewmodel>) => {
       return (
         <CollectionDialogFooter
           {...footerProps}

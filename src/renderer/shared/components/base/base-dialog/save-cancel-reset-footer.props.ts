@@ -1,9 +1,10 @@
 import { IconName, MaybeElement } from "@blueprintjs/core";
 import React, { ReactNode } from "react";
-import { BaseDialogFooterProps } from "./base-dialog-footer.props";
 import { BaseViewmodel } from "../../../viewmodel/base.viewmodel";
+import { BaseDialogFooterProps } from "./base-dialog-footer.props";
 
-export interface SaveCancelResetFooterProps<Dto extends object, Vm extends BaseViewmodel<Dto>> extends BaseDialogFooterProps<Dto, Vm> {
+export interface SaveCancelResetFooterProps<Dto extends object, Fn extends string, Vm extends BaseViewmodel<Dto, Fn>>
+  extends BaseDialogFooterProps<Dto, Fn, Vm> {
   /**
    * Any additional buttons rendered to the right of the reset button
    */

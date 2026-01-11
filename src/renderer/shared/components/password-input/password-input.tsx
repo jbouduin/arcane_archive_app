@@ -1,5 +1,5 @@
 import { Button, Intent, Tooltip } from "@blueprintjs/core";
-import React, { useState } from "react";
+import { useCallback, useState } from "react";
 import { ValidatedInput } from "../validated-input/validated-input";
 import { ValidatedInputProps } from "../validated-input/validated-input.props";
 import { PasswordInputProps } from "./password-input.props";
@@ -7,11 +7,11 @@ import { PasswordInputProps } from "./password-input.props";
 export function PasswordInput(props: PasswordInputProps) {
   // #region State ------------------------------------------------------------
   const [showPassword, setShowPassword] = useState(false);
-  const [touched, setTouched] = useState<boolean>(false);
+  const [touched, setTouched] = useState<boolean>(props.touched || false);
   // #endregion
 
   // #region Event handling ---------------------------------------------------
-  const handleLockClick = React.useCallback(() => setShowPassword(value => !value), []);
+  const handleLockClick = useCallback(() => setShowPassword(value => !value), []);
   // #endregion
 
   // #region Rendering --------------------------------------------------------
@@ -29,6 +29,7 @@ export function PasswordInput(props: PasswordInputProps) {
       touched: touched,
       onTouchedChanged: (touched: boolean) => setTouched(touched)
     };
+    // console.log("pwd input onValidationComplete", result.onValidationComplete)
     props.inputProps!.rightElement = (
       <Tooltip
         content={`${showPassword ? "Hide" : "Show"} Password`}

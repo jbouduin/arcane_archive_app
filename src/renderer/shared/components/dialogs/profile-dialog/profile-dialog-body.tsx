@@ -45,14 +45,18 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
           keyPrefix="user-name"
           label="Username"
           labelInfo="*"
+          validationResult={props.viewmodel.getValidation("accountName")}
           validate={() => props.viewmodel.validateAccountName()}
+          startValidation={() => props.viewmodel.startValidation()}
+          endValidation={() => props.viewmodel.endValidation()}
+          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
             readOnly: true,
             required: true,
             value: props.viewmodel.accountName,
             onChange: handleStringChange((newValue: string) => {
               props.viewmodel.accountName = newValue;
-              props.viewmodelChanged(props.viewmodel);
+              props.viewmodelChanged();
             }),
             placeholder: "Enter a username..."
           }}
@@ -61,7 +65,12 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
           keyPrefix="email"
           label="Email"
           labelInfo="*"
+          touched={true}
+          validationResult={props.viewmodel.getValidation("email")}
           validate={() => props.viewmodel.validateEmail()}
+          startValidation={() => props.viewmodel.startValidation()}
+          endValidation={() => props.viewmodel.endValidation()}
+          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
             required: true,
             inputMode: "email",
@@ -69,7 +78,7 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
             onChange:
               handleStringChange((newValue: string) => {
                 props.viewmodel.email = newValue;
-                props.viewmodelChanged(props.viewmodel);
+                props.viewmodelChanged();
               }),
             type: "email",
             value: props.viewmodel.email
@@ -92,7 +101,7 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
               onChange={
                 handleStringChange((newValue: string) => {
                   props.viewmodel.firstName = newValue;
-                  props.viewmodelChanged(props.viewmodel);
+                  props.viewmodelChanged();
                 })
               }
               size="small"
@@ -112,7 +121,7 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
               onChange={
                 handleStringChange((newValue: string) => {
                   props.viewmodel.lastName = newValue;
-                  props.viewmodelChanged(props.viewmodel);
+                  props.viewmodelChanged();
                 })
               }
               size="small"
@@ -129,19 +138,19 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
           onClearSelectedOptions={
             () => {
               props.viewmodel.clearSelectedRoles();
-              props.viewmodelChanged(props.viewmodel);
+              props.viewmodelChanged();
             }
           }
           onOptionAdded={
             (role: SelectOption<ApplicationRole>) => {
               props.viewmodel.addRole(role);
-              props.viewmodelChanged(props.viewmodel);
+              props.viewmodelChanged();
             }
           }
           onOptionRemoved={
             (role: SelectOption<ApplicationRole>) => {
               props.viewmodel.removeRole(role);
-              props.viewmodelChanged(props.viewmodel);
+              props.viewmodelChanged();
             }
           }
           selectedOptions={props.viewmodel.selectedRoles}

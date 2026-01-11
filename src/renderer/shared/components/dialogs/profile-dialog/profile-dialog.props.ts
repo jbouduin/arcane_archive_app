@@ -1,7 +1,7 @@
 import { UserDto } from "../../../dto";
-import { UserViewmodel } from "../../../viewmodel";
+import { UserViewmodel, UserViewmodelField } from "../../../viewmodel";
 import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 
-export type ProfileDialogProps = BaseDialogProps<UserDto, UserViewmodel>;
-export type ProfileDialogBodyProps = BaseDialogBodyProps<UserDto, UserViewmodel>;
-export type ProfileDialogFooterProps = BaseDialogFooterProps<UserDto, UserViewmodel>;
+export type ProfileDialogProps = BaseDialogProps<UserDto, UserViewmodelField, UserViewmodel>;
+export type ProfileDialogBodyProps = BaseDialogBodyProps<UserDto, UserViewmodelField, UserViewmodel>;
+export type ProfileDialogFooterProps = BaseDialogFooterProps<UserDto, UserViewmodelField, UserViewmodel>;

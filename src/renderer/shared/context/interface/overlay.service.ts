@@ -8,7 +8,7 @@ export interface IOverlayService {
   setAlertDispatcher(setAlert: React.Dispatch<React.SetStateAction<AlertProps | null>>): void;
   setDialogDispatcher(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setDialogs: React.Dispatch<React.SetStateAction<Map<number, BaseDialogProps<any, any>>>>
+    setDialogs: React.Dispatch<React.SetStateAction<Map<number, BaseDialogProps<any, any, any>>>>
   ): void;
   setSplashScreenDispatcher(setSplashScreen: React.Dispatch<React.SetStateAction<ProgressCallbackValue | null>>): void;
   /**
@@ -16,7 +16,9 @@ export interface IOverlayService {
    * @param showToast the showToast function
    */
   setShowToast(showToast: ShowToastFn): void;
-  openDialog<Dto extends object, Vm extends BaseViewmodel<Dto>>(props: BaseDialogProps<Dto, Vm>): void;
+  openDialog<Dto extends object, Fn extends string, Vm extends BaseViewmodel<Dto, Fn>>(
+    props: BaseDialogProps<Dto, Fn, Vm>
+  ): void;
   closeDialog(dialogNumber: number): void;
   showToast(toastProps: ToastProps, key?: string): void;
   showSplashScreen(value: ProgressCallbackValue): void;

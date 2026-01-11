@@ -11,7 +11,7 @@ import { DialogRendererProps } from "./dialog-renderer.props";
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export function DialogRenderer(props: DialogRendererProps): JSX.Element {
   // #region State ------------------------------------------------------------
-  const [dialogs, setDialogs] = useState<Map<number, BaseDialogProps<any, any>>>(new Map<number, BaseDialogProps<any, any>>());
+  const [dialogs, setDialogs] = useState<Map<number, BaseDialogProps<any, any, any>>>(new Map<number, BaseDialogProps<any, any, any>>());
   const [splashScreen, setSplashScreen] = useState<ProgressCallbackValue | null>(null);
   const [alert, setAlert] = useState<AlertProps | null>(null);
   // #endregion
@@ -61,7 +61,7 @@ export function DialogRenderer(props: DialogRendererProps): JSX.Element {
   function buildDialogs(): Array<React.JSX.Element> {
     const result = new Array<React.JSX.Element>();
     {
-      dialogs.forEach((props: BaseDialogProps<any, any>, key: number) => {
+      dialogs.forEach((props: BaseDialogProps<any, any, any>, key: number) => {
         const dlg = (
           <BaseDialog key={"dialog-" + key.toString()} {...props} />
         );

@@ -1,14 +1,12 @@
 import { Boundary, BreadcrumbProps, Breadcrumbs, FormGroup, InputGroup, Label, Text, TextArea } from "@blueprintjs/core";
 import { useEffect, useMemo, useState } from "react";
-import { ValidationResult } from "../../../types";
 import { LabelValuePanel } from "../../base/label-value-panel";
 import { handleStringChange } from "../../util";
 import { CollectionDialogBodyProps } from "./collection-dialog.props";
 
 export function CollectionDialogBody(props: CollectionDialogBodyProps) {
   // #region State ------------------------------------------------------------
-  const [validation, setValidation] = useState<ValidationResult>({ intent: "none" });
-  const [touched, setTouched] = useState<boolean>(false);
+  const [touched, setTouched] = useState<boolean>(props.viewmodel.mode == "update");
   // #endregion
 
   // #region Effects ----------------------------------------------------------
@@ -19,11 +17,13 @@ export function CollectionDialogBody(props: CollectionDialogBodyProps) {
       }
       const handler = setTimeout(
         () => {
-          setValidation(props.viewmodel.validateCode());
+          props.viewmodel.startValidation();
+          props.viewmodel.validateCode();
+          props.viewmodel.endValidation();
+          props.onValidationCompleted?.();
         },
         100
       );
-
       return () => clearTimeout(handler);
     },
     [touched, props.viewmodel.code]
@@ -49,6 +49,7 @@ export function CollectionDialogBody(props: CollectionDialogBodyProps) {
   // #endregion
 
   // #region Rendering --------------------------------------------------------
+  // TODO extract this because it comes back for every auditable dto
   const items = new Map<string, JSX.Element | null>([
     ["Id", (<Text>{props.viewmodel.id}</Text>)],
     ["Empty", null],
@@ -65,8 +66,8 @@ export function CollectionDialogBody(props: CollectionDialogBodyProps) {
         key="bc-group"
         labelInfo="*"
         fill={true}
-        helperText={validation.helperText}
-        intent={validation.intent}
+        helperText={props.viewmodel.getValidation("code").helperText}
+        intent={props.viewmodel.getValidation("code").intent}
       >
         <Breadcrumbs
           key="bc-crumbs"
@@ -83,7 +84,7 @@ export function CollectionDialogBody(props: CollectionDialogBodyProps) {
                   value={props.viewmodel.code}
                   onChange={handleStringChange((newValue: string) => {
                     props.viewmodel.code = newValue;
-                    props.viewmodelChanged(props.viewmodel);
+                    props.viewmodelChanged();
                   })}
                   onBlur={() => {
                     setTouched(true);
@@ -101,7 +102,7 @@ export function CollectionDialogBody(props: CollectionDialogBodyProps) {
           maxLength={2048}
           onChange={handleStringChange((value: string) => {
             props.viewmodel.description = value;
-            props.viewmodelChanged(props.viewmodel);
+            props.viewmodelChanged();
           })}
           placeholder="Enter description"
           value={props.viewmodel.description}

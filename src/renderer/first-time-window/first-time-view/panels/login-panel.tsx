@@ -1,12 +1,16 @@
 import { Button, ButtonGroup, DialogBody, DialogFooter } from "@blueprintjs/core";
-import { cloneDeep, noop } from "lodash";
+import { noop } from "lodash";
+import { useReducer } from "react";
 import { LoginResponseDto } from "../../../../common/dto";
 import { useServices } from "../../../hooks";
 import { LoginDialogBody } from "../../../shared/components/dialogs/login-dialog/login-dialog-body";
-import { LoginViewmodel } from "../../../shared/viewmodel";
 import { LoginPanelProps } from "./login-panel.props";
 
 export function LoginPanel(props: LoginPanelProps) {
+  // #region State ------------------------------------------------------------
+  const [_forceUpdate, forceUpdate] = useReducer(x => x + 1, 0);
+  // #endregion
+
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
@@ -31,9 +35,8 @@ export function LoginPanel(props: LoginPanelProps) {
     <>
       <DialogBody className="first-time-view-panel-body">
         <LoginDialogBody
-          viewmodelChanged={(v: LoginViewmodel) => {
-            props.viewmodelChanged(cloneDeep(v));
-          }}
+          viewmodelChanged={() => props.viewmodelChanged()}
+          onValidationCompleted={forceUpdate}
           viewmodel={props.viewmodel}
           isOpen={true}
         />

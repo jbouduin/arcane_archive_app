@@ -1,9 +1,10 @@
 import { stringHasMinimalLength } from "../../components/util";
 import { CollectionDto } from "../../dto";
-import { CollectionType, ValidationResult } from "../../types";
-import { BaseViewmodel } from "../base.viewmodel";
+import { CollectionType } from "../../types";
+import { BaseViewmodel, viewmodelMode } from "../base.viewmodel";
 
-export class CollectionViewmodel extends BaseViewmodel<CollectionDto> {
+export type CollectionViewmodelField = "code";
+export class CollectionViewmodel extends BaseViewmodel<CollectionDto, CollectionViewmodelField> {
   // #region Private fields ---------------------------------------------------
   private readonly parentCollection: CollectionDto | null;
   private readonly _parentPath: Array<string>;
@@ -87,22 +88,24 @@ export class CollectionViewmodel extends BaseViewmodel<CollectionDto> {
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  constructor(dto: CollectionDto, parentDto: CollectionDto | null, parentPath: Array<string>) {
-    super(dto);
+  public constructor(dto: CollectionDto, parentDto: CollectionDto | null, parentPath: Array<string>, mode: viewmodelMode) {
+    super(dto, mode);
     this.parentCollection = parentDto;
     this._parentPath = parentPath;
+    if (mode == "update") {
+      this.validateCode();
+    }
   }
   // #endregion
 
-  public validateCode(): ValidationResult {
-    let result: ValidationResult;
+  public validateCode(): void {
     if (stringHasMinimalLength(this._dto.code, 3)) {
       this.setFieldValid("code");
-      result = this.validValidation;
     } else {
-      this.setFieldInvalid("code");
-      result = { helperText: "Please enter minimal 3 characters", intent: "danger" };
+      this.setFieldInvalid(
+        "code",
+        { helperText: "Please enter minimal 3 characters", intent: "danger" }
+      );
     }
-    return result;
   }
 }

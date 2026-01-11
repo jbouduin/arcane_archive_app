@@ -3,7 +3,7 @@ import { noop } from "lodash";
 import { ReactNode } from "react";
 import { SystemSettingsDto } from "../../../../../common/dto";
 import { useServices } from "../../../../hooks";
-import { SystemSettingsViewmodel } from "../../../viewmodel";
+import { SystemSettingsViewmodel, SystemSettingsViewmodelField } from "../../../viewmodel";
 import { SaveCancelResetFooter } from "../../base/base-dialog";
 import { SystemSettingsDialogFooterProps } from "./system-settings-dialog.props";
 
@@ -30,7 +30,7 @@ export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProp
       .then(
         (dto: SystemSettingsDto) => {
           Object.assign(props.viewmodel.dto, dto);
-          props.viewmodelChanged(props.viewmodel);
+          props.viewmodelChanged();
         },
         noop
       );
@@ -39,7 +39,7 @@ export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProp
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter<SystemSettingsDto, SystemSettingsViewmodel>
+    <SaveCancelResetFooter<SystemSettingsDto, SystemSettingsViewmodelField, SystemSettingsViewmodel>
       {...props}
       commitButtonLabel={props.viewmodel.restartRequired ? "Save and Restart" : "Save"}
       showResetButton={true}

@@ -1,15 +1,14 @@
 import { Button, ButtonGroup, DialogBody, DialogFooter } from "@blueprintjs/core";
-import { cloneDeep, noop } from "lodash";
+import { noop } from "lodash";
+import { useReducer } from "react";
 import { useServices } from "../../../hooks";
 import { RegisterDialogBody } from "../../../shared/components/dialogs/register-dialog/register-dialog-body";
-import { RegisterRequestDto } from "../../../shared/dto";
-import { RegisterViewmodel } from "../../../shared/viewmodel";
-import { BaseViewmodel } from "../../../shared/viewmodel/base.viewmodel";
 import { RegisterPanelProps } from "./register-panel.props";
 
 export function RegisterPanel(props: RegisterPanelProps) {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
+  const [_forceUpdate, forceUpdate] = useReducer(x => x + 1, 0);
   // #endregion
 
   // #region Event handling ---------------------------------------------------
@@ -27,8 +26,9 @@ export function RegisterPanel(props: RegisterPanelProps) {
     <>
       <DialogBody className="first-time-view-panel-body">
         <RegisterDialogBody
-          viewmodelChanged={(v: BaseViewmodel<RegisterRequestDto>) => props.viewmodelChanged(cloneDeep(v as RegisterViewmodel))}
+          viewmodelChanged={() => props.viewmodelChanged()}
           viewmodel={props.viewmodel}
+          onValidationCompleted={forceUpdate}
           isOpen={true}
         />
       </DialogBody>
@@ -39,7 +39,12 @@ export function RegisterPanel(props: RegisterPanelProps) {
           </ButtonGroup>
           <ButtonGroup>
             <Button onClick={() => props.navigateTo("login")}>Login Instead</Button>
-            <Button onClick={registerClick}>Register</Button>
+            <Button
+              disabled={!props.viewmodel.canCommit}
+              onClick={registerClick}
+            >
+              Register
+            </Button>
             <Button onClick={() => props.navigateTo("system")}>Continue without account</Button>
           </ButtonGroup>
         </div>

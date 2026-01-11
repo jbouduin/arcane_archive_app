@@ -52,7 +52,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
           onChange={
             handleBooleanChange((value: boolean) => {
               props.viewmodel.useDarkTheme = value;
-              props.viewmodelChanged(props.viewmodel);
+              props.viewmodelChanged();
             })
           }
         >
@@ -64,7 +64,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
           onChange={
             handleBooleanChange((value: boolean) => {
               props.viewmodel.refreshCacheAtStartup = value;
-              props.viewmodelChanged(props.viewmodel);
+              props.viewmodelChanged();
             })
           }
         >
@@ -82,7 +82,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
           onChange={
             handleBooleanChange((value: boolean) => {
               props.viewmodel.logServerResponses = value;
-              props.viewmodelChanged(props.viewmodel);
+              props.viewmodelChanged();
             })
           }
         >
@@ -101,7 +101,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
               onChange={
                 handleValueChange((value: CachedImageSize) => {
                   props.viewmodel.cachedImageSize = value;
-                  props.viewmodelChanged(props.viewmodel);
+                  props.viewmodelChanged();
                 })
               }
               options={props.viewmodel.cachedImageSizeOptions}
@@ -116,7 +116,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
               onChange={
                 handleValueChange((value: number) => {
                   props.viewmodel.defaultPageSize = value;
-                  props.viewmodelChanged(props.viewmodel);
+                  props.viewmodelChanged();
                 })
               }
               options={props.viewmodel.pageSizeOptions}
@@ -137,7 +137,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
               onChange={
                 handleValueChange((value: CardSortField) => {
                   props.viewmodel.defaultCardSortField = value;
-                  props.viewmodelChanged(props.viewmodel);
+                  props.viewmodelChanged();
                 })
               }
               options={props.viewmodel.cardSortFieldOptions}
@@ -152,7 +152,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
               onChange={
                 handleValueChange((value: SortDirection) => {
                   props.viewmodel.defaultCardSortDirection = value;
-                  props.viewmodelChanged(props.viewmodel);
+                  props.viewmodelChanged();
                 })
               }
               options={props.viewmodel.sortDirectionOptions}
@@ -181,7 +181,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
               onChange={
                 handleValueChange((value: CardSetSort) => {
                   viewmodel.cardSetSort = value;
-                  props.viewmodelChanged(props.viewmodel);
+                  props.viewmodelChanged();
                 })
               }
               options={viewmodel.cardSetSortOptions}
@@ -196,7 +196,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
               onChange={
                 handleValueChange((value: CardSetGroupBy) => {
                   viewmodel.cardSetGroupBy = value;
-                  props.viewmodelChanged(props.viewmodel);
+                  props.viewmodelChanged();
                 })
               }
               options={viewmodel.cardSetGroupByOptions}
@@ -243,7 +243,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
               onChange={
                 handleBooleanChange((_value: boolean) => {
                   viewmodel.toggleCardSetFilterType(opt.value);
-                  props.viewmodelChanged(props.viewmodel);
+                  props.viewmodelChanged();
                 })
               }
             />

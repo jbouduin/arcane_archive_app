@@ -18,7 +18,7 @@ export class SettingsViewmodelFactory implements ISettingsViewmodelFactory {
   }
 
   public getSystemSettingsViewmodelFromDto(dto: SystemSettingsDto, firstTime: boolean): SystemSettingsViewmodel {
-    return new SystemSettingsViewmodel(dto, firstTime);
+    return new SystemSettingsViewmodel(dto, firstTime ? "create" : "update");
   }
 
   public getSystemInfoViewmodel(serviceContainer: IServiceContainer): SystemInfoViewmodel {

@@ -2,7 +2,7 @@ import { noop } from "lodash";
 import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
 import { mergeWithChangeDetails } from "../../../../common/util";
-import { RegisterRequestDto, UserDto } from "../../dto";
+import { ChangePasswordRequestDto, RegisterRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
 import { IArcaneArchiveProxyService, IIpcProxyService, IServiceContainer } from "../interface";
 import { ISessionService } from "../interface/session.service";
@@ -13,6 +13,7 @@ export class SessionService implements ISessionService {
   private _jwt: string | null;
   private roles: Set<ApplicationRole>;
   private _userName: string | null;
+  private _email: string | null;
   private sessionChangeListeners: Array<SessionChangeListener>;
   private refreshTimeout: NodeJS.Timeout | null;
   private _refreshToken: string | null;
@@ -24,12 +25,12 @@ export class SessionService implements ISessionService {
     return this._jwt != null;
   }
 
-  public get jwt(): string | null {
-    return this._jwt;
-  }
-
   public get userName(): string | null {
     return this._userName;
+  }
+
+  public get email(): string | null {
+    return this._email;
   }
   // #endregion
 
@@ -37,6 +38,7 @@ export class SessionService implements ISessionService {
   public constructor() {
     this._jwt = null;
     this._userName = null;
+    this._email = null;
     this.roles = new Set<ApplicationRole>();
     this.sessionChangeListeners = new Array<SessionChangeListener>();
     this.refreshTimeout = null;
@@ -46,6 +48,10 @@ export class SessionService implements ISessionService {
   // #endregion
 
   // #region ISessionService Members ------------------------------------------
+  public changePassword(arcaneArchiveProxy: IArcaneArchiveProxyService, changePasswordRequest: ChangePasswordRequestDto): Promise<void> {
+    return arcaneArchiveProxy.postData<ChangePasswordRequestDto, never>("authentication", "/app/account/password", changePasswordRequest);
+  }
+
   public getNewUserName(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<string> {
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     return arcaneArchiveProxy
@@ -165,6 +171,7 @@ export class SessionService implements ISessionService {
   public clearSessionData(ipcProxy: IIpcProxyService): void {
     this._jwt = null;
     this._userName = null;
+    this._email = null;
     // this._profile = null;
     this._refreshToken = null;
     this.roles.clear();
@@ -184,6 +191,7 @@ export class SessionService implements ISessionService {
     const raw = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
     this.roles = new Set<ApplicationRole>(raw["roles"]);
     this._userName = raw["sub"];
+    this._email = data.profile.email;
     this._refreshToken = data.refreshToken;
     const expiry = (raw["exp"] as number) * 1000;
     const now = Date.now();

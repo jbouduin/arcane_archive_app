@@ -1,12 +1,10 @@
 import { Colors, FormGroup, Icon, InputGroup, NumericInput, Spinner } from "@blueprintjs/core";
 import { useEffect, useState } from "react";
-import { ValidationResult } from "../../types";
 import { ValidatedInputProps } from "./validated-input.props";
 
 export function ValidatedInput(props: ValidatedInputProps) {
   // #region State ------------------------------------------------------------
   const [touched, setTouched] = useState<boolean>(props.touched || false);
-  const [validation, setValidation] = useState<ValidationResult>({ intent: "none" });
   const [loading, setLoading] = useState<boolean>(false);
   const [controller, setController] = useState<AbortController | null>(null);
   // #endregion
@@ -20,22 +18,29 @@ export function ValidatedInput(props: ValidatedInputProps) {
         () => {
           // Cancel previous request if async validation is used
           if (controller) controller.abort();
-
+          if (props.validate || props.validateAsync) {
+            props.startValidation();
+          }
           if (props.validateAsync) {
             const newController = new AbortController();
             setController(newController);
-
             setLoading(true);
             props.validateAsync(newController.signal)
-              .then(result => setValidation(result))
-              .catch((err) => {
-                if (err.name !== "AbortError") {
-                  setValidation({ helperText: "Validation failed", intent: "danger" });
-                }
-              })
-              .finally(() => setLoading(false));
+              // .then(result => setValidation(result))
+              // .catch((err) => {
+              //   if (err.name !== "AbortError") {
+              //     setValidation({ helperText: "Validation failed", intent: "danger" });
+              //   }
+              // })
+              .finally(() => {
+                setLoading(false);
+                props.endValidation();
+                props.onValidationComplete?.();
+              });
           } else if (props.validate) {
-            setValidation(props.validate());
+            props.validate();
+            props.endValidation();
+            props.onValidationComplete?.();
           }
         },
         props.debounceMs || 0
@@ -55,8 +60,8 @@ export function ValidatedInput(props: ValidatedInputProps) {
       labelFor={props.keyPrefix + "-input"}
       labelInfo={props.labelInfo}
       fill={props.fill}
-      helperText={validation.helperText}
-      intent={validation.intent}
+      helperText={props.validationResult.helperText}
+      intent={props.validationResult.intent}
       disabled={props.inputProps?.disabled || props.numericInputProps?.disabled}
     >
       {
@@ -96,7 +101,7 @@ export function ValidatedInput(props: ValidatedInputProps) {
     }
     if (loading) {
       return (<Spinner size={16} />);
-    } else if (validation.intent == "none") {
+    } else if (props.validationResult.intent == "none") {
       return (<Icon icon="tick" size={20} color={Colors.GREEN1} />);
     } else {
       return (<Icon icon="cross" size={20} color={Colors.RED1} />);
