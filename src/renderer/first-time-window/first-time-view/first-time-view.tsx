@@ -4,7 +4,7 @@ import { noop } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { LoginResponseDto } from "../../../common/dto";
-import { usePreferences, useServices } from "../../hooks";
+import { usePreferences, useServices, useSession } from "../../hooks";
 import { LoginViewmodel, PreferencesViewmodel, RegisterViewmodel, SystemSettingsViewmodel } from "../../shared/viewmodel";
 import { FirstTimeViewProps } from "./first-time-view.props";
 import { IntroPanel } from "./panels/intro-panel";
@@ -17,6 +17,7 @@ import { SystemPanel } from "./panels/system-panel";
 export function FirstTimeView(props: FirstTimeViewProps) {
   // #region Hooks ------------------------------------------------------------
   const { themeClassName } = usePreferences();
+  const { loggedIn } = useSession();
   const nodeRef = useRef(null);
   const serviceContainer = useServices();
   // #endregion
@@ -60,7 +61,11 @@ export function FirstTimeView(props: FirstTimeViewProps) {
   // #region Event Handling ---------------------------------------------------
   function onGo(): void {
     Promise.all([
-      serviceContainer.configurationService.savePreferences(serviceContainer, preferencesViewmodel.dto),
+      serviceContainer.configurationService.savePreferences(
+        serviceContainer.arcaneArchiveProxy,
+        preferencesViewmodel.dto,
+        loggedIn
+      ),
       serviceContainer.configurationService.saveSystemSettings(systemSettingsViewmodel.dto)
     ]).then(
       () => window.close(),

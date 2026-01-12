@@ -11,7 +11,7 @@ import { ButtonBarProps } from "./button-bar.props";
 
 export function ButtonBar(props: ButtonBarProps) {
   // #region Hooks ------------------------------------------------------------
-  const { loggedIn } = useSession();
+  const { loggedIn, userName, email } = useSession();
   const { authenticationServiceAvailable } = useApiStatus();
   const serviceContainer = useServices();
   // #endregion
@@ -118,7 +118,17 @@ export function ButtonBar(props: ButtonBarProps) {
     return (
       <Menu size="small">
         <MenuItem onClick={() => showProfileDialog(serviceContainer)} text="User Profile" />
-        <MenuItem onClick={() => showChangePasswordDialog(serviceContainer)} text="Change Password" />
+        <MenuItem
+          onClick={
+            () => showChangePasswordDialog(
+              serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory,
+              serviceContainer.overlayService,
+              userName!,
+              email!
+            )
+          }
+          text="Change Password"
+        />
         <MenuItem onClick={logoutClick} text="Log out" />
       </Menu>
     );

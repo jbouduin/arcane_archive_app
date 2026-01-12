@@ -1,6 +1,6 @@
-import { Boundary, BreadcrumbProps, Breadcrumbs, FormGroup, InputGroup, Label, Text, TextArea } from "@blueprintjs/core";
+import { Boundary, BreadcrumbProps, Breadcrumbs, FormGroup, InputGroup, Label, TextArea } from "@blueprintjs/core";
 import { useEffect, useMemo, useState } from "react";
-import { LabelValuePanel } from "../../base/label-value-panel";
+import { createAuditableLabelValueItems, LabelValuePanel } from "../../base/label-value-panel";
 import { handleStringChange } from "../../util";
 import { CollectionDialogBodyProps } from "./collection-dialog.props";
 
@@ -49,16 +49,7 @@ export function CollectionDialogBody(props: CollectionDialogBodyProps) {
   // #endregion
 
   // #region Rendering --------------------------------------------------------
-  // TODO extract this because it comes back for every auditable dto
-  const items = new Map<string, JSX.Element | null>([
-    ["Id", (<Text>{props.viewmodel.id}</Text>)],
-    ["Empty", null],
-    ["Created at", (<Text>{props.viewmodel.createdAtString}</Text>)],
-    ["Created by", (<Text>{props.viewmodel.createdBy}</Text>)],
-    ["Modified at", (<Text>{props.viewmodel.modifiedAtString}</Text>)],
-    ["Modified by", (<Text>{props.viewmodel.modifiedBy}</Text>)]
-  ]);
-
+  const items = createAuditableLabelValueItems(props.viewmodel);
   return (
     <>
       <FormGroup

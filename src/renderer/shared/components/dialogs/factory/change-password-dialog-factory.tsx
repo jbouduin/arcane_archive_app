@@ -1,13 +1,16 @@
-import { IServiceContainer } from "../../../context";
+import { IOverlayService } from "../../../context";
+import { IAuthenticationViewmodelFactory } from "../../../viewmodel";
 import { ChangePasswordDialogBody } from "../change-password-dialog/change-password-dialog-body";
 import { ChangePasswordDialogFooter } from "../change-password-dialog/change-password-dialog-footer";
 import { ChangePasswordDialogBodyProps, ChangePasswordDialogFooterProps, ChangePasswordDialogProps } from "../change-password-dialog/change-password-dialog.props";
 
-export function showChangePasswordDialog(serviceContainer: IServiceContainer): void {
-  const viewmodel = serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getChangePasswordViewmodel(
-    serviceContainer.sessionService.userName!,
-    serviceContainer.sessionService.email!
-  );
+export function showChangePasswordDialog(
+  viewmodelFactory: IAuthenticationViewmodelFactory,
+  overlayService: IOverlayService,
+  userName: string,
+  email: string
+): void {
+  const viewmodel = viewmodelFactory.getChangePasswordViewmodel(userName, email);
   const dialogProps: ChangePasswordDialogProps = {
     isOpen: true,
     title: "Change Password",
@@ -19,5 +22,5 @@ export function showChangePasswordDialog(serviceContainer: IServiceContainer): v
       return (<ChangePasswordDialogFooter {...props} />);
     }
   };
-  serviceContainer.overlayService.openDialog(dialogProps);
+  overlayService.openDialog(dialogProps);
 }

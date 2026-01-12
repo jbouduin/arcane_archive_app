@@ -1,9 +1,9 @@
-import { Checkbox, ControlGroup, FormGroup, HTMLTable, InputGroup, Tab, Tabs, Text } from "@blueprintjs/core";
+import { Checkbox, ControlGroup, FormGroup, HTMLTable, InputGroup, Tab, Tabs } from "@blueprintjs/core";
 import { useMemo } from "react";
 import { useServices } from "../../../../hooks";
 import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption } from "../../../types";
 import { BaseMultiSelect } from "../../base/base-multi-select/base-multi-select";
-import { LabelValuePanel, renderBoolean } from "../../base/label-value-panel";
+import { createAuditableLabelValueItems, LabelValuePanel, renderBoolean } from "../../base/label-value-panel";
 import { handleStringChange } from "../../util";
 import { ValidatedInput } from "../../validated-input/validated-input";
 import { ProfileDialogBodyProps } from "./profile-dialog.props";
@@ -160,19 +160,18 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
   }
 
   function renderAdditionalInfoPanel(): React.JSX.Element {
-    const items = new Map<string, JSX.Element | null>();
+    const accountItems = new Map<string, JSX.Element | null>();
     if (!isSysAdmin) {
-      items.set("Account Locked", renderBoolean(props.viewmodel.accountLocked));
-      items.set("Account active", renderBoolean(props.viewmodel.accountActive));
-      items.set("Account expired", renderBoolean(props.viewmodel.accountExpired));
-      items.set("Password Expired", renderBoolean(props.viewmodel.passwordExpired));
+      accountItems.set("Account Locked", renderBoolean(props.viewmodel.accountLocked));
+      accountItems.set("Account active", renderBoolean(props.viewmodel.accountActive));
+      accountItems.set("Account expired", renderBoolean(props.viewmodel.accountExpired));
+      accountItems.set("Password Expired", renderBoolean(props.viewmodel.passwordExpired));
     }
-    items.set("Id", (<Text>{props.viewmodel.id}</Text>));
-    items.set("empty", null);
-    items.set("Created at", (<Text>{props.viewmodel.createdAtString}</Text>));
-    items.set("Created by", (<Text>{props.viewmodel.createdBy}</Text>));
-    items.set("Modified at", (<Text>{props.viewmodel.modifiedAtString.toLocaleString()}</Text>));
-    items.set("Modified by", (<Text>{props.viewmodel.modifiedBy}</Text>));
+
+    const items = new Map<string, JSX.Element | null>([
+      ...accountItems.entries(),
+      ...createAuditableLabelValueItems(props.viewmodel)
+    ]);
 
     return (
       <>

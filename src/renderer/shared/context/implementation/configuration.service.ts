@@ -1,21 +1,16 @@
-import { ApiConfigurationDto, PreferencesDto, SettingsDto, SystemSettingsDto } from "../../../../common/dto";
+import { PreferencesDto, SettingsDto, SystemSettingsDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
-import { IConfigurationService, IIpcProxyService, IServiceContainer } from "../interface";
-import { PreferencesChangeListener } from "../providers";
+import { IArcaneArchiveProxyService, IConfigurationService, IIpcProxyService } from "../interface";
+import { PreferencesChangeListener } from "../types";
 
 export class ConfigurationService implements IConfigurationService {
   // #region private fields ---------------------------------------------------
   private ipcProxy!: IIpcProxyService;
-  private _apiConfiguration!: ApiConfigurationDto | null;
   private _preferences!: PreferencesDto;
   private listeners: Array<PreferencesChangeListener>;
   // #endregion
 
   // #region IConfiguration Getters -------------------------------------------
-  public get apiConfiguration(): ApiConfigurationDto | null {
-    return this._apiConfiguration;
-  }
-
   public get preferences(): PreferencesDto {
     return this._preferences;
   }
@@ -38,7 +33,6 @@ export class ConfigurationService implements IConfigurationService {
     return this.ipcProxy.getData<SettingsDto>(IpcPaths.SETTINGS)
       .then(
         (settings: SettingsDto) => {
-          this._apiConfiguration = settings.apiConfiguration;
           this._preferences = settings.preferences;
           return settings;
         }
@@ -64,11 +58,11 @@ export class ConfigurationService implements IConfigurationService {
       );
   }
 
-  public savePreferences(serviceContainer: IServiceContainer, preferences: PreferencesDto): Promise<PreferencesDto> {
+  public savePreferences(arcaneArchiveProxy: IArcaneArchiveProxyService, preferences: PreferencesDto, loggedIn: boolean): Promise<PreferencesDto> {
     const promises = new Array<Promise<PreferencesDto>>();
     promises.push(this.ipcProxy.postData<PreferencesDto, PreferencesDto>(IpcPaths.PREFERENCES, preferences));
-    if (serviceContainer.sessionService.loggedIn) {
-      promises.push(serviceContainer.arcaneArchiveProxy.putData<PreferencesDto, PreferencesDto>(
+    if (loggedIn) {
+      promises.push(arcaneArchiveProxy.putData<PreferencesDto, PreferencesDto>(
         "authentication", "/app/account/preferences", preferences
       ));
     }
@@ -82,7 +76,7 @@ export class ConfigurationService implements IConfigurationService {
       );
   }
 
-  public subscribe(listener: PreferencesChangeListener): () => void {
+  public subscribePreferenceChangeListener(listener: PreferencesChangeListener): () => void {
     this.listeners.push(listener);
     return () => {
       this.listeners = this.listeners.filter((listener: PreferencesChangeListener) => listener !== listener);

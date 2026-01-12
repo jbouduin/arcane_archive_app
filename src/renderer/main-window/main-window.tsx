@@ -3,11 +3,9 @@ import { createRoot } from "react-dom/client";
 import { IpcPaths } from "../../common/ipc";
 import { DialogRenderer } from "../shared/components/base/base-dialog/dialog-renderer";
 import { ServerNotAvailable } from "../shared/components/server-not-available/server-not-available";
+import { PreferencesProvider, ServiceContainerContext, SessionProvider } from "../shared/context";
 import { ServiceContainer } from "../shared/context/implementation/service.container";
 import { ApiStatusProvider } from "../shared/context/providers/api-status-provider";
-import { PreferencesProvider } from "../shared/context/providers/preferences-provider";
-import { SessionProvider } from "../shared/context/providers/session-provider";
-import { ServiceContainerContext } from "../shared/context/shared.context";
 import { MainWindowDesktop } from "./components/desktop/main-window-desktop";
 
 FocusStyleManager.onlyShowFocusOnTabs();

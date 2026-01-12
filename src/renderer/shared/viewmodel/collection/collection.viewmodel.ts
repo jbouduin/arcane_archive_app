@@ -1,28 +1,15 @@
 import { stringHasMinimalLength } from "../../components/util";
 import { CollectionDto } from "../../dto";
 import { CollectionType } from "../../types";
+import { IAuditFieldsViewmodel } from "../audit-fields.viewmodel";
 import { BaseViewmodel, viewmodelMode } from "../base.viewmodel";
 
 export type CollectionViewmodelField = "code";
-export class CollectionViewmodel extends BaseViewmodel<CollectionDto, CollectionViewmodelField> {
+export class CollectionViewmodel
+  extends BaseViewmodel<CollectionDto, CollectionViewmodelField>
+  implements IAuditFieldsViewmodel {
   // #region Private fields ---------------------------------------------------
-  private readonly parentCollection: CollectionDto | null;
   private readonly _parentPath: Array<string>;
-  // #endregion
-
-  // #region Getters/Setters - Parent -----------------------------------------
-  // TODO these getters are not used anymore remove them, propably also remove parentCollection dto completely
-  public get hasParent(): boolean {
-    return this.parentCollection != null;
-  }
-
-  public get parentCode(): string {
-    return this.parentCollection?.code || "";
-  }
-
-  public get parentIsFolder(): boolean {
-    return this.parentCollection?.type == "FOLDER" || false;
-  }
   // #endregion
 
   // #region Getters/Setters --------------------------------------------------
@@ -46,7 +33,7 @@ export class CollectionViewmodel extends BaseViewmodel<CollectionDto, Collection
     }
   }
 
-  public get id(): string {
+  public get idAsString(): string {
     if (this._dto.id) {
       return this._dto.id.toString();
     } else {
@@ -88,9 +75,8 @@ export class CollectionViewmodel extends BaseViewmodel<CollectionDto, Collection
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: CollectionDto, parentDto: CollectionDto | null, parentPath: Array<string>, mode: viewmodelMode) {
+  public constructor(dto: CollectionDto, parentPath: Array<string>, mode: viewmodelMode) {
     super(dto, mode);
-    this.parentCollection = parentDto;
     this._parentPath = parentPath;
     if (mode == "update") {
       this.validateCode();

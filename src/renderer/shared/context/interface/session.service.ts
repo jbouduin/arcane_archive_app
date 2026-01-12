@@ -1,28 +1,38 @@
 import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
 import { ChangePasswordRequestDto, RegisterRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
-import { SessionChangeListener } from "../providers";
+import { SessionChangeListener } from "../types";
 import { IArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
+import { IIpcProxyService } from "./ipc-proxy.service";
 import { IServiceContainer } from "./service-container";
 
 export interface ISessionService {
-  readonly loggedIn: boolean;
-  readonly userName: string | null;
-  readonly email: string | null;
+  // #region Other ------------------------------------------------------------
+  initialize(serviceContainer: IServiceContainer): Promise<void>;
+  selectDirectory(ipcProxy: IIpcProxyService, currentValue: string): Promise<string | undefined>;
+  // #endregion
 
+  // #region Account - User ---------------------------------------------------
   changePassword(arcaneArchiveProxy: IArcaneArchiveProxyService, changePasswordRequest: ChangePasswordRequestDto): Promise<void>;
   getNewUserName(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<string>;
-  hasRole(role: ApplicationRole): boolean;
+  register(arcaneArchiveProxy: IArcaneArchiveProxyService, registerDto: RegisterRequestDto): Promise<void>;
+  saveSelf(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: UserDto): Promise<UserDto>;
+  saveUser(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: UserDto): Promise<UserDto>;
+  userExists(arcaneArchiveProxy: IArcaneArchiveProxyService, userName: string): Promise<boolean>;
+  // #endregion
+
+  // #region Session ----------------------------------------------------------
   hasAnyRole(...roles: Array<ApplicationRole>): boolean;
-  initialize(serviceContainer: IServiceContainer): Promise<void>;
-  subscribeSessionChangeListener(listener: SessionChangeListener): () => void;
+  hasRole(role: ApplicationRole): boolean;
   login(serviceContainer: IServiceContainer, loginRequest: LoginRequestDto): Promise<LoginResponseDto>;
   logout(serviceContainer: IServiceContainer): Promise<void>;
-  register(serviceContainer: IServiceContainer, registerDto: RegisterRequestDto): Promise<void>;
-  saveUser(serviceContainer: IServiceContainer, dto: UserDto): Promise<UserDto>;
-  saveCredentials(serviceContainer: IServiceContainer, loginRequest: LoginRequestDto): Promise<void>;
-  getSavedUserNames(serviceContainer: IServiceContainer): Promise<Array<string>>;
-  getPassword(serviceContainer: IServiceContainer, username: string): Promise<string>;
-  deleteSavedUser(serviceContainer: IServiceContainer, username: string): Promise<number>;
-  userExists(serviceContainer: IServiceContainer, userName: string): Promise<boolean>;
+  subscribeSessionChangeListener(listener: SessionChangeListener): () => void;
+  // #endregion
+
+  // #region Local account storage --------------------------------------------
+  deleteSavedUser(ipcProxy: IIpcProxyService, username: string): Promise<number>;
+  getSavedUserNames(ipcProxy: IIpcProxyService): Promise<Array<string>>;
+  getPassword(ipcProxy: IIpcProxyService, username: string): Promise<string>;
+  saveCredentials(ipcProxy: IIpcProxyService, loginRequest: LoginRequestDto): Promise<void>;
+  // #endregion
 };

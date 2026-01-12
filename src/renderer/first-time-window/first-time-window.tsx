@@ -4,9 +4,8 @@ import { SystemSettingsDto } from "../../common/dto";
 import { IpcPaths } from "../../common/ipc";
 import { DialogRenderer } from "../shared/components/base/base-dialog/dialog-renderer";
 import { ServerNotAvailable } from "../shared/components/server-not-available/server-not-available";
-import { ServiceContainerContext, SessionProvider } from "../shared/context";
+import { PreferencesProvider, ServiceContainerContext, SessionProvider } from "../shared/context";
 import { ServiceContainer } from "../shared/context/implementation/service.container";
-import { PreferencesProvider } from "../shared/context/providers/preferences-provider";
 import { FirstTimeView } from "./first-time-view/first-time-view";
 
 FocusStyleManager.onlyShowFocusOnTabs();

@@ -14,7 +14,8 @@ export function RegisterDialogFooter(props: RegisterDialogFooterProps) {
 
   // #region Event handling ---------------------------------------------------
   function registerClick(e: React.SyntheticEvent<HTMLElement, Event>, dto: RegisterRequestDto) {
-    return serviceContainer.sessionService.register(serviceContainer, dto)
+    return serviceContainer.sessionService
+      .register(serviceContainer.arcaneArchiveProxy, dto)
       .then(
         () => {
           if (props.onClose) {

@@ -1,10 +1,8 @@
 import { Button, Callout, FormGroup, HTMLSelect, Tab, Tabs } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { LogLevel } from "../../../../../common/enums";
-import { IpcPaths } from "../../../../../common/ipc";
 import { useServices } from "../../../../hooks";
-import { handleStringChange } from "../../util";
-import { handleValueChange } from "../../util/handle-value-change";
+import { handleStringChange, handleValueChange } from "../../util";
 import { ValidatedInput } from "../../validated-input/validated-input";
 import { SystemSettingsDialogBodyProps } from "./system-settings-dialog.props";
 
@@ -30,8 +28,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
       default:
         throw (new Error("invalid target"));
     }
-    // TODO move at least this call to configuration service, better move all
-    serviceContainer.ipcProxy.getData<string>(`${IpcPaths.IO_SELECT_DIRECTORY}/${encodeURIComponent(current)}`)
+    serviceContainer.sessionService.selectDirectory(serviceContainer.ipcProxy, current)
       .then(
         (dir: string | undefined) => {
           if (dir) {

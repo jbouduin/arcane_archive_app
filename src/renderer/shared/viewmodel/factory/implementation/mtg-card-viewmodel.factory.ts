@@ -1,6 +1,6 @@
-import { IArcaneArchiveProxyService, IColorService, IDisplayValueService, ILanguageService, IMtgSetService } from "../../../context";
-import { LibraryCardDto, LibraryCardListDto, LibraryRulingDto } from "../../../dto";
-import { LibraryCardViewmodel, LibraryCardListViewmodel, LibraryRulingViewmodel } from "../../mtg-card";
+import { IArcaneArchiveProxyService, IColorService, IDisplayValueService, ILanguageService, IMtgSetService, IServiceContainer } from "../../../context";
+import { AdvancedCardSearchDto, LibraryCardDto, LibraryCardListDto, LibraryRulingDto } from "../../../dto";
+import { AdvancedCardSearchViewmodel, LibraryCardListViewmodel, LibraryCardViewmodel, LibraryRulingViewmodel } from "../../mtg-card";
 import { IMtgCardViewmodelFactory } from "../interface";
 
 export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
@@ -26,7 +26,10 @@ export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
   // #endregion
 
   // #region IMtgCardViewmodelFactory Members ---------------------------------
-  public getLibraryCardDetailViewmodel(arcaneArchiveProxy: IArcaneArchiveProxyService, cardId: number): Promise<LibraryCardViewmodel> {
+  public getLibraryCardDetailViewmodel(
+    arcaneArchiveProxy: IArcaneArchiveProxyService,
+    cardId: number
+  ): Promise<LibraryCardViewmodel> {
     return arcaneArchiveProxy
       .getData<LibraryCardDto>("library", "/public/card/" + cardId)
       .then((dto: LibraryCardDto) => new LibraryCardViewmodel(this.colorService, this.displayValueService, this.languageService, this.mtgSetService, dto));
@@ -36,13 +39,23 @@ export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
     return new LibraryCardListViewmodel(this.colorService, this.displayValueService, this.languageService, this.mtgSetService, dto);
   }
 
-  public getRulingsViewmodel(arcaneArchiveProxy: IArcaneArchiveProxyService, oracleId: string): Promise<Array<LibraryRulingViewmodel>> {
+  public getRulingsViewmodel(
+    arcaneArchiveProxy: IArcaneArchiveProxyService,
+    oracleId: string
+  ): Promise<Array<LibraryRulingViewmodel>> {
     return arcaneArchiveProxy
       .getData<Array<LibraryRulingDto>>("library", "/public/ruling/" + oracleId)
       .then((dtos: Array<LibraryRulingDto>) => dtos
         .map((dto: LibraryRulingDto) => new LibraryRulingViewmodel(dto))
         .sort((a: LibraryRulingViewmodel, b: LibraryRulingViewmodel) => b.publishedAtDate.getTime() - a.publishedAtDate.getTime())
       );
+  }
+
+  public getAdvancedCardSearchViewmodel(
+    advancedCardSearch: AdvancedCardSearchDto,
+    serviceContainer: IServiceContainer
+  ): AdvancedCardSearchViewmodel {
+    return new AdvancedCardSearchViewmodel(advancedCardSearch, serviceContainer);
   }
   // #endregion
 }

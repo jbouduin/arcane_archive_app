@@ -35,7 +35,7 @@ export function LoginDialogFooter(props: LoginDialogFooterProps) {
   }
 
   function saveUser(dto: LoginRequestDto): void {
-    void serviceContainer.sessionService.saveCredentials(serviceContainer, dto);
+    void serviceContainer.sessionService.saveCredentials(serviceContainer.ipcProxy, dto);
   }
   // #endregion
 

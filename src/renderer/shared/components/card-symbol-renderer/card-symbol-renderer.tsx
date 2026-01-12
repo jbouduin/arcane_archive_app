@@ -1,40 +1,38 @@
 import { isEmpty, xor } from "lodash";
-import * as React from "react";
-import { IServiceContainer, ServiceContainerContext } from "../../context";
+import { memo } from "react";
+import { useServices } from "../../../hooks";
 import { SvgRenderer } from "../svg-renderer";
 import { compareClassNameProp } from "../util";
 import { CardSymbolRendererProps } from "./card-symbol-renderer.props";
 
-export const CardSymbolRenderer = React.memo(
+export const CardSymbolRenderer = memo(
   (props: CardSymbolRendererProps) => {
+    // #region Hooks ----------------------------------------------------------
+    const serviceContainer = useServices();
+    // #endregion
+
+    // #region Rendering ------------------------------------------------------
     return (
-      <>
-        <ServiceContainerContext.Consumer>
-          {
-            (serviceContainer: IServiceContainer) => (
-              <div>
-                {
-                  props.cardSymbols
-                    .map((cardSymbol: string, idx: number) => {
-                      if (cardSymbol == "//") {
-                        return (<span key={`s-${idx}`}>&nbsp;&nbsp;//&nbsp;&nbsp;</span>);
-                      } else if (cardSymbol == "-") {
-                        return (<span key={`s-${idx}`}>&nbsp;&nbsp;-&nbsp;&nbsp;</span>);
-                      } else {
-                        const symbolSvg = serviceContainer.cardSymbolService.getCardSymbolsSvg(cardSymbol);
-                        if (symbolSvg) {
-                          return (<SvgRenderer className={props.className} key={`s-${idx}`} svg={symbolSvg} />);
-                        } else {
-                          return;
-                        }
-                      }
-                    })
+      <div>
+        {
+          props.cardSymbols
+            .map((cardSymbol: string, idx: number) => {
+              if (cardSymbol == "//") {
+                return (<span key={`s-${idx}`}>&nbsp;&nbsp;//&nbsp;&nbsp;</span>);
+              } else if (cardSymbol == "-") {
+                return (<span key={`s-${idx}`}>&nbsp;&nbsp;-&nbsp;&nbsp;</span>);
+              } else {
+                const symbolSvg = serviceContainer.cardSymbolService.getCardSymbolsSvg(cardSymbol);
+                if (symbolSvg) {
+                  return (<SvgRenderer className={props.className} key={`s-${idx}`} svg={symbolSvg} />);
+                } else {
+                  return;
                 }
-              </div>
-            )
-          }
-        </ServiceContainerContext.Consumer>
-      </ >
+              }
+            })
+        }
+      </div>
+
     );
     // #endregion
   },

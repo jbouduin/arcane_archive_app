@@ -1,16 +1,21 @@
 import { PreferencesDto } from "../../../../../common/dto";
-import { useServices } from "../../../../hooks";
+import { useServices, useSession } from "../../../../hooks";
 import { SaveCancelResetFooter } from "../../base/base-dialog";
 import { PreferencesDialogFooterProps } from "./preferences-dialog.props";
 
 export function PreferencesDialogFooter(props: PreferencesDialogFooterProps) {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
+  const { loggedIn } = useSession();
   // #endregion
 
   // #region Event handling ---------------------------------------------------
   function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, _dto: PreferencesDto): Promise<void> {
-    serviceContainer.configurationService.savePreferences(serviceContainer, props.viewmodel.dto);
+    serviceContainer.configurationService.savePreferences(
+      serviceContainer.arcaneArchiveProxy,
+      props.viewmodel.dto,
+      loggedIn
+    );
     if (props.onClose) {
       props.onClose(event);
     }

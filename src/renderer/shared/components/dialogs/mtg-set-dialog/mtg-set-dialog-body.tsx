@@ -2,7 +2,7 @@ import { Checkbox, ControlGroup, FormGroup, HTMLTable, InputGroup, NumericInput,
 import { useState } from "react";
 import { useServices } from "../../../../hooks";
 import { LanguageDto } from "../../../dto";
-import { LabelValuePanel, renderBoolean } from "../../base/label-value-panel";
+import { createAuditableLabelValueItems, LabelValuePanel, renderBoolean } from "../../base/label-value-panel";
 import { LanguageButtonBar } from "../../card-detail-view/language-button-bar/language-button-bar";
 import { MtgSetDialogBodyProps } from "./mtg-set-dialog.props";
 
@@ -82,26 +82,12 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
   }
 
   function renderReadOnlyAdditionalInfo(): JSX.Element {
-    const items = new Map<string, JSX.Element>([
-      ["Id", (<Text>{props.viewmodel.id}</Text>)],
-      ["Token Set Code", (<Text>{props.viewmodel.tokenSetCode}</Text>)],
-      ["Created at", (<Text>{props.viewmodel.createdAtString}</Text>)],
-      ["Created by", (<Text>{props.viewmodel.createdBy}</Text>)],
-      ["Modified at", (<Text>{props.viewmodel.modifiedAtString}</Text>)],
-      ["Modified by", (<Text>{props.viewmodel.modifiedBy}</Text>)]
-    ]);
+    const items = createAuditableLabelValueItems(props.viewmodel);
     return (<LabelValuePanel items={items} columns={2} style={{ padding: "0px" }} />);
   }
 
   function renderReadWriteAdditionalInfo(): JSX.Element {
-    const items = new Map<string, JSX.Element | null>([
-      ["Id", (<Text>{props.viewmodel.id}</Text>)],
-      ["Empty", null],
-      ["Created at", (<Text>{props.viewmodel.createdAtString}</Text>)],
-      ["Created by", (<Text>{props.viewmodel.createdBy}</Text>)],
-      ["Modified at", (<Text>{props.viewmodel.modifiedAtString}</Text>)],
-      ["Modified by", (<Text>{props.viewmodel.modifiedBy}</Text>)]
-    ]);
+    const items = createAuditableLabelValueItems(props.viewmodel);
     return (
       <>
         <ControlGroup

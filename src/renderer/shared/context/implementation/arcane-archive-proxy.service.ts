@@ -5,8 +5,7 @@ import { runSerial } from "../../../../common/util";
 import { ApiInfoDto } from "../../dto";
 import { MtgServer, ShowToastFn } from "../../types";
 import { IArcaneArchiveProxyService, IConfigurationService, ISessionService } from "../interface";
-import { ApiStatusChangeListener } from "../providers";
-import { ArcaneArchiveRequestOptions, InvalidSessionListener } from "../types";
+import { ApiStatusChangeListener, ArcaneArchiveRequestOptions, InvalidSessionListener } from "../types";
 
 export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
   // #region Private fields ---------------------------------------------------
@@ -84,7 +83,7 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
       });
     }
     if (this.unsubscribePreferences == null) {
-      this.unsubscribePreferences = configurationService.subscribe((data: PreferencesDto) => {
+      this.unsubscribePreferences = configurationService.subscribePreferenceChangeListener((data: PreferencesDto) => {
         this.logServerResponses = data.logServerResponses;
       });
     }
@@ -218,7 +217,7 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
       console.log({ path: path, response: response });
     }
     if (response.status == "UNAUTHORIZED") {
-      // TODO check if we can differentiate between expired sessions, JWT's or just a call to a method requiring a session
+      // TODO check if we can differentiate between expired sessions, expired JWT's or just a call to a method requiring a session
       this.invalidSessionListeners.forEach(l => l());
       if (!suppressInvalidSessionHandling) {
         this.showToast(

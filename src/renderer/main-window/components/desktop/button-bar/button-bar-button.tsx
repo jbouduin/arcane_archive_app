@@ -1,8 +1,8 @@
 import { Button, Popover, Tooltip } from "@blueprintjs/core";
 import * as React from "react";
 import { IpcPaths } from "../../../../../common/ipc";
+import { useServices } from "../../../../hooks";
 import { SvgRenderer } from "../../../../shared/components/svg-renderer";
-import { IServiceContainer, ServiceContainerContext } from "../../../../shared/context";
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
 import { ButtonBarButtonProps } from "./button-bar-button.props";
 
@@ -12,7 +12,7 @@ export function ButtonBarButton(props: ButtonBarButtonProps) {
   // #endregion
 
   // #region Context --------------------------------------------------------------------
-  const serviceContainer = React.useContext<IServiceContainer>(ServiceContainerContext);
+  const serviceContainer = useServices();
   // #endregion
 
   // #region Event handling ---------------------------------------------------

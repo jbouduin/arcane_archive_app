@@ -1,10 +1,9 @@
-import { ApiConfigurationDto, PreferencesDto, SettingsDto, SystemSettingsDto } from "../../../../common/dto";
-import { PreferencesChangeListener } from "../providers";
+import { PreferencesDto, SettingsDto, SystemSettingsDto } from "../../../../common/dto";
+import { PreferencesChangeListener } from "../types";
+import { IArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
 import { IIpcProxyService } from "./ipc-proxy.service";
-import { IServiceContainer } from "./service-container";
 
 export interface IConfigurationService {
-  readonly apiConfiguration: ApiConfigurationDto | null;
   preferences: PreferencesDto;
 
   /**
@@ -17,6 +16,6 @@ export interface IConfigurationService {
   saveSystemSettings(configuration: SystemSettingsDto): Promise<SystemSettingsDto>;
   getSystemSettingsFactoryDefaults(): Promise<SystemSettingsDto>;
   restart(): void;
-  savePreferences(serviceContainer: IServiceContainer, preferences: PreferencesDto): Promise<PreferencesDto>;
-  subscribe(listener: PreferencesChangeListener): () => void;
+  savePreferences(arcaneArchiveProxy: IArcaneArchiveProxyService, preferences: PreferencesDto, loggedIn: boolean): Promise<PreferencesDto>;
+  subscribePreferenceChangeListener(listener: PreferencesChangeListener): () => void;
 }

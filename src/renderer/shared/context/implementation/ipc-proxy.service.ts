@@ -30,7 +30,7 @@ export class IpcProxyService implements IIpcProxyService {
   public initialize(configurationService: IConfigurationService, preferences: PreferencesDto): void {
     this.logServerResponses = preferences.logServerResponses;
     if (this.unsubscribePreferences == null) {
-      this.unsubscribePreferences = configurationService.subscribe((data: PreferencesDto) => {
+      this.unsubscribePreferences = configurationService.subscribePreferenceChangeListener((data: PreferencesDto) => {
         this.logServerResponses = data.logServerResponses;
       });
     }

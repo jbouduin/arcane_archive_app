@@ -16,7 +16,8 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps) {
   // #endregion
 
   // #region State ------------------------------------------------------------
-  const searchViewmodel = new AdvancedCardSearchViewmodel(props.advancedCardSearch, serviceContainer);
+  const searchViewmodel = serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory
+    .getAdvancedCardSearchViewmodel(props.advancedCardSearch, serviceContainer);
   // BUG ResizeObserver (errors!) when scrolling open drop downs out of view
   // the solution to force the dropdown to be closed when scrolling does not work.
   // In order to close dropdowns, we use scrollVersion and use it to re-render the selects

@@ -15,8 +15,12 @@ export class MtgSetDetailViewmodel extends BaseViewmodel<MtgSetDto, MtgSetDetail
   // #endregion
 
   // #region Readonly Members -------------------------------------------------
-  public get id(): number {
-    return this._dto.id!;
+  public get idAsString(): string {
+    if (this._dto.id) {
+      return this._dto.id.toString();
+    } else {
+      return "-";
+    }
   }
 
   public get code(): string {

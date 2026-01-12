@@ -1,11 +1,8 @@
 import { Menu, MenuItem } from "@blueprintjs/core";
 import { Cell, CellRenderer } from "@blueprintjs/table";
 import classNames from "classnames";
-import * as React from "react";
 import { BaseColumn, CellLookup, ClientSortCallback, ServerSortCallback } from "../base/base-table";
 import { CardSetLookupResult } from "./card-set-lookup-result";
-// import { SvgProvider } from "../svg-provider";
-// import { getRarityColorClassname } from "../utils";
 
 export class CardSetColumn<T> extends BaseColumn<T, CardSetLookupResult> {
   // LATER: sort by set release date also

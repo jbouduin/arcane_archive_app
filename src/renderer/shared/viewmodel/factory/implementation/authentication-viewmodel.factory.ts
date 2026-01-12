@@ -45,14 +45,14 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
   public async getLoginViewmodel(showRegisterButton: boolean, serviceContainer: IServiceContainer): Promise<LoginViewmodel> {
     let result: LoginViewmodel;
     const savedUserNames = await serviceContainer.sessionService
-      .getSavedUserNames(serviceContainer)
+      .getSavedUserNames(serviceContainer.ipcProxy)
       .then(
         (userNames: Array<string>) => userNames,
         () => new Array<string>()
       );
     if (savedUserNames.length == 1) {
       // create an initial view model and set the properties, so that the modified flag is true
-      const existingPwd = await serviceContainer.sessionService.getPassword(serviceContainer, savedUserNames[0]);
+      const existingPwd = await serviceContainer.sessionService.getPassword(serviceContainer.ipcProxy, savedUserNames[0]);
       result = this.getInitialLoginViewmodel(showRegisterButton, savedUserNames);
       result.user = savedUserNames[0];
       result.password = existingPwd;

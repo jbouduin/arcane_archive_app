@@ -58,7 +58,8 @@ export class RegisterViewmodel extends PasswordViewmodel<RegisterRequestDto, Reg
         { helperText: "Username may not be an email address", intent: "danger" }
       );
     } else {
-      const userExists = await serviceContainer.sessionService.userExists(serviceContainer, this._dto.userName);
+      const userExists = await serviceContainer.sessionService
+        .userExists(serviceContainer.arcaneArchiveProxy, this._dto.userName);
       if (userExists) {
         this.setFieldInvalid("userName", { helperText: "Username already in use", intent: "danger" });
       } else {

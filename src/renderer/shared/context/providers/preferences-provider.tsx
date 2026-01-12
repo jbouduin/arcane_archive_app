@@ -18,7 +18,7 @@ export function PreferencesProvider(props: ProviderProps) {
   // #region Effects ----------------------------------------------------------
   useEffect(
     () => {
-      const unsubscribe = configurationService.subscribe(
+      const unsubscribe = configurationService.subscribePreferenceChangeListener(
         (data: PreferencesDto) => setTheme(toThemeName(data.useDarkTheme))
       );
       return unsubscribe;

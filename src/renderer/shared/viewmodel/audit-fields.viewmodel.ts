@@ -1,5 +1,5 @@
 export interface IAuditFieldsViewmodel {
-  readonly id: number;
+  readonly idAsString: string;
   readonly createdAtString: string;
   readonly createdBy: string;
   readonly modifiedAtString: string;

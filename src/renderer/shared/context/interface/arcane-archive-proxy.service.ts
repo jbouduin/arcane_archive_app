@@ -1,8 +1,7 @@
 import { SettingsDto } from "../../../../common/dto";
 import { ApiInfoDto } from "../../dto";
 import { MtgServer, ShowToastFn } from "../../types";
-import { ApiStatusChangeListener } from "../providers";
-import { ArcaneArchiveRequestOptions, InvalidSessionListener } from "../types";
+import { ApiStatusChangeListener, ArcaneArchiveRequestOptions, InvalidSessionListener } from "../types";
 import { IConfigurationService } from "./configuration.service";
 import { ISessionService } from "./session.service";
 

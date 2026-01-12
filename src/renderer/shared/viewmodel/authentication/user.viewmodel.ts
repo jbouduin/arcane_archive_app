@@ -12,8 +12,12 @@ export class UserViewmodel extends BaseViewmodel<UserDto, UserViewmodelField> im
   // #endregion
 
   // #region Getters/Setters: profile -----------------------------------------
-  public get id(): number {
-    return this._dto.account.id;
+  public get idAsString(): string {
+    if (this._dto.account.id) {
+      return this._dto.account.id.toString();
+    } else {
+      return "-";
+    }
   }
 
   public get email(): string {

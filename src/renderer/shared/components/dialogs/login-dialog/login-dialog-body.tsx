@@ -15,7 +15,7 @@ export function LoginDialogBody(props: LoginDialogBodyProps) {
   function onSelectUser(userName: string): void {
     props.viewmodel.user = userName;
     void serviceContainer.sessionService
-      .getPassword(serviceContainer, userName)
+      .getPassword(serviceContainer.ipcProxy, userName)
       .then(
         (pwd: string) => {
           props.viewmodel.password = pwd;
@@ -28,13 +28,13 @@ export function LoginDialogBody(props: LoginDialogBodyProps) {
 
   function onRemoveUser(username: string) {
     void serviceContainer.sessionService
-      .deleteSavedUser(serviceContainer, username)
+      .deleteSavedUser(serviceContainer.ipcProxy, username)
       .then(
         async () => {
           props.viewmodel.savedUserNames.delete(username);
           if (props.viewmodel.savedUserNames.size == 1) {
             const onlyUser = Array.of(...props.viewmodel.savedUserNames)[0];
-            const password = await serviceContainer.sessionService.getPassword(serviceContainer, onlyUser);
+            const password = await serviceContainer.sessionService.getPassword(serviceContainer.ipcProxy, onlyUser);
             props.viewmodel.user = onlyUser;
             props.viewmodel.password = password;
             props.viewmodel.selectedExistingPassword = password;

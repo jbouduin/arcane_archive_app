@@ -2,11 +2,10 @@ import { addSelectOption, clearSelection, removeSelectOption } from "../../compo
 import { IServiceContainer } from "../../context";
 import { AdvancedCardSearchDto, ColorDto, MtgSetTreeDto } from "../../dto";
 import { ColorType, SelectOption } from "../../types";
-import { BaseViewmodel } from "../base.viewmodel";
 
-// TODO check why this is a BaseViewmodel descendant. Is this really needed
-export class AdvancedCardSearchViewmodel extends BaseViewmodel<AdvancedCardSearchDto, string> {
+export class AdvancedCardSearchViewmodel {
   // #region Private fields ---------------------------------------------------
+  private _dto: AdvancedCardSearchDto;
   private _allCardSets: Array<SelectOption<MtgSetTreeDto>>;
   private _allColors: Array<SelectOption<ColorDto>>;
   private _allRarities: Array<SelectOption<string>>;
@@ -119,11 +118,15 @@ export class AdvancedCardSearchViewmodel extends BaseViewmodel<AdvancedCardSearc
   public get allToughnesses(): Array<SelectOption<string>> {
     return this._allToughnesses;
   }
+
+  public get dto(): AdvancedCardSearchDto {
+    return this._dto;
+  }
   // #endregion
 
   // #region Constructor ------------------------------------------------------
   public constructor(dto: AdvancedCardSearchDto, serviceContainer: IServiceContainer) {
-    super(dto);
+    this._dto = dto;
     this._allCardSets = serviceContainer.mtgSetService.getSelectOptions();
     this._allColors = serviceContainer.colorService.getSelectOptions();
     this._allRarities = serviceContainer.displayValueService.getSelectOptions("rarity");

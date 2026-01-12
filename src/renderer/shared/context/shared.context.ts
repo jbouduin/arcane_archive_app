@@ -1,7 +1,7 @@
 import { createContext } from "react";
 import { ServiceContainer } from "./implementation/service.container";
-import { ApiStatusContextType, IPreferencesContextType, IServiceContainer } from "./interface";
-import { ISessionContextType } from "./interface/session-context-type";
+import { IServiceContainer } from "./interface";
+import { ApiStatusContextType, PreferencesContextType, SessionContextType } from "./types";
 
 export const ApiStatusContext = createContext<ApiStatusContextType>(
   {
@@ -12,5 +12,5 @@ export const ApiStatusContext = createContext<ApiStatusContextType>(
   }
 );
 export const ServiceContainerContext = createContext<IServiceContainer>(new ServiceContainer());
-export const SessionContext = createContext<ISessionContextType | undefined>(undefined);
-export const PreferencesContext = createContext<IPreferencesContextType | undefined>(undefined);
+export const SessionContext = createContext<SessionContextType | undefined>(undefined);
+export const PreferencesContext = createContext<PreferencesContextType | undefined>(undefined);
