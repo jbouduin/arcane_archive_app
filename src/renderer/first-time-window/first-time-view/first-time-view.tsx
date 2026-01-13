@@ -1,7 +1,7 @@
 import { Card } from "@blueprintjs/core";
 import classNames from "classnames";
-import { noop } from "lodash";
-import { useEffect, useRef, useState } from "react";
+import { cloneDeep, noop } from "lodash";
+import { useReducer, useRef, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { LoginResponseDto } from "../../../common/dto";
 import { usePreferences, useServices, useSession } from "../../hooks";
@@ -24,37 +24,15 @@ export function FirstTimeView(props: FirstTimeViewProps) {
 
   // #region State ------------------------------------------------------------
   const [currentPanel, setCurrentPanel] = useState<PanelType>("intro");
-  const [loginViewmodel, setLoginViewmodel] = useState<LoginViewmodel>(
-    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getInitialLoginViewmodel(false)
+  // Use a mutable viewmodel and force update after changes using reducer
+  const [_forceUpdate, forceUpdate] = useReducer(x => x + 1, 0);
+  const loginViewmodelRef = useRef<LoginViewmodel>(cloneDeep(props.loginViewmodel));
+  const registrationViewmodelRef = useRef<RegisterViewmodel>(cloneDeep(props.registerViewmodel));
+  const systemSettingsViewmodelRef = useRef<SystemSettingsViewmodel>(
+    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getSystemSettingsViewmodelFromDto(cloneDeep(props.systemSettings), true)
   );
-  const [registrationViewmodel, setRegistrationViewmodel] = useState<RegisterViewmodel>(
-    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getInitialRegisterViewmodel(false, serviceContainer.configurationService.preferences)
-  );
-  // this one is initialized with the factory default system settings
-  const [systemSettingsViewmodel, _setSystemSettingsViewmodel] = useState<SystemSettingsViewmodel>(
-    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getSystemSettingsViewmodelFromDto(props.systemSettings, true)
-  );
-  const [preferencesViewmodel, setPreferencesViewmodel] = useState<PreferencesViewmodel>(
-    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(serviceContainer.configurationService.preferences)
-  );
-  // #endregion
-
-  // #region Effects ----------------------------------------------------------
-  useEffect(
-    () => {
-      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
-        .getLoginViewmodel(false, serviceContainer)
-        .then((model: LoginViewmodel) => setLoginViewmodel(model));
-    },
-    []
-  );
-  useEffect(
-    () => {
-      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
-        .getRegisterViewmodel(false, serviceContainer)
-        .then((model: RegisterViewmodel) => setRegistrationViewmodel(model));
-    },
-    []
+  const preferencesViewmodelRef = useRef<PreferencesViewmodel>(
+    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(cloneDeep(serviceContainer.configurationService.preferences))
   );
   // #endregion
 
@@ -63,10 +41,10 @@ export function FirstTimeView(props: FirstTimeViewProps) {
     Promise.all([
       serviceContainer.configurationService.savePreferences(
         serviceContainer.arcaneArchiveProxy,
-        preferencesViewmodel.dto,
+        preferencesViewmodelRef.current.dto,
         loggedIn
       ),
-      serviceContainer.configurationService.saveSystemSettings(systemSettingsViewmodel.dto)
+      serviceContainer.configurationService.saveSystemSettings(systemSettingsViewmodelRef.current.dto)
     ]).then(
       () => window.close(),
       noop
@@ -105,26 +83,25 @@ export function FirstTimeView(props: FirstTimeViewProps) {
         return (
           <LoginPanel
             navigateTo={setCurrentPanel}
-            afterLogin={(dto: LoginResponseDto) => setPreferencesViewmodel(serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(dto.profile.preferences))}
-            viewmodel={loginViewmodel}
-            // TODO correct this and the other viewmodelchanged
-            viewmodelChanged={noop}
+            afterLogin={(dto: LoginResponseDto) => {
+              preferencesViewmodelRef.current = serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(dto.profile.preferences);
+              forceUpdate();
+            }}
+            viewmodel={loginViewmodelRef.current}
           />
         );
       case "register":
         return (
           <RegisterPanel
             navigateTo={setCurrentPanel}
-            viewmodel={registrationViewmodel}
-            viewmodelChanged={noop}
+            viewmodel={registrationViewmodelRef.current}
           />
         );
       case "system":
         return (
           <SystemPanel
             navigateTo={setCurrentPanel}
-            viewmodel={systemSettingsViewmodel}
-            viewmodelChanged={noop}
+            viewmodel={systemSettingsViewmodelRef.current}
           />
         );
       case "preferences":
@@ -132,8 +109,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
           <PreferencesPanel
             navigateTo={setCurrentPanel}
             onGo={onGo}
-            viewmodel={preferencesViewmodel}
-            viewmodelChanged={noop}
+            viewmodel={preferencesViewmodelRef.current}
           />
         );
     }

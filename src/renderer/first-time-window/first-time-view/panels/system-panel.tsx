@@ -30,7 +30,7 @@ export function SystemPanel(props: SystemPanelProps) {
     <>
       <DialogBody className="first-time-view-panel-body">
         <SystemSettingsDialogBody
-          viewmodelChanged={() => props.viewmodelChanged()}
+          viewmodelChanged={forceUpdate}
           viewmodel={props.viewmodel}
           isOpen={true}
           onValidationCompleted={forceUpdate}
@@ -40,7 +40,7 @@ export function SystemPanel(props: SystemPanelProps) {
         <div className="dialog-footer-button-bar">
           <Button onClick={backClick}>Back</Button>
           <Button
-            disabled={!props.viewmodel.canCommit}
+            disabled={!props.viewmodel.isValid || props.viewmodel.isValidationInProgress}
             onClick={() => props.navigateTo("preferences")}
           >
             Next

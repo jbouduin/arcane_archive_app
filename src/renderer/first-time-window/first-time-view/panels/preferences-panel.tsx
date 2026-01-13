@@ -30,7 +30,7 @@ export function PreferencesPanel(props: PreferencePanelProps) {
     <>
       <DialogBody className="first-time-view-panel-body">
         <PreferencesDialogBody
-          viewmodelChanged={() => props.viewmodelChanged()}
+          viewmodelChanged={forceUpdate}
           viewmodel={props.viewmodel}
           onValidationCompleted={forceUpdate}
           isOpen={true}
@@ -39,7 +39,12 @@ export function PreferencesPanel(props: PreferencePanelProps) {
       <DialogFooter>
         <div className="dialog-footer-button-bar">
           <Button onClick={backClick}>Back</Button>
-          <Button onClick={props.onGo}>Take me to the Arcane Archive</Button>
+          <Button
+            disabled={!props.viewmodel.isValid || props.viewmodel.isValidationInProgress}
+            onClick={props.onGo}
+          >
+            Take me to the Arcane Archive
+          </Button>
         </div>
       </DialogFooter>
     </>

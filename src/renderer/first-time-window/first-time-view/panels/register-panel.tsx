@@ -27,7 +27,7 @@ export function RegisterPanel(props: RegisterPanelProps) {
     <>
       <DialogBody className="first-time-view-panel-body">
         <RegisterDialogBody
-          viewmodelChanged={() => props.viewmodelChanged()}
+          viewmodelChanged={forceUpdate}
           viewmodel={props.viewmodel}
           onValidationCompleted={forceUpdate}
           isOpen={true}

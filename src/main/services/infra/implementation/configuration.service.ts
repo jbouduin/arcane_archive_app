@@ -150,10 +150,10 @@ export class ConfigurationService extends BaseService implements IConfigurationS
         databaseName: "arcane_archive.sqlite"
       },
       loggingConfiguration: [
-        { source: "API", level: LogLevel.Info },
-        { source: "DB", level: LogLevel.Info },
-        { source: "Main", level: LogLevel.Info },
-        { source: "Renderer", level: LogLevel.Info }
+        { source: "API", level: LogLevel.Error },
+        { source: "DB", level: LogLevel.Error },
+        { source: "Main", level: LogLevel.Error },
+        { source: "Renderer", level: LogLevel.Error }
       ]
     };
     return result;

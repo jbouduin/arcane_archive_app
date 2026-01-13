@@ -37,7 +37,6 @@ void (async () => {
       skipLanguageService: true,
       skipMtgSetService: true,
       skipSessionService: true
-      // skipCollectionService: true
     }
   );
 
@@ -73,13 +72,22 @@ void (async () => {
     initialization = await serviceContainer.initialize(toastCall);
   }
 
-  const systemSettings = await serviceContainer.ipcProxy.getData<SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS_FACTORY_DEFAULT);
+  const [systemSettings, loginViewmodel, registerViewmodel] = await Promise.all([
+    serviceContainer.ipcProxy.getData<SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS_FACTORY_DEFAULT),
+    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getLoginViewmodel(false, serviceContainer),
+    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getRegisterViewmodel(false, serviceContainer)
+  ]);
+
   root.render(
     <BlueprintProvider>
       <ServiceContainerContext.Provider value={serviceContainer}>
         <SessionProvider>
           <PreferencesProvider>
-            <FirstTimeView systemSettings={systemSettings} />
+            <FirstTimeView
+              systemSettings={systemSettings}
+              loginViewmodel={loginViewmodel}
+              registerViewmodel={registerViewmodel}
+            />
             <DialogRenderer overlayService={serviceContainer.overlayService} />
           </PreferencesProvider>
         </SessionProvider>

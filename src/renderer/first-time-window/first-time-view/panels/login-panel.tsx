@@ -35,7 +35,7 @@ export function LoginPanel(props: LoginPanelProps) {
     <>
       <DialogBody className="first-time-view-panel-body">
         <LoginDialogBody
-          viewmodelChanged={() => props.viewmodelChanged()}
+          viewmodelChanged={forceUpdate}
           onValidationCompleted={forceUpdate}
           viewmodel={props.viewmodel}
           isOpen={true}
@@ -50,7 +50,7 @@ export function LoginPanel(props: LoginPanelProps) {
             <Button onClick={() => props.navigateTo("register")}>Register instead</Button>
             <Button onClick={() => props.navigateTo("system")}>Continue without account</Button>
             <Button
-              disabled={!props.viewmodel.isValid}
+              disabled={!props.viewmodel.canCommit}
               onClick={loginClick}
             >
               Login
