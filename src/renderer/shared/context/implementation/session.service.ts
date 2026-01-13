@@ -2,7 +2,7 @@ import { noop } from "lodash";
 import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
 import { mergeWithChangeDetails } from "../../../../common/util";
-import { ChangePasswordRequestDto, RegisterRequestDto, UserDto } from "../../dto";
+import { ChangePasswordRequestDto, RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
 import { IArcaneArchiveProxyService, IIpcProxyService, IServiceContainer, ISessionService } from "../interface";
 import { SessionChangeListener } from "../types";
@@ -57,8 +57,20 @@ export class SessionService implements ISessionService {
   // #endregion
 
   // #region ISessionService Members - Account - User -------------------------
-  public changePassword(arcaneArchiveProxy: IArcaneArchiveProxyService, changePasswordRequest: ChangePasswordRequestDto): Promise<void> {
-    return arcaneArchiveProxy.postData<ChangePasswordRequestDto, never>("authentication", "/app/account/password", changePasswordRequest);
+  public changePassword(
+    arcaneArchiveProxy: IArcaneArchiveProxyService,
+    ipcProxy: IIpcProxyService,
+    changePasswordRequest: ChangePasswordRequestDto): Promise<void> {
+    return arcaneArchiveProxy
+      .postData<ChangePasswordRequestDto, never>(
+        "authentication",
+        "/app/account/password",
+        changePasswordRequest,
+        { suppressSuccessMessage: false }
+      )
+      .then(
+        () => this.clearSessionData(ipcProxy)
+      );
   }
 
   public getNewUserName(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<string> {
@@ -72,6 +84,18 @@ export class SessionService implements ISessionService {
   public register(arcaneArchiveProxy: IArcaneArchiveProxyService, registerDto: RegisterRequestDto): Promise<void> {
     return arcaneArchiveProxy
       .postData<RegisterRequestDto, never>("authentication", "/public/account", registerDto);
+  }
+
+  public recoverPassword(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: RecoverPasswordRequestDto): Promise<void> {
+    return arcaneArchiveProxy.postData<RecoverPasswordRequestDto, never>(
+      "authentication", "/public/account/password/recover", dto, { suppressSuccessMessage: false }
+    );
+  }
+
+  public resetPassword(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: ResetPasswordRequestDto): Promise<void> {
+    return arcaneArchiveProxy.postData<ResetPasswordRequestDto, never>(
+      "authentication", "/public/account/password/reset", dto
+    );
   }
 
   public saveSelf(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: UserDto): Promise<UserDto> {

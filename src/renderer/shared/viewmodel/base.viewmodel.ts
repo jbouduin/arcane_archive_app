@@ -7,6 +7,8 @@ export abstract class BaseViewmodel<Dto extends object, Fn extends string> {
   // #region Private fields ---------------------------------------------------
   private invalidFields: Array<Fn>;
   private pendingValidations: number;
+  // TODO: private touchedFields: Array<Fn> ? We need some behavior that validates the last validated field not only on blur, but also when
+  // entering, but without displaying an error before blur
   private validationResults: Map<Fn, ValidationResult>;
   private readonly _mode: viewmodelMode;
   // #endregion

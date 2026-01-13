@@ -217,9 +217,17 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
       console.log({ path: path, response: response });
     }
     if (response.status == "UNAUTHORIZED") {
-      // TODO check if we can differentiate between expired sessions, expired JWT's or just a call to a method requiring a session
       this.invalidSessionListeners.forEach(l => l());
-      if (!suppressInvalidSessionHandling) {
+      if (path == "/auth/login") {
+        this.showToast(
+          {
+            message: "Invalid username or password",
+            intent: "danger",
+            icon: "error",
+            isCloseButtonShown: true
+          }
+        );
+      } else if (!suppressInvalidSessionHandling) {
         this.showToast(
           {
             message: "Your session has expired, please login again",

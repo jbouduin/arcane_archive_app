@@ -1,5 +1,5 @@
 import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
-import { ChangePasswordRequestDto, RegisterRequestDto, UserDto } from "../../dto";
+import { ChangePasswordRequestDto, RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
 import { SessionChangeListener } from "../types";
 import { IArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
@@ -13,9 +13,14 @@ export interface ISessionService {
   // #endregion
 
   // #region Account - User ---------------------------------------------------
-  changePassword(arcaneArchiveProxy: IArcaneArchiveProxyService, changePasswordRequest: ChangePasswordRequestDto): Promise<void>;
+  changePassword(
+    arcaneArchiveProxy: IArcaneArchiveProxyService,
+    ipcProxy: IIpcProxyService,
+    changePasswordRequest: ChangePasswordRequestDto): Promise<void>;
   getNewUserName(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<string>;
   register(arcaneArchiveProxy: IArcaneArchiveProxyService, registerDto: RegisterRequestDto): Promise<void>;
+  recoverPassword(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: RecoverPasswordRequestDto): Promise<void>;
+  resetPassword(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: ResetPasswordRequestDto): Promise<void>;
   saveSelf(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: UserDto): Promise<UserDto>;
   saveUser(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: UserDto): Promise<UserDto>;
   userExists(arcaneArchiveProxy: IArcaneArchiveProxyService, userName: string): Promise<boolean>;

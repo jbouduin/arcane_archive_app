@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { LoginRequestDto, LoginResponseDto } from "../../../../../common/dto";
 import { useServices } from "../../../../hooks/use-services";
 import { SaveCancelResetFooter } from "../../base/base-dialog";
-import { showRegisterDialog } from "../factory";
+import { showRecoverPasswordDialog, showRegisterDialog } from "../factory";
 import { LoginDialogFooterProps } from "./login-dialog.props";
 
 export function LoginDialogFooter(props: LoginDialogFooterProps) {
@@ -37,6 +37,14 @@ export function LoginDialogFooter(props: LoginDialogFooterProps) {
   function saveUser(dto: LoginRequestDto): void {
     void serviceContainer.sessionService.saveCredentials(serviceContainer.ipcProxy, dto);
   }
+
+  function recoverPasswordClick(event: React.SyntheticEvent<HTMLElement, Event>): void {
+    props.onClose?.(event);
+    showRecoverPasswordDialog(
+      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory,
+      serviceContainer.overlayService
+    );
+  }
   // #endregion
 
   // #region Rendering --------------------------------------------------------
@@ -53,16 +61,25 @@ export function LoginDialogFooter(props: LoginDialogFooterProps) {
 
   function additionalLeftButtons(): ReactNode {
     return (
-      props.viewmodel.showRegisterButton &&
-      (
+      <>
+        {props.viewmodel.showRegisterButton &&
+          (
+            <Button
+              key="register"
+              icon="new-person"
+              onClick={registerClick}
+            >
+              Register
+            </Button>
+          )}
         <Button
-          key="register"
-          icon="new-person"
-          onClick={registerClick}
+          key="forgot"
+          icon="key"
+          onClick={recoverPasswordClick}
         >
-          Register
+          Recover password
         </Button>
-      )
+      </>
     );
   }
   // #endregion
