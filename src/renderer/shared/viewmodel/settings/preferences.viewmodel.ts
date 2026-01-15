@@ -3,12 +3,12 @@ import { ScryfallImageSize } from "../../../../common/enums";
 import { CachedImageSize } from "../../../../common/types";
 import { SortDirection } from "../../components/base/base-table";
 import { CardSortField, SelectOption } from "../../types";
-import { BaseViewmodel } from "../base.viewmodel";
+import { BaseViewmodelNew } from "../base.viewmodel-new";
 import { SetTreeSettingsViewmodel } from "./set-tree-settings.viewmodel";
 
 export type PreferencesViewmodelField = string;
 
-export class PreferencesViewmodel extends BaseViewmodel<PreferencesDto, PreferencesViewmodelField> {
+export class PreferencesViewmodel extends BaseViewmodelNew<PreferencesDto> {
   // #region Private fields ---------------------------------------------------
   private _librarySetTreeSettingsViewmodel: SetTreeSettingsViewmodel;
   private readonly _cachedImageSizeOptions: Array<SelectOption<CachedImageSize>>;

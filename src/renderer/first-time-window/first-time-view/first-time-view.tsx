@@ -32,7 +32,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
     serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getSystemSettingsViewmodelFromDto(cloneDeep(props.systemSettings), true)
   );
   const preferencesViewmodelRef = useRef<PreferencesViewmodel>(
-    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(cloneDeep(serviceContainer.configurationService.preferences))
+    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(serviceContainer.configurationService.preferences)
   );
   // #endregion
 
@@ -109,7 +109,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
           <PreferencesPanel
             navigateTo={setCurrentPanel}
             onGo={onGo}
-            viewmodel={preferencesViewmodelRef.current}
+            newViewmodel={preferencesViewmodelRef.current}
           />
         );
     }

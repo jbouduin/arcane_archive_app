@@ -1,9 +1,9 @@
 import { SetTreeSettingsDto } from "../../../../common/dto";
 import { CardSetGroupBy, CardSetSort } from "../../../../common/types";
 import { SelectOption } from "../../types";
-import { BaseViewmodel } from "../base.viewmodel";
+import { BaseViewmodelNew } from "../base.viewmodel-new";
 
-export class SetTreeSettingsViewmodel extends BaseViewmodel<SetTreeSettingsDto, string> {
+export class SetTreeSettingsViewmodel extends BaseViewmodelNew<SetTreeSettingsDto> {
   // #region Private fields ---------------------------------------------------
   private readonly _cardSetSortOptions: Array<SelectOption<CardSetSort>>;
   private readonly _cardSetGroupByOptions: Array<SelectOption<CardSetGroupBy>>;
