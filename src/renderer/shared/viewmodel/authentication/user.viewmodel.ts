@@ -1,12 +1,11 @@
 import { addSelectOption, clearSelection, removeSelectOption, stringCouldBeEmail, stringHasMinimalLength, stringNotNullOrEmpty } from "../../components/util";
 import { UserDto } from "../../dto";
 import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption } from "../../types";
-import { IAuditFieldsViewmodel } from "../audit-fields.viewmodel";
 import { BaseViewmodel } from "../base.viewmodel";
 
 export type UserViewmodelField = "accountName" | "email";
 
-export class UserViewmodel extends BaseViewmodel<UserDto, UserViewmodelField> implements IAuditFieldsViewmodel {
+export class UserViewmodel extends BaseViewmodel<UserDto, UserViewmodelField> {
   // #region Private fields ---------------------------------------------------
   private _selectedRoles: Array<SelectOption<ApplicationRole>>;
   // #endregion

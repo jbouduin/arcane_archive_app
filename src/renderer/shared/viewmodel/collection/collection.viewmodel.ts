@@ -1,13 +1,10 @@
 import { stringHasMinimalLength } from "../../components/util";
 import { CollectionDto } from "../../dto";
 import { CollectionType } from "../../types";
-import { IAuditFieldsViewmodel } from "../audit-fields.viewmodel";
 import { BaseViewmodel, viewmodelMode } from "../base.viewmodel";
 
 export type CollectionViewmodelField = "code";
-export class CollectionViewmodel
-  extends BaseViewmodel<CollectionDto, CollectionViewmodelField>
-  implements IAuditFieldsViewmodel {
+export class CollectionViewmodel extends BaseViewmodel<CollectionDto, CollectionViewmodelField> {
   // #region Private fields ---------------------------------------------------
   private readonly _parentPath: Array<string>;
   // #endregion

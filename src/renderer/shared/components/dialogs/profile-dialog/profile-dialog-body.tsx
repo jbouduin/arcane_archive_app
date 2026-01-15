@@ -170,7 +170,10 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
 
     const items = new Map<string, JSX.Element | null>([
       ...accountItems.entries(),
-      ...createAuditableLabelValueItems(props.viewmodel)
+      ...createAuditableLabelValueItems({
+        id: props.viewmodel.dto.account.id,
+        ...props.viewmodel.dto.profile
+      })
     ]);
 
     return (

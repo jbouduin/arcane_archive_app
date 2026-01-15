@@ -25,15 +25,15 @@ export function showSetDialog(serviceContainer: IServiceContainer, setId: number
             <>
               <i
                 key={`icon-${viewmodel.dto.id}`}
-                className={classNames("ss", "ss-" + viewmodel.keyruneCode.toLowerCase(), "ss-2x")}
+                className={classNames("ss", "ss-" + viewmodel.dto["keyruneCode"].toLowerCase(), "ss-2x")}
                 style={{ paddingRight: "10px" }}
               >
               </i>
-              {viewmodel.setName}
+              {viewmodel.dto["setName"]}
             </>
           )
         };
-        serviceContainer.overlayService.openDialog(dialogProps);
+        serviceContainer.overlayService.openDialogNew(dialogProps);
       },
       noop
     );

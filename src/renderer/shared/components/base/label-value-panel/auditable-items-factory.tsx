@@ -1,13 +1,14 @@
 import { Text } from "@blueprintjs/core";
-import { IAuditFieldsViewmodel } from "../../../viewmodel/audit-fields.viewmodel";
+import { AuditableDto } from "../../../../../common/dto";
 
-export function createAuditableLabelValueItems(viewmodel: IAuditFieldsViewmodel): Map<string, JSX.Element | null> {
-  const items = new Map<string, JSX.Element | null>();
-  items.set("Id", (<Text>{viewmodel.idAsString}</Text>));
-  items.set("empty", null);
-  items.set("Created at", (<Text>{viewmodel.createdAtString}</Text>));
-  items.set("Created by", (<Text>{viewmodel.createdBy}</Text>));
-  items.set("Modified at", (<Text>{viewmodel.modifiedAtString.toLocaleString()}</Text>));
-  items.set("Modified by", (<Text>{viewmodel.modifiedBy}</Text>));
+export function createAuditableLabelValueItems(dto: AuditableDto & { id?: number; }): Map<string, JSX.Element | null> {
+  const items = new Map<string, JSX.Element | null>([
+    ["Id", (<Text>{dto.id || "-"}</Text>)],
+    ["empty", null],
+    ["Created at", (<Text>{dto.createdAt != null ? new Date(dto.createdAt).toLocaleString() : "-"}</Text>)],
+    ["Created by", (<Text>{dto.createdBy}</Text>)],
+    ["Modified at", (<Text>{dto.modifiedAt != null ? new Date(dto.modifiedAt).toLocaleString() : "-"}</Text>)],
+    ["Modified by", (<Text>{dto.modifiedBy ?? "-"}</Text>)]
+  ]);
   return items;
 }

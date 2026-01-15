@@ -49,7 +49,7 @@ export function CollectionDialogBody(props: CollectionDialogBodyProps) {
   // #endregion
 
   // #region Rendering --------------------------------------------------------
-  const items = createAuditableLabelValueItems(props.viewmodel);
+  const items = createAuditableLabelValueItems(props.viewmodel.dto);
   return (
     <>
       <FormGroup

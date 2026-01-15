@@ -10,6 +10,7 @@ export interface BaseDialogProps<Dto extends object, Fn extends string, Vm exten
   footerRenderer: (props: BaseDialogFooterProps<Dto, Fn, Vm>) => React.JSX.Element;
 }
 
+// TODO remove Vm extends BaseViewmodelNew<Dto>
 export interface BaseDialogPropsNew<Dto extends object, Vm extends BaseViewmodelNew<Dto>> extends DialogProps {
   viewmodel: Vm;
   bodyRenderer: (props: BaseDialogBodyPropsNew<Dto, Vm>) => React.JSX.Element;
