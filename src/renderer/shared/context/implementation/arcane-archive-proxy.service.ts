@@ -304,24 +304,25 @@ export class ArcaneArchiveProxyService implements IArcaneArchiveProxyService {
           method: verb,
           body: (data != null) ? JSON.stringify(data) : null,
           headers: this.buildHeaders(),
-          credentials: server == "authentication" ? "include" : undefined
-        })
-        .then(
-          async (response: Response) => {
-            let resultDto: ResultDto<Res>;
-            if (response.status == 204) {
-              resultDto = { status: "204" } as ResultDto<Res>;
-            } else {
-              resultDto = (await response.json()) as ResultDto<Res>;
-            }
-            if (response.status >= 400) {
-              return this.processErrorResponse(path, resultDto, suppressErrorMessage, suppressInvalidSessionHandling);
-            } else {
-              return this.processSuccessResponse(path, resultDto, suppressSuccessMessage);
-            }
-          },
-          (reason: Error) => this.processRejection<Res>(path, reason, suppressErrorMessage)
-        );
+          credentials: server == "authentication" ? "include" : undefined,
+          signal: options?.signal
+        }
+      ).then(
+        async (response: Response) => {
+          let resultDto: ResultDto<Res>;
+          if (response.status == 204) {
+            resultDto = { status: "204" } as ResultDto<Res>;
+          } else {
+            resultDto = (await response.json()) as ResultDto<Res>;
+          }
+          if (response.status >= 400) {
+            return this.processErrorResponse(path, resultDto, suppressErrorMessage, suppressInvalidSessionHandling);
+          } else {
+            return this.processSuccessResponse(path, resultDto, suppressSuccessMessage);
+          }
+        },
+        (reason: Error) => this.processRejection<Res>(path, reason, suppressErrorMessage)
+      );
     } catch (reason: unknown) {
       if (isError(reason)) {
         result = this.processRejection<Res>(path, reason, suppressErrorMessage);

@@ -2,6 +2,9 @@ import { Colors, FormGroup, Icon, InputGroup, NumericInput, Spinner } from "@blu
 import { useEffect, useState } from "react";
 import { ValidatedInputProps } from "./validated-input.props";
 
+/**
+ * @deprecated use {@link BaseInput} instead
+ */
 export function ValidatedInput(props: ValidatedInputProps) {
   // #region State ------------------------------------------------------------
   const [touched, setTouched] = useState<boolean>(props.touched || false);

@@ -1,9 +1,10 @@
 import { AlertProps, ToastProps } from "@blueprintjs/core";
 import { Dispatch } from "react";
 import { ProgressCallbackValue } from "../../../../common/ipc";
-import { BaseDialogProps } from "../../components/base/base-dialog";
+import { BaseDialogProps, BaseDialogPropsNew } from "../../components/base/base-dialog";
 import { ShowToastFn } from "../../types";
 import { BaseViewmodel } from "../../viewmodel/base.viewmodel";
+import { BaseViewmodelNew } from "../../viewmodel/base.viewmodel-new";
 import { IOverlayService } from "../interface";
 
 export class OverlayService implements IOverlayService {
@@ -11,6 +12,8 @@ export class OverlayService implements IOverlayService {
   private setAlert!: Dispatch<React.SetStateAction<AlertProps | null>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private setDialogs!: Dispatch<React.SetStateAction<Map<number, BaseDialogProps<any, any, any>>>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private setDialogsNew!: Dispatch<React.SetStateAction<Map<number, BaseDialogPropsNew<any, any>>>>; // TODO check if it works with unknown
   private setSplashScreen!: Dispatch<React.SetStateAction<ProgressCallbackValue | null>>;
   private _showToast!: (props: ToastProps, key?: string) => void;
   private dialogSequence: number;
@@ -28,6 +31,13 @@ export class OverlayService implements IOverlayService {
     setDialogs: React.Dispatch<React.SetStateAction<Map<number, BaseDialogProps<any, any, any>>>>
   ): void {
     this.setDialogs = setDialogs;
+  }
+
+  public setDialogDispatcherNew(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setDialogsNew: React.Dispatch<React.SetStateAction<Map<number, BaseDialogPropsNew<any, any>>>>
+  ): void {
+    this.setDialogsNew = setDialogsNew;
   }
 
   public setAlertDispatcher(setAlert: React.Dispatch<React.SetStateAction<AlertProps | null>>): void {
@@ -69,6 +79,41 @@ export class OverlayService implements IOverlayService {
     const newMap = new Map<number, BaseDialogProps<Dto, Fn, Vm>>();
     this.setDialogs((prev: Map<number, BaseDialogProps<Dto, Fn, Vm>>) => {
       prev.forEach((props: BaseDialogProps<Dto, Fn, Vm>, key: number) => {
+        if (key != dialogNumber) {
+          newMap.set(key, props);
+        }
+      });
+      return newMap;
+    });
+  }
+
+  public openDialogNew<Dto extends object, Vm extends BaseViewmodelNew<Dto>>(
+    props: BaseDialogPropsNew<Dto, Vm>
+  ): void {
+    this.dialogSequence++;
+    const seq = this.dialogSequence;
+    const modifiedProps = {
+      ...props,
+      onClose: (event: React.SyntheticEvent<HTMLElement>) => {
+        if (props.onClose) {
+          props.onClose(event);
+        }
+        this.closeDialogNew(seq);
+      }
+    };
+    this.setDialogsNew((prev: Map<number, BaseDialogPropsNew<Dto, Vm>>) => {
+      const newMap = new Map<number, BaseDialogPropsNew<Dto, Vm>>(prev.entries());
+      newMap.set(this.dialogSequence, modifiedProps);
+      return newMap;
+    });
+  }
+
+  public closeDialogNew<Dto extends object, Vm extends BaseViewmodelNew<Dto>>(
+    dialogNumber: number
+  ): void {
+    const newMap = new Map<number, BaseDialogPropsNew<Dto, Vm>>();
+    this.setDialogsNew((prev: Map<number, BaseDialogPropsNew<Dto, Vm>>) => {
+      prev.forEach((props: BaseDialogPropsNew<Dto, Vm>, key: number) => {
         if (key != dialogNumber) {
           newMap.set(key, props);
         }

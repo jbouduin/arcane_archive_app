@@ -1,6 +1,9 @@
 import { InputGroupProps, NumericInputProps, Props } from "@blueprintjs/core";
 import { ValidationResult } from "../../types";
 
+/**
+ * @deprecated use {@link BaseInputProps} instead
+ */
 export interface ValidatedInputProps extends Props {
   /**
    * Debounce validation

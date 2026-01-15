@@ -5,13 +5,15 @@ import { ProgressCallbackValue } from "../../../../../common/ipc";
 import { usePreferences } from "../../../../hooks";
 import { SplashScreen } from "../../splash";
 import { BaseDialog } from "./base-dialog";
-import { BaseDialogProps } from "./base-dialog.props";
+import { BaseDialogProps, BaseDialogPropsNew } from "./base-dialog.props";
 import { DialogRendererProps } from "./dialog-renderer.props";
+import { BaseDialogNew } from "./base-dialog-new";
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export function DialogRenderer(props: DialogRendererProps): JSX.Element {
   // #region State ------------------------------------------------------------
   const [dialogs, setDialogs] = useState<Map<number, BaseDialogProps<any, any, any>>>(new Map<number, BaseDialogProps<any, any, any>>());
+  const [dialogsNew, setDialogsNew] = useState<Map<number, BaseDialogPropsNew<any, any>>>(new Map<number, BaseDialogPropsNew<any, any>>());
   const [splashScreen, setSplashScreen] = useState<ProgressCallbackValue | null>(null);
   const [alert, setAlert] = useState<AlertProps | null>(null);
   // #endregion
@@ -24,6 +26,7 @@ export function DialogRenderer(props: DialogRendererProps): JSX.Element {
   useEffect(() => {
     props.overlayService.setAlertDispatcher(setAlert);
     props.overlayService.setDialogDispatcher(setDialogs);
+    props.overlayService.setDialogDispatcherNew(setDialogsNew);
     props.overlayService.setSplashScreenDispatcher(setSplashScreen);
   }, [props.overlayService]);
   // #endregion
@@ -60,15 +63,20 @@ export function DialogRenderer(props: DialogRendererProps): JSX.Element {
 
   function buildDialogs(): Array<React.JSX.Element> {
     const result = new Array<React.JSX.Element>();
-    {
-      dialogs.forEach((props: BaseDialogProps<any, any, any>, key: number) => {
-        const dlg = (
-          <BaseDialog key={"dialog-" + key.toString()} {...props} />
-        );
-        result.push(dlg);
-      });
-      return result;
-    }
+
+    dialogs.forEach((props: BaseDialogProps<any, any, any>, key: number) => {
+      const dlg = (
+        <BaseDialog key={"dialog-" + key.toString()} {...props} />
+      );
+      result.push(dlg);
+    });
+    dialogsNew.forEach((props: BaseDialogPropsNew<any, any>, key: number) => {
+      const dlg = (
+        <BaseDialogNew key={"dialog-" + key.toString()} {...props} />
+      );
+      result.push(dlg);
+    });
+    return result;
   }
   // #endregion
 }

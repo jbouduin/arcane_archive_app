@@ -3,6 +3,7 @@ import { IArcaneArchiveProxyService, IServiceContainer } from "../../../context"
 import { RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto } from "../../../dto";
 import { LoginViewmodel, RecoverPasswordViewmodel, RegisterViewmodel, ResetPasswordViewmodel, UserViewmodel } from "../../authentication";
 import { ChangePasswordViewmodel } from "../../authentication/change-password.viewmodel";
+import { RegisterViewmodelNew } from "../../authentication/register.viewmodel-new";
 import { IAuthenticationViewmodelFactory } from "../interface";
 
 export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelFactory {
@@ -87,6 +88,21 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
       preferences: serviceContainer.configurationService.preferences
     };
     return new RegisterViewmodel(registerDto, showLoginButton);
+  }
+
+  public async getRegisterViewmodelNew(showLoginButton: boolean, serviceContainer: IServiceContainer): Promise<RegisterViewmodelNew> {
+    const newUserName = await serviceContainer.sessionService.getNewUserName(serviceContainer.arcaneArchiveProxy);
+    const registerDto: RegisterRequestDto = {
+      userName: newUserName.valueOf(),
+      password: "",
+      passwordRepeat: "",
+      email: "",
+      emailRepeat: "",
+      firstName: "",
+      lastName: "",
+      preferences: serviceContainer.configurationService.preferences
+    };
+    return new RegisterViewmodelNew(registerDto, showLoginButton, serviceContainer);
   }
 
   public getResetPasswordViewmodel(dto: ResetPasswordRequestDto): ResetPasswordViewmodel {

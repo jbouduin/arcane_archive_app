@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { LoginRequestDto, LoginResponseDto } from "../../../../../common/dto";
 import { useServices } from "../../../../hooks/use-services";
 import { SaveCancelResetFooter } from "../../base/base-dialog";
-import { showRecoverPasswordDialog, showRegisterDialog } from "../factory";
+import { showRecoverPasswordDialog, showRegisterDialogNew } from "../factory";
 import { LoginDialogFooterProps } from "./login-dialog.props";
 
 export function LoginDialogFooter(props: LoginDialogFooterProps) {
@@ -31,7 +31,7 @@ export function LoginDialogFooter(props: LoginDialogFooterProps) {
   }
 
   function registerClick(): void {
-    showRegisterDialog(serviceContainer, false);
+    showRegisterDialogNew(serviceContainer, false);
   }
 
   function saveUser(dto: LoginRequestDto): void {

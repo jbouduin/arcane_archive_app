@@ -14,4 +14,5 @@ export type ArcaneArchiveRequestOptions = {
    * Defaults to false
    */
   suppressInvalidSessionHandling?: boolean;
+  signal?: AbortSignal;
 };

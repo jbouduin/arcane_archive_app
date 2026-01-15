@@ -117,6 +117,14 @@ export class SessionService implements ISessionService {
       .then((resp: Boolean) => resp.valueOf());
     /* eslint-enable @typescript-eslint/no-wrapper-object-types */
   }
+
+  public userExistsNew(arcaneArchiveProxy: IArcaneArchiveProxyService, userName: string, signal: AbortSignal): Promise<boolean> {
+    /* eslint-disable @typescript-eslint/no-wrapper-object-types */
+    return arcaneArchiveProxy
+      .getData<Boolean>("authentication", `/public/account/user-exist?user=${userName}`, { signal: signal })
+      .then((resp: Boolean) => resp.valueOf());
+    /* eslint-enable @typescript-eslint/no-wrapper-object-types */
+  }
   // #endregion
 
   // #region ISessionService Members - Session --------------------------------
