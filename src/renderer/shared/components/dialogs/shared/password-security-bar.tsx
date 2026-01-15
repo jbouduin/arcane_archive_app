@@ -2,9 +2,9 @@ import { Callout } from "@blueprintjs/core";
 import classNames from "classnames";
 import { useCallback } from "react";
 import { ZXCVBNScore } from "zxcvbn";
-import { PwdSecurityBarProps } from "./pwd-security-bar.props";
+import { PasswordSecurityBarProps } from "./password-security-bar.props";
 
-export function PwdSecurityBar(props: PwdSecurityBarProps) {
+export function PasswordSecurityBar(props: PasswordSecurityBarProps) {
   const normalized = Math.min(props.guessesLog10 || 0, 14); // cap at 14
   const percentage = Math.floor((normalized / 14) * 100);
   const fillerRelativePercentage = (100 / percentage) * 100;

@@ -1,9 +1,7 @@
 import { noop } from "lodash";
 import { IServiceContainer } from "../../../context";
 import { RegisterViewmodel } from "../../../viewmodel";
-import { RegisterDialogBodyNew } from "../register-dialog/register-dialog-body-new";
-import { RegisterDialogFooterNew } from "../register-dialog/register-dialog-footer-new";
-import { RegisterDialogBodyPropsNew, RegisterDialogFooterPropsNew, RegisterDialogPropsNew } from "../register-dialog/register-dialog.props";
+import * as RegisterDialog from "../register-dialog";
 
 export function showRegisterDialogNew(serviceContainer: IServiceContainer, showLoginButton: boolean): void {
   // the viewmodel factory goes to the backend to retrieve an available user name for the new user
@@ -11,18 +9,18 @@ export function showRegisterDialogNew(serviceContainer: IServiceContainer, showL
     .getRegisterViewmodelNew(showLoginButton, serviceContainer)
     .then(
       (viewmodel: RegisterViewmodel) => {
-        const loginDialogProps: RegisterDialogPropsNew = {
+        const loginDialogProps: RegisterDialog.RegisterDialogProps = {
           isOpen: true,
           isCloseButtonShown: true,
           canEscapeKeyClose: true,
           canOutsideClickClose: false,
           title: "Register",
           viewmodel: viewmodel,
-          bodyRenderer: (bodyProps: RegisterDialogBodyPropsNew) => {
-            return (<RegisterDialogBodyNew {...bodyProps} />);
+          bodyRenderer: (bodyProps: RegisterDialog.RegisterDialogBodyProps) => {
+            return (<RegisterDialog.RegisterDialogBody {...bodyProps} />);
           },
-          footerRenderer: (footerProps: RegisterDialogFooterPropsNew) => {
-            return (<RegisterDialogFooterNew {...footerProps} />);
+          footerRenderer: (footerProps: RegisterDialog.RegisterDialogFooterProp) => {
+            return (<RegisterDialog.RegisterDialogFooter {...footerProps} />);
           }
         };
         serviceContainer.overlayService.openDialogNew(loginDialogProps);

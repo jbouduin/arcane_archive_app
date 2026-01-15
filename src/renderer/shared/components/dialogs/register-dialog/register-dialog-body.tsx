@@ -1,9 +1,9 @@
 import { ControlGroup, SectionCard } from "@blueprintjs/core";
 import { BaseInput, PasswordInput } from "../../input";
-import { PwdSecurityBar } from "./pwd-security-bar";
-import { RegisterDialogBodyPropsNew } from "./register-dialog.props";
+import { PasswordSecurityBar } from "../shared";
+import { RegisterDialogBodyProps } from "./register-dialog.props";
 
-export function RegisterDialogBodyNew(props: RegisterDialogBodyPropsNew) {
+export function RegisterDialogBody(props: RegisterDialogBodyProps) {
   // #region Rendering --------------------------------------------------------
   return (
     <SectionCard padded={false}>
@@ -85,7 +85,7 @@ export function RegisterDialogBodyNew(props: RegisterDialogBodyPropsNew) {
           }}
         />
       </ControlGroup>
-      <PwdSecurityBar
+      <PasswordSecurityBar
         score={props.viewmodel.score}
         guessesLog10={props.viewmodel.guessesLog10}
         warning={props.viewmodel.warning}

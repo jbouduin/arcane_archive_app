@@ -1,10 +1,8 @@
 import { LoginRequestDto } from "../../../../common/dto";
 import { stringCouldBeEmail, stringHasMinimalLength } from "../../components/util";
-import { BaseViewmodel } from "../base.viewmodel";
+import { BaseViewmodelNew } from "../base.viewmodel-new";
 
-export type LoginViewmodelField = "password" | "user";
-
-export class LoginViewmodel extends BaseViewmodel<LoginRequestDto, LoginViewmodelField> {
+export class LoginViewmodel extends BaseViewmodelNew<LoginRequestDto> {
   // #region Private fields ---------------------------------------------------
   private _selectedExistingPassword: string | null;
   // #endregion
@@ -15,32 +13,16 @@ export class LoginViewmodel extends BaseViewmodel<LoginRequestDto, LoginViewmode
   // #endregion
 
   // #region Getters/Setters --------------------------------------------------
-  public get user(): string {
-    return this._dto.user;
-  }
-
-  public set user(value: string) {
-    this._dto.user = value;
-  }
-
-  public get password(): string {
-    return this._dto.password;
-  }
-
-  public set password(value: string) {
-    this._dto.password = value;
-  }
-
   public set selectedExistingPassword(value: string) {
     this._selectedExistingPassword = value;
   }
 
   public get modifiedPasswordOfExistingUser(): boolean {
-    return this.savedUserNames.has(this.user) && this.password != this._selectedExistingPassword;
+    return this.savedUserNames.has(this._dto.user) && this._dto.password != this._selectedExistingPassword;
   }
 
   public get nonExistinguser(): boolean {
-    return !this.savedUserNames.has(this.user);
+    return !this.savedUserNames.has(this._dto.user);
   }
   // #endregion
 
@@ -50,11 +32,13 @@ export class LoginViewmodel extends BaseViewmodel<LoginRequestDto, LoginViewmode
     this.showRegisterButton = showRegisterButton;
     this.savedUserNames = new Set<string>(savedUsernames);
     this._selectedExistingPassword = null;
+    this.registerValidation("password", () => this.validatePassword());
+    this.registerValidation("user", () => this.validateUser());
   }
   // #endregion
 
   // #region Auxiliary Validation Methods -------------------------------------
-  public validatePassword(): void {
+  private validatePassword(): void {
     if (stringHasMinimalLength(this._dto.password, 8)) {
       this.setFieldValid("password");
     } else {
@@ -65,7 +49,7 @@ export class LoginViewmodel extends BaseViewmodel<LoginRequestDto, LoginViewmode
     }
   }
 
-  public validateUser(): void {
+  private validateUser(): void {
     if (stringHasMinimalLength(this._dto.user, 8) || stringCouldBeEmail(this._dto.user)) {
       this.setFieldValid("user");
     } else {

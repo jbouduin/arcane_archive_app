@@ -87,7 +87,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
               preferencesViewmodelRef.current = serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(dto.profile.preferences);
               forceUpdate();
             }}
-            viewmodel={loginViewmodelRef.current}
+            newViewmodel={loginViewmodelRef.current}
           />
         );
       case "register":

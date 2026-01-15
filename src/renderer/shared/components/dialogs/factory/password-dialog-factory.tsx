@@ -1,14 +1,8 @@
 import { IOverlayService } from "../../../context";
 import { IAuthenticationViewmodelFactory } from "../../../viewmodel";
-import { ChangePasswordDialogBody } from "../change-password-dialog/change-password-dialog-body";
-import { ChangePasswordDialogFooter } from "../change-password-dialog/change-password-dialog-footer";
-import { ChangePasswordDialogBodyProps, ChangePasswordDialogFooterProps, ChangePasswordDialogProps } from "../change-password-dialog/change-password-dialog.props";
-import { RecoverPasswordDialogBody } from "../recover-password-dialog/recover-password-dialog-body";
-import { RecoverPasswordDialogFooter } from "../recover-password-dialog/recover-password-dialog-footer";
-import { RecoverPasswordDialogBodyProps, RecoverPasswordDialogFooterProps, RecoverPasswordDialogProps } from "../recover-password-dialog/recover-password-dialog.props";
-import { ResetPasswordDialogBody } from "../reset-password-dialog/reset-password-dialog-body";
-import { ResetPasswordDialogFooter } from "../reset-password-dialog/reset-password-dialog-footer";
-import { ResetPasswordDialogBodyProps, ResetPasswordDialogFooterProps, ResetPasswordDialogProps } from "../reset-password-dialog/reset-password-dialog.props";
+import * as ChangePassword from "../change-password-dialog";
+import * as RecoverPassword from "../recover-password-dialog";
+import * as ResetDialog from "../reset-password-dialog";
 
 export function showChangePasswordDialog(
   viewmodelFactory: IAuthenticationViewmodelFactory,
@@ -17,18 +11,18 @@ export function showChangePasswordDialog(
   email: string
 ): void {
   const viewmodel = viewmodelFactory.getChangePasswordViewmodel(userName, email);
-  const dialogProps: ChangePasswordDialogProps = {
+  const dialogProps: ChangePassword.ChangePasswordDialogProps = {
     isOpen: true,
     title: "Change Password",
     viewmodel: viewmodel,
-    bodyRenderer: (props: ChangePasswordDialogBodyProps) => {
-      return (<ChangePasswordDialogBody {...props} />);
+    bodyRenderer: (props: ChangePassword.ChangePasswordDialogBodyProps) => {
+      return (<ChangePassword.ChangePasswordDialogBody {...props} />);
     },
-    footerRenderer: (props: ChangePasswordDialogFooterProps) => {
-      return (<ChangePasswordDialogFooter {...props} />);
+    footerRenderer: (props: ChangePassword.ChangePasswordDialogFooterProps) => {
+      return (<ChangePassword.ChangePasswordDialogFooter {...props} />);
     }
   };
-  overlayService.openDialog(dialogProps);
+  overlayService.openDialogNew(dialogProps);
 }
 
 export function showRecoverPasswordDialog(
@@ -36,18 +30,18 @@ export function showRecoverPasswordDialog(
   overlayService: IOverlayService
 ): void {
   const viewmodel = viewmodelFactory.getRecoverPasswordViewmodel({ userNameOrEmail: "" });
-  const dialogProps: RecoverPasswordDialogProps = {
+  const dialogProps: RecoverPassword.RecoverPasswordDialogProps = {
     isOpen: true,
     title: "Recover Password",
     viewmodel: viewmodel,
-    bodyRenderer: (props: RecoverPasswordDialogBodyProps) => {
-      return (<RecoverPasswordDialogBody {...props} />);
+    bodyRenderer: (props: RecoverPassword.RecoverPasswordDialogBodyProps) => {
+      return (<RecoverPassword.RecoverPasswordDialogBody {...props} />);
     },
-    footerRenderer: (props: RecoverPasswordDialogFooterProps) => {
-      return (<RecoverPasswordDialogFooter {...props} />);
+    footerRenderer: (props: RecoverPassword.RecoverPasswordDialogFooterProps) => {
+      return (<RecoverPassword.RecoverPasswordDialogFooter {...props} />);
     }
   };
-  overlayService.openDialog(dialogProps);
+  overlayService.openDialogNew(dialogProps);
 }
 
 export function showResetPasswordDialog(
@@ -57,16 +51,16 @@ export function showResetPasswordDialog(
   const viewmodel = viewmodelFactory.getResetPasswordViewmodel({
     email: "", userName: "", password: "", passwordRepeat: "", resetToken: ""
   });
-  const dialogProps: ResetPasswordDialogProps = {
+  const dialogProps: ResetDialog.ResetPasswordDialogProps = {
     isOpen: true,
     title: "Reset Password",
     viewmodel: viewmodel,
-    bodyRenderer: (props: ResetPasswordDialogBodyProps) => {
-      return (<ResetPasswordDialogBody {...props} />);
+    bodyRenderer: (props: ResetDialog.ResetPasswordDialogBodyProps) => {
+      return (<ResetDialog.ResetPasswordDialogBody {...props} />);
     },
-    footerRenderer: (props: ResetPasswordDialogFooterProps) => {
-      return (<ResetPasswordDialogFooter {...props} />);
+    footerRenderer: (props: ResetDialog.ResetPasswordDialogFooterProps) => {
+      return (<ResetDialog.ResetPasswordDialogFooter {...props} />);
     }
   };
-  overlayService.openDialog(dialogProps);
+  overlayService.openDialogNew(dialogProps);
 }

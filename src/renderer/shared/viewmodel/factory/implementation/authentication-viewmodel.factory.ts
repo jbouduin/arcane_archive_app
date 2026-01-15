@@ -38,8 +38,8 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
       // create an initial view model and set the properties, so that the modified flag is true
       const existingPwd = await serviceContainer.sessionService.getPassword(serviceContainer.ipcProxy, savedUserNames[0]);
       result = this.getInitialLoginViewmodel(showRegisterButton, savedUserNames);
-      result.user = savedUserNames[0];
-      result.password = existingPwd;
+      result.dto["user"] = savedUserNames[0];
+      result.dto["password"] = existingPwd;
       result.selectedExistingPassword = existingPwd;
     } else {
       result = new LoginViewmodel(

@@ -2,7 +2,7 @@ import { Button, ButtonGroup, DialogBody, DialogFooter } from "@blueprintjs/core
 import { noop } from "lodash";
 import { useReducer } from "react";
 import { useServices } from "../../../hooks";
-import { RegisterDialogBodyNew } from "../../../shared/components/dialogs/register-dialog/register-dialog-body-new";
+import { RegisterDialogBody } from "../../../shared/components/dialogs/register-dialog/register-dialog-body";
 import { RegisterPanelProps } from "./register-panel.props";
 
 export function RegisterPanel(props: RegisterPanelProps) {
@@ -26,7 +26,7 @@ export function RegisterPanel(props: RegisterPanelProps) {
   return (
     <>
       <DialogBody className="first-time-view-panel-body">
-        <RegisterDialogBodyNew
+        <RegisterDialogBody
           viewmodelChanged={forceUpdate}
           viewmodel={props.newViewmodel!}
           isOpen={true}

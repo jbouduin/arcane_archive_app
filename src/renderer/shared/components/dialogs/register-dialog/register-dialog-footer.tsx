@@ -5,9 +5,9 @@ import { useServices } from "../../../../hooks";
 import { RegisterRequestDto } from "../../../dto";
 import { SaveCancelResetFooterNew } from "../../base/base-dialog/save-cancel-reset-footer-new";
 import { showLoginDialog } from "../factory";
-import { RegisterDialogFooterPropsNew } from "./register-dialog.props";
+import { RegisterDialogFooterProp } from "./register-dialog.props";
 
-export function RegisterDialogFooterNew(props: RegisterDialogFooterPropsNew) {
+export function RegisterDialogFooter(props: RegisterDialogFooterProp) {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion

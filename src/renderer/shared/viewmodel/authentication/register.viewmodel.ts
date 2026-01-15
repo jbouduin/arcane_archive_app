@@ -1,9 +1,9 @@
 import { stringCouldBeEmail, stringHasMinimalLength } from "../../components/util";
 import { IServiceContainer } from "../../context";
 import { RegisterRequestDto } from "../../dto";
-import { PasswordViewmodelNew } from "./password-viewmodel-new";
+import { PasswordViewmodel } from "./password.viewmodel";
 
-export class RegisterViewmodel extends PasswordViewmodelNew<RegisterRequestDto> {
+export class RegisterViewmodel extends PasswordViewmodel<RegisterRequestDto> {
   // #region Private fields ---------------------------------------------------
   private serviceContainer: IServiceContainer;
   // #endregion

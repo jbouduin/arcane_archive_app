@@ -1,7 +1,7 @@
 import { noop } from "lodash";
 import { useServices } from "../../../../hooks";
 import { ChangePasswordRequestDto } from "../../../dto";
-import { SaveCancelResetFooter } from "../../base/base-dialog";
+import { SaveCancelResetFooterNew } from "../../base/base-dialog";
 import { showLoginDialog } from "../factory";
 import { ChangePasswordDialogFooterProps } from "./change-password-dialog.props";
 
@@ -28,7 +28,7 @@ export function ChangePasswordDialogFooter(props: ChangePasswordDialogFooterProp
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter
+    <SaveCancelResetFooterNew
       {...props}
       showResetButton={false}
       commitButtonLabel="Change password"
