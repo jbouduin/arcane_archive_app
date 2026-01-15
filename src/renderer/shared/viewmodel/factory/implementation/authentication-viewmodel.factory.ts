@@ -1,9 +1,6 @@
-import { PreferencesDto } from "../../../../../common/dto";
 import { IArcaneArchiveProxyService, IServiceContainer } from "../../../context";
 import { RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto } from "../../../dto";
-import { LoginViewmodel, RecoverPasswordViewmodel, RegisterViewmodel, ResetPasswordViewmodel, UserViewmodel } from "../../authentication";
-import { ChangePasswordViewmodel } from "../../authentication/change-password.viewmodel";
-import { RegisterViewmodelNew } from "../../authentication/register.viewmodel-new";
+import { ChangePasswordViewmodel, LoginViewmodel, RecoverPasswordViewmodel, RegisterViewmodel, ResetPasswordViewmodel, UserViewmodel } from "../../authentication";
 import { IAuthenticationViewmodelFactory } from "../interface";
 
 export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelFactory {
@@ -27,20 +24,6 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
       showRegisterButton,
       knownUsers
     );
-  }
-
-  public getInitialRegisterViewmodel(showLoginButton: boolean, preferences: PreferencesDto): RegisterViewmodel {
-    const registerDto: RegisterRequestDto = {
-      userName: "",
-      password: "",
-      passwordRepeat: "",
-      email: "",
-      emailRepeat: "",
-      firstName: "",
-      lastName: "",
-      preferences: preferences
-    };
-    return new RegisterViewmodel(registerDto, showLoginButton);
   }
 
   public async getLoginViewmodel(showRegisterButton: boolean, serviceContainer: IServiceContainer): Promise<LoginViewmodel> {
@@ -75,7 +58,7 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
     return new RecoverPasswordViewmodel(dto);
   }
 
-  public async getRegisterViewmodel(showLoginButton: boolean, serviceContainer: IServiceContainer): Promise<RegisterViewmodel> {
+  public async getRegisterViewmodelNew(showLoginButton: boolean, serviceContainer: IServiceContainer): Promise<RegisterViewmodel> {
     const newUserName = await serviceContainer.sessionService.getNewUserName(serviceContainer.arcaneArchiveProxy);
     const registerDto: RegisterRequestDto = {
       userName: newUserName.valueOf(),
@@ -87,22 +70,7 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
       lastName: "",
       preferences: serviceContainer.configurationService.preferences
     };
-    return new RegisterViewmodel(registerDto, showLoginButton);
-  }
-
-  public async getRegisterViewmodelNew(showLoginButton: boolean, serviceContainer: IServiceContainer): Promise<RegisterViewmodelNew> {
-    const newUserName = await serviceContainer.sessionService.getNewUserName(serviceContainer.arcaneArchiveProxy);
-    const registerDto: RegisterRequestDto = {
-      userName: newUserName.valueOf(),
-      password: "",
-      passwordRepeat: "",
-      email: "",
-      emailRepeat: "",
-      firstName: "",
-      lastName: "",
-      preferences: serviceContainer.configurationService.preferences
-    };
-    return new RegisterViewmodelNew(registerDto, showLoginButton, serviceContainer);
+    return new RegisterViewmodel(registerDto, showLoginButton, serviceContainer);
   }
 
   public getResetPasswordViewmodel(dto: ResetPasswordRequestDto): ResetPasswordViewmodel {

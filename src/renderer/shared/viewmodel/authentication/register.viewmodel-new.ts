@@ -3,9 +3,7 @@ import { IServiceContainer } from "../../context";
 import { RegisterRequestDto } from "../../dto";
 import { PasswordViewmodelNew } from "./password-viewmodel-new";
 
-export type RegisterViewmodelField = "emailRepeat";
-
-export class RegisterViewmodelNew extends PasswordViewmodelNew<RegisterRequestDto> {
+export class RegisterViewmodel extends PasswordViewmodelNew<RegisterRequestDto> {
   // #region Private fields ---------------------------------------------------
   private serviceContainer: IServiceContainer;
   // #endregion

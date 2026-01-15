@@ -2,7 +2,7 @@ import { Button, ButtonGroup, DialogBody, DialogFooter } from "@blueprintjs/core
 import { noop } from "lodash";
 import { useReducer } from "react";
 import { useServices } from "../../../hooks";
-import { RegisterDialogBody } from "../../../shared/components/dialogs/register-dialog/register-dialog-body";
+import { RegisterDialogBodyNew } from "../../../shared/components/dialogs/register-dialog/register-dialog-body-new";
 import { RegisterPanelProps } from "./register-panel.props";
 
 export function RegisterPanel(props: RegisterPanelProps) {
@@ -14,7 +14,7 @@ export function RegisterPanel(props: RegisterPanelProps) {
   // #region Event handling ---------------------------------------------------
   function registerClick() {
     return serviceContainer.sessionService
-      .register(serviceContainer.arcaneArchiveProxy, props.viewmodel.dto)
+      .register(serviceContainer.arcaneArchiveProxy, props.newViewmodel!.dto)
       .then(
         () => props.navigateTo("login"),
         noop
@@ -26,10 +26,9 @@ export function RegisterPanel(props: RegisterPanelProps) {
   return (
     <>
       <DialogBody className="first-time-view-panel-body">
-        <RegisterDialogBody
+        <RegisterDialogBodyNew
           viewmodelChanged={forceUpdate}
-          viewmodel={props.viewmodel}
-          onValidationCompleted={forceUpdate}
+          viewmodel={props.newViewmodel!}
           isOpen={true}
         />
       </DialogBody>
@@ -41,7 +40,7 @@ export function RegisterPanel(props: RegisterPanelProps) {
           <ButtonGroup>
             <Button onClick={() => props.navigateTo("login")}>Login Instead</Button>
             <Button
-              disabled={!props.viewmodel.canCommit}
+              disabled={!props.newViewmodel!.canCommit}
               onClick={registerClick}
             >
               Register

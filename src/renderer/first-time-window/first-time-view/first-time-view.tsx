@@ -27,7 +27,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
   // Use a mutable viewmodel and force update after changes using reducer
   const [_forceUpdate, forceUpdate] = useReducer(x => x + 1, 0);
   const loginViewmodelRef = useRef<LoginViewmodel>(cloneDeep(props.loginViewmodel));
-  const registrationViewmodelRef = useRef<RegisterViewmodel>(cloneDeep(props.registerViewmodel));
+  const registrationViewmodelRef = useRef<RegisterViewmodel>(props.registerViewmodel);
   const systemSettingsViewmodelRef = useRef<SystemSettingsViewmodel>(
     serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getSystemSettingsViewmodelFromDto(cloneDeep(props.systemSettings), true)
   );
@@ -94,7 +94,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
         return (
           <RegisterPanel
             navigateTo={setCurrentPanel}
-            viewmodel={registrationViewmodelRef.current}
+            newViewmodel={registrationViewmodelRef.current}
           />
         );
       case "system":

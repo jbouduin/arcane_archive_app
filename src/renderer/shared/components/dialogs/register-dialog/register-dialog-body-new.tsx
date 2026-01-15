@@ -1,6 +1,5 @@
 import { ControlGroup, SectionCard } from "@blueprintjs/core";
-import { PasswordInputNew } from "../../password-input/password-input-new";
-import { BaseInput } from "../../validated-input/base-input";
+import { BaseInput, PasswordInput } from "../../input";
 import { PwdSecurityBar } from "./pwd-security-bar";
 import { RegisterDialogBodyPropsNew } from "./register-dialog.props";
 
@@ -61,7 +60,7 @@ export function RegisterDialogBodyNew(props: RegisterDialogBodyPropsNew) {
         fill={true}
         vertical={false}
       >
-        <PasswordInputNew
+        <PasswordInput
           viewmodel={props.viewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="password"
@@ -73,7 +72,7 @@ export function RegisterDialogBodyNew(props: RegisterDialogBodyPropsNew) {
             placeholder: "Enter your password..."
           }}
         />
-        <PasswordInputNew
+        <PasswordInput
           viewmodel={props.viewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="passwordRepeat"

@@ -1,10 +1,10 @@
 import { Button, Intent, Tooltip } from "@blueprintjs/core";
 import { useCallback, useState } from "react";
-import { BaseInput } from "../validated-input/base-input";
-import { BaseInputProps } from "../validated-input/base-input.props";
-import { PasswordInputNewProps } from "./password-input-new.props";
+import { BaseInput } from "./base-input";
+import { BaseInputProps } from "./base-input.props";
+import { PasswordInputProps } from "./password-input.props";
 
-export function PasswordInputNew<Dto extends object>(props: PasswordInputNewProps<Dto>) {
+export function PasswordInput<Dto extends object>(props: PasswordInputProps<Dto>) {
   // #region State ------------------------------------------------------------
   const [showPassword, setShowPassword] = useState(false);
   // #endregion

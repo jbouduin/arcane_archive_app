@@ -17,8 +17,8 @@ export function LoginPanel(props: LoginPanelProps) {
 
   // #region Event handling ---------------------------------------------------
   function loginClick(): void {
-    if (props.viewmodel.isValid) {
-      void serviceContainer.sessionService.login(serviceContainer, props.viewmodel.dto)
+    if (props.viewmodel!.isValid) {
+      void serviceContainer.sessionService.login(serviceContainer, props.viewmodel!.dto)
         .then(
           (r: LoginResponseDto) => {
             props.afterLogin(r);
@@ -37,7 +37,7 @@ export function LoginPanel(props: LoginPanelProps) {
         <LoginDialogBody
           viewmodelChanged={forceUpdate}
           onValidationCompleted={forceUpdate}
-          viewmodel={props.viewmodel}
+          viewmodel={props.viewmodel!}
           isOpen={true}
         />
       </DialogBody>
@@ -50,7 +50,7 @@ export function LoginPanel(props: LoginPanelProps) {
             <Button onClick={() => props.navigateTo("register")}>Register instead</Button>
             <Button onClick={() => props.navigateTo("system")}>Continue without account</Button>
             <Button
-              disabled={!props.viewmodel.canCommit}
+              disabled={!props.viewmodel!.canCommit}
               onClick={loginClick}
             >
               Login

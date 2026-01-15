@@ -1,6 +1,6 @@
 import { Button, Callout, H4 } from "@blueprintjs/core";
 import { useApiStatus, useServices } from "../../../hooks";
-import { showLoginDialog, showRegisterDialog } from "../dialogs/factory";
+import { showLoginDialog, showRegisterDialogNew } from "../dialogs/factory";
 import { NotLoggedInViewProps } from "./not-logged-in-view.props";
 
 export function NotLoggedInView(props: NotLoggedInViewProps) {
@@ -15,7 +15,7 @@ export function NotLoggedInView(props: NotLoggedInViewProps) {
   }
 
   function registerClick(): void {
-    showRegisterDialog(serviceContainer, true);
+    showRegisterDialogNew(serviceContainer, true);
   }
   // #endregion
 
