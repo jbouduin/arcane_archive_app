@@ -1,10 +1,10 @@
 import { stringHasMinimalLength } from "../../components/util";
 import { CollectionDto } from "../../dto";
 import { CollectionType } from "../../types";
-import { BaseViewmodel, viewmodelMode } from "../base.viewmodel";
+import { viewmodelMode } from "../base.viewmodel";
+import { BaseViewmodelNew } from "../base.viewmodel-new";
 
-export type CollectionViewmodelField = "code";
-export class CollectionViewmodel extends BaseViewmodel<CollectionDto, CollectionViewmodelField> {
+export class CollectionViewmodel extends BaseViewmodelNew<CollectionDto> {
   // #region Private fields ---------------------------------------------------
   private readonly _parentPath: Array<string>;
   // #endregion
@@ -30,36 +30,8 @@ export class CollectionViewmodel extends BaseViewmodel<CollectionDto, Collection
     }
   }
 
-  public get idAsString(): string {
-    if (this._dto.id) {
-      return this._dto.id.toString();
-    } else {
-      return "-";
-    }
-  }
-
   public get type(): CollectionType {
     return this._dto.type;
-  }
-
-  public get createdAtString(): string {
-    return this._dto.createdAt != null
-      ? new Date(this._dto.createdAt).toLocaleString()
-      : "-";
-  }
-
-  public get createdBy(): string {
-    return this._dto.createdBy || "-";
-  }
-
-  public get modifiedAtString(): string {
-    return this._dto.modifiedAt != null
-      ? new Date(this._dto.modifiedAt).toLocaleString()
-      : "-";
-  }
-
-  public get modifiedBy(): string {
-    return this._dto.modifiedBy || "-";
   }
 
   public get parentPath(): Array<string> {
@@ -78,10 +50,12 @@ export class CollectionViewmodel extends BaseViewmodel<CollectionDto, Collection
     if (mode == "update") {
       this.validateCode();
     }
+    this.registerValidation("code", () => this.validateCode());
   }
   // #endregion
 
-  public validateCode(): void {
+  // #region Auxiliary Methods ------------------------------------------------
+  private validateCode(): void {
     if (stringHasMinimalLength(this._dto.code, 3)) {
       this.setFieldValid("code");
     } else {
@@ -91,4 +65,5 @@ export class CollectionViewmodel extends BaseViewmodel<CollectionDto, Collection
       );
     }
   }
+  // #endregion
 }

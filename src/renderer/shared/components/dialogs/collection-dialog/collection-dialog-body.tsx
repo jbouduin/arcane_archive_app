@@ -1,35 +1,10 @@
 import { Boundary, BreadcrumbProps, Breadcrumbs, FormGroup, InputGroup, Label, TextArea } from "@blueprintjs/core";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { createAuditableLabelValueItems, LabelValuePanel } from "../../base/label-value-panel";
 import { handleStringChange } from "../../util";
 import { CollectionDialogBodyProps } from "./collection-dialog.props";
 
 export function CollectionDialogBody(props: CollectionDialogBodyProps) {
-  // #region State ------------------------------------------------------------
-  const [touched, setTouched] = useState<boolean>(props.viewmodel.mode == "update");
-  // #endregion
-
-  // #region Effects ----------------------------------------------------------
-  useEffect(
-    () => {
-      if (!touched) {
-        return;
-      }
-      const handler = setTimeout(
-        () => {
-          props.viewmodel.startValidation();
-          props.viewmodel.validateCode();
-          props.viewmodel.endValidation();
-          props.onValidationCompleted?.();
-        },
-        100
-      );
-      return () => clearTimeout(handler);
-    },
-    [touched, props.viewmodel.code]
-  );
-  // #endregion
-
   // #region Memo -------------------------------------------------------------
   const breadcrumbProps = useMemo(
     () => {
@@ -75,10 +50,12 @@ export function CollectionDialogBody(props: CollectionDialogBodyProps) {
                   value={props.viewmodel.code}
                   onChange={handleStringChange((newValue: string) => {
                     props.viewmodel.code = newValue;
+                    props.viewmodel.validate("code");
                     props.viewmodelChanged();
                   })}
                   onBlur={() => {
-                    setTouched(true);
+                    props.viewmodel.markTouched("code");
+                    props.viewmodelChanged();
                   }}
                 />
               );
