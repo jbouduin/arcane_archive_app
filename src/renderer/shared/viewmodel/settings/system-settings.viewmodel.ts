@@ -14,7 +14,7 @@ export class SystemSettingsViewmodel extends BaseViewmodelNew<SystemSettingsDto>
   private readonly _dataConfigurationViewmodel: DataConfigurationViewmodel;
   // #endregion
 
-  //#region Getters/Setters --------------------------------------------------
+  // #region Getters/Setters --------------------------------------------------
   public get dataConfigurationViewmodel(): DataConfigurationViewmodel {
     return this._dataConfigurationViewmodel;
   }

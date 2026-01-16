@@ -45,17 +45,18 @@ export class PreferencesViewmodel extends BaseViewmodelNew<PreferencesDto> {
       ]
     );
     this.registerSelectOptions(
-      "defaultCardSortField", [
-      { label: "Collector Number (default)", value: "collectorNumberSortValue" },
-      { label: "Rarity", value: "rarity" },
-      { label: "Card Name", value: "cardName" },
-      { label: "Type", value: "typeLine" },
-      { label: "Converted Mana Cost", value: "cmc" },
-      { label: "Set", value: "setName" },
-      { label: "Power", value: "power" },
-      { label: "Thoughness", value: "toughness" },
-      { label: "Color Identity", value: "colorIdentitiesSortValue" }
-    ]
+      "defaultCardSortField",
+      [
+        { label: "Collector Number (default)", value: "collectorNumberSortValue" },
+        { label: "Rarity", value: "rarity" },
+        { label: "Card Name", value: "cardName" },
+        { label: "Type", value: "typeLine" },
+        { label: "Converted Mana Cost", value: "cmc" },
+        { label: "Set", value: "setName" },
+        { label: "Power", value: "power" },
+        { label: "Thoughness", value: "toughness" },
+        { label: "Color Identity", value: "colorIdentitiesSortValue" }
+      ]
     );
     this.registerSelectOptions(
       "defaultCardSortField",

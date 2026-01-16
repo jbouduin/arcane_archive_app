@@ -1,10 +1,10 @@
-import { Checkbox, ControlGroup, HTMLTable, Tab, Tabs, Text, TextAlignment } from "@blueprintjs/core";
+import { ControlGroup, HTMLTable, Tab, Tabs, Text, TextAlignment } from "@blueprintjs/core";
 import { useState } from "react";
 import { useServices } from "../../../../hooks";
-import { LanguageDto } from "../../../dto";
+import { LanguageDto, MtgSetDto } from "../../../dto";
 import { createAuditableLabelValueItems, LabelValueItem, LabelValuePanel } from "../../base/label-value-panel";
 import { LanguageButtonBar } from "../../card-detail-view/language-button-bar/language-button-bar";
-import { BaseInput } from "../../input";
+import { BaseCheckbox, BaseInput } from "../../input";
 import { MtgSetDialogBodyProps } from "./mtg-set-dialog.props";
 
 export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
@@ -122,24 +122,32 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
     );
   }
 
-  function renderTableRow(value1: boolean, label1: string, value2: boolean, label2: string): JSX.Element {
+  function renderTableRow(fieldName1: keyof MtgSetDto, label1: string, fieldName2: keyof MtgSetDto, label2: string): JSX.Element {
     return (
       <tr>
         <td style={{ paddingLeft: "0px" }}>
-          <Checkbox
-            checked={value1}
-            readOnly={true}
+          <BaseCheckbox
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName={fieldName1}
+            checkBoxProps={{
+              readOnly: true
+            }}
           >
             {label1}
-          </Checkbox>
+          </BaseCheckbox>
         </td>
         <td>
-          <Checkbox
-            checked={value2}
-            readOnly={true}
+          <BaseCheckbox
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName={fieldName2}
+            checkBoxProps={{
+              readOnly: true
+            }}
           >
             {label2}
-          </Checkbox>
+          </BaseCheckbox>
         </td>
       </tr>
     );
@@ -256,22 +264,13 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
           <thead></thead>
           <tbody>
             {
-              renderTableRow(
-                props.viewmodel.dto["partialPreview"], "Partial Preview",
-                props.viewmodel.dto["foreignOnly"], "Non-English only"
-              )
+              renderTableRow("partialPreview", "Partial Preview", "foreignOnly", "Non-English only")
             }
             {
-              renderTableRow(
-                props.viewmodel.dto["foilOnly"], "Foil Only",
-                props.viewmodel.dto["nonFoilOnly"], "Non-foil only"
-              )
+              renderTableRow("foilOnly", "Foil Only", "nonFoilOnly", "Non-foil only")
             }
             {
-              renderTableRow(
-                props.viewmodel.dto["onlineOnly"], "Online only",
-                props.viewmodel.dto["paperOnly"], "Paper only"
-              )
+              renderTableRow("onlineOnly", "Online only", "paperOnly", "Paper only")
             }
           </tbody>
         </HTMLTable>

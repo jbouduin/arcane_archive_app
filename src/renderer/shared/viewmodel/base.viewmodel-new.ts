@@ -134,7 +134,7 @@ export abstract class BaseViewmodelNew<Dto extends object> {
   }
 
   public getSelectOptions<D>(fieldName: keyof Dto): Array<SelectOption<D>> {
-    return this.selectOptions.get(fieldName) as Array<SelectOption<D>> || new Array<SelectOption<D>>;
+    return this.selectOptions.get(fieldName) as Array<SelectOption<D>> || new Array<SelectOption<D>>();
   }
 
   public validate(fieldName: keyof Dto, debounce = 0): void {

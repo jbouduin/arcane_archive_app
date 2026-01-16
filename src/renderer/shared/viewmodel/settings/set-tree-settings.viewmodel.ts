@@ -1,45 +1,8 @@
 import { SetTreeSettingsDto } from "../../../../common/dto";
-import { CardSetGroupBy, CardSetSort } from "../../../../common/types";
-import { SelectOption } from "../../types";
 import { BaseViewmodelNew } from "../base.viewmodel-new";
 
 export class SetTreeSettingsViewmodel extends BaseViewmodelNew<SetTreeSettingsDto> {
-  // #region Private fields ---------------------------------------------------
-  private readonly _cardSetSortOptions: Array<SelectOption<CardSetSort>>;
-  private readonly _cardSetGroupByOptions: Array<SelectOption<CardSetGroupBy>>;
-  // #endregion
-
-  // #region BaseViewmodel Members ----------------------------------------------
-  public get isValid(): boolean {
-    return true;
-  }
-  // #endregion
-
   // #region Getters/Setters --------------------------------------------------
-  public get cardSetSort(): CardSetSort {
-    return this._dto.cardSetSort;
-  }
-
-  public set cardSetSort(value: CardSetSort) {
-    this._dto.cardSetSort = value;
-  }
-
-  public get cardSetSortOptions(): Array<SelectOption<CardSetSort>> {
-    return this._cardSetSortOptions;
-  }
-
-  public get cardSetGroupBy(): CardSetGroupBy {
-    return this._dto.cardSetGroupBy;
-  }
-
-  public set cardSetGroupBy(value: CardSetGroupBy) {
-    this._dto.cardSetGroupBy = value;
-  }
-
-  public get cardSetGroupByOptions(): Array<SelectOption<CardSetGroupBy>> {
-    return this._cardSetGroupByOptions;
-  }
-
   public get cardSetTypeFilter(): Array<string> {
     return this._dto.cardSetTypeFilter;
   }
@@ -48,18 +11,24 @@ export class SetTreeSettingsViewmodel extends BaseViewmodelNew<SetTreeSettingsDt
   // #region Constructor ------------------------------------------------------
   public constructor(dtoConfiguration: SetTreeSettingsDto) {
     super(dtoConfiguration);
-    this._cardSetSortOptions = [
-      { value: "releaseDateAscending", label: "Release Date Ascending" },
-      { value: "releaseDateDescending", label: "Release Date Descending" },
-      { value: "alphabeticallyAscending", label: "Alphabetically Ascending" },
-      { value: "alphabeticallyDescending", label: "Alphabetically Descending" }
-    ];
-    this._cardSetGroupByOptions = [
-      { value: "none", label: "No grouping" },
-      { value: "parent", label: "Parent" },
-      { value: "block", label: "Block" },
-      { value: "setType", label: "Set Type" }
-    ];
+    this.registerSelectOptions(
+      "cardSetSort",
+      [
+        { value: "releaseDateAscending", label: "Release Date Ascending" },
+        { value: "releaseDateDescending", label: "Release Date Descending" },
+        { value: "alphabeticallyAscending", label: "Alphabetically Ascending" },
+        { value: "alphabeticallyDescending", label: "Alphabetically Descending" }
+      ]
+    );
+    this.registerSelectOptions(
+      "cardSetGroupBy",
+      [
+        { value: "none", label: "No grouping" },
+        { value: "parent", label: "Parent" },
+        { value: "block", label: "Block" },
+        { value: "setType", label: "Set Type" }
+      ]
+    );
     dtoConfiguration.cardSetTypeFilter.sort();
   }
   // #endregion

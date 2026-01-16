@@ -1,12 +1,10 @@
-import { Callout, Checkbox, ControlGroup, FormGroup, HTMLSelect, HTMLTable, Icon, Tab, Tabs, Tooltip } from "@blueprintjs/core";
-import { CardSetGroupBy, CardSetSort } from "../../../../../common/types";
+import { Callout, ControlGroup, HTMLTable, Tab, Tabs } from "@blueprintjs/core";
 import { useServices, useSession } from "../../../../hooks";
 import { SelectOption } from "../../../types";
 import { SetTreeSettingsViewmodel } from "../../../viewmodel/settings";
 import { BaseCheckbox } from "../../input";
 import { BaseHtmlSelect } from "../../input/base-html-select";
-import { handleBooleanChange } from "../../util/handle-boolean-change";
-import { handleValueChange } from "../../util/handle-value-change";
+import { ToggleCheckbox } from "../../input/toggle-checkbox";
 import { PreferencesDialogBodyProps } from "./preferences-dialog.props";
 
 export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
@@ -44,7 +42,6 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
     </>
   );
 
-  // TODO replace the HTMLSelects
   function renderBasicPreferences(): React.JSX.Element {
     return (
       <>
@@ -61,12 +58,6 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
           fieldName="refreshCacheAtStartup"
         >
           Refresh cache at startup
-          <Tooltip
-            openOnTargetFocus={false}
-            content={(<span>Explain ...</span>)}
-          >
-            <Icon style={{ paddingLeft: "5px" }} icon="help" intent="primary" />
-          </Tooltip>
         </BaseCheckbox>
         <BaseCheckbox
           viewmodel={props.viewmodel}
@@ -124,36 +115,18 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
           fill={true}
           vertical={false}
         >
-          <FormGroup label="Sort sets in tree by" labelFor="sort-sets-by" fill={true}>
-            <HTMLSelect
-              id="sort-sets-by"
-              minimal={true}
-              fill={true}
-              onChange={
-                handleValueChange((value: CardSetSort) => {
-                  viewmodel.cardSetSort = value;
-                  props.viewmodelChanged();
-                })
-              }
-              options={viewmodel.cardSetSortOptions}
-              value={viewmodel.cardSetSort}
-            />
-          </FormGroup>
-          <FormGroup label="Group sets in tree by" labelFor="group-sets-by" fill={true}>
-            <HTMLSelect
-              id="group-sets-by"
-              minimal={true}
-              fill={true}
-              onChange={
-                handleValueChange((value: CardSetGroupBy) => {
-                  viewmodel.cardSetGroupBy = value;
-                  props.viewmodelChanged();
-                })
-              }
-              options={viewmodel.cardSetGroupByOptions}
-              value={viewmodel.cardSetGroupBy}
-            />
-          </FormGroup>
+          <BaseHtmlSelect
+            viewmodel={viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="cardSetSort"
+            label="Sort sets in tree by"
+          />
+          <BaseHtmlSelect
+            viewmodel={viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="cardSetGroupBy"
+            label="Group sets in tree by"
+          />
         </ControlGroup>
         <HTMLTable
           bordered={false}
@@ -187,17 +160,14 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
         }
         currentRow.push((
           <td key={`cell-${opt.value}`} style={{ paddingLeft: "0px" }}>
-            <Checkbox
-              checked={viewmodel.cardSetTypeFilter.indexOf(opt.value) >= 0}
-              key={opt.value}
-              label={opt.label}
-              onChange={
-                handleBooleanChange((_value: boolean) => {
-                  viewmodel.toggleCardSetFilterType(opt.value);
-                  props.viewmodelChanged();
-                })
-              }
-            />
+            <ToggleCheckbox
+              viewmodel={viewmodel}
+              viewmodelChanged={props.viewmodelChanged}
+              fieldName="cardSetTypeFilter"
+              value={opt.value}
+            >
+              {opt.label}
+            </ToggleCheckbox>
           </td>
         ));
         if (idx % 3 == 1) {
