@@ -101,7 +101,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
         return (
           <SystemPanel
             navigateTo={setCurrentPanel}
-            viewmodel={systemSettingsViewmodelRef.current}
+            newViewmodel={systemSettingsViewmodelRef.current}
           />
         );
       case "preferences":

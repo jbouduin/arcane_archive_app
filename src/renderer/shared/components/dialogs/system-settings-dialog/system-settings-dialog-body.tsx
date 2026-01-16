@@ -1,9 +1,9 @@
-import { Button, Callout, FormGroup, HTMLSelect, Tab, Tabs } from "@blueprintjs/core";
+import { Button, Callout, Tab, Tabs } from "@blueprintjs/core";
 import { noop } from "lodash";
-import { LogLevel } from "../../../../../common/enums";
 import { useServices } from "../../../../hooks";
-import { handleStringChange, handleValueChange } from "../../util";
-import { ValidatedInput } from "../../validated-input/validated-input";
+import { DirectoryTarget } from "../../../viewmodel";
+import { BaseInput } from "../../input";
+import { BaseHtmlSelect } from "../../input/base-html-select";
 import { SystemSettingsDialogBodyProps } from "./system-settings-dialog.props";
 
 export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
@@ -12,37 +12,12 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
   // #endregion
 
   // #region Event Handling ---------------------------------------------------
-  function onSearchDirectory(target: "data" | "cache" | "log") {
-    let current: string;
-
-    switch (target) {
-      case "data":
-        current = props.viewmodel.rootDataDirectory;
-        break;
-      case "cache":
-        current = props.viewmodel.cacheDirectory;
-        break;
-      case "log":
-        current = props.viewmodel.logDirectory;
-        break;
-      default:
-        throw (new Error("invalid target"));
-    }
-    serviceContainer.sessionService.selectDirectory(serviceContainer.ipcProxy, current)
+  function onSearchDirectory(target: DirectoryTarget) {
+    serviceContainer.sessionService.selectDirectory(serviceContainer.ipcProxy, props.viewmodel.dataConfigurationViewmodel.getCurrentDirectoryValue(target))
       .then(
         (dir: string | undefined) => {
           if (dir) {
-            switch (target) {
-              case "data":
-                props.viewmodel.rootDataDirectory = dir;
-                break;
-              case "cache":
-                props.viewmodel.cacheDirectory = dir;
-                break;
-              case "log":
-                props.viewmodel.logDirectory = dir;
-                break;
-            }
+            props.viewmodel.dataConfigurationViewmodel.setCurrentDirectoryValue(target, dir);
             props.viewmodelChanged();
           }
         },
@@ -104,86 +79,30 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
   function renderLogging(): JSX.Element {
     return (
       <>
-        <FormGroup
-          key="log-main"
+        <BaseHtmlSelect
+          viewmodel={props.viewmodel.getLogSettingsViewmodel("Main")}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="level"
           label="Log level for main process"
-          labelFor="log-main-select"
-          fill={true}
-        >
-          <HTMLSelect
-            id="log-main-select"
-            minimal={true}
-            fill={true}
-            onChange={
-              handleValueChange((value: LogLevel) => {
-                props.viewmodel.mainLogLevel = value;
-                props.viewmodelChanged();
-              })
-            }
-            options={props.viewmodel.logLevelOptions}
-            value={props.viewmodel.mainLogLevel}
-          />
-        </FormGroup>
-        <FormGroup
-          key="log-db"
+        />
+        <BaseHtmlSelect
+          viewmodel={props.viewmodel.getLogSettingsViewmodel("DB")}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="level"
           label="Log level for database layer"
-          labelFor="log-db-select"
-          fill={true}
-        >
-          <HTMLSelect
-            id="log-db-select"
-            minimal={true}
-            fill={true}
-            onChange={
-              handleValueChange((value: LogLevel) => {
-                props.viewmodel.databaseLogLevel = value;
-                props.viewmodelChanged();
-              })
-            }
-            options={props.viewmodel.logLevelOptions}
-            value={props.viewmodel.databaseLogLevel}
-          />
-        </FormGroup>
-        <FormGroup
-          key="log-api"
+        />
+        <BaseHtmlSelect
+          viewmodel={props.viewmodel.getLogSettingsViewmodel("API")}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="level"
           label="Log level for API (3rd party)"
-          labelFor="log-api-select"
-          fill={true}
-        >
-          <HTMLSelect
-            id="log-api-select"
-            minimal={true}
-            fill={true}
-            onChange={
-              handleValueChange((value: LogLevel) => {
-                props.viewmodel.apiLogLevel = value;
-                props.viewmodelChanged();
-              })
-            }
-            options={props.viewmodel.logLevelOptions}
-            value={props.viewmodel.apiLogLevel}
-          />
-          <FormGroup
-            key="log-renderer"
-            label="Log level for renderer"
-            labelFor="log-renderer-select"
-            fill={true}
-          >
-            <HTMLSelect
-              id="log-renderer-select"
-              minimal={true}
-              fill={true}
-              onChange={
-                handleValueChange((value: LogLevel) => {
-                  props.viewmodel.rendererLogLevel = value;
-                  props.viewmodelChanged();
-                })
-              }
-              options={props.viewmodel.logLevelOptions}
-              value={props.viewmodel.rendererLogLevel}
-            />
-          </FormGroup>
-        </FormGroup>
+        />
+        <BaseHtmlSelect
+          viewmodel={props.viewmodel.getLogSettingsViewmodel("Renderer")}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="level"
+          label="Log level for renderer"
+        />
       </>
     );
   }
@@ -191,82 +110,58 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
   function renderLocalStorage(): JSX.Element {
     return (
       <>
-        <ValidatedInput
-          keyPrefix="data-root"
+        <BaseInput
+          viewmodel={props.viewmodel.dataConfigurationViewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="rootDataDirectory"
+          validation="synchronous"
           label="Root Data Directory"
           labelInfo="*"
-          validationResult={props.viewmodel.getValidation("rootDataDirectory")}
-          validate={() => props.viewmodel.validateRootDataDirectory()}
-          startValidation={() => props.viewmodel.startValidation()}
-          endValidation={() => props.viewmodel.endValidation()}
-          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
-            inputMode: "text",
             placeholder: "Enter a directory...",
-            rightElement: (<Button icon="search" size="small" onClick={() => onSearchDirectory("data")} />),
-            size: "small",
-            type: "text",
             readOnly: true,
-            value: props.viewmodel.rootDataDirectory
+            required: true,
+            rightElement: (<Button icon="search" size="small" onClick={() => onSearchDirectory("data")} />),
           }}
         />
-        <ValidatedInput
-          keyPrefix="cache-dir"
+        <BaseInput
+          viewmodel={props.viewmodel.dataConfigurationViewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="cacheDirectory"
+          validation="synchronous"
           label="Cache Directory"
           labelInfo="*"
-          validationResult={props.viewmodel.getValidation("cacheDirectory")}
-          validate={() => props.viewmodel.validateCacheDataDirectory()}
-          startValidation={() => props.viewmodel.startValidation()}
-          endValidation={() => props.viewmodel.endValidation()}
-          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
-            inputMode: "text",
             placeholder: "Enter a directory...",
-            rightElement: (<Button icon="search" size="small" onClick={() => onSearchDirectory("cache")} />),
-            size: "small",
-            type: "text",
             readOnly: true,
-            value: props.viewmodel.cacheDirectory
+            required: true,
+            rightElement: (<Button icon="search" size="small" onClick={() => onSearchDirectory("cache")} />),
           }}
         />
-        <ValidatedInput
-          keyPrefix="log-dir"
+        <BaseInput
+          viewmodel={props.viewmodel.dataConfigurationViewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="logDirectory"
+          validation="synchronous"
           label="Log Directory"
           labelInfo="*"
-          validationResult={props.viewmodel.getValidation("logDirectory")}
-          validate={() => props.viewmodel.validateLogDirectory()}
-          startValidation={() => props.viewmodel.startValidation()}
-          endValidation={() => props.viewmodel.endValidation()}
-          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
-            inputMode: "text",
             placeholder: "Enter a directory...",
-            rightElement: (<Button icon="search" size="small" onClick={() => onSearchDirectory("log")} />),
-            size: "small",
-            type: "text",
             readOnly: true,
-            value: props.viewmodel.logDirectory
+            required: true,
+            rightElement: (<Button icon="search" size="small" onClick={() => onSearchDirectory("log")} />),
           }}
         />
-        <ValidatedInput
-          keyPrefix="db-name"
+        <BaseInput
+          viewmodel={props.viewmodel.dataConfigurationViewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="databaseName"
+          validation="synchronous"
           label="Database Name"
           labelInfo="*"
-          validationResult={props.viewmodel.getValidation("databaseName")}
-          validate={() => props.viewmodel.validateDatabaseName()}
-          startValidation={() => props.viewmodel.startValidation()}
-          endValidation={() => props.viewmodel.endValidation()}
-          onValidationComplete={() => props.onValidationCompleted()}
           inputProps={{
-            inputMode: "text",
             placeholder: "Enter a name...",
-            size: "small",
-            type: "text",
-            onChange: handleStringChange((newValue: string) => {
-              props.viewmodel.databaseName = newValue;
-              props.viewmodelChanged();
-            }),
-            value: props.viewmodel.databaseName
+            required: true
           }}
         />
       </>
@@ -275,29 +170,18 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
 
   function renderApi(): JSX.Element {
     return (
-      <>
-        <ValidatedInput
-          keyPrefix="auth-url"
-          label="Discovery Internet Address"
-          labelInfo="*"
-          validationResult={props.viewmodel.getValidation("discovery")}
-          validate={() => props.viewmodel.validateDiscovery()}
-          startValidation={() => props.viewmodel.startValidation()}
-          endValidation={() => props.viewmodel.endValidation()}
-          onValidationComplete={() => props.onValidationCompleted()}
-          inputProps={{
-            inputMode: "text",
-            placeholder: "Enter an internet address...",
-            size: "small",
-            type: "text",
-            onChange: handleStringChange((newValue: string) => {
-              props.viewmodel.discovery = newValue;
-              props.viewmodelChanged();
-            }),
-            value: props.viewmodel.discovery
-          }}
-        />
-      </>
+      <BaseInput
+        viewmodel={props.viewmodel}
+        viewmodelChanged={props.viewmodelChanged}
+        fieldName="discovery"
+        validation="synchronous"
+        label="Discovery Internet Address"
+        labelInfo="*"
+        inputProps={{
+          placeholder: "Enter an internet address...",
+          required: true
+        }}
+      />
     );
   }
   // #endregion

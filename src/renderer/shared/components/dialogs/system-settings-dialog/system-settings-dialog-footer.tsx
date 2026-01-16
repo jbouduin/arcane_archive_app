@@ -2,9 +2,9 @@ import { Button } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { ReactNode } from "react";
 import { SystemSettingsDto } from "../../../../../common/dto";
+import { LogSetting } from "../../../../../common/types";
 import { useServices } from "../../../../hooks";
-import { SystemSettingsViewmodel, SystemSettingsViewmodelField } from "../../../viewmodel";
-import { SaveCancelResetFooter } from "../../base/base-dialog";
+import { SaveCancelResetFooterNew } from "../../base/base-dialog";
 import { SystemSettingsDialogFooterProps } from "./system-settings-dialog.props";
 
 export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProps) {
@@ -13,10 +13,23 @@ export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProp
   // #endregion
 
   // #region Event handling ---------------------------------------------------
-  function saveClick(_event: React.SyntheticEvent<HTMLElement, Event>, dto: SystemSettingsDto): Promise<void> {
-    return serviceContainer.configurationService.saveSystemSettings(dto)
+  function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: SystemSettingsDto): Promise<void> {
+    const toSave: SystemSettingsDto = {
+      discovery: dto.discovery,
+      dataConfiguration: props.viewmodel.dataConfigurationViewmodel.dto,
+      loggingConfiguration: new Array<LogSetting>(
+        props.viewmodel.getLogSettingsViewmodel("API").dto,
+        props.viewmodel.getLogSettingsViewmodel("DB").dto,
+        props.viewmodel.getLogSettingsViewmodel("Main").dto,
+        props.viewmodel.getLogSettingsViewmodel("Renderer").dto,
+      )
+    };
+    return serviceContainer.configurationService.saveSystemSettings(toSave)
       .then(
         (_r: SystemSettingsDto) => {
+          if (props.onClose) {
+            props.onClose(event);
+          }
           if (props.viewmodel.restartRequired) {
             serviceContainer.configurationService.restart();
           }
@@ -29,7 +42,7 @@ export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProp
     void serviceContainer.configurationService.getSystemSettingsFactoryDefaults()
       .then(
         (dto: SystemSettingsDto) => {
-          Object.assign(props.viewmodel.dto, dto);
+          props.viewmodel.setFactoryDefaults(dto);
           props.viewmodelChanged();
         },
         noop
@@ -39,7 +52,7 @@ export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProp
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter<SystemSettingsDto, SystemSettingsViewmodelField, SystemSettingsViewmodel>
+    <SaveCancelResetFooterNew
       {...props}
       commitButtonLabel={props.viewmodel.restartRequired ? "Save and Restart" : "Save"}
       showResetButton={true}

@@ -31,16 +31,16 @@ export function SystemPanel(props: SystemPanelProps) {
       <DialogBody className="first-time-view-panel-body">
         <SystemSettingsDialogBody
           viewmodelChanged={forceUpdate}
-          viewmodel={props.viewmodel!}
+          viewmodel={props.newViewmodel!}
           isOpen={true}
-          onValidationCompleted={forceUpdate}
+
         />
       </DialogBody>
       <DialogFooter>
         <div className="dialog-footer-button-bar">
           <Button onClick={backClick}>Back</Button>
           <Button
-            disabled={!props.viewmodel!.isValid || props.viewmodel!.isValidationInProgress}
+            disabled={!props.newViewmodel!.isValid || props.newViewmodel!.isValidationInProgress}
             onClick={() => props.navigateTo("preferences")}
           >
             Next

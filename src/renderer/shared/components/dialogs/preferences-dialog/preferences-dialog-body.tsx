@@ -43,6 +43,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
     </>
   );
 
+  // TODO replace the HTMLSelects
   function renderBasicPreferences(): React.JSX.Element {
     return (
       <>

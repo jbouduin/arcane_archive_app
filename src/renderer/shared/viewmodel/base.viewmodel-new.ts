@@ -1,5 +1,5 @@
 import { cloneDeep, isEqual } from "lodash";
-import { ValidationResult } from "../types";
+import { SelectOption, ValidationResult } from "../types";
 
 // TODO rename to ViewmodelMode
 export type viewmodelMode = "read-only" | "create" | "update";
@@ -14,6 +14,7 @@ export abstract class BaseViewmodelNew<Dto extends object> {
   private pendingValidations: number;
   private validationResults: Map<keyof Dto, ValidationResult>;
   private childViewmodels: Array<BaseViewmodelNew<object>>;
+  private selectOptions: Map<keyof Dto, Array<SelectOption<unknown>>>;
   private readonly _mode: viewmodelMode;
   // #endregion
 
@@ -67,6 +68,7 @@ export abstract class BaseViewmodelNew<Dto extends object> {
     this.asyncValidationFunctions = new Map<keyof Dto, (signal: AbortSignal) => Promise<void>>();
     this.touchedFields = new Set<keyof Dto>();
     this.childViewmodels = new Array<BaseViewmodelNew<object>>();
+    this.selectOptions = new Map<keyof Dto, Array<SelectOption<unknown>>>();
   }
   // #endregion
 
@@ -96,6 +98,10 @@ export abstract class BaseViewmodelNew<Dto extends object> {
   protected registerChildViewmodel<T extends object>(viewmodel: BaseViewmodelNew<T>): void {
     this.childViewmodels.push(viewmodel as unknown as BaseViewmodelNew<object>);
   }
+
+  protected registerSelectOptions(fieldName: keyof Dto, options: Array<SelectOption<unknown>>): void {
+    this.selectOptions.set(fieldName, options);
+  }
   // #endregion
 
   // #region Public methods ---------------------------------------------------
@@ -109,6 +115,7 @@ export abstract class BaseViewmodelNew<Dto extends object> {
 
   public cancelChanges(): void {
     this._dto = cloneDeep(this._org);
+    this.childViewmodels.forEach((cvm: BaseViewmodelNew<object>) => cvm.cancelChanges());
     this.invalidFields.slice(0);
   }
 
@@ -124,6 +131,10 @@ export abstract class BaseViewmodelNew<Dto extends object> {
     return this.touchedFields.has(fieldName) && this.validationResults.has(fieldName)
       ? this.validationResults.get(fieldName)!
       : this.validValidation;
+  }
+
+  public getSelectOptions<D>(fieldName: keyof Dto): Array<SelectOption<D>> {
+    return this.selectOptions.get(fieldName) as Array<SelectOption<D>> || new Array<SelectOption<D>>;
   }
 
   public validate(fieldName: keyof Dto, debounce = 0): void {
@@ -152,7 +163,7 @@ export abstract class BaseViewmodelNew<Dto extends object> {
         method();
       }
     } else {
-      throw new Error(`No asynchronous validation found for ${String(fieldName)}`);
+      throw new Error(`No synchronous validation found for ${String(fieldName)}`);
     }
   }
 
