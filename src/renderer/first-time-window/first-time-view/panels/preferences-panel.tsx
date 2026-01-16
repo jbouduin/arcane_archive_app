@@ -1,7 +1,7 @@
 import { Button, DialogBody, DialogFooter } from "@blueprintjs/core";
 import { useReducer } from "react";
 import { useServices, useSession } from "../../../hooks";
-import { PreferencesDialogBody } from "../../../shared/components/dialogs/preferences-dialog/preferences-dialog-body";
+import { PreferencesDialogBody } from "../../../shared/components/dialogs";
 import { PreferencePanelProps } from "./preferences-panel.props";
 
 export function PreferencesPanel(props: PreferencePanelProps) {
@@ -31,7 +31,7 @@ export function PreferencesPanel(props: PreferencePanelProps) {
       <DialogBody className="first-time-view-panel-body">
         <PreferencesDialogBody
           viewmodelChanged={forceUpdate}
-          viewmodel={props.newViewmodel!}
+          viewmodel={props.viewmodel}
           isOpen={true}
         />
       </DialogBody>
@@ -39,7 +39,7 @@ export function PreferencesPanel(props: PreferencePanelProps) {
         <div className="dialog-footer-button-bar">
           <Button onClick={backClick}>Back</Button>
           <Button
-            disabled={!props.newViewmodel!.isValid || props.newViewmodel!.isValidationInProgress}
+            disabled={!props.viewmodel.isValid || props.viewmodel.isValidationInProgress}
             onClick={props.onGo}
           >
             Take me to the Arcane Archive

@@ -21,17 +21,17 @@ const TreeView = memo(
 );
 
 export function CollectionTreeView(props: CollectionTreeViewProps) {
-  // #region State ------------------------------------------------------------
+  //#region State -------------------------------------------------------------
   const [collections, setCollections] = useState<Array<CollectionTreeViewmodel>>(new Array<CollectionTreeViewmodel>());
   // TODO store expanded nodes and selected node and check if we solve the bug in basetreeeview with that
-  // const [collectionSvg, setCollectionSvg] = useState<string | undefined>(undefined);
-  // #endregion
 
-  // #region Hooks ------------------------------------------------------------
+  //#endregion
+
+  //#region Hooks -------------------------------------------------------------
   const serviceContainer = useServices();
-  // #endregion
+  //#endregion
 
-  // #region Event Handling ---------------------------------------------------
+  //#region Event Handling ----------------------------------------------------
   function onCollectionAdded(dto: CollectionDto): void {
     const viewmodel = serviceContainer.viewmodelFactoryService.collectionViewmodelFactory.getCollectionTreeViewmodel(dto);
     setCollections([...collections, viewmodel]);
@@ -86,16 +86,11 @@ export function CollectionTreeView(props: CollectionTreeViewProps) {
   function onAddCollection(parentCollection: CollectionDto | null, parentPath: Array<string>): void {
     showNewCollectionDialog(serviceContainer, "COLLECTION", parentCollection, parentPath, onCollectionAdded);
   }
-  // #endregion
+  //#endregion
 
-  // #region Effects ----------------------------------------------------------
+  //#region Effects -----------------------------------------------------------
   useEffect(
     () => {
-      // void serviceContainer.ipcProxy.getData<string>(`${IpcPaths.IO_ASSET}?path=assets/img/collection.svg`)
-      //   .then(
-      //     (response: string) => setCollectionSvg(response),
-      //     (_r: Error) => setCollectionSvg(undefined)
-      //   ).then(
       void serviceContainer.collectionService.getCollections()
         .then(
           (collections: Array<CollectionDto>) => setCollections(collections.map(c => serviceContainer.viewmodelFactoryService.collectionViewmodelFactory.getCollectionTreeViewmodel(c))),
@@ -104,9 +99,9 @@ export function CollectionTreeView(props: CollectionTreeViewProps) {
     },
     []
   );
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <>
       <ContextMenu
@@ -148,9 +143,9 @@ export function CollectionTreeView(props: CollectionTreeViewProps) {
       </ContextMenu>
     </>
   );
-  // #endregion
+  //#endregion
 
-  // #region Auxiliary Methods ------------------------------------------------
+  //#region Auxiliary Methods -------------------------------------------------
   function buildTree(data: Array<CollectionTreeViewmodel>, _filterProps: {} | undefined): Array<TreeNodeInfo<CollectionTreeViewmodel>> {
     return buildTreeByParentRecursive(data, null);
   }
@@ -245,5 +240,5 @@ export function CollectionTreeView(props: CollectionTreeViewProps) {
     };
     return node;
   }
-  // #endregion
+  //#endregion
 }

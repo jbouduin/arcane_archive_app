@@ -1,10 +1,9 @@
 import zxcvbn, { ZXCVBNResult, ZXCVBNScore } from "zxcvbn";
 import { stringHasMinimalLength } from "../../components/util";
 import { PasswordDto } from "../../dto";
-import { viewmodelMode } from "../base.viewmodel";
-import { BaseViewmodelNew } from "../base.viewmodel-new";
+import { BaseViewmodel, ViewmodelMode } from "../base.viewmodel";
 
-export abstract class PasswordViewmodel<T extends PasswordDto> extends BaseViewmodelNew<T> {
+export abstract class PasswordViewmodel<T extends PasswordDto> extends BaseViewmodel<T> {
   // #region Private fields ---------------------------------------------------
   private zXCVBNResult: ZXCVBNResult | undefined;
   private _passwordValidation: string | undefined;
@@ -30,7 +29,7 @@ export abstract class PasswordViewmodel<T extends PasswordDto> extends BaseViewm
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: T, mode: viewmodelMode) {
+  public constructor(dto: T, mode: ViewmodelMode) {
     super(dto, mode);
     this.passwordDict = [
       "magic",

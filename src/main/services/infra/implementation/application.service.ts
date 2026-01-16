@@ -12,14 +12,13 @@ import { IApplicationService, IConfigurationService, ILogService, IRouterService
 
 @injectable()
 export class ApplicationService implements IApplicationService {
-  // BUG once packaged cookie handling does not work anymore
-  // #region Private fields ---------------------------------------------------
+  //#region Private fields ----------------------------------------------------
   private sessionCookie: Cookie | undefined;
   private readonly sessionCookieJarKey: string;
   private readonly sessionCookieUrl: string;
-  // #endregion
+  //#endregion
 
-  // #region Constructor ------------------------------------------------------
+  //#region Constructor -------------------------------------------------------
   public constructor() {
     this.sessionCookie = undefined;
     if (app.isPackaged) {
@@ -30,9 +29,9 @@ export class ApplicationService implements IApplicationService {
       this.sessionCookieUrl = "http://localhost:3000";
     }
   }
-  // #endregion
+  //#endregion
 
-  // #region IBootstrapService methods ----------------------------------------
+  //#region IBootstrapService methods -----------------------------------------
   public get applicationName(): string {
     return app.getName();
   }
@@ -120,14 +119,15 @@ export class ApplicationService implements IApplicationService {
   }
 
   public saveSessionCookie(): Promise<void> {
-    // once packed this returns no cookies at all
-    // session.defaultSession.cookies
-    //   .get({})
-    //   .then((cookies: Array<Cookie>) => {
-
-    //     cookies.forEach((c: Cookie) => console.log(c))
-    //     this.sessionCookie = cookies.shift();
-    //   });
+    /**
+     * # BUG once packed this returns no cookies at all
+     * session.defaultSession.cookies
+     *   .get({})
+     *   .then((cookies: Array<Cookie>) => {
+     *     cookies.forEach((c: Cookie) => console.log(c))
+     *     this.sessionCookie = cookies.shift();
+     *   });
+     */
     return session.defaultSession.cookies
       .get({ url: this.sessionCookieJarKey, name: "SESSION" })
       .then((cookies: Array<Cookie>) => {
@@ -145,9 +145,9 @@ export class ApplicationService implements IApplicationService {
       return Promise.resolve();
     }
   }
-  // #endregion
+  //#endregion
 
-  // #region helper methods ---------------------------------------------------
+  //#region Auxiliary Methods -------------------------------------------------
   /**
    * Preboot sequence:
    * - read configuration and preferences from the application directory. If not found, the first usage flag remains set.
@@ -207,4 +207,5 @@ export class ApplicationService implements IApplicationService {
     callback("Loading main program - Caching cardsymbols");
     await container.resolve<ICardSymbolService>(LIBRARY.CardSymbolService).cacheImages(callback);
   }
+  //#endregion
 }

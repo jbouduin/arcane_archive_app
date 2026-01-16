@@ -4,12 +4,16 @@ import { handleStringChange, handleValueChange } from "../util";
 import { BaseInputProps } from "./base-input.props";
 
 export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>) {
-  // #region State ------------------------------------------------------------
+  //#region State -------------------------------------------------------------
   const [loading, setLoading] = useState<boolean>(false);
   const [controller, setController] = useState<AbortController | null>(null);
-  // #endregion
+  //#endregion
 
-  // #region Effect: Async Validation -----------------------------------------
+  //#region Effects -----------------------------------------------------------
+  /**
+   * Run asynchronous validation if required when the value has been updated.
+   * By implementing async validation this way, the new value is rendered immediately
+   */
   useEffect(
     () => {
       if (props.validation == "asynchronous" || props.validation == "both") {
@@ -38,9 +42,9 @@ export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>) {
     },
     [props.viewmodel.dto[props.fieldName]]
   );
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   const validationResult = props.viewmodel.getValidation(props.fieldName);
   const keyName = props.fieldName.toString();
   return (
@@ -99,6 +103,7 @@ export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>) {
               props.viewmodelChanged();
             }}
             size={props.numericInputProps.size || "small"}
+            value={(props.viewmodel.dto[props.fieldName] as unknown as string)}
           />
         )
       }
@@ -117,5 +122,5 @@ export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>) {
       return (<Icon icon="cross" size={20} color={Colors.RED1} />);
     }
   }
-  // #endregion
+  //#endregion
 }

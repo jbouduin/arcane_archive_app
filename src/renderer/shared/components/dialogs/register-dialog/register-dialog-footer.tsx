@@ -3,7 +3,7 @@ import { noop } from "lodash";
 import { ReactNode } from "react";
 import { useServices } from "../../../../hooks";
 import { RegisterRequestDto } from "../../../dto";
-import { SaveCancelResetFooterNew } from "../../base/base-dialog/save-cancel-reset-footer-new";
+import { DefaultDialogFooter } from "../../base/base-dialog/default-dialog-footer";
 import { showLoginDialog } from "../factory";
 import { RegisterDialogFooterProp } from "./register-dialog.props";
 
@@ -36,7 +36,7 @@ export function RegisterDialogFooter(props: RegisterDialogFooterProp) {
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooterNew
+    <DefaultDialogFooter
       additionalLeftButtons={additionalLeftButtons()}
       {...props}
       showResetButton={true}

@@ -21,5 +21,5 @@ export function showSystemInfoDialog(serviceContainer: IServiceContainer) {
       return (<SystemInfo.SystemInfoDialogFooter {...footerProps} />);
     }
   };
-  serviceContainer.overlayService.openDialogNew(statusProps);
+  serviceContainer.overlayService.openDialog(statusProps);
 }

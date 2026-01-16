@@ -87,21 +87,21 @@ export function FirstTimeView(props: FirstTimeViewProps) {
               preferencesViewmodelRef.current = serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(dto.profile.preferences);
               forceUpdate();
             }}
-            newViewmodel={loginViewmodelRef.current}
+            viewmodel={loginViewmodelRef.current}
           />
         );
       case "register":
         return (
           <RegisterPanel
             navigateTo={setCurrentPanel}
-            newViewmodel={registrationViewmodelRef.current}
+            viewmodel={registrationViewmodelRef.current}
           />
         );
       case "system":
         return (
           <SystemPanel
             navigateTo={setCurrentPanel}
-            newViewmodel={systemSettingsViewmodelRef.current}
+            viewmodel={systemSettingsViewmodelRef.current}
           />
         );
       case "preferences":
@@ -109,7 +109,7 @@ export function FirstTimeView(props: FirstTimeViewProps) {
           <PreferencesPanel
             navigateTo={setCurrentPanel}
             onGo={onGo}
-            newViewmodel={preferencesViewmodelRef.current}
+            viewmodel={preferencesViewmodelRef.current}
           />
         );
     }

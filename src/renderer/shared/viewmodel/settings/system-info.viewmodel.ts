@@ -1,11 +1,11 @@
 import { ApiInfoDto, SystemInfoDto } from "../../dto";
 import { MtgServer } from "../../types";
-import { BaseViewmodelNew } from "../base.viewmodel-new";
+import { BaseViewmodel } from "../base.viewmodel";
 
 /**
  * SystemInfoViewmodel, defined as BaseViewmodel subclass because it is used in a dialog
  */
-export class SystemInfoViewmodel extends BaseViewmodelNew<SystemInfoDto> {
+export class SystemInfoViewmodel extends BaseViewmodel<SystemInfoDto> {
   // #region Getters/Setters --------------------------------------------------
   public get apiRoots(): Map<MtgServer, string> {
     return this._dto.apiRoots;

@@ -1,7 +1,7 @@
 import { MtgSetDto } from "../../../dto";
 import { MtgSetDetailViewmodel } from "../../../viewmodel";
-import { BaseDialogBodyPropsNew, BaseDialogFooterPropsNew, BaseDialogPropsNew } from "../../base/base-dialog";
+import { BaseDialogBodyProps, DefaultDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 
-export type MtgSetDialogProps = BaseDialogPropsNew<MtgSetDto, MtgSetDetailViewmodel>;
-export type MtgSetDialogBodyProps = BaseDialogBodyPropsNew<MtgSetDto, MtgSetDetailViewmodel>;
-export type MtgSetDialogFooterProps = BaseDialogFooterPropsNew<MtgSetDto, MtgSetDetailViewmodel>;
+export type MtgSetDialogProps = BaseDialogProps<MtgSetDto, MtgSetDetailViewmodel>;
+export type MtgSetDialogBodyProps = BaseDialogBodyProps<MtgSetDto, MtgSetDetailViewmodel>;
+export type MtgSetDialogFooterProps = DefaultDialogFooterProps<MtgSetDto, MtgSetDetailViewmodel>;

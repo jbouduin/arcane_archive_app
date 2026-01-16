@@ -11,11 +11,11 @@ export interface ICardSearchService {
   currentSelectedSearchTab: string | number;
 
   /**
-    * Query cards
-    * @param cardQuery the query parameters
-    * @param cardFilterParams
-    * @param cardSetFilter
-    */
+   * Query cards
+   * @param cardQuery the query parameters
+   * @param cardFilterParams
+   * @param cardSetFilter
+   */
   getCards(
     cardQueryParams: CardQueryParamsDto,
     cardFilterParams: CardFilterParamsDto | null,

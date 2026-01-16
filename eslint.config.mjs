@@ -30,6 +30,7 @@ export default [
       "@stylistic/brace-style": ["error", "1tbs"],
       // who the hell wants dangling comma"s ???
       "@stylistic/comma-dangle": "off",
+      "@stylistic/multiline-comment-style": ["error", "starred-block"],
       "@stylistic/indent": ["error", 2],
       "@stylistic/member-delimiter-style": ["error", {
         multiline: {
@@ -48,7 +49,8 @@ export default [
         },
       }],
       "@stylistic/quotes": ["error", "double"],
-      "@stylistic/semi": ["error", "always"]
+      "@stylistic/semi": ["error", "always"],
+      "@stylistic/spaced-comment": "off"
     },
   },
 ];

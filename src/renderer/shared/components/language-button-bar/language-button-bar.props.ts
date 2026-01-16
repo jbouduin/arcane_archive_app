@@ -1,5 +1,5 @@
 import { Props } from "@blueprintjs/core";
-import { LanguageDto } from "../../../dto";
+import { LanguageDto } from "../../dto";
 
 export interface LanguageButtonBarProps extends Props {
   currentLanguage: LanguageDto;

@@ -22,7 +22,7 @@ export function showLoginDialog(serviceContainer: IServiceContainer, showRegiste
             return (<LoginDialog.LoginDialogFooter {...footerProps} />);
           }
         };
-        serviceContainer.overlayService.openDialogNew(loginDialogProps);
+        serviceContainer.overlayService.openDialog(loginDialogProps);
       },
       noop
     );

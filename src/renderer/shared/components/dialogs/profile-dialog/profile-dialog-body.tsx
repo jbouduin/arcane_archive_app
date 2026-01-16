@@ -4,8 +4,7 @@ import { useServices } from "../../../../hooks";
 import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption } from "../../../types";
 import { BaseMultiSelect } from "../../base/base-multi-select/base-multi-select";
 import { createAuditableLabelValueItems, LabelValueItem, LabelValuePanel } from "../../base/label-value-panel";
-import { BaseInput } from "../../input";
-import { BaseCheckbox } from "../../input/base-checkbox";
+import { BaseCheckbox, BaseInput } from "../../input";
 import { ProfileDialogBodyProps } from "./profile-dialog.props";
 
 export function ProfileDialogBody(props: ProfileDialogBodyProps) {

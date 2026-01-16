@@ -1,9 +1,9 @@
 import { PreferencesDto } from "../../../../common/dto";
 import { ScryfallImageSize } from "../../../../common/enums";
-import { BaseViewmodelNew } from "../base.viewmodel-new";
+import { BaseViewmodel } from "../base.viewmodel";
 import { SetTreeSettingsViewmodel } from "./set-tree-settings.viewmodel";
 
-export class PreferencesViewmodel extends BaseViewmodelNew<PreferencesDto> {
+export class PreferencesViewmodel extends BaseViewmodel<PreferencesDto> {
   // #region Private fields ---------------------------------------------------
   private _librarySetTreeSettingsViewmodel: SetTreeSettingsViewmodel;
   // #endregion

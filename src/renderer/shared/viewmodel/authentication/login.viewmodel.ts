@@ -1,8 +1,8 @@
 import { LoginRequestDto } from "../../../../common/dto";
 import { stringCouldBeEmail, stringHasMinimalLength } from "../../components/util";
-import { BaseViewmodelNew } from "../base.viewmodel-new";
+import { BaseViewmodel } from "../base.viewmodel";
 
-export class LoginViewmodel extends BaseViewmodelNew<LoginRequestDto> {
+export class LoginViewmodel extends BaseViewmodel<LoginRequestDto> {
   // #region Private fields ---------------------------------------------------
   private _selectedExistingPassword: string | null;
   // #endregion

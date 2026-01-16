@@ -2,9 +2,9 @@ import { AlertProps, Button, Callout } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { ReactNode } from "react";
 import { LoginRequestDto, LoginResponseDto } from "../../../../../common/dto";
-import { useServices } from "../../../../hooks/use-services";
-import { SaveCancelResetFooterNew } from "../../base/base-dialog";
-import { showRecoverPasswordDialog, showRegisterDialogNew } from "../factory";
+import { useServices } from "../../../../hooks";
+import { DefaultDialogFooter } from "../../base/base-dialog";
+import { showRecoverPasswordDialog, showRegisterDialog } from "../factory";
 import { LoginDialogFooterProps } from "./login-dialog.props";
 
 export function LoginDialogFooter(props: LoginDialogFooterProps) {
@@ -31,7 +31,7 @@ export function LoginDialogFooter(props: LoginDialogFooterProps) {
   }
 
   function registerClick(): void {
-    showRegisterDialogNew(serviceContainer, false);
+    showRegisterDialog(serviceContainer, false);
   }
 
   function saveUser(dto: LoginRequestDto): void {
@@ -49,7 +49,7 @@ export function LoginDialogFooter(props: LoginDialogFooterProps) {
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooterNew
+    <DefaultDialogFooter
       additionalLeftButtons={additionalLeftButtons()}
       {...props}
       showResetButton={false}

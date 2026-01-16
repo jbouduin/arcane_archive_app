@@ -1,7 +1,7 @@
 import { SetTreeSettingsDto } from "../../../../common/dto";
-import { BaseViewmodelNew } from "../base.viewmodel-new";
+import { BaseViewmodel } from "../base.viewmodel";
 
-export class SetTreeSettingsViewmodel extends BaseViewmodelNew<SetTreeSettingsDto> {
+export class SetTreeSettingsViewmodel extends BaseViewmodel<SetTreeSettingsDto> {
   // #region Getters/Setters --------------------------------------------------
   public get cardSetTypeFilter(): Array<string> {
     return this._dto.cardSetTypeFilter;

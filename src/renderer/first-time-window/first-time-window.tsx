@@ -75,7 +75,7 @@ void (async () => {
   const [systemSettings, loginViewmodel, registerViewmodel] = await Promise.all([
     serviceContainer.ipcProxy.getData<SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS_FACTORY_DEFAULT),
     serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getLoginViewmodel(false, serviceContainer),
-    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getRegisterViewmodelNew(false, serviceContainer)
+    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getRegisterViewmodel(false, serviceContainer)
   ]);
 
   root.render(

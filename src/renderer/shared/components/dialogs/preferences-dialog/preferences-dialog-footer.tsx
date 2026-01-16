@@ -1,6 +1,6 @@
 import { PreferencesDto } from "../../../../../common/dto";
 import { useServices, useSession } from "../../../../hooks";
-import { SaveCancelResetFooterNew } from "../../base/base-dialog";
+import { DefaultDialogFooter } from "../../base/base-dialog";
 import { PreferencesDialogFooterProps } from "./preferences-dialog.props";
 
 export function PreferencesDialogFooter(props: PreferencesDialogFooterProps) {
@@ -25,7 +25,7 @@ export function PreferencesDialogFooter(props: PreferencesDialogFooterProps) {
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooterNew
+    <DefaultDialogFooter
       {...props}
       showResetButton={true}
       commitButtonLabel="Save"

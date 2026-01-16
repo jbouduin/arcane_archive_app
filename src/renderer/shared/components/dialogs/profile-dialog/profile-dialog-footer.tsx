@@ -1,7 +1,7 @@
 import { noop } from "lodash";
 import { useServices, useSession } from "../../../../hooks";
 import { ProfileDto, UserDto } from "../../../dto";
-import { SaveCancelResetFooterNew } from "../../base/base-dialog";
+import { DefaultDialogFooter } from "../../base/base-dialog";
 import { ProfileDialogFooterProps } from "./profile-dialog.props";
 
 export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
@@ -35,7 +35,7 @@ export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooterNew
+    <DefaultDialogFooter
       {...props}
       showResetButton={true}
       onCommitButtonClick={

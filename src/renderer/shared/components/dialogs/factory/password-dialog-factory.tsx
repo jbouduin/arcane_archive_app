@@ -22,7 +22,7 @@ export function showChangePasswordDialog(
       return (<ChangePassword.ChangePasswordDialogFooter {...props} />);
     }
   };
-  overlayService.openDialogNew(dialogProps);
+  overlayService.openDialog(dialogProps);
 }
 
 export function showRecoverPasswordDialog(
@@ -41,7 +41,7 @@ export function showRecoverPasswordDialog(
       return (<RecoverPassword.RecoverPasswordDialogFooter {...props} />);
     }
   };
-  overlayService.openDialogNew(dialogProps);
+  overlayService.openDialog(dialogProps);
 }
 
 export function showResetPasswordDialog(
@@ -62,5 +62,5 @@ export function showResetPasswordDialog(
       return (<ResetDialog.ResetPasswordDialogFooter {...props} />);
     }
   };
-  overlayService.openDialogNew(dialogProps);
+  overlayService.openDialog(dialogProps);
 }

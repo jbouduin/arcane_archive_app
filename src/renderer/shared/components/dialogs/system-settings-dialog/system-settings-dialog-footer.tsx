@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { SystemSettingsDto } from "../../../../../common/dto";
 import { LogSetting } from "../../../../../common/types";
 import { useServices } from "../../../../hooks";
-import { SaveCancelResetFooterNew } from "../../base/base-dialog";
+import { DefaultDialogFooter } from "../../base/base-dialog";
 import { SystemSettingsDialogFooterProps } from "./system-settings-dialog.props";
 
 export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProps) {
@@ -52,7 +52,7 @@ export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProp
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooterNew
+    <DefaultDialogFooter
       {...props}
       commitButtonLabel={props.viewmodel.restartRequired ? "Save and Restart" : "Save"}
       showResetButton={true}

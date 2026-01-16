@@ -58,7 +58,7 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
     return new RecoverPasswordViewmodel(dto);
   }
 
-  public async getRegisterViewmodelNew(showLoginButton: boolean, serviceContainer: IServiceContainer): Promise<RegisterViewmodel> {
+  public async getRegisterViewmodel(showLoginButton: boolean, serviceContainer: IServiceContainer): Promise<RegisterViewmodel> {
     const newUserName = await serviceContainer.sessionService.getNewUserName(serviceContainer.arcaneArchiveProxy);
     const registerDto: RegisterRequestDto = {
       userName: newUserName.valueOf(),

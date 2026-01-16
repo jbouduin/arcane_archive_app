@@ -10,16 +10,16 @@ import { mergeWithChangeDetails } from "../../../../common/util";
 
 @singleton()
 export class ConfigurationService extends BaseService implements IConfigurationService {
-  // #region private fields ---------------------------------------------------
+  //#region private fields ----------------------------------------------------
   private readonly ioService: IIoService;
   private _systemSettings!: SystemSettingsDto;
   private _apiConfiguration: ApiConfigurationDto | null;
   private _preferences!: PreferencesDto;
   private _isFirstUsage!: boolean;
   private discover!: (() => Promise<ResultDto<DiscoveryDto>>) | null;
-  // #endregion
+  //#endregion
 
-  // #region IConfigurationService properties ---------------------------------
+  //#region IConfigurationService properties ----------------------------------
   public get apiConfiguration(): ApiConfigurationDto | null {
     return this._apiConfiguration;
   }
@@ -43,9 +43,9 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   public get cacheDatabaseFilePath(): string {
     return join(this._systemSettings.dataConfiguration.cacheDirectory, "index.sqlite");
   }
-  // #endregion
+  //#endregion
 
-  // #region Constructor & C° -------------------------------------------------
+  //#region Constructor & C° --------------------------------------------------
   public constructor(
     @inject(INFRASTRUCTURE.LogService) logService: ILogService,
     @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory,
@@ -56,9 +56,9 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     this._apiConfiguration = null;
     this.discover = null;
   }
-  // #endregion
+  //#endregion
 
-  // #region IConfigurationService methods ------------------------------------
+  //#region IConfigurationService members -------------------------------------
   public initialize(useDarkTheme: boolean): void {
     const systemSettings = this.ioService.readSystemSettings<SystemSettingsDto>();
     // --- system settings ---
@@ -98,9 +98,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
         () => this._apiConfiguration = null
       );
   }
-  // #endregion
 
-  // #region Route callbacks --------------------------------------------------
   public getSystemSettings(): Promise<IResult<SystemSettingsDto>> {
     return this.resultFactory.createSuccessResultPromise(this._systemSettings);
   }
@@ -137,9 +135,9 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     this._preferences = preferences;
     return this.resultFactory.createSuccessResultPromise<PreferencesDto>(this._preferences);
   }
-  // #endregion
+  //#endregion
 
-  // #region Auxiliary factory default methods --------------------------------
+  //#region Auxiliary methods - factory defaults ------------------------------
   private createConfigurationFactoryDefault(): SystemSettingsDto {
     const result: SystemSettingsDto = {
       discovery: "http://localhost:5402/api/public/discover",
@@ -183,8 +181,5 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     };
     return result;
   }
-  // #endregion
-
-  // #region Auxiliary validation related methods -----------------------------
-  // #endregion
+  //#endregion
 }

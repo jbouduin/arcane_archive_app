@@ -1,13 +1,12 @@
 import { DataConfigurationDto } from "../../../../common/dto";
 import { stringNotNullOrEmpty } from "../../components/util";
-import { viewmodelMode } from "../base.viewmodel";
-import { BaseViewmodelNew } from "../base.viewmodel-new";
+import { BaseViewmodel, ViewmodelMode } from "../base.viewmodel";
 
 export type DirectoryTarget = "data" | "cache" | "log";
 
-export class DataConfigurationViewmodel extends BaseViewmodelNew<DataConfigurationDto> {
+export class DataConfigurationViewmodel extends BaseViewmodel<DataConfigurationDto> {
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: DataConfigurationDto, mode: viewmodelMode) {
+  public constructor(dto: DataConfigurationDto, mode: ViewmodelMode) {
     super(dto, mode);
     this.registerValidation("rootDataDirectory", () => this.validateRootDataDirectory());
     this.registerValidation("cacheDirectory", () => this.validateCacheDataDirectory());

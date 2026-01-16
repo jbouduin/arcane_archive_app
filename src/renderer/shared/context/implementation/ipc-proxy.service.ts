@@ -16,9 +16,6 @@ export class IpcProxyService implements IIpcProxyService {
   private logServerResponses: boolean;
   // #endregion
 
-  // #region Public fields ----------------------------------------------------
-  // #endregion
-
   // #region Constructor & C° -------------------------------------------------
   public constructor() {
     this.logServerResponses = false;

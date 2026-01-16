@@ -1,5 +1,5 @@
 import { InputGroupProps, NumericInputProps, Props } from "@blueprintjs/core";
-import { BaseViewmodelNew } from "../../viewmodel/base.viewmodel-new";
+import { BaseViewmodel } from "../../viewmodel";
 import { ValidationType } from "./validation-type";
 
 export interface BaseInputProps<Dto extends object> extends Props {
@@ -7,7 +7,7 @@ export interface BaseInputProps<Dto extends object> extends Props {
   /**
    * The viewmodel
    */
-  viewmodel: BaseViewmodelNew<Dto>;
+  viewmodel: BaseViewmodel<Dto>;
   /**
    * The fieldname. Must be the property name of one of the fields of the dto
    */
@@ -20,11 +20,11 @@ export interface BaseInputProps<Dto extends object> extends Props {
    * Set which validations have to be executed. If the validation has not been registered
    * an exception will be thrown, resp. the promise will be rejected.
    * Defaults to "none"
-  */
+   */
   validation?: ValidationType;
   /**
    * Debounce validation. Use for async as well as for sync validations
-    */
+   */
   debounceMs?: number;
   // #endregion
 

@@ -2,9 +2,7 @@ import { Callout, ControlGroup, HTMLTable, Tab, Tabs } from "@blueprintjs/core";
 import { useServices, useSession } from "../../../../hooks";
 import { SelectOption } from "../../../types";
 import { SetTreeSettingsViewmodel } from "../../../viewmodel/settings";
-import { BaseCheckbox } from "../../input";
-import { BaseHtmlSelect } from "../../input/base-html-select";
-import { ToggleCheckbox } from "../../input/toggle-checkbox";
+import { BaseCheckbox, BaseHtmlSelect, ToggleCheckbox } from "../../input";
 import { PreferencesDialogBodyProps } from "./preferences-dialog.props";
 
 export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {

@@ -4,7 +4,7 @@ import { IServiceContainer } from "../../../context";
 import { CollectionDto } from "../../../dto";
 import { CollectionType } from "../../../types";
 import { CollectionViewmodel } from "../../../viewmodel";
-import { BaseDialogFooterPropsNew } from "../../base/base-dialog";
+import { DefaultDialogFooterProps } from "../../base/base-dialog";
 import * as CollectionDialog from "../collection-dialog";
 
 export function showEditCollectionDialog(
@@ -22,7 +22,7 @@ export function showEditCollectionDialog(
     bodyRenderer: (bodyProps: CollectionDialog.CollectionDialogBodyProps) => {
       return (<CollectionDialog.CollectionDialogBody {...bodyProps} />);
     },
-    footerRenderer: (footerProps: BaseDialogFooterPropsNew<CollectionDto, CollectionViewmodel>) => {
+    footerRenderer: (footerProps: DefaultDialogFooterProps<CollectionDto, CollectionViewmodel>) => {
       return (
         <CollectionDialog.CollectionDialogFooter
           {...footerProps}
@@ -43,7 +43,7 @@ export function showEditCollectionDialog(
       </>
     )
   };
-  serviceContainer.overlayService.openDialogNew(dialogProps);
+  serviceContainer.overlayService.openDialog(dialogProps);
 }
 
 export function showNewCollectionDialog(
@@ -61,7 +61,7 @@ export function showNewCollectionDialog(
     bodyRenderer: (bodyProps: CollectionDialog.CollectionDialogBodyProps) => {
       return (<CollectionDialog.CollectionDialogBody {...bodyProps} />);
     },
-    footerRenderer: (footerProps: BaseDialogFooterPropsNew<CollectionDto, CollectionViewmodel>) => {
+    footerRenderer: (footerProps: DefaultDialogFooterProps<CollectionDto, CollectionViewmodel>) => {
       return (
         <CollectionDialog.CollectionDialogFooter
           {...footerProps}
@@ -78,5 +78,5 @@ export function showNewCollectionDialog(
       </>
     )
   };
-  serviceContainer.overlayService.openDialogNew(dialogProps);
+  serviceContainer.overlayService.openDialog(dialogProps);
 }

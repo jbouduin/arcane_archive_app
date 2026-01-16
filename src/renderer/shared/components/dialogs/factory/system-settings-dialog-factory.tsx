@@ -24,7 +24,7 @@ export function showSystemSettingsDialog(serviceContainer: IServiceContainer, fi
             return (<SystemSettings.SystemSettingsDialogFooter {...footerProps} />);
           }
         };
-        serviceContainer.overlayService.openDialogNew(uiSettingsProps);
+        serviceContainer.overlayService.openDialog(uiSettingsProps);
       },
       noop
     );

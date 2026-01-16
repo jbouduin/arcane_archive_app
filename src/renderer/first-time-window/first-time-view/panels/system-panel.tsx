@@ -1,7 +1,7 @@
 import { Button, DialogBody, DialogFooter } from "@blueprintjs/core";
 import { useReducer } from "react";
 import { useServices, useSession } from "../../../hooks";
-import { SystemSettingsDialogBody } from "../../../shared/components/dialogs/system-settings-dialog/system-settings-dialog-body";
+import { SystemSettingsDialogBody } from "../../../shared/components/dialogs";
 import { SystemPanelProps } from "./system-panel.props";
 
 export function SystemPanel(props: SystemPanelProps) {
@@ -31,7 +31,7 @@ export function SystemPanel(props: SystemPanelProps) {
       <DialogBody className="first-time-view-panel-body">
         <SystemSettingsDialogBody
           viewmodelChanged={forceUpdate}
-          viewmodel={props.newViewmodel!}
+          viewmodel={props.viewmodel}
           isOpen={true}
 
         />
@@ -40,7 +40,7 @@ export function SystemPanel(props: SystemPanelProps) {
         <div className="dialog-footer-button-bar">
           <Button onClick={backClick}>Back</Button>
           <Button
-            disabled={!props.newViewmodel!.isValid || props.newViewmodel!.isValidationInProgress}
+            disabled={!props.viewmodel.isValid || props.viewmodel.isValidationInProgress}
             onClick={() => props.navigateTo("preferences")}
           >
             Next

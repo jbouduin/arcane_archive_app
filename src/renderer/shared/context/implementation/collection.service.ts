@@ -1,13 +1,11 @@
 import { CollectionDto } from "../../dto";
-import { IArcaneArchiveProxyService } from "../interface";
-import { ICollectionService } from "../interface/collection.service";
+import { IArcaneArchiveProxyService, ICollectionService } from "../interface";
 
 export class CollectionService implements ICollectionService {
   // #region Private fields ---------------------------------------------------
   private arcaneArchiveProxy!: IArcaneArchiveProxyService;
   // #endregion
 
-  private idCounter = 100;
   // #region ICollectionService Members -------------------------------------------
   public createCollection(collection: CollectionDto): Promise<CollectionDto> {
     return this.arcaneArchiveProxy.postData<Omit<CollectionDto, "id">, CollectionDto>(

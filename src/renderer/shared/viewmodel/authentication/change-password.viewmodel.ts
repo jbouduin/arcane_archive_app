@@ -3,16 +3,6 @@ import { ChangePasswordRequestDto } from "../../dto";
 import { PasswordViewmodel } from "./password.viewmodel";
 
 export class ChangePasswordViewmodel extends PasswordViewmodel<ChangePasswordRequestDto> {
-  // #region Getters/Setters --------------------------------------------------
-  // public get oldPassword(): string {
-  //   return this._dto.oldPassword;
-  // }
-
-  // public set oldPassword(value: string) {
-  //   this._dto.oldPassword = value;
-  // }
-  // #endregion
-
   // #region Constructor ------------------------------------------------------
   public constructor(dto: ChangePasswordRequestDto) {
     super(dto, "update");

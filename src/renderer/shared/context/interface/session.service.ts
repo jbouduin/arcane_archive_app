@@ -23,8 +23,7 @@ export interface ISessionService {
   resetPassword(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: ResetPasswordRequestDto): Promise<void>;
   saveSelf(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: UserDto): Promise<UserDto>;
   saveUser(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: UserDto): Promise<UserDto>;
-  userExists(arcaneArchiveProxy: IArcaneArchiveProxyService, userName: string): Promise<boolean>;
-  userExistsNew(arcaneArchiveProxy: IArcaneArchiveProxyService, userName: string, signal: AbortSignal): Promise<boolean>;
+  userExists(arcaneArchiveProxy: IArcaneArchiveProxyService, userName: string, signal: AbortSignal): Promise<boolean>;
   // #endregion
 
   // #region Session ----------------------------------------------------------

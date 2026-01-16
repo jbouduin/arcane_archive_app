@@ -1,8 +1,8 @@
 import { stringCouldBeEmail, stringHasMinimalLength } from "../../components/util";
 import { RecoverPasswordRequestDto } from "../../dto";
-import { BaseViewmodelNew } from "../base.viewmodel-new";
+import { BaseViewmodel } from "../base.viewmodel";
 
-export class RecoverPasswordViewmodel extends BaseViewmodelNew<RecoverPasswordRequestDto> {
+export class RecoverPasswordViewmodel extends BaseViewmodel<RecoverPasswordRequestDto> {
   // #region Constructor ------------------------------------------------------
   public constructor(dto: RecoverPasswordRequestDto) {
     super(dto, "update");

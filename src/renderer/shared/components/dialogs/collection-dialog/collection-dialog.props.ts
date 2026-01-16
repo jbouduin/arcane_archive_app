@@ -1,10 +1,10 @@
 import { CollectionDto } from "../../../dto";
 import { CollectionViewmodel } from "../../../viewmodel";
-import { BaseDialogBodyPropsNew, BaseDialogFooterPropsNew, BaseDialogPropsNew } from "../../base/base-dialog";
+import { BaseDialogBodyProps, DefaultDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 
-export type CollectionDialogProps = BaseDialogPropsNew<CollectionDto, CollectionViewmodel>;
-export type CollectionDialogBodyProps = BaseDialogBodyPropsNew<CollectionDto, CollectionViewmodel>;
-export type CollectionDialogFooterProps = BaseDialogFooterPropsNew<CollectionDto, CollectionViewmodel> & {
+export type CollectionDialogProps = BaseDialogProps<CollectionDto, CollectionViewmodel>;
+export type CollectionDialogBodyProps = BaseDialogBodyProps<CollectionDto, CollectionViewmodel>;
+export type CollectionDialogFooterProps = DefaultDialogFooterProps<CollectionDto, CollectionViewmodel> & {
   onCollectionAdded: (dto: CollectionDto) => void;
   onCollectionModified: (dto: CollectionDto) => void;
 };

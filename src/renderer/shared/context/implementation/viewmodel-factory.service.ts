@@ -3,7 +3,10 @@ import { CollectionViewmodelFactory } from "../../viewmodel/factory/implementati
 import { MtgCardViewmodelFactory } from "../../viewmodel/factory/implementation/mtg-card-viewmodel.factory";
 import { MtgSetViewmodelFactory } from "../../viewmodel/factory/implementation/mtg-set-viewmodel.factory";
 import { SettingsViewmodelFactory } from "../../viewmodel/factory/implementation/settings-viewmodel.factory";
-import { IAuthenticationViewmodelFactory, ICollectionViewmodelFactory, IMtgCardViewmodelFactory, IMtgSetViewmodelFactory, ISettingsViewmodelFactory } from "../../viewmodel/factory/interface";
+import {
+  IAuthenticationViewmodelFactory, ICollectionViewmodelFactory, IMtgCardViewmodelFactory,
+  IMtgSetViewmodelFactory, ISettingsViewmodelFactory
+} from "../../viewmodel/factory/interface";
 import { IColorService, IDisplayValueService, ILanguageService, IMtgSetService, IViewmodelFactoryService } from "../interface";
 
 export class ViewmodelFactoryService implements IViewmodelFactoryService {

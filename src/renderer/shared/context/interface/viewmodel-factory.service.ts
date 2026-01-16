@@ -1,5 +1,7 @@
-import { IAuthenticationViewmodelFactory, ICollectionViewmodelFactory, IMtgCardViewmodelFactory, IMtgSetViewmodelFactory } from "../../viewmodel/factory/interface";
-import { ISettingsViewmodelFactory } from "../../viewmodel/factory/interface/settings-viewmodel.factory";
+import {
+  IAuthenticationViewmodelFactory, ICollectionViewmodelFactory, IMtgCardViewmodelFactory,
+  IMtgSetViewmodelFactory, ISettingsViewmodelFactory
+} from "../../viewmodel/factory/interface";
 import { IColorService } from "./color.service";
 import { IDisplayValueService } from "./display-value.service";
 import { ILanguageService } from "./language.service";

@@ -3,10 +3,10 @@ import { IServiceContainer } from "../../../context";
 import { RegisterViewmodel } from "../../../viewmodel";
 import * as RegisterDialog from "../register-dialog";
 
-export function showRegisterDialogNew(serviceContainer: IServiceContainer, showLoginButton: boolean): void {
+export function showRegisterDialog(serviceContainer: IServiceContainer, showLoginButton: boolean): void {
   // the viewmodel factory goes to the backend to retrieve an available user name for the new user
   void serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
-    .getRegisterViewmodelNew(showLoginButton, serviceContainer)
+    .getRegisterViewmodel(showLoginButton, serviceContainer)
     .then(
       (viewmodel: RegisterViewmodel) => {
         const loginDialogProps: RegisterDialog.RegisterDialogProps = {
@@ -23,7 +23,7 @@ export function showRegisterDialogNew(serviceContainer: IServiceContainer, showL
             return (<RegisterDialog.RegisterDialogFooter {...footerProps} />);
           }
         };
-        serviceContainer.overlayService.openDialogNew(loginDialogProps);
+        serviceContainer.overlayService.openDialog(loginDialogProps);
       },
       noop
     );

@@ -4,8 +4,8 @@ import classNames from "classnames";
 import { BaseColumn, CellLookup, ClientSortCallback, ServerSortCallback } from "../base/base-table";
 import { CardSetLookupResult } from "./card-set-lookup-result";
 
+// LATER: sort by set release date also
 export class CardSetColumn<T> extends BaseColumn<T, CardSetLookupResult> {
-  // LATER: sort by set release date also
   // #region SortableColumn abstract methods implementationm -------------------
   protected renderMenu(clientSortColumn?: ClientSortCallback<T>, serverSortColumn?: ServerSortCallback): React.JSX.Element {
     let sortAsc: (() => void) | undefined = undefined;

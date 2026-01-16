@@ -9,7 +9,7 @@ export interface IAuthenticationViewmodelFactory {
   getInitialLoginViewmodel(showRegisterButton: boolean): LoginViewmodel;
   getLoginViewmodel(showRegisterButton: boolean, serviceContainer: IServiceContainer): Promise<LoginViewmodel>;
   getRecoverPasswordViewmodel(dto: RecoverPasswordRequestDto): RecoverPasswordViewmodel;
-  getRegisterViewmodelNew(showLoginButton: boolean, serviceContainer: IServiceContainer): Promise<RegisterViewmodel>;
+  getRegisterViewmodel(showLoginButton: boolean, serviceContainer: IServiceContainer): Promise<RegisterViewmodel>;
   getResetPasswordViewmodel(dto: ResetPasswordRequestDto): ResetPasswordViewmodel;
   getUserViewmodel(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<ProfileViewmodel>;
 }

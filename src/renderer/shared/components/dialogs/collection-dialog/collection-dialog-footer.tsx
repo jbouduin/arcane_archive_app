@@ -1,15 +1,15 @@
 import { noop } from "lodash";
 import { useServices } from "../../../../hooks";
 import { CollectionDto } from "../../../dto";
-import { SaveCancelResetFooterNew } from "../../base/base-dialog";
+import { DefaultDialogFooter } from "../../base/base-dialog";
 import { CollectionDialogFooterProps } from "./collection-dialog.props";
 
 export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
-  // #region Hooks ------------------------------------------------------------
+  //#region Hooks -------------------------------------------------------------
   const serviceContainer = useServices();
-  // #endregion
+  //#endregion
 
-  // #region event handling ---------------------------------------------------
+  //#region Event Handling ----------------------------------------------------
   function createClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: CollectionDto): Promise<void> {
     return serviceContainer.collectionService
       .createCollection(dto)
@@ -37,12 +37,12 @@ export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
         noop
       );
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   if (!props.viewmodel.dto.id) {
     return (
-      <SaveCancelResetFooterNew
+      <DefaultDialogFooter
         {...props}
         showResetButton={false}
         commitButtonLabel="Create"
@@ -51,7 +51,7 @@ export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
     );
   } else {
     return (
-      <SaveCancelResetFooterNew
+      <DefaultDialogFooter
         {...props}
         showResetButton={true}
         commitButtonLabel="Save"
@@ -59,5 +59,5 @@ export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
       />
     );
   }
-  // #endregion
+  //#endregion
 }

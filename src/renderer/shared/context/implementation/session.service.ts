@@ -8,7 +8,7 @@ import { IArcaneArchiveProxyService, IIpcProxyService, IServiceContainer, ISessi
 import { SessionChangeListener } from "../types";
 
 export class SessionService implements ISessionService {
-  // #region Private fields ---------------------------------------------------
+  //#region Private fields ----------------------------------------------------
   private _jwt: string | null;
   private roles: Set<ApplicationRole>;
   private _userName: string | null;
@@ -16,9 +16,9 @@ export class SessionService implements ISessionService {
   private refreshTimeout: NodeJS.Timeout | null;
   private _refreshToken: string | null;
   private unsubscribeInvalidSession: (() => void) | null;
-  // #endregion
+  //#endregion
 
-  // #region Constructor ------------------------------------------------------
+  //#region Constructor & C° --------------------------------------------------
   public constructor() {
     this._jwt = null;
     this._userName = null;
@@ -28,9 +28,9 @@ export class SessionService implements ISessionService {
     this._refreshToken = null;
     this.unsubscribeInvalidSession = null;
   }
-  // #endregion
+  //#endregion
 
-  // #region ISessionService Members - Other ----------------------------------
+  //#region ISessionService Members - Other -----------------------------------
   public async initialize(serviceContainer: IServiceContainer): Promise<void> {
     if (this.unsubscribeInvalidSession == null) {
       this.unsubscribeInvalidSession = serviceContainer.arcaneArchiveProxy.subscribeInvalidSessionListener(
@@ -54,9 +54,9 @@ export class SessionService implements ISessionService {
   public selectDirectory(ipcProxy: IIpcProxyService, currentValue: string): Promise<string | undefined> {
     return ipcProxy.getData<string>(`${IpcPaths.IO_SELECT_DIRECTORY}/${encodeURIComponent(currentValue)}`);
   }
-  // #endregion
+  //#endregion
 
-  // #region ISessionService Members - Account - User -------------------------
+  //#region ISessionService Members - Account - User --------------------------
   public changePassword(
     arcaneArchiveProxy: IArcaneArchiveProxyService,
     ipcProxy: IIpcProxyService,
@@ -110,24 +110,16 @@ export class SessionService implements ISessionService {
     );
   }
 
-  public userExists(arcaneArchiveProxy: IArcaneArchiveProxyService, userName: string): Promise<boolean> {
-    /* eslint-disable @typescript-eslint/no-wrapper-object-types */
-    return arcaneArchiveProxy
-      .getData<Boolean>("authentication", `/public/account/user-exist?user=${userName}`)
-      .then((resp: Boolean) => resp.valueOf());
-    /* eslint-enable @typescript-eslint/no-wrapper-object-types */
-  }
-
-  public userExistsNew(arcaneArchiveProxy: IArcaneArchiveProxyService, userName: string, signal: AbortSignal): Promise<boolean> {
+  public userExists(arcaneArchiveProxy: IArcaneArchiveProxyService, userName: string, signal: AbortSignal): Promise<boolean> {
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     return arcaneArchiveProxy
       .getData<Boolean>("authentication", `/public/account/user-exist?user=${userName}`, { signal: signal })
       .then((resp: Boolean) => resp.valueOf());
     /* eslint-enable @typescript-eslint/no-wrapper-object-types */
   }
-  // #endregion
+  //#endregion
 
-  // #region ISessionService Members - Session --------------------------------
+  //#region ISessionService Members - Session ---------------------------------
   public hasRole(role: ApplicationRole): boolean {
     return this.roles.has(role);
   }
@@ -181,9 +173,9 @@ export class SessionService implements ISessionService {
       this.sessionChangeListeners = this.sessionChangeListeners.filter(l => l !== listener);
     };
   }
-  // #endregion
+  //#endregion
 
-  // #region ISessionService Members - Local Account storage ------------------
+  //#region ISessionService Members - Local Account storage -------------------
   public deleteSavedUser(ipcProxy: IIpcProxyService, username: string): Promise<number> {
     return ipcProxy.deleteData(`${IpcPaths.CREDENTIAL}/${username}`);
   }
@@ -199,9 +191,9 @@ export class SessionService implements ISessionService {
   public saveCredentials(ipcProxy: IIpcProxyService, loginRequest: LoginRequestDto): Promise<void> {
     return ipcProxy.postData<LoginRequestDto, never>(IpcPaths.CREDENTIAL, loginRequest);
   }
-  // #endregion
+  //#endregion
 
-  // #region Auxiliary Methods ------------------------------------------------
+  //#region Auxiliary Methods -------------------------------------------------
   private clearSessionData(ipcProxy: IIpcProxyService): void {
     this._jwt = null;
     this._userName = null;
@@ -253,5 +245,5 @@ export class SessionService implements ISessionService {
     document.title = `Arcane Archive - (logged in as ${this._userName}})`;
     this.sessionChangeListeners.forEach((l: SessionChangeListener) => l(data, this._userName));
   }
-  // #endregion
+  //#endregion
 }

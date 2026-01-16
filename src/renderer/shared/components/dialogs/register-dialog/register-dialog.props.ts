@@ -1,7 +1,7 @@
 import { RegisterRequestDto } from "../../../dto";
 import { RegisterViewmodel } from "../../../viewmodel";
-import { BaseDialogBodyPropsNew, BaseDialogFooterPropsNew, BaseDialogPropsNew } from "../../base/base-dialog";
+import { BaseDialogBodyProps, DefaultDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 
-export type RegisterDialogProps = BaseDialogPropsNew<RegisterRequestDto, RegisterViewmodel>;
-export type RegisterDialogBodyProps = BaseDialogBodyPropsNew<RegisterRequestDto, RegisterViewmodel>;
-export type RegisterDialogFooterProp = BaseDialogFooterPropsNew<RegisterRequestDto, RegisterViewmodel>;
+export type RegisterDialogProps = BaseDialogProps<RegisterRequestDto, RegisterViewmodel>;
+export type RegisterDialogBodyProps = BaseDialogBodyProps<RegisterRequestDto, RegisterViewmodel>;
+export type RegisterDialogFooterProp = DefaultDialogFooterProps<RegisterRequestDto, RegisterViewmodel>;

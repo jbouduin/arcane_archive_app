@@ -38,7 +38,7 @@ export class RegisterViewmodel extends PasswordViewmodel<RegisterRequestDto> {
       );
     } else {
       const userExists = await this.serviceContainer.sessionService
-        .userExistsNew(this.serviceContainer.arcaneArchiveProxy, this._dto.userName, signal);
+        .userExists(this.serviceContainer.arcaneArchiveProxy, this._dto.userName, signal);
       if (userExists) {
         this.setFieldInvalid("userName", { helperText: "Username already in use", intent: "danger" });
       } else {

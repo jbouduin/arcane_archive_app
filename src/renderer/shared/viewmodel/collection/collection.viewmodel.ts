@@ -1,10 +1,9 @@
 import { stringHasMinimalLength } from "../../components/util";
 import { CollectionDto } from "../../dto";
 import { CollectionType } from "../../types";
-import { viewmodelMode } from "../base.viewmodel";
-import { BaseViewmodelNew } from "../base.viewmodel-new";
+import { BaseViewmodel, ViewmodelMode } from "../base.viewmodel";
 
-export class CollectionViewmodel extends BaseViewmodelNew<CollectionDto> {
+export class CollectionViewmodel extends BaseViewmodel<CollectionDto> {
   // #region Private fields ---------------------------------------------------
   private readonly _parentPath: Array<string>;
   // #endregion
@@ -44,7 +43,7 @@ export class CollectionViewmodel extends BaseViewmodelNew<CollectionDto> {
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: CollectionDto, parentPath: Array<string>, mode: viewmodelMode) {
+  public constructor(dto: CollectionDto, parentPath: Array<string>, mode: ViewmodelMode) {
     super(dto, mode);
     this._parentPath = parentPath;
     if (mode == "update") {

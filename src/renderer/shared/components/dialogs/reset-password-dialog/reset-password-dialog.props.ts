@@ -1,7 +1,7 @@
 import { ResetPasswordRequestDto } from "../../../dto";
 import { ResetPasswordViewmodel } from "../../../viewmodel";
-import { BaseDialogBodyPropsNew, BaseDialogFooterPropsNew, BaseDialogPropsNew } from "../../base/base-dialog";
+import { BaseDialogBodyProps, DefaultDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 
-export type ResetPasswordDialogProps = BaseDialogPropsNew<ResetPasswordRequestDto, ResetPasswordViewmodel>;
-export type ResetPasswordDialogBodyProps = BaseDialogBodyPropsNew<ResetPasswordRequestDto, ResetPasswordViewmodel>;
-export type ResetPasswordDialogFooterProps = BaseDialogFooterPropsNew<ResetPasswordRequestDto, ResetPasswordViewmodel>;
+export type ResetPasswordDialogProps = BaseDialogProps<ResetPasswordRequestDto, ResetPasswordViewmodel>;
+export type ResetPasswordDialogBodyProps = BaseDialogBodyProps<ResetPasswordRequestDto, ResetPasswordViewmodel>;
+export type ResetPasswordDialogFooterProps = DefaultDialogFooterProps<ResetPasswordRequestDto, ResetPasswordViewmodel>;

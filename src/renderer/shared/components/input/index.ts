@@ -1,5 +1,7 @@
 export * from "./base-checkbox";
 export * from "./base-checkbox.props";
+export * from "./base-html-select";
+export * from "./base-html-select.props";
 export * from "./base-input";
 export * from "./base-input.props";
 export * from "./password-input";

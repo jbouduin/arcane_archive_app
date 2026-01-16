@@ -22,7 +22,7 @@ export function showProfileDialog(serviceContainer: IServiceContainer): void {
             return (<Profile.ProfileDialogFooter {...footerProps} />);
           }
         };
-        serviceContainer.overlayService.openDialogNew(profileProp);
+        serviceContainer.overlayService.openDialog(profileProp);
       },
       noop
     );

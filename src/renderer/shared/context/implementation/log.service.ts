@@ -1,7 +1,7 @@
 import { LogRequestDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
 import { IIpcProxyService } from "../interface";
-import { ILogService } from "../interface/log.service";
+import { ILogService } from "../interface";
 
 export class LogService implements ILogService {
   // #region Private fields ---------------------------------------------------

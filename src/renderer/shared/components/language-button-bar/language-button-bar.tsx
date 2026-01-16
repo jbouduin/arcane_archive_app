@@ -1,5 +1,5 @@
 import { ButtonGroup } from "@blueprintjs/core";
-import { LanguageDto } from "../../../dto";
+import { LanguageDto } from "../../dto";
 import { LanguageButtonBarButton } from "./language-button-bar-button";
 import { LanguageButtonBarProps } from "./language-button-bar.props";
 

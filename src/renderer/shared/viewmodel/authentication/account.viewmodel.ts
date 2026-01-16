@@ -1,9 +1,9 @@
 import { addSelectOption, clearSelection, removeSelectOption, stringHasMinimalLength } from "../../components/util";
 import { AccountDto } from "../../dto";
 import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption } from "../../types";
-import { BaseViewmodelNew, viewmodelMode } from "../base.viewmodel-new";
+import { BaseViewmodel, ViewmodelMode } from "../base.viewmodel";
 
-export class AccountViewmodel extends BaseViewmodelNew<AccountDto> {
+export class AccountViewmodel extends BaseViewmodel<AccountDto> {
   // #region Private fields ---------------------------------------------------
   private _selectedRoles: Array<SelectOption<ApplicationRole>>;
   // #endregion
@@ -15,7 +15,7 @@ export class AccountViewmodel extends BaseViewmodelNew<AccountDto> {
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: AccountDto, mode: viewmodelMode) {
+  public constructor(dto: AccountDto, mode: ViewmodelMode) {
     super(dto, mode);
     this._selectedRoles = new Array<SelectOption<ApplicationRole>>();
     ROLES_SELECT_OPTIONS.forEach((option: SelectOption<ApplicationRole>) => {
@@ -42,8 +42,8 @@ export class AccountViewmodel extends BaseViewmodelNew<AccountDto> {
   // #endregion
 
   // #region Validation methods -----------------------------------------------
-  // LATER must become async as in register (currently no issue, as the field is readonly)
   private validateAccountName(): void {
+    // LATER must become async as in register (currently no issue, as the field is readonly)
     if (stringHasMinimalLength(this._dto.accountName, 8)) {
       this.setFieldValid("accountName");
     } else {

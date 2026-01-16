@@ -3,22 +3,22 @@ import { noop } from "lodash";
 import { useReducer } from "react";
 import { LoginResponseDto } from "../../../../common/dto";
 import { useServices } from "../../../hooks";
-import { LoginDialogBody } from "../../../shared/components/dialogs/login-dialog/login-dialog-body";
+import { LoginDialogBody } from "../../../shared/components/dialogs";
 import { LoginPanelProps } from "./login-panel.props";
 
 export function LoginPanel(props: LoginPanelProps) {
-  // #region State ------------------------------------------------------------
+  //#region State -------------------------------------------------------------
   const [_forceUpdate, forceUpdate] = useReducer(x => x + 1, 0);
-  // #endregion
+  //#endregion
 
-  // #region Hooks ------------------------------------------------------------
+  //#region Hooks -------------------------------------------------------------
   const serviceContainer = useServices();
-  // #endregion
+  //#endregion
 
-  // #region Event handling ---------------------------------------------------
+  //#region Event Handling ----------------------------------------------------
   function loginClick(): void {
-    if (props.newViewmodel!.isValid) {
-      void serviceContainer.sessionService.login(serviceContainer, props.newViewmodel!.dto)
+    if (props.viewmodel.isValid) {
+      void serviceContainer.sessionService.login(serviceContainer, props.viewmodel.dto)
         .then(
           (r: LoginResponseDto) => {
             props.afterLogin(r);
@@ -28,15 +28,15 @@ export function LoginPanel(props: LoginPanelProps) {
         );
     }
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <>
       <DialogBody className="first-time-view-panel-body">
         <LoginDialogBody
           viewmodelChanged={forceUpdate}
-          viewmodel={props.viewmodel!}
+          viewmodel={props.viewmodel}
           isOpen={true}
         />
       </DialogBody>
@@ -49,7 +49,7 @@ export function LoginPanel(props: LoginPanelProps) {
             <Button onClick={() => props.navigateTo("register")}>Register instead</Button>
             <Button onClick={() => props.navigateTo("system")}>Continue without account</Button>
             <Button
-              disabled={!props.newViewmodel!.canCommit}
+              disabled={!props.viewmodel.canCommit}
               onClick={loginClick}
             >
               Login
@@ -59,5 +59,5 @@ export function LoginPanel(props: LoginPanelProps) {
       </DialogFooter>
     </>
   );
-  // #endregion
+  //#endregion
 }

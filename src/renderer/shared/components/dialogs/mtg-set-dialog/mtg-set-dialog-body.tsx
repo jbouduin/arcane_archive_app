@@ -3,20 +3,20 @@ import { useState } from "react";
 import { useServices } from "../../../../hooks";
 import { LanguageDto, MtgSetDto } from "../../../dto";
 import { createAuditableLabelValueItems, LabelValueItem, LabelValuePanel } from "../../base/label-value-panel";
-import { LanguageButtonBar } from "../../card-detail-view/language-button-bar/language-button-bar";
 import { BaseCheckbox, BaseInput } from "../../input";
+import { LanguageButtonBar } from "../../language-button-bar";
 import { MtgSetDialogBodyProps } from "./mtg-set-dialog.props";
 
 export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
-  // #region State ------------------------------------------------------------
+  //#region State -------------------------------------------------------------
   const [currentLanguage, setCurrentLanguage] = useState<LanguageDto>(props.viewmodel.languages[0]);
-  // #endregion
+  //#endregion
 
-  // #region Hooks ------------------------------------------------------------
+  //#region Hooks -------------------------------------------------------------
   const serviceContainer = useServices();
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <>
       {renderSetDetailsLanguageHeader()}
@@ -192,7 +192,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
           <BaseInput
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
-            fieldName="code"
+            fieldName="releaseDate"
             validation="none"
             label="Release Date"
             inputProps={{
@@ -277,5 +277,5 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
       </>
     );
   }
-  // #endregion
+  //#endregion
 }

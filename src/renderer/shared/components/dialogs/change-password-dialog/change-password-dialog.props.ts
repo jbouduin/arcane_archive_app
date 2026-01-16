@@ -1,7 +1,7 @@
 import { ChangePasswordRequestDto } from "../../../dto";
-import { ChangePasswordViewmodel } from "../../../viewmodel/authentication/change-password.viewmodel";
-import { BaseDialogBodyPropsNew, BaseDialogFooterPropsNew, BaseDialogPropsNew } from "../../base/base-dialog";
+import { ChangePasswordViewmodel } from "../../../viewmodel";
+import { BaseDialogBodyProps, DefaultDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 
-export type ChangePasswordDialogProps = BaseDialogPropsNew<ChangePasswordRequestDto, ChangePasswordViewmodel>;
-export type ChangePasswordDialogBodyProps = BaseDialogBodyPropsNew<ChangePasswordRequestDto, ChangePasswordViewmodel>;
-export type ChangePasswordDialogFooterProps = BaseDialogFooterPropsNew<ChangePasswordRequestDto, ChangePasswordViewmodel>;
+export type ChangePasswordDialogProps = BaseDialogProps<ChangePasswordRequestDto, ChangePasswordViewmodel>;
+export type ChangePasswordDialogBodyProps = BaseDialogBodyProps<ChangePasswordRequestDto, ChangePasswordViewmodel>;
+export type ChangePasswordDialogFooterProps = DefaultDialogFooterProps<ChangePasswordRequestDto, ChangePasswordViewmodel>;

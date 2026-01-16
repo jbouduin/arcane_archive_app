@@ -2,8 +2,7 @@ import { Button, Callout, Tab, Tabs } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { useServices } from "../../../../hooks";
 import { DirectoryTarget } from "../../../viewmodel";
-import { BaseInput } from "../../input";
-import { BaseHtmlSelect } from "../../input/base-html-select";
+import { BaseHtmlSelect, BaseInput } from "../../input";
 import { SystemSettingsDialogBodyProps } from "./system-settings-dialog.props";
 
 export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {

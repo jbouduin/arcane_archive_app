@@ -2,12 +2,11 @@ import { SystemSettingsDto } from "../../../../common/dto";
 import { LogLevel } from "../../../../common/enums";
 import { LogSetting, LogSource } from "../../../../common/types";
 import { SelectOption, ValidationResult } from "../../types";
-import { viewmodelMode } from "../base.viewmodel";
-import { BaseViewmodelNew } from "../base.viewmodel-new";
+import { BaseViewmodel, ViewmodelMode } from "../base.viewmodel";
 import { DataConfigurationViewmodel } from "./data-configuration.viewmodel";
 import { LogSettingViewmodel } from "./log-setting.viewmodel";
 
-export class SystemSettingsViewmodel extends BaseViewmodelNew<SystemSettingsDto> {
+export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
   // #region Private fields ---------------------------------------------------
   private readonly invalidUrlResult: ValidationResult;
   private readonly _logSettingsViewmodels: Map<LogSource, LogSettingViewmodel>;
@@ -25,7 +24,7 @@ export class SystemSettingsViewmodel extends BaseViewmodelNew<SystemSettingsDto>
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: SystemSettingsDto, mode: viewmodelMode) {
+  public constructor(dto: SystemSettingsDto, mode: ViewmodelMode) {
     super(dto, mode);
     this.invalidUrlResult = { helperText: "Please enter a valid internet address", intent: "danger" };
     // --- data configuration view model
@@ -49,7 +48,7 @@ export class SystemSettingsViewmodel extends BaseViewmodelNew<SystemSettingsDto>
     this.registerValidation("discovery", () => this.validateDiscovery());
   }
 
-  private registerLogSettingsViewmodel(dto: SystemSettingsDto, mode: viewmodelMode, source: LogSource, options: Array<SelectOption<LogLevel>>): void {
+  private registerLogSettingsViewmodel(dto: SystemSettingsDto, mode: ViewmodelMode, source: LogSource, options: Array<SelectOption<LogLevel>>): void {
     const viewmodel = new LogSettingViewmodel(
       dto.loggingConfiguration.find((l: LogSetting) => l.source == source)!, mode, options);
     this._logSettingsViewmodels.set(source, viewmodel);
