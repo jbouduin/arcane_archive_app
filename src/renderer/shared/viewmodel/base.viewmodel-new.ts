@@ -1,6 +1,7 @@
 import { cloneDeep, isEqual } from "lodash";
 import { ValidationResult } from "../types";
 
+// TODO rename to ViewmodelMode
 export type viewmodelMode = "read-only" | "create" | "update";
 
 export abstract class BaseViewmodelNew<Dto extends object> {
@@ -12,6 +13,7 @@ export abstract class BaseViewmodelNew<Dto extends object> {
   private invalidFields: Array<keyof Dto>;
   private pendingValidations: number;
   private validationResults: Map<keyof Dto, ValidationResult>;
+  private childViewmodels: Array<BaseViewmodelNew<object>>;
   private readonly _mode: viewmodelMode;
   // #endregion
 
@@ -23,7 +25,7 @@ export abstract class BaseViewmodelNew<Dto extends object> {
 
   // #region Auxiliary getters ------------------------------------------------
   public get isValid(): boolean {
-    return this.invalidFields.length == 0;
+    return this.invalidFields.length == 0 && this.childViewmodels.every((vm: BaseViewmodelNew<object>) => vm.isValid);
   }
 
   public get dto(): Dto {
@@ -31,15 +33,19 @@ export abstract class BaseViewmodelNew<Dto extends object> {
   }
 
   public get hasChanges(): boolean {
-    return !isEqual(this._dto, this._org);
+    let result = !isEqual(this._dto, this._org);
+    if (this.childViewmodels.length > 0) {
+      result = result || this.childViewmodels.some((vm: BaseViewmodelNew<object>) => vm.hasChanges);
+    }
+    return result;
   }
 
   public get canCommit(): boolean {
-    return !isEqual(this._dto, this._org) && this.invalidFields.length == 0 && !this.isValidationInProgress;
+    return this.hasChanges && this.isValid && !this.isValidationInProgress;
   }
 
   public get isValidationInProgress(): boolean {
-    return this.pendingValidations > 0;
+    return this.pendingValidations > 0 || this.childViewmodels.some((vm: BaseViewmodelNew<object>) => vm.isValidationInProgress);
   }
 
   public get mode(): viewmodelMode {
@@ -60,6 +66,7 @@ export abstract class BaseViewmodelNew<Dto extends object> {
     this.validationFunctions = this.validationFunctions = new Map<keyof Dto, () => void>();
     this.asyncValidationFunctions = new Map<keyof Dto, (signal: AbortSignal) => Promise<void>>();
     this.touchedFields = new Set<keyof Dto>();
+    this.childViewmodels = new Array<BaseViewmodelNew<object>>();
   }
   // #endregion
 
@@ -86,6 +93,9 @@ export abstract class BaseViewmodelNew<Dto extends object> {
     this.asyncValidationFunctions.set(fieldName, validation);
   }
 
+  protected registerChildViewmodel<T extends object>(viewmodel: BaseViewmodelNew<T>): void {
+    this.childViewmodels.push(viewmodel as unknown as BaseViewmodelNew<object>);
+  }
   // #endregion
 
   // #region Public methods ---------------------------------------------------

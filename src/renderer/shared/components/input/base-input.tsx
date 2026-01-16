@@ -61,6 +61,7 @@ export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>) {
             {...props.inputProps}
             onChange={
               handleStringChange((newValue: string) => {
+                // TODO check this assignment: probably "" could be assigned as null
                 (props.viewmodel.dto[props.fieldName] as unknown as string) = newValue;
                 if (props.validation == "synchronous" || props.validation == "both") {
                   props.viewmodel.validate(props.fieldName, props.debounceMs);
@@ -68,7 +69,8 @@ export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>) {
                 props.viewmodelChanged();
               })
             }
-            value={props.viewmodel.dto[props.fieldName] as string}
+            // TODO check this assignment (see TODO above)
+            value={props.viewmodel.dto[props.fieldName] as string || ""}
             id={keyName + "-input"}
             onBlur={() => {
               props.viewmodel.markTouched(props.fieldName);

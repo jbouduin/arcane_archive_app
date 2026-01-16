@@ -6,6 +6,7 @@ import { SelectOption } from "../../../types";
 import { HighlightText } from "../highlight-text/highlight-text";
 import { BaseServerSelectProps } from "./base-server-select.props";
 
+// TODO move this component to ../../input and make it work with BaseViewmodel
 /**
  * A multi select component that retrieves items from the server
  */

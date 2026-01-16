@@ -1,6 +1,6 @@
 import { IArcaneArchiveProxyService, IServiceContainer } from "../../../context";
 import { RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto } from "../../../dto";
-import { ChangePasswordViewmodel, LoginViewmodel, RecoverPasswordViewmodel, RegisterViewmodel, ResetPasswordViewmodel, UserViewmodel } from "../../authentication";
+import { ChangePasswordViewmodel, LoginViewmodel, RecoverPasswordViewmodel, RegisterViewmodel, ResetPasswordViewmodel, ProfileViewmodel } from "../../authentication";
 import { IAuthenticationViewmodelFactory } from "../interface";
 
 export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelFactory {
@@ -77,10 +77,10 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
     return new ResetPasswordViewmodel(dto);
   }
 
-  public getUserViewmodel(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<UserViewmodel> {
+  public getUserViewmodel(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<ProfileViewmodel> {
     return arcaneArchiveProxy
       .getData<UserDto>("authentication", "/app/account")
-      .then((userDto: UserDto) => new UserViewmodel(userDto));
+      .then((userDto: UserDto) => new ProfileViewmodel(userDto));
   }
   // #endregion
 }

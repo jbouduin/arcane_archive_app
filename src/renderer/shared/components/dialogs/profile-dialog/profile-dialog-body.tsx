@@ -1,11 +1,11 @@
-import { Checkbox, ControlGroup, FormGroup, HTMLTable, InputGroup, Tab, Tabs } from "@blueprintjs/core";
+import { ControlGroup, HTMLTable, Tab, Tabs } from "@blueprintjs/core";
 import { useMemo } from "react";
 import { useServices } from "../../../../hooks";
 import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption } from "../../../types";
 import { BaseMultiSelect } from "../../base/base-multi-select/base-multi-select";
-import { createAuditableLabelValueItems, LabelValuePanel, renderBoolean } from "../../base/label-value-panel";
-import { handleStringChange } from "../../util";
-import { ValidatedInput } from "../../validated-input/validated-input";
+import { createAuditableLabelValueItems, LabelValueItem, LabelValuePanel } from "../../base/label-value-panel";
+import { BaseInput } from "../../input";
+import { BaseCheckbox } from "../../input/base-checkbox";
 import { ProfileDialogBodyProps } from "./profile-dialog.props";
 
 export function ProfileDialogBody(props: ProfileDialogBodyProps) {
@@ -41,47 +41,31 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
   function renderUserDetailsPanel(): React.JSX.Element {
     return (
       <>
-        <ValidatedInput
-          keyPrefix="user-name"
+        <BaseInput
+          viewmodel={props.viewmodel.accountViewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="accountName"
           label="Username"
           labelInfo="*"
-          validationResult={props.viewmodel.getValidation("accountName")}
-          validate={() => props.viewmodel.validateAccountName()}
-          startValidation={() => props.viewmodel.startValidation()}
-          endValidation={() => props.viewmodel.endValidation()}
-          onValidationComplete={() => props.onValidationCompleted()}
+          validation="synchronous"
           inputProps={{
             readOnly: true,
             required: true,
-            value: props.viewmodel.accountName,
-            onChange: handleStringChange((newValue: string) => {
-              props.viewmodel.accountName = newValue;
-              props.viewmodelChanged();
-            }),
             placeholder: "Enter a username..."
           }}
         />
-        <ValidatedInput
-          keyPrefix="email"
+        <BaseInput
+          viewmodel={props.viewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="email"
           label="Email"
           labelInfo="*"
-          touched={true}
-          validationResult={props.viewmodel.getValidation("email")}
-          validate={() => props.viewmodel.validateEmail()}
-          startValidation={() => props.viewmodel.startValidation()}
-          endValidation={() => props.viewmodel.endValidation()}
-          onValidationComplete={() => props.onValidationCompleted()}
+          validation="synchronous"
           inputProps={{
             required: true,
             inputMode: "email",
             placeholder: "Enter your email address...",
-            onChange:
-              handleStringChange((newValue: string) => {
-                props.viewmodel.email = newValue;
-                props.viewmodelChanged();
-              }),
             type: "email",
-            value: props.viewmodel.email
           }}
         />
         <ControlGroup
@@ -89,46 +73,27 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
           fill={true}
           vertical={false}
         >
-          <FormGroup
-            key="fn-group"
+          <BaseInput
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="firstname"
             label="First Name"
-            labelFor="first-name"
-          >
-            <InputGroup
-              id="first-name"
-              inputMode="text"
-              placeholder="Enter your first name..."
-              onChange={
-                handleStringChange((newValue: string) => {
-                  props.viewmodel.firstName = newValue;
-                  props.viewmodelChanged();
-                })
-              }
-              size="small"
-              type="text"
-              value={props.viewmodel.firstName}
-            />
-          </FormGroup>
-          <FormGroup
-            key="ln-group"
+            validation="none"
+            inputProps={{
+              placeholder: "Enter your first name..."
+            }}
+          />
+          <BaseInput
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="lastName"
             label="Last Name"
-            labelFor="last-name"
-          >
-            <InputGroup
-              id="last-name"
-              inputMode="text"
-              placeholder="Enter your last name..."
-              onChange={
-                handleStringChange((newValue: string) => {
-                  props.viewmodel.lastName = newValue;
-                  props.viewmodelChanged();
-                })
-              }
-              size="small"
-              type="text"
-              value={props.viewmodel.lastName}
-            />
-          </FormGroup>
+            validation="none"
+            inputProps={{
+              placeholder: "Enter your last name..."
+
+            }}
+          />
         </ControlGroup>
         <BaseMultiSelect<ApplicationRole>
           key="roles"
@@ -137,23 +102,23 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
           formGroupLabel="Roles"
           onClearSelectedOptions={
             () => {
-              props.viewmodel.clearSelectedRoles();
+              props.viewmodel.accountViewmodel.clearSelectedRoles();
               props.viewmodelChanged();
             }
           }
           onOptionAdded={
             (role: SelectOption<ApplicationRole>) => {
-              props.viewmodel.addRole(role);
+              props.viewmodel.accountViewmodel.addRole(role);
               props.viewmodelChanged();
             }
           }
           onOptionRemoved={
             (role: SelectOption<ApplicationRole>) => {
-              props.viewmodel.removeRole(role);
+              props.viewmodel.accountViewmodel.removeRole(role);
               props.viewmodelChanged();
             }
           }
-          selectedOptions={props.viewmodel.selectedRoles}
+          selectedOptions={props.viewmodel.accountViewmodel.selectedRoles}
         />
       </>
     );
@@ -162,17 +127,17 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
   function renderAdditionalInfoPanel(): React.JSX.Element {
     const accountItems = new Map<string, JSX.Element | null>();
     if (!isSysAdmin) {
-      accountItems.set("Account Locked", renderBoolean(props.viewmodel.accountLocked));
-      accountItems.set("Account active", renderBoolean(props.viewmodel.accountActive));
-      accountItems.set("Account expired", renderBoolean(props.viewmodel.accountExpired));
-      accountItems.set("Password Expired", renderBoolean(props.viewmodel.passwordExpired));
+      accountItems.set("Account Locked", (<LabelValueItem viewmodel={props.viewmodel.accountViewmodel} fieldName="accountLocked" fieldType="boolean" />));
+      accountItems.set("Account active", (<LabelValueItem viewmodel={props.viewmodel.accountViewmodel} fieldName="accountActive" fieldType="boolean" />));
+      accountItems.set("Account expired", (<LabelValueItem viewmodel={props.viewmodel.accountViewmodel} fieldName="accountExpired" fieldType="boolean" />));
+      accountItems.set("Password Expired", (<LabelValueItem viewmodel={props.viewmodel.accountViewmodel} fieldName="passwordExpired" fieldType="boolean" />));
     }
 
     const items = new Map<string, JSX.Element | null>([
       ...accountItems.entries(),
       ...createAuditableLabelValueItems({
-        id: props.viewmodel.dto.account.id,
-        ...props.viewmodel.dto.profile
+        id: props.viewmodel.accountViewmodel.dto.id,
+        ...props.viewmodel.dto
       })
     ]);
 
@@ -189,38 +154,42 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
               <tbody>
                 <tr>
                   <td style={{ paddingLeft: "0px" }}>
-                    <Checkbox
-                      checked={props.viewmodel.accountLocked}
-                      readOnly={!isSysAdmin}
+                    <BaseCheckbox
+                      viewmodel={props.viewmodel.accountViewmodel}
+                      viewmodelChanged={props.viewmodelChanged}
+                      fieldName="accountLocked"
                     >
                       Account Locked
-                    </Checkbox>
+                    </BaseCheckbox>
                   </td>
                   <td>
-                    <Checkbox
-                      checked={props.viewmodel.accountActive}
-                      readOnly={!isSysAdmin}
+                    <BaseCheckbox
+                      viewmodel={props.viewmodel.accountViewmodel}
+                      viewmodelChanged={props.viewmodelChanged}
+                      fieldName="accountActive"
                     >
                       Account Active
-                    </Checkbox>
+                    </BaseCheckbox>
                   </td>
                 </tr>
                 <tr>
                   <td style={{ paddingLeft: "0px" }}>
-                    <Checkbox
-                      checked={props.viewmodel.accountExpired}
-                      readOnly={!isSysAdmin}
+                    <BaseCheckbox
+                      viewmodel={props.viewmodel.accountViewmodel}
+                      viewmodelChanged={props.viewmodelChanged}
+                      fieldName="accountExpired"
                     >
                       Account Expired
-                    </Checkbox>
+                    </BaseCheckbox>
                   </td>
                   <td>
-                    <Checkbox
-                      checked={props.viewmodel.passwordExpired}
-                      readOnly={!isSysAdmin}
+                    <BaseCheckbox
+                      viewmodel={props.viewmodel.accountViewmodel}
+                      viewmodelChanged={props.viewmodelChanged}
+                      fieldName="passwordExpired"
                     >
                       Password Expired
-                    </Checkbox>
+                    </BaseCheckbox>
                   </td>
                 </tr>
               </tbody>
