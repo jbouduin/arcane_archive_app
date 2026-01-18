@@ -1,6 +1,6 @@
 import { Colors, FormGroup, Icon, InputGroup, NumericInput, Spinner } from "@blueprintjs/core";
 import { useEffect, useState } from "react";
-import { handleStringChange, handleValueChange } from "../util";
+import { handleStringChange, handleValueChange, stringNotNullOrEmpty } from "../util";
 import { BaseInputProps } from "./base-input.props";
 
 export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>): JSX.Element {
@@ -65,15 +65,14 @@ export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>): JSX.E
             {...props.inputProps}
             onChange={
               handleStringChange((newValue: string) => {
-                // TODO check this assignment: probably "" could be assigned as null
-                (props.viewmodel.dto[props.fieldName] as unknown as string) = newValue;
+                (props.viewmodel.dto[props.fieldName] as unknown as string | null) =
+                  stringNotNullOrEmpty(newValue) ? newValue : null;
                 if (props.validation == "synchronous" || props.validation == "both") {
                   props.viewmodel.validate(props.fieldName, props.debounceMs);
                 }
                 props.viewmodelChanged();
               })
             }
-            // TODO check this assignment (see TODO above)
             value={props.viewmodel.dto[props.fieldName] as string || ""}
             id={keyName + "-input"}
             onBlur={() => {

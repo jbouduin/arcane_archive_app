@@ -1,21 +1,8 @@
-import { InputGroupProps, NumericInputProps, Props } from "@blueprintjs/core";
-import { BaseViewmodel } from "../../viewmodel";
+import { InputGroupProps, NumericInputProps } from "@blueprintjs/core";
+import { BaseProps } from "./base.props";
 import { ValidationType } from "./validation-type";
 
-export interface BaseInputProps<Dto extends object> extends Props {
-  // #region Data related -----------------------------------------------------
-  /**
-   * The viewmodel
-   */
-  viewmodel: BaseViewmodel<Dto>;
-  /**
-   * The fieldname. Must be the property name of one of the fields of the dto
-   */
-  fieldName: keyof Dto;
-  viewmodelChanged: () => void;
-  // #endregion
-
-  // #region Validation related -----------------------------------------------
+export interface BaseInputProps<Dto extends object> extends BaseProps<Dto> {
   /**
    * Set which validations have to be executed. If the validation has not been registered
    * an exception will be thrown, resp. the promise will be rejected.
@@ -26,16 +13,10 @@ export interface BaseInputProps<Dto extends object> extends Props {
    * Debounce validation. Use for async as well as for sync validations
    */
   debounceMs?: number;
-  // #endregion
-
-  // #region FormGroup related ------------------------------------------------
-  fill?: boolean;
   /**
    * If set, ValidatedInput renders an {@link InputGroup}. Mutually exclusive with numericInputProps
    */
   inputProps?: InputGroupProps;
-  label: string;
-  labelInfo?: string;
   // #endregion
 
   // #region Input related ----------------------------------------------------

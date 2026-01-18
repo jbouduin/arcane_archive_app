@@ -4,7 +4,9 @@ import { SelectOption } from "../../types";
 import { handleValueChange } from "../util";
 import { BaseHtmlSelectProps } from "./base-html-select.props";
 
-export function BaseHtmlSelect<Dto extends object, D extends string | number>(props: BaseHtmlSelectProps<Dto>) {
+export function BaseHtmlSelect<Dto extends object, D extends string | number>(
+  props: BaseHtmlSelectProps<Dto>
+): JSX.Element {
   // #region Memo -------------------------------------------------------------
   const options: Array<SelectOption<D>> = useMemo(
     () => props.viewmodel.getSelectOptions<D>(props.fieldName),
@@ -20,7 +22,7 @@ export function BaseHtmlSelect<Dto extends object, D extends string | number>(pr
       label={props.label}
       labelInfo={props.labelInfo}
       labelFor={`${fieldName}-select`}
-      fill={true}
+      fill={props.fill}
     >
       <HTMLSelect
         {...props.selectProps}
