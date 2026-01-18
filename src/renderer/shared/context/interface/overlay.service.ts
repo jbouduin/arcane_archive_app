@@ -19,7 +19,6 @@ export interface IOverlayService {
   openDialog<Dto extends object, Vm extends BaseViewmodel<Dto>>(
     props: BaseDialogProps<Dto, Vm>
   ): void;
-  // closeDialog(dialogNumber: number): void;
   showToast(toastProps: ToastProps, key?: string): void;
   showSplashScreen(value: ProgressCallbackValue): void;
   hideSplashSceen(): void;

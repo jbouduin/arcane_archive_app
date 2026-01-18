@@ -7,7 +7,7 @@ import { ToggleCheckBoxProps } from "./toggle-checkbox.props";
  *
  * @param props {@link ToggleCheckBoxProps }
  */
-export function ToggleCheckbox<Dto extends object>(props: ToggleCheckBoxProps<Dto>) {
+export function ToggleCheckbox<Dto extends object>(props: ToggleCheckBoxProps<Dto>): JSX.Element {
   // #region Rendering --------------------------------------------------------
   const dtoValue = props.viewmodel.dto[props.fieldName] as unknown as Array<string>;
   return (

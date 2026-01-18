@@ -10,7 +10,8 @@
     "package": "npm run prebuild &&electron-forge package",
     "make": "npm run prebuild && electron-forge make",
     "publish": "npm run prebuild && electron-forge publish",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src",
+    "lintq": "eslint ./src --quiet"
   },
   "keywords": [],
   "repository": {

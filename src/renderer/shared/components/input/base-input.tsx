@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { handleStringChange, handleValueChange } from "../util";
 import { BaseInputProps } from "./base-input.props";
 
-export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>) {
+export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>): JSX.Element {
   //#region State -------------------------------------------------------------
   const [loading, setLoading] = useState<boolean>(false);
   const [controller, setController] = useState<AbortController | null>(null);
@@ -27,7 +27,7 @@ export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>) {
             const newController = new AbortController();
             setController(newController);
             setLoading(true);
-            props.viewmodel
+            void props.viewmodel
               .validateAsync(props.fieldName, newController.signal)
               .finally(() => {
                 setLoading(false);

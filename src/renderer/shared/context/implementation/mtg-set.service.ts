@@ -1,7 +1,7 @@
 import { noop } from "lodash";
 import { MtgSetTreeDto } from "../../dto";
 import { SelectOption } from "../../types";
-import { IArcaneArchiveProxyService } from "../interface";
+import { IArcaneArchiveProxy } from "../interface";
 import { IMtgSetService } from "../interface/mtg-set.service";
 
 export class MtgSetService implements IMtgSetService {
@@ -32,7 +32,7 @@ export class MtgSetService implements IMtgSetService {
     return this.setMap.get(id);
   }
 
-  public async initialize(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<void> {
+  public async initialize(arcaneArchiveProxy: IArcaneArchiveProxy): Promise<void> {
     return arcaneArchiveProxy.getData<Array<MtgSetTreeDto>>("library", "/public/mtg-set")
       .then(
         (data: Array<MtgSetTreeDto>) => {

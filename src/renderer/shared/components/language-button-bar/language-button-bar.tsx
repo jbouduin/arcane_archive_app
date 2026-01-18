@@ -3,7 +3,7 @@ import { LanguageDto } from "../../dto";
 import { LanguageButtonBarButton } from "./language-button-bar-button";
 import { LanguageButtonBarProps } from "./language-button-bar.props";
 
-export function LanguageButtonBar(props: LanguageButtonBarProps) {
+export function LanguageButtonBar(props: LanguageButtonBarProps): JSX.Element {
   // #region Event handling ----------------------------------------------------
   function onAnyButtonClick(language: LanguageDto): void {
     props.onButtonClick(language);

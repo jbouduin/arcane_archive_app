@@ -10,11 +10,13 @@ import { BaseServerSelectProps } from "./base-server-select.props";
 /**
  * A multi select component that retrieves items from the server
  */
-export function BaseServerSelect<T>(props: BaseServerSelectProps<T>) {
+export function BaseServerSelect<T>(props: BaseServerSelectProps<T>): JSX.Element {
   // #region Memo --------------------------------------------------------------
   const optionsIsSelected = useCallback(
     (item: SelectOption<T>) => props.selectedOptions.findIndex(
-      (value: SelectOption<T>) => props.itemComparer ? props.itemComparer(item.value, value.value) : item.value == value.value
+      (value: SelectOption<T>) => props.itemComparer
+        ? props.itemComparer(item.value, value.value)
+        : item.value == value.value
     ) >= 0,
     [props.selectedOptions]
   );

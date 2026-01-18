@@ -4,4 +4,7 @@ import { BaseDialogBodyProps, DefaultDialogFooterProps, BaseDialogProps } from "
 
 export type RecoverPasswordDialogProps = BaseDialogProps<RecoverPasswordRequestDto, RecoverPasswordViewmodel>;
 export type RecoverPasswordDialogBodyProps = BaseDialogBodyProps<RecoverPasswordRequestDto, RecoverPasswordViewmodel>;
-export type RecoverPasswordDialogFooterProps = DefaultDialogFooterProps<RecoverPasswordRequestDto, RecoverPasswordViewmodel>;
+export type RecoverPasswordDialogFooterProps = DefaultDialogFooterProps<
+  RecoverPasswordRequestDto,
+  RecoverPasswordViewmodel
+>;

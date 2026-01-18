@@ -10,9 +10,10 @@ export class OverlayService implements IOverlayService {
   // #region Private fields ---------------------------------------------------
   private setAlert!: Dispatch<React.SetStateAction<AlertProps | null>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private setDialogs!: Dispatch<React.SetStateAction<Map<number, BaseDialogProps<any, any>>>>; // TODO check if it works with unknown
+  private setDialogs!: Dispatch<React.SetStateAction<Map<number, BaseDialogProps<any, any>>>>;
+  // TODO check if line above it works with unknown
   private setSplashScreen!: Dispatch<React.SetStateAction<ProgressCallbackValue | null>>;
-  private _showToast!: (props: ToastProps, key?: string) => void;
+  private _showToast!: ShowToastFn;
   private dialogSequence: number;
   // #endregion
 
@@ -34,7 +35,9 @@ export class OverlayService implements IOverlayService {
     this.setAlert = setAlert;
   }
 
-  public setSplashScreenDispatcher(setSplashScreen: React.Dispatch<React.SetStateAction<ProgressCallbackValue | null>>): void {
+  public setSplashScreenDispatcher(
+    setSplashScreen: React.Dispatch<React.SetStateAction<ProgressCallbackValue | null>>
+  ): void {
     this.setSplashScreen = setSplashScreen;
   }
 
@@ -49,7 +52,7 @@ export class OverlayService implements IOverlayService {
     const seq = this.dialogSequence;
     const modifiedProps = {
       ...props,
-      onClose: (event: React.SyntheticEvent<HTMLElement>) => {
+      onClose: (event: React.SyntheticEvent<HTMLElement>): void => {
         if (props.onClose) {
           props.onClose(event);
         }

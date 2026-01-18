@@ -1,11 +1,11 @@
 import { MtgSetTreeDto } from "../../dto";
 import { SelectOption } from "../../types";
-import { IArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
+import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
 
 export interface IMtgSetService {
   readonly allSets: Array<MtgSetTreeDto>;
 
   getSelectOptions(): Array<SelectOption<MtgSetTreeDto>>;
   getSetById(id: number): MtgSetTreeDto | undefined;
-  initialize(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<void>;
+  initialize(arcaneArchiveProxy: IArcaneArchiveProxy): Promise<void>;
 }

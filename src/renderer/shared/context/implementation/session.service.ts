@@ -1,48 +1,42 @@
 import { noop } from "lodash";
-import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
+import { LoginRequestDto, SessionDto, PreferencesDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
-import { mergeWithChangeDetails } from "../../../../common/util";
 import { ChangePasswordRequestDto, RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto } from "../../dto";
 import { ApplicationRole } from "../../types";
-import { IArcaneArchiveProxyService, IIpcProxyService, IServiceContainer, ISessionService } from "../interface";
-import { SessionChangeListener } from "../types";
+import { IArcaneArchiveProxy, IIpcProxy, IServiceContainer, ISessionService } from "../interface";
+import { PreferencesLoadedListener, SessionChangeListener } from "../types";
 
 export class SessionService implements ISessionService {
   //#region Private fields ----------------------------------------------------
   private _jwt: string | null;
+  private preferencesLoadedListeners: Array<PreferencesLoadedListener>;
   private roles: Set<ApplicationRole>;
-  private _userName: string | null;
-  private sessionChangeListeners: Array<SessionChangeListener>;
   private refreshTimeout: NodeJS.Timeout | null;
   private _refreshToken: string | null;
+  private sessionChangeListeners: Array<SessionChangeListener>;
   private unsubscribeInvalidSession: (() => void) | null;
   //#endregion
 
   //#region Constructor & C° --------------------------------------------------
   public constructor() {
     this._jwt = null;
-    this._userName = null;
+    this.preferencesLoadedListeners = Array<PreferencesLoadedListener>();
     this.roles = new Set<ApplicationRole>();
-    this.sessionChangeListeners = new Array<SessionChangeListener>();
     this.refreshTimeout = null;
     this._refreshToken = null;
+    this.sessionChangeListeners = new Array<SessionChangeListener>();
     this.unsubscribeInvalidSession = null;
   }
   //#endregion
 
-  //#region ISessionService Members - Other -----------------------------------
+  //#region ISessionService Members - Service methods -------------------------
   public async initialize(serviceContainer: IServiceContainer): Promise<void> {
-    if (this.unsubscribeInvalidSession == null) {
-      this.unsubscribeInvalidSession = serviceContainer.arcaneArchiveProxy.subscribeInvalidSessionListener(
-        () => this.clearSessionData(serviceContainer.ipcProxy)
-      );
-    }
-    return serviceContainer.ipcProxy.getData<LoginResponseDto>(IpcPaths.SESSION)
+    return serviceContainer.ipcProxy.getData<SessionDto>(IpcPaths.SESSION)
       .then(
-        (r: LoginResponseDto) => {
+        (r: SessionDto) => {
           if (r) {
             this.setSessionData(r, serviceContainer);
-            serviceContainer.configurationService.preferences = r.profile.preferences;
+            this.broadcastPreferencesLoaded(r.profile.preferences);
           } else {
             document.title = "Arcane Archive";
           }
@@ -51,15 +45,38 @@ export class SessionService implements ISessionService {
       );
   }
 
-  public selectDirectory(ipcProxy: IIpcProxyService, currentValue: string): Promise<string | undefined> {
+  public initializeSubscriptions(arcaneArchiveProxy: IArcaneArchiveProxy, ipcProxy: IIpcProxy): void {
+    if (this.unsubscribeInvalidSession == null) {
+      this.unsubscribeInvalidSession = arcaneArchiveProxy.subscribeInvalidSessionListener(
+        () => this.clearSessionData(ipcProxy)
+      );
+    }
+  }
+
+  public selectDirectory(ipcProxy: IIpcProxy, currentValue: string): Promise<string | undefined> {
     return ipcProxy.getData<string>(`${IpcPaths.IO_SELECT_DIRECTORY}/${encodeURIComponent(currentValue)}`);
+  }
+
+  public subscribePreferencesLoadedListener(listener: PreferencesLoadedListener): () => void {
+    this.preferencesLoadedListeners.push(listener);
+    return () => {
+      this.preferencesLoadedListeners = this.preferencesLoadedListeners
+        .filter((listener: PreferencesLoadedListener) => listener !== listener);
+    };
+  }
+
+  public subscribeSessionChangeListener(listener: SessionChangeListener): () => void {
+    this.sessionChangeListeners.push(listener);
+    return () => {
+      this.sessionChangeListeners = this.sessionChangeListeners.filter(l => l !== listener);
+    };
   }
   //#endregion
 
   //#region ISessionService Members - Account - User --------------------------
   public changePassword(
-    arcaneArchiveProxy: IArcaneArchiveProxyService,
-    ipcProxy: IIpcProxyService,
+    arcaneArchiveProxy: IArcaneArchiveProxy,
+    ipcProxy: IIpcProxy,
     changePasswordRequest: ChangePasswordRequestDto): Promise<void> {
     return arcaneArchiveProxy
       .postData<ChangePasswordRequestDto, never>(
@@ -73,7 +90,7 @@ export class SessionService implements ISessionService {
       );
   }
 
-  public getNewUserName(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<string> {
+  public getNewUserName(arcaneArchiveProxy: IArcaneArchiveProxy): Promise<string> {
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     return arcaneArchiveProxy
       .getData<String>("authentication", "/public/account/new-user")
@@ -81,36 +98,36 @@ export class SessionService implements ISessionService {
     /* eslint-enable @typescript-eslint/no-wrapper-object-types */
   }
 
-  public register(arcaneArchiveProxy: IArcaneArchiveProxyService, registerDto: RegisterRequestDto): Promise<void> {
+  public register(arcaneArchiveProxy: IArcaneArchiveProxy, registerDto: RegisterRequestDto): Promise<void> {
     return arcaneArchiveProxy
       .postData<RegisterRequestDto, never>("authentication", "/public/account", registerDto);
   }
 
-  public recoverPassword(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: RecoverPasswordRequestDto): Promise<void> {
+  public recoverPassword(arcaneArchiveProxy: IArcaneArchiveProxy, dto: RecoverPasswordRequestDto): Promise<void> {
     return arcaneArchiveProxy.postData<RecoverPasswordRequestDto, never>(
       "authentication", "/public/account/password/recover", dto, { suppressSuccessMessage: false }
     );
   }
 
-  public resetPassword(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: ResetPasswordRequestDto): Promise<void> {
+  public resetPassword(arcaneArchiveProxy: IArcaneArchiveProxy, dto: ResetPasswordRequestDto): Promise<void> {
     return arcaneArchiveProxy.postData<ResetPasswordRequestDto, never>(
       "authentication", "/public/account/password/reset", dto
     );
   }
 
-  public saveSelf(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: UserDto): Promise<UserDto> {
+  public saveSelf(arcaneArchiveProxy: IArcaneArchiveProxy, dto: UserDto): Promise<UserDto> {
     return arcaneArchiveProxy.putData<UserDto, UserDto>(
       "authentication", "/app/account", dto
     );
   }
 
-  public saveUser(arcaneArchiveProxy: IArcaneArchiveProxyService, dto: UserDto): Promise<UserDto> {
+  public saveUser(arcaneArchiveProxy: IArcaneArchiveProxy, dto: UserDto): Promise<UserDto> {
     return arcaneArchiveProxy.putData<UserDto, UserDto>(
       "authentication", "/admin/acount", dto
     );
   }
 
-  public userExists(arcaneArchiveProxy: IArcaneArchiveProxyService, userName: string, signal: AbortSignal): Promise<boolean> {
+  public userExists(arcaneArchiveProxy: IArcaneArchiveProxy, userName: string, signal: AbortSignal): Promise<boolean> {
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     return arcaneArchiveProxy
       .getData<Boolean>("authentication", `/public/account/user-exist?user=${userName}`, { signal: signal })
@@ -128,26 +145,16 @@ export class SessionService implements ISessionService {
     return roles.some((role: ApplicationRole) => this.roles.has(role));
   }
 
-  public login(serviceContainer: IServiceContainer, loginRequest: LoginRequestDto): Promise<LoginResponseDto> {
+  public login(serviceContainer: IServiceContainer, loginRequest: LoginRequestDto): Promise<SessionDto> {
     return serviceContainer.arcaneArchiveProxy
-      .postData<LoginRequestDto, LoginResponseDto>(
+      .postData<LoginRequestDto, SessionDto>(
         "authentication", "/auth/login", loginRequest, { suppressSuccessMessage: true }
       ).then(
-        async (r: LoginResponseDto) => {
-          const mergePreferencesResult = mergeWithChangeDetails(
-            serviceContainer.configurationService.preferences,
-            r.profile.preferences ?? {}
-          );
+        (r: SessionDto) => {
           this.setSessionData(r, serviceContainer);
-          if (mergePreferencesResult.changed) {
-            await serviceContainer.configurationService.savePreferences(
-              serviceContainer.arcaneArchiveProxy,
-              mergePreferencesResult.merged,
-              true);
-          } else {
-            serviceContainer.configurationService.preferences = mergePreferencesResult.merged;
-          }
-          await serviceContainer.ipcProxy.postData<LoginResponseDto, never>(IpcPaths.SESSION, r);
+          this.broadcastPreferencesLoaded(r.profile.preferences);
+          void serviceContainer.ipcProxy.postData<SessionDto, never>(IpcPaths.SESSION, r);
+
           return r;
         }
       );
@@ -163,59 +170,58 @@ export class SessionService implements ISessionService {
       )
       .then(
         () => this.clearSessionData(serviceContainer.ipcProxy),
-        () => this.clearSessionData(serviceContainer.ipcProxy)
+        () => this.clearSessionData(serviceContainer.ipcProxy) // swallow any reject
       );
   }
 
-  public subscribeSessionChangeListener(listener: SessionChangeListener): () => void {
-    this.sessionChangeListeners.push(listener);
-    return () => {
-      this.sessionChangeListeners = this.sessionChangeListeners.filter(l => l !== listener);
-    };
-  }
   //#endregion
 
   //#region ISessionService Members - Local Account storage -------------------
-  public deleteSavedUser(ipcProxy: IIpcProxyService, username: string): Promise<number> {
+  public deleteSavedUser(ipcProxy: IIpcProxy, username: string): Promise<number> {
     return ipcProxy.deleteData(`${IpcPaths.CREDENTIAL}/${username}`);
   }
 
-  public getSavedUserNames(ipcProxy: IIpcProxyService): Promise<Array<string>> {
+  public getSavedUserNames(ipcProxy: IIpcProxy): Promise<Array<string>> {
     return ipcProxy.getData<Array<string>>(IpcPaths.CREDENTIAL);
   }
 
-  public getPassword(ipcProxy: IIpcProxyService, username: string): Promise<string> {
+  public getPassword(ipcProxy: IIpcProxy, username: string): Promise<string> {
     return ipcProxy.getData<string>(`${IpcPaths.CREDENTIAL}/${username}`);
   }
 
-  public saveCredentials(ipcProxy: IIpcProxyService, loginRequest: LoginRequestDto): Promise<void> {
+  public saveCredentials(ipcProxy: IIpcProxy, loginRequest: LoginRequestDto): Promise<void> {
     return ipcProxy.postData<LoginRequestDto, never>(IpcPaths.CREDENTIAL, loginRequest);
   }
   //#endregion
 
   //#region Auxiliary Methods -------------------------------------------------
-  private clearSessionData(ipcProxy: IIpcProxyService): void {
+  private broadcastPreferencesLoaded(preferences: PreferencesDto): void {
+    this.preferencesLoadedListeners.forEach(
+      (listener: PreferencesLoadedListener) => listener(preferences)
+    );
+  }
+
+  private clearSessionData(ipcProxy: IIpcProxy): void {
     this._jwt = null;
-    this._userName = null;
     this._refreshToken = null;
     this.roles.clear();
     if (this.refreshTimeout != null) {
       clearTimeout(this.refreshTimeout);
     }
-    ipcProxy.deleteData(IpcPaths.SESSION);
+    void ipcProxy.deleteData(IpcPaths.SESSION);
     document.title = "Arcane Archive";
-    this.sessionChangeListeners.forEach((l: SessionChangeListener) => l(null, null));
+    this.sessionChangeListeners.forEach((l: SessionChangeListener) => l(null));
   }
 
   public refreshToken(serviceContainer: IServiceContainer): void {
     if (this._refreshToken != null) {
       void serviceContainer.arcaneArchiveProxy!
-        .postData<never, LoginResponseDto>("authentication", `/auth/refresh-token/${this._refreshToken}`, null)
+        .postData<never, SessionDto>("authentication", `/auth/refresh-token/${this._refreshToken}`, null)
         .then(
-          (refreshData: LoginResponseDto) => {
+          (refreshData: SessionDto) => {
             this.setSessionData(refreshData, serviceContainer);
-            serviceContainer.configurationService.preferences = refreshData.profile.preferences;
-            serviceContainer.ipcProxy.postData<LoginResponseDto, never>(IpcPaths.SESSION, refreshData);
+            this.broadcastPreferencesLoaded(refreshData.profile.preferences);
+            void serviceContainer.ipcProxy.postData<SessionDto, never>(IpcPaths.SESSION, refreshData);
           },
           () => {
             this.clearSessionData(serviceContainer.ipcProxy);
@@ -224,12 +230,11 @@ export class SessionService implements ISessionService {
     }
   }
 
-  private setSessionData(data: LoginResponseDto, serviceContainer: IServiceContainer): void {
+  private setSessionData(data: SessionDto, serviceContainer: IServiceContainer): void {
     this._jwt = data.token;
     const payload = this._jwt.split(".")[1];
     const raw = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
     this.roles = new Set<ApplicationRole>(raw["roles"]);
-    this._userName = raw["sub"];
     this._refreshToken = data.refreshToken;
     const expiry = (raw["exp"] as number) * 1000;
     const now = Date.now();
@@ -242,8 +247,8 @@ export class SessionService implements ISessionService {
         Math.max(0, expiry - now) * 0.9 //  Max -> Just in case token has expired, but session not
       );
     }
-    document.title = `Arcane Archive - (logged in as ${this._userName}})`;
-    this.sessionChangeListeners.forEach((l: SessionChangeListener) => l(data, this._userName));
+    document.title = `Arcane Archive - (logged in as ${data.userName}})`;
+    this.sessionChangeListeners.forEach((l: SessionChangeListener) => l(data));
   }
   //#endregion
 }

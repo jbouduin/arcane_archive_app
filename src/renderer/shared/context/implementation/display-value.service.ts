@@ -1,6 +1,6 @@
 import { noop } from "lodash";
 import { DISPLAY_VALUE_DICTIONARY_KEYS, DisplayValueDictionaryKey, SelectOption } from "../../types";
-import { IArcaneArchiveProxyService, IDisplayValueService } from "../interface";
+import { IArcaneArchiveProxy, IDisplayValueService } from "../interface";
 
 export class DisplayValueService implements IDisplayValueService {
   // #region private fields ---------------------------------------------------
@@ -29,7 +29,7 @@ export class DisplayValueService implements IDisplayValueService {
     return result;
   }
 
-  public initialize(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<void> {
+  public initialize(arcaneArchiveProxy: IArcaneArchiveProxy): Promise<void> {
     return arcaneArchiveProxy.getData("library", "/public/dictionary")
       .then(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

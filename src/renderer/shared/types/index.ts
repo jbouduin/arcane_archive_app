@@ -7,7 +7,6 @@ export * from "./color-type";
 export * from "./display-value-dictionary-key";
 export * from "./external-reference-source";
 export * from "./initialize-service-container-options";
-export * from "./mtg-server";
 export * from "./rotation-class";
 export * from "./scryfall-language-map";
 export * from "./select-option";

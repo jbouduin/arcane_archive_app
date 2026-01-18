@@ -5,14 +5,17 @@ import { DirectoryTarget } from "../../../viewmodel";
 import { BaseHtmlSelect, BaseInput } from "../../input";
 import { SystemSettingsDialogBodyProps } from "./system-settings-dialog.props";
 
-export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
+export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
 
   // #region Event Handling ---------------------------------------------------
-  function onSearchDirectory(target: DirectoryTarget) {
-    serviceContainer.sessionService.selectDirectory(serviceContainer.ipcProxy, props.viewmodel.dataConfigurationViewmodel.getCurrentDirectoryValue(target))
+  function onSearchDirectory(target: DirectoryTarget): void {
+    void serviceContainer.sessionService
+      .selectDirectory(
+        serviceContainer.ipcProxy, props.viewmodel.dataConfigurationViewmodel.getCurrentDirectoryValue(target)
+      )
       .then(
         (dir: string | undefined) => {
           if (dir) {
@@ -50,14 +53,20 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
       }
       <Tabs
         animate={true}
-        defaultSelectedTabId="logging"
+        defaultSelectedTabId="logging-renderer"
         renderActiveTabPanelOnly={true}
       >
         <Tab
-          id="logging"
-          key="logging"
-          title="Logging"
-          panel={renderLogging}
+          id="logging-renderer"
+          key="logging-renderer"
+          title="Logging (desktop)"
+          panel={renderRendererLogging}
+        />
+        <Tab
+          id="logging-main"
+          key="logging-main"
+          title="Logging (main)"
+          panel={renderMainLogging}
         />
         <Tab
           id="local-storage"
@@ -75,32 +84,75 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps) {
     </>
   );
 
-  function renderLogging(): JSX.Element {
+  function renderMainLogging(): JSX.Element {
     return (
       <>
         <BaseHtmlSelect
-          viewmodel={props.viewmodel.getLogSettingsViewmodel("Main")}
+          viewmodel={props.viewmodel.getMainLogSettingsViewmodel("Main")}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="level"
           label="Log level for main process"
         />
         <BaseHtmlSelect
-          viewmodel={props.viewmodel.getLogSettingsViewmodel("DB")}
+          viewmodel={props.viewmodel.getMainLogSettingsViewmodel("DB")}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="level"
           label="Log level for database layer"
         />
         <BaseHtmlSelect
-          viewmodel={props.viewmodel.getLogSettingsViewmodel("API")}
+          viewmodel={props.viewmodel.getMainLogSettingsViewmodel("API")}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="level"
           label="Log level for API (3rd party)"
         />
         <BaseHtmlSelect
-          viewmodel={props.viewmodel.getLogSettingsViewmodel("Renderer")}
+          viewmodel={props.viewmodel.getMainLogSettingsViewmodel("Renderer")}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="level"
           label="Log level for renderer"
+        />
+      </>
+    );
+  }
+
+  function renderRendererLogging(): JSX.Element {
+    return (
+      <>
+        <BaseHtmlSelect
+          viewmodel={props.viewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="rendererLogLevel"
+          label="Desktop Log level"
+        />
+        <BaseHtmlSelect
+          viewmodel={props.viewmodel.getResponseLogSettingsViewmodel("IPC")}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="level"
+          label="Log level for IPC requests"
+        />
+        <BaseHtmlSelect
+          viewmodel={props.viewmodel.getResponseLogSettingsViewmodel("authentication")}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="level"
+          label="Log level for Authentication Service requests"
+        />
+        <BaseHtmlSelect
+          viewmodel={props.viewmodel.getResponseLogSettingsViewmodel("library")}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="level"
+          label="Log level for Library Service requests"
+        />
+        <BaseHtmlSelect
+          viewmodel={props.viewmodel.getResponseLogSettingsViewmodel("collection")}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="level"
+          label="Log level for Collection Service requests"
+        />
+        <BaseHtmlSelect
+          viewmodel={props.viewmodel.getResponseLogSettingsViewmodel("deck")}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="level"
+          label="Log level for Deck Service requests"
         />
       </>
     );

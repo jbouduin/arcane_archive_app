@@ -18,20 +18,42 @@ export default [
     rules: {
       ...tseslint.configs.recommended.rules,
       ...stylistic.configs.recommended.rules,
-      // es-lint rules
+      // --- es-lint rules ---
       "no-console": "error",
-      // --- typescript - eslint rules
-      "@typescript-eslint/no-unused-vars": ["error", {
-        argsIgnorePattern: "^_",
-        varsIgnorePattern: "^_",
-        caughtErrorsIgnorePattern: "^_",
-      }],
+      // --- typescript-eslint rules ---
+      "@typescript-eslint/explicit-function-return-type": [
+        "warn",
+        {
+          "allowExpressions": true,
+          "allowTypedFunctionExpressions": true,
+          "allowHigherOrderFunctions": true
+        }
+      ],
+      "@typescript-eslint/no-floating-promises": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        }
+      ],
       // --- stylistic rules ---
       "@stylistic/brace-style": ["error", "1tbs"],
       // who the hell wants dangling comma"s ???
       "@stylistic/comma-dangle": "off",
       "@stylistic/multiline-comment-style": ["error", "starred-block"],
       "@stylistic/indent": ["error", 2],
+      "@stylistic/max-len": [
+        "warn",
+        {
+          "code": 120,
+          "tabWidth": 2,
+          "ignoreStrings": true,
+          "ignoreTemplateLiterals": true,
+          "ignoreComments": false
+        }
+      ],
       "@stylistic/member-delimiter-style": ["error", {
         multiline: {
           delimiter: "semi",

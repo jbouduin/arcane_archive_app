@@ -1,6 +1,7 @@
-import { IArcaneArchiveProxyService, IServiceContainer } from "../../../context";
+import { PreferencesDto } from "../../../../../common/dto";
+import { IArcaneArchiveProxy, IServiceContainer } from "../../../context";
 import { RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto } from "../../../dto";
-import { ChangePasswordViewmodel, LoginViewmodel, RecoverPasswordViewmodel, RegisterViewmodel, ResetPasswordViewmodel, ProfileViewmodel } from "../../authentication";
+import { ChangePasswordViewmodel, LoginViewmodel, ProfileViewmodel, RecoverPasswordViewmodel, RegisterViewmodel, ResetPasswordViewmodel } from "../../authentication";
 import { IAuthenticationViewmodelFactory } from "../interface";
 
 export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelFactory {
@@ -15,7 +16,10 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
     });
   }
 
-  public getInitialLoginViewmodel(showRegisterButton: boolean, knownUsers: Array<string> = new Array<string>()): LoginViewmodel {
+  public getInitialLoginViewmodel(
+    showRegisterButton: boolean,
+    knownUsers: Array<string> = new Array<string>()
+  ): LoginViewmodel {
     return new LoginViewmodel(
       {
         user: "",
@@ -26,7 +30,10 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
     );
   }
 
-  public async getLoginViewmodel(showRegisterButton: boolean, serviceContainer: IServiceContainer): Promise<LoginViewmodel> {
+  public async getLoginViewmodel(
+    showRegisterButton: boolean,
+    serviceContainer: IServiceContainer
+  ): Promise<LoginViewmodel> {
     let result: LoginViewmodel;
     const savedUserNames = await serviceContainer.sessionService
       .getSavedUserNames(serviceContainer.ipcProxy)
@@ -36,7 +43,8 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
       );
     if (savedUserNames.length == 1) {
       // create an initial view model and set the properties, so that the modified flag is true
-      const existingPwd = await serviceContainer.sessionService.getPassword(serviceContainer.ipcProxy, savedUserNames[0]);
+      const existingPwd = await serviceContainer.sessionService
+        .getPassword(serviceContainer.ipcProxy, savedUserNames[0]);
       result = this.getInitialLoginViewmodel(showRegisterButton, savedUserNames);
       result.dto["user"] = savedUserNames[0];
       result.dto["password"] = existingPwd;
@@ -58,17 +66,21 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
     return new RecoverPasswordViewmodel(dto);
   }
 
-  public async getRegisterViewmodel(showLoginButton: boolean, serviceContainer: IServiceContainer): Promise<RegisterViewmodel> {
+  public async getRegisterViewmodel(
+    showLoginButton: boolean,
+    serviceContainer: IServiceContainer,
+    preferences: PreferencesDto
+  ): Promise<RegisterViewmodel> {
     const newUserName = await serviceContainer.sessionService.getNewUserName(serviceContainer.arcaneArchiveProxy);
     const registerDto: RegisterRequestDto = {
-      userName: newUserName.valueOf(),
+      userName: newUserName,
       password: "",
       passwordRepeat: "",
       email: "",
       emailRepeat: "",
       firstName: "",
       lastName: "",
-      preferences: serviceContainer.configurationService.preferences
+      preferences: preferences
     };
     return new RegisterViewmodel(registerDto, showLoginButton, serviceContainer);
   }
@@ -77,7 +89,7 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
     return new ResetPasswordViewmodel(dto);
   }
 
-  public getUserViewmodel(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<ProfileViewmodel> {
+  public getUserViewmodel(arcaneArchiveProxy: IArcaneArchiveProxy): Promise<ProfileViewmodel> {
     return arcaneArchiveProxy
       .getData<UserDto>("authentication", "/app/account")
       .then((userDto: UserDto) => new ProfileViewmodel(userDto));

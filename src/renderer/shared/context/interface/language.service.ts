@@ -1,9 +1,9 @@
 import { LanguageDto } from "../../dto/language.dto";
-import { IArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
+import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
 
 export interface ILanguageService {
   readonly allLanguages: Readonly<Array<LanguageDto>>;
 
   getLanguage(language: string): LanguageDto | undefined;
-  initialize(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<void>;
+  initialize(arcaneArchiveProxy: IArcaneArchiveProxy): Promise<void>;
 }

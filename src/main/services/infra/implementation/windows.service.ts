@@ -62,7 +62,7 @@ export class WindowsService implements IWindowsService {
     });
     this._firstTimeWindow.on("closed", () => this._firstTimeWindow = null);
     this._firstTimeWindow.removeMenu();
-    this._firstTimeWindow.loadURL(FIRST_TIME_WEBPACK_ENTRY);
+    void this._firstTimeWindow.loadURL(FIRST_TIME_WEBPACK_ENTRY);
     if (!app.isPackaged) {
       this._firstTimeWindow.webContents.openDevTools({ mode: "undocked" });
     }

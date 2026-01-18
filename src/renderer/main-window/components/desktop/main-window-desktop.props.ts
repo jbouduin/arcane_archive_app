@@ -1,5 +1,6 @@
-import { Props, ToastProps } from "@blueprintjs/core";
+import { Props } from "@blueprintjs/core";
+import { ShowToastFn } from "../../../shared/types";
 
 export interface MainWindowDesktopProps extends Props {
-  toastCall: (props: ToastProps, key?: string) => void;
+  toastCall: ShowToastFn;
 }

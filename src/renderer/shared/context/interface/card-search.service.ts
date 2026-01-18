@@ -1,7 +1,7 @@
 import { PreferencesDto } from "../../../../common/dto";
 import { CardFilterParamsDto, CardQueryParamsDto, LibraryCardListDto, MtgSetTreeDto, QueryResultDto } from "../../dto";
 import { SelectOption } from "../../types";
-import { IArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
+import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
 
 export interface ICardSearchService {
   cardQueryParams: CardQueryParamsDto;
@@ -25,5 +25,5 @@ export interface ICardSearchService {
   getCardSuperTypeSelectOptions(): Array<SelectOption<string>>;
   getPowerValueSelectOptions(): Array<SelectOption<string>>;
   getToughnessValueSelectOptions(): Array<SelectOption<string>>;
-  initialize(arcaneArchiveProxy: IArcaneArchiveProxyService, preferences: PreferencesDto): Promise<void>;
+  initialize(arcaneArchiveProxy: IArcaneArchiveProxy, preferences: PreferencesDto): Promise<void>;
 }

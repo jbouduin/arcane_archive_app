@@ -66,7 +66,7 @@ export class CardSymbolService extends BaseService implements ICardSymbolService
   public async cacheImages(callBack: ProgressCallback): Promise<void> {
     this.ioService.createDirectoryIfNotExists(
       join(
-        this.configurationService.configuration.dataConfiguration.cacheDirectory,
+        this.configurationService.systemConfiguration.dataConfiguration.cacheDirectory,
         this.cardSymbolCacheDirectory
       )
     );
@@ -91,7 +91,7 @@ export class CardSymbolService extends BaseService implements ICardSymbolService
   private calculatedSymbolFileName(svgUri: string): string {
     const fileName = new URL(svgUri).pathname.split("/").pop()!;
     return join(
-      this.configurationService.configuration.dataConfiguration.cacheDirectory,
+      this.configurationService.systemConfiguration.dataConfiguration.cacheDirectory,
       this.cardSymbolCacheDirectory,
       fileName
     );

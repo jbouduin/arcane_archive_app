@@ -1,7 +1,7 @@
-import { MtgServer } from "../types";
+import { ArcanArchiveServer } from "../../../common/types";
 import { ApiInfoDto } from "./api-info.dto";
 
 export type SystemInfoDto = {
-  apiRoots: Map<MtgServer, string>;
-  apiStatus: Map<MtgServer, ApiInfoDto | null>;
+  apiRoots: Map<ArcanArchiveServer, string>;
+  apiStatus: Map<ArcanArchiveServer, ApiInfoDto | null>;
 };

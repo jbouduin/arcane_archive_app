@@ -3,35 +3,42 @@ import { useCallback, useEffect, useState } from "react";
 import { PreferencesDto } from "../../../../common/dto";
 import { useServices } from "../../../hooks";
 import { PreferencesContext } from "../shared.context";
-import { ProviderProps } from "./provider.props";
+import { PreferencesProviderProps } from "./preferences-provider.props";
 
-export function PreferencesProvider(props: ProviderProps) {
-  // #region callback ---------------------------------------------------------
+export function PreferencesProvider(props: PreferencesProviderProps): JSX.Element {
+  //#region Memoization -------------------------------------------------------
   const toThemeName = useCallback((darkTheme: boolean) => darkTheme ? Classes.DARK : "", []);
-  // #endregion
+  //#endregion
 
-  // #region State ------------------------------------------------------------
-  const configurationService = useServices().configurationService;
-  const [theme, setTheme] = useState<string>(toThemeName(configurationService.preferences.useDarkTheme));
-  // #endregion
+  //#region State -------------------------------------------------------------
+  const { configurationService } = useServices();
+  const [preferences, setPreferences] = useState<PreferencesDto>(props.preferences);
+  //#endregion
 
-  // #region Effects ----------------------------------------------------------
+  //#region Effects -----------------------------------------------------------
   useEffect(
     () => {
       const unsubscribe = configurationService.subscribePreferenceChangeListener(
-        (data: PreferencesDto) => setTheme(toThemeName(data.useDarkTheme))
+        (data: PreferencesDto) => setPreferences(data)
       );
       return unsubscribe;
     },
     [configurationService]
   );
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
-    <PreferencesContext.Provider value={{ themeClassName: theme }}>
+    <PreferencesContext.Provider
+      value={
+        {
+          themeClassName: toThemeName(preferences.useDarkTheme),
+          preferences: preferences
+        }
+      }
+    >
       {props.children}
     </PreferencesContext.Provider>
   );
-  // #endregion
+  //#endregion
 }

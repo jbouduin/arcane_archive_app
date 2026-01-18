@@ -20,7 +20,7 @@ const TreeView = memo(
   }
 );
 
-export function CollectionTreeView(props: CollectionTreeViewProps) {
+export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element {
   //#region State -------------------------------------------------------------
   const [collections, setCollections] = useState<Array<CollectionTreeViewmodel>>(new Array<CollectionTreeViewmodel>());
   // TODO store expanded nodes and selected node and check if we solve the bug in basetreeeview with that
@@ -33,12 +33,14 @@ export function CollectionTreeView(props: CollectionTreeViewProps) {
 
   //#region Event Handling ----------------------------------------------------
   function onCollectionAdded(dto: CollectionDto): void {
-    const viewmodel = serviceContainer.viewmodelFactoryService.collectionViewmodelFactory.getCollectionTreeViewmodel(dto);
+    const viewmodel = serviceContainer.viewmodelFactoryService.collectionViewmodelFactory
+      .getCollectionTreeViewmodel(dto);
     setCollections([...collections, viewmodel]);
   }
 
   function onCollectionModified(dto: CollectionDto): void {
-    const viewmodel = serviceContainer.viewmodelFactoryService.collectionViewmodelFactory.getCollectionTreeViewmodel(dto);
+    const viewmodel = serviceContainer.viewmodelFactoryService.collectionViewmodelFactory
+      .getCollectionTreeViewmodel(dto);
     const newState = collections.filter((vm: CollectionTreeViewmodel) => vm.id != dto.id);
     newState.push(viewmodel);
     setCollections(newState);
@@ -63,7 +65,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps) {
         </p>
       ),
       onConfirm: () => {
-        serviceContainer.collectionService
+        void serviceContainer.collectionService
           .deleteCollection(collection.id!)
           .then((resp: number) => {
             if (resp > 0) {
@@ -75,7 +77,9 @@ export function CollectionTreeView(props: CollectionTreeViewProps) {
     });
   }
 
-  function onEditCollection(collection: CollectionDto, parentCollection: CollectionDto | null, parentPath: Array<string>): void {
+  function onEditCollection(
+    collection: CollectionDto, parentCollection: CollectionDto | null, parentPath: Array<string>
+  ): void {
     showEditCollectionDialog(serviceContainer, collection, parentCollection, parentPath, onCollectionModified);
   }
 
@@ -93,7 +97,11 @@ export function CollectionTreeView(props: CollectionTreeViewProps) {
     () => {
       void serviceContainer.collectionService.getCollections()
         .then(
-          (collections: Array<CollectionDto>) => setCollections(collections.map(c => serviceContainer.viewmodelFactoryService.collectionViewmodelFactory.getCollectionTreeViewmodel(c))),
+          (collections: Array<CollectionDto>) => setCollections(
+            collections.map(
+              c => serviceContainer.viewmodelFactoryService.collectionViewmodelFactory.getCollectionTreeViewmodel(c)
+            )
+          ),
           () => setCollections(new Array<CollectionTreeViewmodel>())
         );
     },
@@ -146,7 +154,9 @@ export function CollectionTreeView(props: CollectionTreeViewProps) {
   //#endregion
 
   //#region Auxiliary Methods -------------------------------------------------
-  function buildTree(data: Array<CollectionTreeViewmodel>, _filterProps: {} | undefined): Array<TreeNodeInfo<CollectionTreeViewmodel>> {
+  function buildTree(
+    data: Array<CollectionTreeViewmodel>, _filterProps: {} | undefined
+  ): Array<TreeNodeInfo<CollectionTreeViewmodel>> {
     return buildTreeByParentRecursive(data, null);
   }
 
@@ -170,7 +180,8 @@ export function CollectionTreeView(props: CollectionTreeViewProps) {
           ? new Array<string>(...parentCollection.path, collection.code)
           : new Array<string>(collection.code);
 
-        const childNodes: Array<TreeNodeInfo<CollectionTreeViewmodel>> = buildTreeByParentRecursive(collections, collection);
+        const childNodes: Array<TreeNodeInfo<CollectionTreeViewmodel>> =
+          buildTreeByParentRecursive(collections, collection);
 
         const node = mapViewmodelToTreeItem(collection, parentCollection, childNodes);
         return node;

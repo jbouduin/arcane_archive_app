@@ -73,7 +73,10 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
       .join(" // ");
     this.legalities = new Map<string, string>();
     dto.legalities.forEach((l: LibraryLegality) => {
-      this.legalities.set(displayValueService.getDisplayValue("gameFormat", l.gameFormat), displayValueService.getDisplayValue("legality", l.legality));
+      this.legalities.set(
+        displayValueService.getDisplayValue("gameFormat", l.gameFormat),
+        displayValueService.getDisplayValue("legality", l.legality)
+      );
     });
     this.oracleId = dto.cardfaces[0].oracleId;
   }
@@ -83,7 +86,7 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
   private createCardLanguageViewmodels(dto: LibraryCardDto): Map<string, LibraryCardLanguageViewmodel> {
     const result = new Map<string, LibraryCardLanguageViewmodel>();
     dto.cardLanguages.forEach((cardLanguageDto: LibraryCardLanguageDto) => {
-      const cardLanguageViewmodel: LibraryCardLanguageViewmodel = new LibraryCardLanguageViewmodel(dto, cardLanguageDto.language);
+      const cardLanguageViewmodel = new LibraryCardLanguageViewmodel(dto, cardLanguageDto.language);
       result.set(cardLanguageDto.language, cardLanguageViewmodel);
     });
     return result;

@@ -1,12 +1,17 @@
 import { noop } from "lodash";
+import { PreferencesDto } from "../../../../../common/dto";
 import { IServiceContainer } from "../../../context";
 import { RegisterViewmodel } from "../../../viewmodel";
 import * as RegisterDialog from "../register-dialog";
 
-export function showRegisterDialog(serviceContainer: IServiceContainer, showLoginButton: boolean): void {
+export function showRegisterDialog(
+  serviceContainer: IServiceContainer,
+  showLoginButton: boolean,
+  preferences: PreferencesDto
+): void {
   // the viewmodel factory goes to the backend to retrieve an available user name for the new user
   void serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
-    .getRegisterViewmodel(showLoginButton, serviceContainer)
+    .getRegisterViewmodel(showLoginButton, serviceContainer, preferences)
     .then(
       (viewmodel: RegisterViewmodel) => {
         const loginDialogProps: RegisterDialog.RegisterDialogProps = {

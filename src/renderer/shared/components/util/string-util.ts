@@ -1,12 +1,12 @@
-export function stringNotNullOrEmpty(value: string | null) {
+export function stringNotNullOrEmpty(value: string | null): boolean {
   return value != null && value.trim().length > 0;
 }
 
-export function stringsNotNullOrEmpty(...values: Array<string | null>) {
+export function stringsNotNullOrEmpty(...values: Array<string | null>): boolean {
   return values.every((v: string | null) => stringNotNullOrEmpty(v), undefined);
 }
 
-export function stringHasMinimalLength(value: string | null, minLength: number) {
+export function stringHasMinimalLength(value: string | null, minLength: number): boolean {
   return value != null && value.trim().length >= minLength;
 }
 

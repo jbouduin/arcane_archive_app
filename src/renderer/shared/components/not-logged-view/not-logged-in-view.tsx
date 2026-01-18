@@ -1,11 +1,12 @@
 import { Button, Callout, H4 } from "@blueprintjs/core";
-import { useApiStatus, useServices } from "../../../hooks";
+import { useApiStatus, usePreferences, useServices } from "../../../hooks";
 import { showLoginDialog, showRegisterDialog } from "../dialogs/factory";
 import { NotLoggedInViewProps } from "./not-logged-in-view.props";
 
-export function NotLoggedInView(props: NotLoggedInViewProps) {
+export function NotLoggedInView(props: NotLoggedInViewProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
+  const { preferences } = usePreferences();
   const { authenticationServiceAvailable, deckServiceAvailable } = useApiStatus();
   // #endregion
 
@@ -15,7 +16,7 @@ export function NotLoggedInView(props: NotLoggedInViewProps) {
   }
 
   function registerClick(): void {
-    showRegisterDialog(serviceContainer, true);
+    showRegisterDialog(serviceContainer, true, preferences);
   }
   // #endregion
 

@@ -1,10 +1,19 @@
-import { ContextMenu, Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
+import { ContextMenu, Menu, MenuDivider, MenuItem, ToastProps } from "@blueprintjs/core";
+import { useServices } from "../../../../hooks";
 import { CollectionTreeContextMenuProps } from "./collection-tree-context-menu.props";
 
-export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps) {
+export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps): JSX.Element {
+  //#region Hooks -------------------------------------------------------------
+  const { overlayService } = useServices();
+  //#endregion
+
   // #region Event handling ---------------------------------------------------
   function onShowDetails(_collectinId: number): void {
-    // TODO implement
+    const props: ToastProps = {
+      message: "Not implemented",
+      intent: "danger"
+    };
+    overlayService.showToast(props, "Detail view not implemented");
   }
 
   // #region Rendering --------------------------------------------------------
@@ -30,7 +39,6 @@ export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps)
               (
                 <MenuItem
                   key="details"
-                  disabled={true}
                   onClick={
                     (e) => {
                       e.preventDefault();

@@ -1,7 +1,7 @@
 import { BaseInput } from "../../input";
 import { RecoverPasswordDialogBodyProps } from "./recover-password-dialog.props";
 
-export function RecoverPasswordDialogBody(props: RecoverPasswordDialogBodyProps) {
+export function RecoverPasswordDialogBody(props: RecoverPasswordDialogBodyProps): JSX.Element {
   // #region Rendering --------------------------------------------------------
   return (
     <BaseInput

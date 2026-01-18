@@ -6,16 +6,21 @@ import { SetTreeView } from "../../../../shared/components/set-tree-view/set-tre
 import { AdvancedCardSearchDto, CardFilterParamsDto, MtgSetTreeDto } from "../../../../shared/dto";
 import { MtgSetTreeConfigurationViewmodel } from "../../../../shared/viewmodel";
 import { LibraryViewLeftProps } from "./library-view-left.props";
+import { usePreferences } from "../../../../hooks";
 
-export function LibraryViewLeft(props: LibraryViewLeftProps) {
+export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
+  const { preferences } = usePreferences();
   // #endregion#
 
   // #region memo -------------------------------------------------------------
   const cardSets = useMemo(
     () => {
-      return serviceContainer.mtgSetService.allSets.map((set: MtgSetTreeDto) => serviceContainer.viewmodelFactoryService.mtgSetViewmodelFactory.getMtgSetTreeViewmodel(set));
+      return serviceContainer.mtgSetService.allSets.map(
+        (set: MtgSetTreeDto) => serviceContainer.viewmodelFactoryService.mtgSetViewmodelFactory
+          .getMtgSetTreeViewmodel(set)
+      );
     },
     []
   );
@@ -40,7 +45,7 @@ export function LibraryViewLeft(props: LibraryViewLeftProps) {
               <SetTreeView
                 {...props}
                 cardSets={cardSets}
-                configuration={new MtgSetTreeConfigurationViewmodel(serviceContainer.configurationService.preferences.librarySetTreeSettings)}
+                configuration={new MtgSetTreeConfigurationViewmodel(preferences.librarySetTreeSettings)}
                 onSetsSelected={(sets: Array<MtgSetTreeDto>) => props.onSetSelectionChanged(sets, true)}
               />
             )
@@ -57,7 +62,10 @@ export function LibraryViewLeft(props: LibraryViewLeftProps) {
                 advancedCardSearch={{ cardFilterParams: props.cardFilterParams, cardSetFilter: props.cardSetFilter }}
                 onCardSetsChanged={(sets: Array<MtgSetTreeDto>) => props.onSetSelectionChanged(sets, false)}
                 onCardFilterParamsChanged={(filter: CardFilterParamsDto) => props.onCardFilterParamsChanged(filter)}
-                onSearch={(cardSearch: AdvancedCardSearchDto) => props.onSearch(cardSearch.cardSetFilter, cardSearch.cardFilterParams)}
+                onSearch={
+                  (cardSearch: AdvancedCardSearchDto) =>
+                    props.onSearch(cardSearch.cardSetFilter, cardSearch.cardFilterParams)
+                }
               />
             )
           }

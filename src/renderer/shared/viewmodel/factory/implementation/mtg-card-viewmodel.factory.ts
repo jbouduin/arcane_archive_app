@@ -1,4 +1,4 @@
-import { IArcaneArchiveProxyService, IColorService, IDisplayValueService, ILanguageService, IMtgSetService, IServiceContainer } from "../../../context";
+import { IArcaneArchiveProxy, IColorService, IDisplayValueService, ILanguageService, IMtgSetService, IServiceContainer } from "../../../context";
 import { AdvancedCardSearchDto, LibraryCardDto, LibraryCardListDto, LibraryRulingDto } from "../../../dto";
 import { AdvancedCardSearchViewmodel, LibraryCardListViewmodel, LibraryCardViewmodel, LibraryRulingViewmodel } from "../../mtg-card";
 import { IMtgCardViewmodelFactory } from "../interface";
@@ -27,27 +27,36 @@ export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
 
   // #region IMtgCardViewmodelFactory Members ---------------------------------
   public getLibraryCardDetailViewmodel(
-    arcaneArchiveProxy: IArcaneArchiveProxyService,
+    arcaneArchiveProxy: IArcaneArchiveProxy,
     cardId: number
   ): Promise<LibraryCardViewmodel> {
     return arcaneArchiveProxy
       .getData<LibraryCardDto>("library", "/public/card/" + cardId)
-      .then((dto: LibraryCardDto) => new LibraryCardViewmodel(this.colorService, this.displayValueService, this.languageService, this.mtgSetService, dto));
+      .then((dto: LibraryCardDto) => new LibraryCardViewmodel(
+        this.colorService,
+        this.displayValueService,
+        this.languageService,
+        this.mtgSetService, dto
+      ));
   }
 
   public getMtgCardListViewmodel(dto: LibraryCardListDto): LibraryCardListViewmodel {
-    return new LibraryCardListViewmodel(this.colorService, this.displayValueService, this.languageService, this.mtgSetService, dto);
+    return new LibraryCardListViewmodel(
+      this.colorService, this.displayValueService, this.languageService, this.mtgSetService, dto
+    );
   }
 
   public getRulingsViewmodel(
-    arcaneArchiveProxy: IArcaneArchiveProxyService,
+    arcaneArchiveProxy: IArcaneArchiveProxy,
     oracleId: string
   ): Promise<Array<LibraryRulingViewmodel>> {
     return arcaneArchiveProxy
       .getData<Array<LibraryRulingDto>>("library", "/public/ruling/" + oracleId)
       .then((dtos: Array<LibraryRulingDto>) => dtos
         .map((dto: LibraryRulingDto) => new LibraryRulingViewmodel(dto))
-        .sort((a: LibraryRulingViewmodel, b: LibraryRulingViewmodel) => b.publishedAtDate.getTime() - a.publishedAtDate.getTime())
+        .sort((a: LibraryRulingViewmodel, b: LibraryRulingViewmodel) =>
+          b.publishedAtDate.getTime() - a.publishedAtDate.getTime()
+        )
       );
   }
 

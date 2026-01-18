@@ -7,7 +7,7 @@ import { DefaultDialogFooter } from "../../base/base-dialog";
 import { showResetPasswordDialog } from "../factory";
 import { RecoverPasswordDialogFooterProps } from "./recover-password-dialog.props";
 
-export function RecoverPasswordDialogFooter(props: RecoverPasswordDialogFooterProps) {
+export function RecoverPasswordDialogFooter(props: RecoverPasswordDialogFooterProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion

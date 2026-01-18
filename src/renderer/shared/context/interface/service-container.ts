@@ -4,11 +4,11 @@ import { InitializeServiceContainerOptions, ShowToastFn } from "../../types";
 import { InitializationResult } from "../types";
 import { ICardSearchService } from "./card-search.service";
 import { ICardSymbolService } from "./card-symbol.service";
-import { IArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
+import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
 import { IColorService } from "./color.service";
 import { IConfigurationService } from "./configuration.service";
 import { IDisplayValueService } from "./display-value.service";
-import { IIpcProxyService } from "./ipc-proxy.service";
+import { IIpcProxy } from "./ipc-proxy";
 import { ILanguageService } from "./language.service";
 import { ILogService } from "./log.service";
 import { IMtgSetService } from "./mtg-set.service";
@@ -31,7 +31,7 @@ export interface IServiceContainer {
   /**
    * Arcane Archive back end proxy
    */
-  readonly arcaneArchiveProxy: IArcaneArchiveProxyService;
+  readonly arcaneArchiveProxy: IArcaneArchiveProxy;
 
   /**
    * Collection service
@@ -61,7 +61,7 @@ export interface IServiceContainer {
   /**
    * Proxy to use Ipc Channels. Processes the response and displays a toast in case of error response.
    */
-  readonly ipcProxy: IIpcProxyService;
+  readonly ipcProxy: IIpcProxy;
 
   /**
    * Log service

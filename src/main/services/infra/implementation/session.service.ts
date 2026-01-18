@@ -1,6 +1,6 @@
 import * as keytar from "keytar";
 import { inject, singleton } from "tsyringe";
-import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
+import { LoginRequestDto, SessionDto } from "../../../../common/dto";
 import { BaseService, IResult } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
 import { IApplicationService, ILogService, IResultFactory, ISessionService } from "../interface";
@@ -10,7 +10,7 @@ import { IApplicationService, ILogService, IResultFactory, ISessionService } fro
 export class SessionService extends BaseService implements ISessionService {
   // #region Private fields ---------------------------------------------------
   private applicationService: IApplicationService;
-  private data: LoginResponseDto | null | null;
+  private session: SessionDto | null;
   private appName: string;
   // #endregion
 
@@ -22,7 +22,7 @@ export class SessionService extends BaseService implements ISessionService {
   ) {
     super(logService, resultFactory);
     this.applicationService = applicationService;
-    this.data = null;
+    this.session = null;
     this.appName = applicationService.applicationName;
   }
   // #endregion
@@ -32,22 +32,22 @@ export class SessionService extends BaseService implements ISessionService {
     return this.applicationService
       .deleteSessionCookie()
       .then(() => {
-        this.data = null;
+        this.session = null;
         return this.resultFactory.createSuccessResult(1);
       });
   }
 
-  public getSessionData(): Promise<IResult<LoginResponseDto | null>> {
+  public getSessionData(): Promise<IResult<SessionDto | null>> {
     return this.applicationService
       .restoreSessionCookie()
-      .then(() => this.resultFactory.createSuccessResultPromise(this.data));
+      .then(() => this.resultFactory.createSuccessResultPromise(this.session));
   }
 
-  public setSessionData(data: LoginResponseDto): Promise<IResult<void>> {
+  public setSessionData(data: SessionDto): Promise<IResult<void>> {
     return this.applicationService
       .saveSessionCookie()
       .then(() => {
-        this.data = data;
+        this.session = data;
         return this.resultFactory.createNoContentResult();
       });
   }

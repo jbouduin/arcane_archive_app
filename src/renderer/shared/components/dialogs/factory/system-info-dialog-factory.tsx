@@ -1,8 +1,8 @@
 import { Icon } from "@blueprintjs/core";
-import { IServiceContainer } from "../../../context";
+import { ApiInfoContextType, IServiceContainer } from "../../../context";
 import * as SystemInfo from "../system-info-dialog";
 
-export function showSystemInfoDialog(serviceContainer: IServiceContainer) {
+export function showSystemInfoDialog(apiInfo: ApiInfoContextType, serviceContainer: IServiceContainer): void {
   const statusProps: SystemInfo.SystemInfoDialogProps = {
     isOpen: true,
     isCloseButtonShown: true,
@@ -13,7 +13,7 @@ export function showSystemInfoDialog(serviceContainer: IServiceContainer) {
     viewmodel: serviceContainer
       .viewmodelFactoryService
       .settingsViewmodelFactory
-      .getSystemInfoViewmodel(serviceContainer),
+      .getSystemInfoViewmodel(apiInfo),
     bodyRenderer: (bodyProps: SystemInfo.SystemInfoDialogBodyProps) => {
       return (<SystemInfo.SystemInfoDialogBody {...bodyProps} />);
     },

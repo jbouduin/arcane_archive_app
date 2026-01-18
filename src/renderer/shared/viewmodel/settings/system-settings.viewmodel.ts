@@ -1,17 +1,18 @@
-import { SystemSettingsDto } from "../../../../common/dto";
+import { SystemConfigurationDto } from "../../../../common/dto";
 import { LogLevel } from "../../../../common/enums";
-import { LogSetting, LogSource } from "../../../../common/types";
+import { MainLogSetting, MainLogSource, ResponseLogSetting, ResponseLogSource } from "../../../../common/types";
 import { SelectOption, ValidationResult } from "../../types";
 import { BaseViewmodel, ViewmodelMode } from "../base.viewmodel";
 import { DataConfigurationViewmodel } from "./data-configuration.viewmodel";
-import { LogSettingViewmodel } from "./log-setting.viewmodel";
+import { LogSettingViewmodel, MainLogSettingViewmodel, ResponseLogSettingViewmodel } from "./log-setting.viewmodel";
 
-export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
+export class SystemSettingsViewmodel extends BaseViewmodel<SystemConfigurationDto> {
   // #region Private fields ---------------------------------------------------
   private readonly invalidUrlResult: ValidationResult;
-  private readonly _logSettingsViewmodels: Map<LogSource, LogSettingViewmodel>;
+  private readonly _mainLogSettingsViewmodels: Map<MainLogSource, MainLogSettingViewmodel>;
+  private readonly _responseLogSettingsViewmodels: Map<ResponseLogSource, ResponseLogSettingViewmodel>;
   private readonly _dataConfigurationViewmodel: DataConfigurationViewmodel;
-  // #endregion
+  //#endregion
 
   // #region Getters/Setters --------------------------------------------------
   public get dataConfigurationViewmodel(): DataConfigurationViewmodel {
@@ -21,17 +22,18 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
   public get restartRequired(): boolean {
     return this._dto.discovery != this._org.discovery || this._dataConfigurationViewmodel.hasChanges;
   }
-  // #endregion
+  //#endregion
 
-  // #region Constructor ------------------------------------------------------
-  public constructor(dto: SystemSettingsDto, mode: ViewmodelMode) {
+  //#region Constructor & C° --------------------------------------------------
+  public constructor(dto: SystemConfigurationDto, mode: ViewmodelMode) {
     super(dto, mode);
     this.invalidUrlResult = { helperText: "Please enter a valid internet address", intent: "danger" };
     // --- data configuration view model
     this._dataConfigurationViewmodel = new DataConfigurationViewmodel(dto.dataConfiguration, mode);
     this.registerChildViewmodel(this._dataConfigurationViewmodel);
     // --- log level viewmodels ---
-    this._logSettingsViewmodels = new Map<LogSource, LogSettingViewmodel>();
+    this._mainLogSettingsViewmodels = new Map<MainLogSource, MainLogSettingViewmodel>();
+    this._responseLogSettingsViewmodels = new Map<ResponseLogSource, ResponseLogSettingViewmodel>();
     const options = [
       { value: LogLevel.None, label: "No logging" },
       { value: LogLevel.Error, label: "Error (default)" },
@@ -40,35 +42,69 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
       { value: LogLevel.Debug, label: "Debug - pretty verbose" },
       { value: LogLevel.Trace, label: "Trace - silly verbose" },
     ];
-    this.registerLogSettingsViewmodel(dto, mode, "API", options);
-    this.registerLogSettingsViewmodel(dto, mode, "DB", options);
-    this.registerLogSettingsViewmodel(dto, mode, "Main", options);
-    this.registerLogSettingsViewmodel(dto, mode, "Renderer", options);
+    this.registerSelectOptions("rendererLogLevel", options);
+    // --- main log settings
+    this.registerMainLogSettingsViewmodel(dto, mode, "API", options);
+    this.registerMainLogSettingsViewmodel(dto, mode, "DB", options);
+    this.registerMainLogSettingsViewmodel(dto, mode, "Main", options);
+    this.registerMainLogSettingsViewmodel(dto, mode, "Renderer", options);
+    // --- renderer log settings
+    this.registerRendererLogSettingsViewmodel(dto, mode, "IPC", options);
+    this.registerRendererLogSettingsViewmodel(dto, mode, "authentication", options);
+    this.registerRendererLogSettingsViewmodel(dto, mode, "collection", options);
+    this.registerRendererLogSettingsViewmodel(dto, mode, "deck", options);
+    this.registerRendererLogSettingsViewmodel(dto, mode, "library", options);
     // --- validations ---
     this.registerValidation("discovery", () => this.validateDiscovery());
   }
 
-  private registerLogSettingsViewmodel(dto: SystemSettingsDto, mode: ViewmodelMode, source: LogSource, options: Array<SelectOption<LogLevel>>): void {
+  private registerMainLogSettingsViewmodel(
+    dto: SystemConfigurationDto,
+    mode: ViewmodelMode,
+    source: MainLogSource,
+    options: Array<SelectOption<LogLevel>>
+  ): void {
     const viewmodel = new LogSettingViewmodel(
-      dto.loggingConfiguration.find((l: LogSetting) => l.source == source)!, mode, options);
-    this._logSettingsViewmodels.set(source, viewmodel);
+      dto.mainLoggingConfiguration.find((l: MainLogSetting) => l.source == source)!, mode, options);
+    this._mainLogSettingsViewmodels.set(source, viewmodel);
     this.registerChildViewmodel(viewmodel);
   }
-  // #endregion
+
+  private registerRendererLogSettingsViewmodel(
+    dto: SystemConfigurationDto,
+    mode: ViewmodelMode,
+    source: ResponseLogSource,
+    options: Array<SelectOption<LogLevel>>
+  ): void {
+    const viewmodel = new LogSettingViewmodel(
+      dto.responseLoggingConfiguration.find((l: ResponseLogSetting) => l.source == source)!, mode, options);
+    this._responseLogSettingsViewmodels.set(source, viewmodel);
+    this.registerChildViewmodel(viewmodel);
+  }
+  //#endregion
 
   // #region Public methods ---------------------------------------------------
-  public setFactoryDefaults(dto: SystemSettingsDto): void {
+  public setFactoryDefaults(dto: SystemConfigurationDto): void {
     Object.assign(this.dto, dto);
     Object.assign(this._dataConfigurationViewmodel.dto, dto.dataConfiguration);
-    this._logSettingsViewmodels.forEach((lsvm: LogSettingViewmodel, source: LogSource) => {
-      lsvm.dto.level = dto.loggingConfiguration.find((l: LogSetting) => l.source == source)!.level;
-    });
+    this._mainLogSettingsViewmodels
+      .forEach((lsvm: MainLogSettingViewmodel, source: MainLogSource) => {
+        lsvm.dto.level = dto.mainLoggingConfiguration.find((l: MainLogSetting) => l.source == source)!.level;
+      });
+    this._responseLogSettingsViewmodels
+      .forEach((lsvm: ResponseLogSettingViewmodel, source: ResponseLogSource) => {
+        lsvm.dto.level = dto.responseLoggingConfiguration.find((l: ResponseLogSetting) => l.source == source)!.level;
+      });
   }
 
-  public getLogSettingsViewmodel(source: LogSource): LogSettingViewmodel {
-    return this._logSettingsViewmodels.get(source)!;
+  public getMainLogSettingsViewmodel(source: MainLogSource): MainLogSettingViewmodel {
+    return this._mainLogSettingsViewmodels.get(source)!;
   }
-  // #endregion
+
+  public getResponseLogSettingsViewmodel(source: ResponseLogSource): ResponseLogSettingViewmodel {
+    return this._responseLogSettingsViewmodels.get(source)!;
+  }
+  //#endregion
 
   // #region Validations ------------------------------------------------------
   private validateDiscovery(): void {
@@ -84,5 +120,5 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto> {
       this.setFieldInvalid("discovery", this.invalidUrlResult);
     }
   }
-  // #endregion
+  //#endregion
 }

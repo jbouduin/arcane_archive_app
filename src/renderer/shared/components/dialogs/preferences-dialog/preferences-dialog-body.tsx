@@ -5,7 +5,7 @@ import { SetTreeSettingsViewmodel } from "../../../viewmodel/settings";
 import { BaseCheckbox, BaseHtmlSelect, ToggleCheckbox } from "../../input";
 import { PreferencesDialogBodyProps } from "./preferences-dialog.props";
 
-export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
+export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const { loggedIn } = useSession();
   const serviceContainer = useServices();
@@ -57,13 +57,6 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
         >
           Refresh cache at startup
         </BaseCheckbox>
-        <BaseCheckbox
-          viewmodel={props.viewmodel}
-          viewmodelChanged={props.viewmodelChanged}
-          fieldName="logServerResponses"
-        >
-          Log server responses in console
-        </BaseCheckbox>
         <ControlGroup
           key="group-1"
           fill={true}
@@ -104,7 +97,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
     );
   }
 
-  function renderLibraryTreeviewmodel() {
+  function renderLibraryTreeviewmodel(): JSX.Element {
     const viewmodel = props.viewmodel.librarySetTreeSettingsViewmodel;
     return (
       <>

@@ -1,4 +1,5 @@
-import { IArcaneArchiveProxyService, IServiceContainer } from "../../../context";
+import { PreferencesDto } from "../../../../../common/dto";
+import { IArcaneArchiveProxy, IServiceContainer } from "../../../context";
 import { RecoverPasswordRequestDto, ResetPasswordRequestDto } from "../../../dto";
 import { LoginViewmodel, RecoverPasswordViewmodel, ResetPasswordViewmodel, ProfileViewmodel } from "../../authentication";
 import { ChangePasswordViewmodel } from "../../authentication";
@@ -9,7 +10,11 @@ export interface IAuthenticationViewmodelFactory {
   getInitialLoginViewmodel(showRegisterButton: boolean): LoginViewmodel;
   getLoginViewmodel(showRegisterButton: boolean, serviceContainer: IServiceContainer): Promise<LoginViewmodel>;
   getRecoverPasswordViewmodel(dto: RecoverPasswordRequestDto): RecoverPasswordViewmodel;
-  getRegisterViewmodel(showLoginButton: boolean, serviceContainer: IServiceContainer): Promise<RegisterViewmodel>;
+  getRegisterViewmodel(
+    showLoginButton: boolean,
+    serviceContainer: IServiceContainer,
+    preferences: PreferencesDto
+  ): Promise<RegisterViewmodel>;
   getResetPasswordViewmodel(dto: ResetPasswordRequestDto): ResetPasswordViewmodel;
-  getUserViewmodel(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<ProfileViewmodel>;
+  getUserViewmodel(arcaneArchiveProxy: IArcaneArchiveProxy): Promise<ProfileViewmodel>;
 }

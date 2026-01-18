@@ -1,12 +1,12 @@
 import { Button, ButtonGroup, DialogBody, DialogFooter } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { useReducer } from "react";
-import { LoginResponseDto } from "../../../../common/dto";
+import { SessionDto } from "../../../../common/dto";
 import { useServices } from "../../../hooks";
 import { LoginDialogBody } from "../../../shared/components/dialogs";
 import { LoginPanelProps } from "./login-panel.props";
 
-export function LoginPanel(props: LoginPanelProps) {
+export function LoginPanel(props: LoginPanelProps): JSX.Element {
   //#region State -------------------------------------------------------------
   const [_forceUpdate, forceUpdate] = useReducer(x => x + 1, 0);
   //#endregion
@@ -20,7 +20,7 @@ export function LoginPanel(props: LoginPanelProps) {
     if (props.viewmodel.isValid) {
       void serviceContainer.sessionService.login(serviceContainer, props.viewmodel.dto)
         .then(
-          (r: LoginResponseDto) => {
+          (r: SessionDto) => {
             props.afterLogin(r);
             props.navigateTo("system");
           },

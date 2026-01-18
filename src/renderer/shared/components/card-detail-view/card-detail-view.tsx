@@ -1,7 +1,7 @@
 import { H5, Section, SectionCard, Tab, Tabs } from "@blueprintjs/core";
 import React from "react";
 import { ScryFallImageStatus } from "../../../../common/enums";
-import { useServices } from "../../../hooks";
+import { usePreferences, useServices } from "../../../hooks";
 import { LanguageDto } from "../../dto";
 import { ScryfallLanguageMap } from "../../types";
 import { LibraryCardfaceViewmodel, LibraryCardViewmodel } from "../../viewmodel";
@@ -28,6 +28,7 @@ export function CardDetailView(props: CardDetailViewProps) {
 
   //#region Hooks -------------------------------------------------------------
   const serviceContainer = useServices();
+  const { preferences } = usePreferences();
   //#endregion
 
   //#region Effects -----------------------------------------------------------
@@ -91,7 +92,7 @@ export function CardDetailView(props: CardDetailViewProps) {
         }
         <CardImageView
           cardLayout={card.layout}
-          cachedImageSize={serviceContainer.configurationService.preferences.cachedImageSize}
+          cachedImageSize={preferences.cachedImageSize}
           cardBackId={card.cardBackId}
           setCode={card.layout != "TOKEN" ? card.setCode : card.tokenSetCode}
           collectorNumber={card.collectorNumber}

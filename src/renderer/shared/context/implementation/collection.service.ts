@@ -1,9 +1,9 @@
 import { CollectionDto } from "../../dto";
-import { IArcaneArchiveProxyService, ICollectionService } from "../interface";
+import { IArcaneArchiveProxy, ICollectionService } from "../interface";
 
 export class CollectionService implements ICollectionService {
   // #region Private fields ---------------------------------------------------
-  private arcaneArchiveProxy!: IArcaneArchiveProxyService;
+  private arcaneArchiveProxy!: IArcaneArchiveProxy;
   // #endregion
 
   // #region ICollectionService Members -------------------------------------------
@@ -38,7 +38,7 @@ export class CollectionService implements ICollectionService {
     throw new Error("Not implemented");
   }
 
-  public initialize(arcaneArchiveProxy: IArcaneArchiveProxyService): void {
+  public initialize(arcaneArchiveProxy: IArcaneArchiveProxy): void {
     this.arcaneArchiveProxy = arcaneArchiveProxy;
   }
   // #endregion

@@ -4,7 +4,7 @@ import { DefaultDialogFooterProps } from "./default-dialog-footer.props";
 
 export function DefaultDialogFooter<Dto extends object, Vm extends BaseViewmodel<Dto>>(
   props: DefaultDialogFooterProps<Dto, Vm>
-) {
+): JSX.Element {
   // #region Set defaults -----------------------------------------------------
   const { showCommitButton = true } = props;
   // #endregion
@@ -52,7 +52,7 @@ export function DefaultDialogFooter<Dto extends object, Vm extends BaseViewmodel
                 (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
                   if (props.viewmodel.isValid) {
                     if (props.onCommitButtonClick) {
-                      props.onCommitButtonClick(e, props.viewmodel.dto);
+                      void props.onCommitButtonClick(e, props.viewmodel.dto);
                     } else if (props.onClose) {
                       props.onClose(e);
                     }

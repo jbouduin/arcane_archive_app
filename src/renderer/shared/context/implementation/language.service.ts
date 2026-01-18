@@ -1,6 +1,6 @@
 import { noop } from "lodash";
 import { LanguageDto } from "../../dto";
-import { IArcaneArchiveProxyService, ILanguageService } from "../interface";
+import { IArcaneArchiveProxy, ILanguageService } from "../interface";
 
 export class LanguageService implements ILanguageService {
   // #region private fields ---------------------------------------------------
@@ -22,7 +22,7 @@ export class LanguageService implements ILanguageService {
     return this.languageMap.get(language)!;
   }
 
-  public initialize(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<void> {
+  public initialize(arcaneArchiveProxy: IArcaneArchiveProxy): Promise<void> {
     return arcaneArchiveProxy.getData<Array<LanguageDto>>("library", "/public/languages/mtg")
       .then(
         (allLanguages: Array<LanguageDto>) => allLanguages

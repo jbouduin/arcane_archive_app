@@ -46,7 +46,8 @@ export abstract class BaseViewmodel<Dto extends object> {
   }
 
   public get isValidationInProgress(): boolean {
-    return this.pendingValidations > 0 || this.childViewmodels.some((vm: BaseViewmodel<object>) => vm.isValidationInProgress);
+    return this.pendingValidations > 0 ||
+      this.childViewmodels.some((vm: BaseViewmodel<object>) => vm.isValidationInProgress);
   }
 
   public get mode(): ViewmodelMode {
@@ -73,7 +74,7 @@ export abstract class BaseViewmodel<Dto extends object> {
   //#endregion
 
   //#region Public methods ----------------------------------------------------
-  protected setFieldInvalid(fieldName: keyof Dto, validationResult: ValidationResult | null) {
+  protected setFieldInvalid(fieldName: keyof Dto, validationResult: ValidationResult | null): void {
     if (this.invalidFields.indexOf(fieldName) < 0) {
       this.invalidFields.push(fieldName);
     }
@@ -82,7 +83,7 @@ export abstract class BaseViewmodel<Dto extends object> {
     }
   }
 
-  protected setFieldValid(fieldName: keyof Dto) {
+  protected setFieldValid(fieldName: keyof Dto): void {
     this.invalidFields = this.invalidFields.filter((ivf: keyof Dto) => ivf != fieldName);
     this.validationResults.delete(fieldName);
   }
@@ -105,11 +106,11 @@ export abstract class BaseViewmodel<Dto extends object> {
   //#endregion
 
   //#region Public methods ----------------------------------------------------
-  public markTouched(fieldName: keyof Dto) {
+  public markTouched(fieldName: keyof Dto): void {
     this.touchedFields.add(fieldName);
   }
 
-  public isTouched(fieldName: keyof Dto) {
+  public isTouched(fieldName: keyof Dto): boolean {
     return this.touchedFields.has(fieldName);
   }
 

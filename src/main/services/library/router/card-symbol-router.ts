@@ -1,5 +1,5 @@
 import { inject, singleton } from "tsyringe";
-import { IpcPaths } from "../../../../common/ipc";
+import { IpcPaths, ProgressCallback } from "../../../../common/ipc";
 import { BaseRouter, IResult, IRouter, RouteCallback, RoutedRequest } from "../../base";
 import { ILogService, IResultFactory, IRouterService } from "../../infra/interface";
 import { INFRASTRUCTURE, LIBRARY } from "../../service.tokens";
@@ -35,7 +35,7 @@ export class CardSymbolRouter extends BaseRouter implements IRouter {
   }
 
   private async refreshCardSymbols(_request: RoutedRequest<void>): Promise<IResult<void>> {
-    const callBack = (s: string) => _request.sender.send("splash", s);
+    const callBack: ProgressCallback = (s: string) => _request.sender.send("splash", s);
     await this.cardSymbolService.cacheImages(callBack);
     return this.resultFactory.createNoContentResultPromise();
   }

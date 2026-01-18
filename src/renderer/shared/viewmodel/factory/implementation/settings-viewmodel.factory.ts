@@ -1,6 +1,6 @@
-import { PreferencesDto, SystemSettingsDto } from "../../../../../common/dto";
+import { PreferencesDto, SystemConfigurationDto } from "../../../../../common/dto";
 import { IpcPaths } from "../../../../../common/ipc";
-import { IIpcProxyService, IServiceContainer } from "../../../context";
+import { ApiInfoContextType, IIpcProxy } from "../../../context";
 import { SystemInfoDto } from "../../../dto";
 import { PreferencesViewmodel, SystemInfoViewmodel, SystemSettingsViewmodel } from "../../settings";
 import { ISettingsViewmodelFactory } from "../interface";
@@ -11,20 +11,20 @@ export class SettingsViewmodelFactory implements ISettingsViewmodelFactory {
     return new PreferencesViewmodel(dto);
   }
 
-  public getSystemSettingsViewmodel(ipcProxy: IIpcProxyService, firstTime: boolean): Promise<SystemSettingsViewmodel> {
-    return ipcProxy.getData<SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS)
+  public getSystemSettingsViewmodel(ipcProxy: IIpcProxy, firstTime: boolean): Promise<SystemSettingsViewmodel> {
+    return ipcProxy.getData<SystemConfigurationDto>(IpcPaths.SYSTEM_SETTINGS)
       .then(
-        (configuration: SystemSettingsDto) => this.getSystemSettingsViewmodelFromDto(configuration, firstTime));
+        (configuration: SystemConfigurationDto) => this.getSystemSettingsViewmodelFromDto(configuration, firstTime));
   }
 
-  public getSystemSettingsViewmodelFromDto(dto: SystemSettingsDto, firstTime: boolean): SystemSettingsViewmodel {
+  public getSystemSettingsViewmodelFromDto(dto: SystemConfigurationDto, firstTime: boolean): SystemSettingsViewmodel {
     return new SystemSettingsViewmodel(dto, firstTime ? "create" : "update");
   }
 
-  public getSystemInfoViewmodel(serviceContainer: IServiceContainer): SystemInfoViewmodel {
+  public getSystemInfoViewmodel(apiInfo: ApiInfoContextType): SystemInfoViewmodel {
     const dto: SystemInfoDto = {
-      apiRoots: serviceContainer.arcaneArchiveProxy.apiRoots,
-      apiStatus: serviceContainer.arcaneArchiveProxy.apiStatus
+      apiRoots: apiInfo.apiRoots,
+      apiStatus: apiInfo.apiStatus
     };
     return new SystemInfoViewmodel(dto);
   }

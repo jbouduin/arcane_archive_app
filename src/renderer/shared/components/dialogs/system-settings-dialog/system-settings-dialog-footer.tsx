@@ -1,32 +1,40 @@
 import { Button } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { ReactNode } from "react";
-import { SystemSettingsDto } from "../../../../../common/dto";
-import { LogSetting } from "../../../../../common/types";
+import { SystemConfigurationDto } from "../../../../../common/dto";
+import { MainLogSetting, ResponseLogSetting } from "../../../../../common/types";
 import { useServices } from "../../../../hooks";
 import { DefaultDialogFooter } from "../../base/base-dialog";
 import { SystemSettingsDialogFooterProps } from "./system-settings-dialog.props";
 
-export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProps) {
+export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
 
   // #region Event handling ---------------------------------------------------
-  function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: SystemSettingsDto): Promise<void> {
-    const toSave: SystemSettingsDto = {
+  function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: SystemConfigurationDto): Promise<void> {
+    const toSave: SystemConfigurationDto = {
       discovery: dto.discovery,
       dataConfiguration: props.viewmodel.dataConfigurationViewmodel.dto,
-      loggingConfiguration: new Array<LogSetting>(
-        props.viewmodel.getLogSettingsViewmodel("API").dto,
-        props.viewmodel.getLogSettingsViewmodel("DB").dto,
-        props.viewmodel.getLogSettingsViewmodel("Main").dto,
-        props.viewmodel.getLogSettingsViewmodel("Renderer").dto,
+      mainLoggingConfiguration: new Array<MainLogSetting>(
+        props.viewmodel.getMainLogSettingsViewmodel("API").dto,
+        props.viewmodel.getMainLogSettingsViewmodel("DB").dto,
+        props.viewmodel.getMainLogSettingsViewmodel("Main").dto,
+        props.viewmodel.getMainLogSettingsViewmodel("Renderer").dto,
+      ),
+      rendererLogLevel: props.viewmodel.dto["rendererLogLevel"],
+      responseLoggingConfiguration: new Array<ResponseLogSetting>(
+        props.viewmodel.getResponseLogSettingsViewmodel("IPC").dto,
+        props.viewmodel.getResponseLogSettingsViewmodel("authentication").dto,
+        props.viewmodel.getResponseLogSettingsViewmodel("collection").dto,
+        props.viewmodel.getResponseLogSettingsViewmodel("deck").dto,
+        props.viewmodel.getResponseLogSettingsViewmodel("library").dto,
       )
     };
     return serviceContainer.configurationService.saveSystemSettings(toSave)
       .then(
-        (_r: SystemSettingsDto) => {
+        (_r: SystemConfigurationDto) => {
           if (props.onClose) {
             props.onClose(event);
           }
@@ -38,10 +46,10 @@ export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProp
       );
   }
 
-  function factoryDefaultClick() {
+  function factoryDefaultClick(): void {
     void serviceContainer.configurationService.getSystemSettingsFactoryDefaults()
       .then(
-        (dto: SystemSettingsDto) => {
+        (dto: SystemConfigurationDto) => {
           props.viewmodel.setFactoryDefaults(dto);
           props.viewmodelChanged();
         },

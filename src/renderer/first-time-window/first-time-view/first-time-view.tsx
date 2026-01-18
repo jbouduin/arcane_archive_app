@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { cloneDeep, noop } from "lodash";
 import { useReducer, useRef, useState } from "react";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { LoginResponseDto } from "../../../common/dto";
+import { SessionDto } from "../../../common/dto";
 import { usePreferences, useServices, useSession } from "../../hooks";
 import { LoginViewmodel, PreferencesViewmodel, RegisterViewmodel, SystemSettingsViewmodel } from "../../shared/viewmodel";
 import { FirstTimeViewProps } from "./first-time-view.props";
@@ -14,7 +14,7 @@ import { PreferencesPanel } from "./panels/preferences-panel";
 import { RegisterPanel } from "./panels/register-panel";
 import { SystemPanel } from "./panels/system-panel";
 
-export function FirstTimeView(props: FirstTimeViewProps) {
+export function FirstTimeView(props: FirstTimeViewProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const { themeClassName } = usePreferences();
   const { loggedIn } = useSession();
@@ -29,10 +29,11 @@ export function FirstTimeView(props: FirstTimeViewProps) {
   const loginViewmodelRef = useRef<LoginViewmodel>(cloneDeep(props.loginViewmodel));
   const registrationViewmodelRef = useRef<RegisterViewmodel>(props.registerViewmodel);
   const systemSettingsViewmodelRef = useRef<SystemSettingsViewmodel>(
-    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getSystemSettingsViewmodelFromDto(cloneDeep(props.systemSettings), true)
+    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory
+      .getSystemSettingsViewmodelFromDto(cloneDeep(props.systemSettings), true)
   );
   const preferencesViewmodelRef = useRef<PreferencesViewmodel>(
-    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(serviceContainer.configurationService.preferences)
+    serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(props.preferences)
   );
   // #endregion
 
@@ -83,8 +84,9 @@ export function FirstTimeView(props: FirstTimeViewProps) {
         return (
           <LoginPanel
             navigateTo={setCurrentPanel}
-            afterLogin={(dto: LoginResponseDto) => {
-              preferencesViewmodelRef.current = serviceContainer.viewmodelFactoryService.settingsViewmodelFactory.getPreferencesViewmodel(dto.profile.preferences);
+            afterLogin={(dto: SessionDto) => {
+              preferencesViewmodelRef.current = serviceContainer.viewmodelFactoryService.settingsViewmodelFactory
+                .getPreferencesViewmodel(dto.profile.preferences);
               forceUpdate();
             }}
             viewmodel={loginViewmodelRef.current}

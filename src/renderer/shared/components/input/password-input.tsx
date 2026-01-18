@@ -4,7 +4,7 @@ import { BaseInput } from "./base-input";
 import { BaseInputProps } from "./base-input.props";
 import { PasswordInputProps } from "./password-input.props";
 
-export function PasswordInput<Dto extends object>(props: PasswordInputProps<Dto>) {
+export function PasswordInput<Dto extends object>(props: PasswordInputProps<Dto>): JSX.Element {
   // #region State ------------------------------------------------------------
   const [showPassword, setShowPassword] = useState(false);
   // #endregion

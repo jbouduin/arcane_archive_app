@@ -1,7 +1,7 @@
-import { IIpcProxyService } from "./ipc-proxy.service";
+import { IIpcProxy } from "./ipc-proxy";
 
 export interface ILogService {
-  initialize(ipcProxy: IIpcProxyService): void;
+  initialize(ipcProxy: IIpcProxy): void;
   info(message: string, ...args: Array<unknown>): void;
   error(message: string, ...args: Array<unknown>): void;
   warning(message: string, ...args: Array<unknown>): void;

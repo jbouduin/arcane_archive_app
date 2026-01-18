@@ -196,10 +196,11 @@ export class ApplicationService implements IApplicationService {
     callback("Loading main program");
   }
 
-  private registerIpcChannel(channel: IpcChannel, routerService: IRouterService) {
+  private registerIpcChannel(channel: IpcChannel, routerService: IRouterService): void {
     ipcMain.handle(
       channel,
-      (event: IpcMainInvokeEvent, ...args: Array<unknown>) => routerService.routeRequest(channel, event.sender, args[0] as IpcRequest<unknown>)
+      (event: IpcMainInvokeEvent, ...args: Array<unknown>) =>
+        routerService.routeRequest(channel, event.sender, args[0] as IpcRequest<unknown>)
     );
   }
 

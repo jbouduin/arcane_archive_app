@@ -2,7 +2,7 @@ import { noop } from "lodash";
 import { PreferencesDto } from "../../../../common/dto";
 import { CardFilterParamsDto, CardQueryParamsDto, ColorDto, LibraryCardListDto, MtgSetTreeDto, QueryResultDto } from "../../dto";
 import { SelectOption } from "../../types";
-import { ICardSearchService, IArcaneArchiveProxyService } from "../interface";
+import { IArcaneArchiveProxy, ICardSearchService } from "../interface";
 
 export class CardSearchService implements ICardSearchService {
   // #region Private fields: SelectOptions ------------------------------------
@@ -21,7 +21,7 @@ export class CardSearchService implements ICardSearchService {
   // #endregion
 
   // #region Private fields ---------------------------------------------------
-  private arcaneArchiveProxy!: IArcaneArchiveProxyService;
+  private arcaneArchiveProxy!: IArcaneArchiveProxy;
   // #endregion
 
   // #region ICardSearchParamService Getters/Setters --------------------------
@@ -105,7 +105,11 @@ export class CardSearchService implements ICardSearchService {
   // #endregion
 
   // #region ICardSearchParamService Members ----------------------------------
-  public getCards(cardQueryParams: CardQueryParamsDto, cardFilterParams: CardFilterParamsDto | null, cardSetFilter: Array<MtgSetTreeDto>): Promise<QueryResultDto<LibraryCardListDto>> {
+  public getCards(
+    cardQueryParams: CardQueryParamsDto,
+    cardFilterParams: CardFilterParamsDto | null,
+    cardSetFilter: Array<MtgSetTreeDto>
+  ): Promise<QueryResultDto<LibraryCardListDto>> {
     const path = "/public/card/list";
     const params = new URLSearchParams();
     if (cardFilterParams) {
@@ -156,7 +160,7 @@ export class CardSearchService implements ICardSearchService {
     return this._toughnessValueSelectOptions;
   }
 
-  public initialize(arcaneArchiveProxy: IArcaneArchiveProxyService, preferences: PreferencesDto): Promise<void> {
+  public initialize(arcaneArchiveProxy: IArcaneArchiveProxy, preferences: PreferencesDto): Promise<void> {
     this.arcaneArchiveProxy = arcaneArchiveProxy;
     this.cardQueryParams.pageSize = preferences.defaultPageSize;
     this.cardQueryParams.sortField = preferences.defaultCardSortField;

@@ -1,7 +1,7 @@
 import { Button, Tooltip } from "@blueprintjs/core";
 import { LanguageButtonBarButtonProps } from "./language-botton-bar-button.props";
 
-export function LanguageButtonBarButton(props: LanguageButtonBarButtonProps) {
+export function LanguageButtonBarButton(props: LanguageButtonBarButtonProps): JSX.Element {
   // #region Event handling ---------------------------------------------------
   function onButtonClick(): void {
     props.onButtonClick(props.language);

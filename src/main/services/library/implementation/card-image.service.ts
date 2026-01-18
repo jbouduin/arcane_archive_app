@@ -94,7 +94,7 @@ export class CardImageService extends BaseService implements ICardImageService {
       size = this.configurationService.preferences.cachedImageSize;
     }
     let result: string;
-    const cacheDirectory = join(this.configurationService.configuration.dataConfiguration.cacheDirectory, this.imageCacheDirectory);
+    const cacheDirectory = join(this.configurationService.systemConfiguration.dataConfiguration.cacheDirectory, this.imageCacheDirectory);
     if (url.host == CARD_IMAGE_FACE) {
       const [_cards, setCode, collectorNumber, language] = url.pathname.split("/").filter((p: string) => p != "");
       const dirName = join(

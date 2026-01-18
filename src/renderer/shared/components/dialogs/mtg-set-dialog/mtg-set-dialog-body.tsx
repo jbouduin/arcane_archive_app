@@ -7,7 +7,7 @@ import { BaseCheckbox, BaseInput } from "../../input";
 import { LanguageButtonBar } from "../../language-button-bar";
 import { MtgSetDialogBodyProps } from "./mtg-set-dialog.props";
 
-export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
+export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
   //#region State -------------------------------------------------------------
   const [currentLanguage, setCurrentLanguage] = useState<LanguageDto>(props.viewmodel.languages[0]);
   //#endregion
@@ -122,7 +122,12 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
     );
   }
 
-  function renderTableRow(fieldName1: keyof MtgSetDto, label1: string, fieldName2: keyof MtgSetDto, label2: string): JSX.Element {
+  function renderTableRow(
+    fieldName1: keyof MtgSetDto,
+    label1: string,
+    fieldName2: keyof MtgSetDto,
+    label2: string
+  ): JSX.Element {
     return (
       <tr>
         <td style={{ paddingLeft: "0px" }}>
