@@ -2,13 +2,13 @@ import { Icon, MaybeElement, Section, Text } from "@blueprintjs/core";
 import { cloneDeep } from "lodash";
 import { useState } from "react";
 import { versionInfo } from "../../../../../common/dto/arcane-archive/version-info";
-import { MtgServer } from "../../../types";
+import { ArcanArchiveServer } from "../../../../../common/types";
 import { LabelValuePanel } from "../../base/label-value-panel";
 import { SystemInfoDialogBodyProps } from "./system-info-dialog.props";
 
-type SectionCardKey = MtgServer | "application";
+type SectionCardKey = ArcanArchiveServer | "application";
 
-export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps) {
+export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps): JSX.Element {
   // #region State ------------------------------------------------------------
   const [accordeon, setAccordeon] = useState<Map<SectionCardKey, boolean>>(
     new Map<SectionCardKey, boolean>([
@@ -22,7 +22,7 @@ export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps) {
   // #endregion
 
   // #region Event handling ---------------------------------------------------
-  function toggleAccordeon(sectionCardKey: SectionCardKey) {
+  function toggleAccordeon(sectionCardKey: SectionCardKey): void {
     const c = accordeon.get(sectionCardKey);
     let newState: Map<SectionCardKey, boolean>;
 
@@ -52,7 +52,7 @@ export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps) {
 
   function renderApiSections(): Array<JSX.Element> {
     return Array.from(props.viewmodel.apiRoots.keys())
-      .map((mtgServer: MtgServer) => {
+      .map((mtgServer: ArcanArchiveServer) => {
         const status = props.viewmodel.apiStatus.get(mtgServer);
         const items = new Map<string, JSX.Element>([
           ["URL", (<Text>{props.viewmodel.apiRoots.get(mtgServer)}</Text>)],

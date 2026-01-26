@@ -1,14 +1,26 @@
-import { CollectionDto } from "../../dto";
-import { IArcaneArchiveProxyService } from "./arcane-archive-proxy.service";
+import { CollectionCardDto, CollectionDto } from "../../dto";
+import { SelectOption } from "../../types";
+import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
 
 export interface ICollectionService {
+  //#region Service methods ---------------------------------------------------
+  initialize(arcaneArchiveProxy: IArcaneArchiveProxy): void;
+  //#endregion
+
+  //#region Collection --------------------------------------------------------
   createCollection(collection: CollectionDto): Promise<CollectionDto>;
   deleteCollection(collectionId: number): Promise<number>;
-  updateCollection(collection: CollectionDto): Promise<CollectionDto>;
   // TODO use CollectionDetailDto
-  getCollectionDetails(collectionId: number): Promise<CollectionDto>;
   getCollections(): Promise<Array<CollectionDto>>;
+  getCollectionDetails(collectionId: number): Promise<CollectionDto>;
+  updateCollection(collection: CollectionDto): Promise<CollectionDto>;
+  //#endregion
+
+  //#region CollectionCard ----------------------------------------------------
+  createCollectionCard(collectionCard: CollectionCardDto): Promise<CollectionCardDto>;
+  deleteCollectionCard(collectionCard: CollectionCardDto): Promise<number>;
   // TODO use CollectionCardListDto
   getCollectionCards(collectionId: number): Promise<Array<unknown>>;
-  initialize(arcaneArchiveProxy: IArcaneArchiveProxyService): void;
+  updateCollectionCard(collectionCard: CollectionCardDto): Promise<CollectionCardDto>;
+  //#endregion
 }

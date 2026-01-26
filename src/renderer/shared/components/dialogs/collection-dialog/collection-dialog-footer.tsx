@@ -1,17 +1,17 @@
 import { noop } from "lodash";
 import { useServices } from "../../../../hooks";
 import { CollectionDto } from "../../../dto";
-import { SaveCancelResetFooter } from "../../base/base-dialog";
+import { DefaultDialogFooter } from "../../base/base-dialog";
 import { CollectionDialogFooterProps } from "./collection-dialog.props";
 
 export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
-  // #region Hooks ------------------------------------------------------------
-  const serviceContainer = useServices();
-  // #endregion
+  //#region Hooks -------------------------------------------------------------
+  const { collectionService } = useServices();
+  //#endregion
 
-  // #region event handling ---------------------------------------------------
+  //#region Event Handling ----------------------------------------------------
   function createClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: CollectionDto): Promise<void> {
-    return serviceContainer.collectionService
+    return collectionService
       .createCollection(dto)
       .then(
         (resp: CollectionDto) => {
@@ -25,7 +25,7 @@ export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
   }
 
   function updateClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: CollectionDto): Promise<void> {
-    return serviceContainer.collectionService
+    return collectionService
       .updateCollection(dto)
       .then(
         (resp: CollectionDto) => {
@@ -37,12 +37,12 @@ export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
         noop
       );
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
-  if (!props.viewmodel.dto.id) {
+  //#region Rendering ---------------------------------------------------------
+  if (props.viewmodel.mode == "create") {
     return (
-      <SaveCancelResetFooter
+      <DefaultDialogFooter
         {...props}
         showResetButton={false}
         commitButtonLabel="Create"
@@ -51,7 +51,7 @@ export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
     );
   } else {
     return (
-      <SaveCancelResetFooter
+      <DefaultDialogFooter
         {...props}
         showResetButton={true}
         commitButtonLabel="Save"
@@ -59,5 +59,5 @@ export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
       />
     );
   }
-  // #endregion
+  //#endregion
 }

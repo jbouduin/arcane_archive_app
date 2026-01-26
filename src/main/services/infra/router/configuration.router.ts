@@ -1,5 +1,5 @@
 import { inject, singleton } from "tsyringe";
-import { PreferencesDto, SettingsDto, SystemSettingsDto } from "../../../../common/dto";
+import { PreferencesDto, SettingsDto, SystemConfigurationDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
 import { IResult, IRouter, RouteCallback, RoutedRequest } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
@@ -28,11 +28,11 @@ export class ConfigurationRouter implements IRouter {
   // #endregion
 
   // #region Route callbacks --------------------------------------------------
-  private getSystemSettings(_request: RoutedRequest<void>): Promise<IResult<SystemSettingsDto>> {
+  private getSystemSettings(_request: RoutedRequest<void>): Promise<IResult<SystemConfigurationDto>> {
     return this.configurationService.getSystemSettings();
   }
 
-  private getSystemSettingsFactoryDefault(_request: RoutedRequest<void>): Promise<IResult<SystemSettingsDto>> {
+  private getSystemSettingsFactoryDefault(_request: RoutedRequest<void>): Promise<IResult<SystemConfigurationDto>> {
     return this.configurationService.getSystemSettingsFactoryDefault();
   }
 
@@ -40,7 +40,7 @@ export class ConfigurationRouter implements IRouter {
     return this.configurationService.getSettings();
   }
 
-  private saveSystemSettings(request: RoutedRequest<SystemSettingsDto>): Promise<IResult<SystemSettingsDto>> {
+  private saveSystemSettings(request: RoutedRequest<SystemConfigurationDto>): Promise<IResult<SystemConfigurationDto>> {
     return this.configurationService.saveSystemSettings(request.data);
   }
 

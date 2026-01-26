@@ -1,11 +1,22 @@
-import { ContextMenu, Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
+import { ContextMenu, Menu, MenuDivider, MenuItem, ToastProps } from "@blueprintjs/core";
+import { useServices } from "../../../../hooks";
+import { showNewCollectionCardDialog } from "./collection-card-dialog";
 import { CollectionTreeContextMenuProps } from "./collection-tree-context-menu.props";
 
-export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps) {
+export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps): JSX.Element {
+  //#region Hooks -------------------------------------------------------------
+  const { overlayService, displayValueService } = useServices();
+  //#endregion
+
   // #region Event handling ---------------------------------------------------
   function onShowDetails(_collectinId: number): void {
-    // TODO implement
+    const props: ToastProps = {
+      message: "Not implemented",
+      intent: "danger"
+    };
+    overlayService.showToast(props, "Detail view not implemented");
   }
+  //#endregion
 
   // #region Rendering --------------------------------------------------------
   return (
@@ -28,17 +39,29 @@ export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps)
             {
               props.collection.type != "FOLDER" &&
               (
-                <MenuItem
-                  key="details"
-                  disabled={true}
-                  onClick={
-                    (e) => {
-                      e.preventDefault();
-                      onShowDetails(props.collection.id!);
+                <>
+                  <MenuItem
+
+                    key="details"
+                    onClick={
+                      (e) => {
+                        e.preventDefault();
+                        onShowDetails(props.collection.id!);
+                      }
                     }
-                  }
-                  text="Details"
-                />
+                    text="Details"
+                  />
+                  <MenuItem
+                    key="addCard"
+                    onClick={
+                      (e) => {
+                        e.preventDefault();
+                        showNewCollectionCardDialog(overlayService, displayValueService, props.collection.id!);
+                      }
+                    }
+                    text="Add card"
+                  />
+                </>
               )
             }
             {

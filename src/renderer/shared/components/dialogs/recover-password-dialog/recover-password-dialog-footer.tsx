@@ -3,11 +3,11 @@ import { noop } from "lodash";
 import { ReactNode } from "react";
 import { useServices } from "../../../../hooks";
 import { RecoverPasswordRequestDto } from "../../../dto";
-import { SaveCancelResetFooter } from "../../base/base-dialog";
+import { DefaultDialogFooter } from "../../base/base-dialog";
 import { showResetPasswordDialog } from "../factory";
 import { RecoverPasswordDialogFooterProps } from "./recover-password-dialog.props";
 
-export function RecoverPasswordDialogFooter(props: RecoverPasswordDialogFooterProps) {
+export function RecoverPasswordDialogFooter(props: RecoverPasswordDialogFooterProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
@@ -40,7 +40,7 @@ export function RecoverPasswordDialogFooter(props: RecoverPasswordDialogFooterPr
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter
+    <DefaultDialogFooter
       additionalLeftButtons={additionalLeftButtons()}
       {...props}
       showResetButton={false}

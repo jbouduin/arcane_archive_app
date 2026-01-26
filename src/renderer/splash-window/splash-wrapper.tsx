@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ProgressCallbackValue } from "../../common/ipc";
 import { SplashContent } from "../shared/components/splash";
 
-export function SplashWrapper() {
+export function SplashWrapper(): JSX.Element {
   // #region State ------------------------------------------------------------
   const [state, setState] = useState<ProgressCallbackValue>("Loading...");
   // #endregion

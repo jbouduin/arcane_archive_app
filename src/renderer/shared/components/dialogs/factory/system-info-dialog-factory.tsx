@@ -1,11 +1,9 @@
 import { Icon } from "@blueprintjs/core";
-import { IServiceContainer } from "../../../context";
-import { SystemInfoDialogBody } from "../system-info-dialog/system-info-dialog-body";
-import { SystemInfoDialogFooter } from "../system-info-dialog/system-info-dialog-footer";
-import { SystemInfoDialogBodyProps, SystemInfoDialogFooterProps, SystemInfoDialogProps } from "../system-info-dialog/system-info-dialog.props";
+import { ApiInfoContextType, IServiceContainer } from "../../../context";
+import * as SystemInfo from "../system-info-dialog";
 
-export function showSystemInfoDialog(serviceContainer: IServiceContainer) {
-  const statusProps: SystemInfoDialogProps = {
+export function showSystemInfoDialog(apiInfo: ApiInfoContextType, serviceContainer: IServiceContainer): void {
+  const statusProps: SystemInfo.SystemInfoDialogProps = {
     isOpen: true,
     isCloseButtonShown: true,
     canEscapeKeyClose: true,
@@ -15,12 +13,12 @@ export function showSystemInfoDialog(serviceContainer: IServiceContainer) {
     viewmodel: serviceContainer
       .viewmodelFactoryService
       .settingsViewmodelFactory
-      .getSystemInfoViewmodel(serviceContainer),
-    bodyRenderer: (bodyProps: SystemInfoDialogBodyProps) => {
-      return (<SystemInfoDialogBody {...bodyProps} />);
+      .getSystemInfoViewmodel(apiInfo),
+    bodyRenderer: (bodyProps: SystemInfo.SystemInfoDialogBodyProps) => {
+      return (<SystemInfo.SystemInfoDialogBody {...bodyProps} />);
     },
-    footerRenderer: (footerProps: SystemInfoDialogFooterProps) => {
-      return (<SystemInfoDialogFooter {...footerProps} />);
+    footerRenderer: (footerProps: SystemInfo.SystemInfoDialogFooterProps) => {
+      return (<SystemInfo.SystemInfoDialogFooter {...footerProps} />);
     }
   };
   serviceContainer.overlayService.openDialog(statusProps);

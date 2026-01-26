@@ -11,7 +11,9 @@ import { DialogRendererProps } from "./dialog-renderer.props";
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export function DialogRenderer(props: DialogRendererProps): JSX.Element {
   // #region State ------------------------------------------------------------
-  const [dialogs, setDialogs] = useState<Map<number, BaseDialogProps<any, any, any>>>(new Map<number, BaseDialogProps<any, any, any>>());
+  const [dialogsNew, setDialogsNew] = useState<Map<number, BaseDialogProps<any, any>>>(
+    new Map<number, BaseDialogProps<any, any>>()
+  );
   const [splashScreen, setSplashScreen] = useState<ProgressCallbackValue | null>(null);
   const [alert, setAlert] = useState<AlertProps | null>(null);
   // #endregion
@@ -21,11 +23,14 @@ export function DialogRenderer(props: DialogRendererProps): JSX.Element {
   // #endregion
 
   // #region Effects ----------------------------------------------------------
-  useEffect(() => {
-    props.overlayService.setAlertDispatcher(setAlert);
-    props.overlayService.setDialogDispatcher(setDialogs);
-    props.overlayService.setSplashScreenDispatcher(setSplashScreen);
-  }, [props.overlayService]);
+  useEffect(
+    () => {
+      props.overlayService.setAlertDispatcher(setAlert);
+      props.overlayService.setDialogDispatcher(setDialogsNew);
+      props.overlayService.setSplashScreenDispatcher(setSplashScreen);
+    },
+    [props.overlayService]
+  );
   // #endregion
 
   // #region Event handling ---------------------------------------------------
@@ -60,15 +65,13 @@ export function DialogRenderer(props: DialogRendererProps): JSX.Element {
 
   function buildDialogs(): Array<React.JSX.Element> {
     const result = new Array<React.JSX.Element>();
-    {
-      dialogs.forEach((props: BaseDialogProps<any, any, any>, key: number) => {
-        const dlg = (
-          <BaseDialog key={"dialog-" + key.toString()} {...props} />
-        );
-        result.push(dlg);
-      });
-      return result;
-    }
+    dialogsNew.forEach((props: BaseDialogProps<any, any>, key: number) => {
+      const dlg = (
+        <BaseDialog key={"dialog-" + key.toString()} {...props} />
+      );
+      result.push(dlg);
+    });
+    return result;
   }
   // #endregion
 }

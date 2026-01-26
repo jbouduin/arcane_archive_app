@@ -3,7 +3,7 @@ import { noop } from "lodash";
 import { ReactNode } from "react";
 import { useServices } from "../../../../hooks";
 import { ResetPasswordRequestDto } from "../../../dto";
-import { SaveCancelResetFooter } from "../../base/base-dialog";
+import { DefaultDialogFooter } from "../../base/base-dialog";
 import { showLoginDialog, showRecoverPasswordDialog } from "../factory";
 import { ResetPasswordDialogFooterProps } from "./reset-password-dialog.props";
 
@@ -38,7 +38,7 @@ export function ResetPasswordDialogFooter(props: ResetPasswordDialogFooterProps)
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter
+    <DefaultDialogFooter
       additionalLeftButtons={additionalLeftButtons()}
       {...props}
       showResetButton={false}

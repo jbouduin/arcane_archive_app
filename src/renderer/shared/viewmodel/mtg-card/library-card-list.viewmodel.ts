@@ -1,7 +1,7 @@
 import { IColorService, IDisplayValueService, ILanguageService, IMtgSetService } from "../../context";
 import { LanguageDto, LibraryCardListDto } from "../../dto";
 import { ColorDto } from "../../dto/color.dto";
-import { AbstractCardViewmodel } from "./abstract-card.viewmodel";
+import { AbstractCardViewmodel } from "../abstract-card.viewmodel";
 
 export class LibraryCardListViewmodel extends AbstractCardViewmodel {
   // #region public fields Members --------------------------------------------

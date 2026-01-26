@@ -32,7 +32,7 @@ export interface IResult<T> {
   /**
    * Convert the data of the result asynchronously, preserving the message and status.
    *
-   * @param onSuccess function to be executed if the current status is not an error. If this parameter is not provided, data is undefined.
+   * @param onSuccess function to be executed if the current status is not an error.If this parameter is not provided, data is undefined.
    * @param onFailure function to be executed if the current status is an error. If this parameter is not provided, data is undefined.
    */
   convertAsync<U>(onSuccess: (r: T) => U, onFailure?: (r: T) => U): Promise<IResult<U>>;

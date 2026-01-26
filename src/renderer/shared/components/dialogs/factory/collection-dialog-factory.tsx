@@ -3,11 +3,9 @@ import { noop } from "lodash";
 import { IServiceContainer } from "../../../context";
 import { CollectionDto } from "../../../dto";
 import { CollectionType } from "../../../types";
-import { CollectionViewmodel, CollectionViewmodelField } from "../../../viewmodel";
-import { BaseDialogFooterProps } from "../../base/base-dialog";
-import { CollectionDialogBody } from "../collection-dialog/collection-dialog-body";
-import { CollectionDialogFooter } from "../collection-dialog/collection-dialog-footer";
-import { CollectionDialogBodyProps, CollectionDialogProps } from "../collection-dialog/collection-dialog.props";
+import { CollectionViewmodel } from "../../../viewmodel";
+import { DefaultDialogFooterProps } from "../../base/base-dialog";
+import * as CollectionDialog from "../collection-dialog";
 
 export function showEditCollectionDialog(
   serviceContainer: IServiceContainer,
@@ -18,15 +16,15 @@ export function showEditCollectionDialog(
 ): void {
   const viewmodel = serviceContainer.viewmodelFactoryService.collectionViewmodelFactory
     .getCollectionViewmodel(collection, parentCollection, parentPath);
-  const dialogProps: CollectionDialogProps = {
+  const dialogProps: CollectionDialog.CollectionDialogProps = {
     isOpen: true,
     viewmodel: viewmodel,
-    bodyRenderer: (bodyProps: CollectionDialogBodyProps) => {
-      return (<CollectionDialogBody {...bodyProps} />);
+    bodyRenderer: (bodyProps: CollectionDialog.CollectionDialogBodyProps) => {
+      return (<CollectionDialog.CollectionDialogBody {...bodyProps} />);
     },
-    footerRenderer: (footerProps: BaseDialogFooterProps<CollectionDto, CollectionViewmodelField, CollectionViewmodel>) => {
+    footerRenderer: (footerProps: DefaultDialogFooterProps<CollectionDto, CollectionViewmodel>) => {
       return (
-        <CollectionDialogFooter
+        <CollectionDialog.CollectionDialogFooter
           {...footerProps}
           onCollectionAdded={noop}
           onCollectionModified={onCollectionModified}
@@ -57,15 +55,15 @@ export function showNewCollectionDialog(
 ): void {
   const viewmodel = serviceContainer.viewmodelFactoryService.collectionViewmodelFactory
     .getNewCollectionViewmodel(type, parentCollection, parentPath);
-  const dialogProps: CollectionDialogProps = {
+  const dialogProps: CollectionDialog.CollectionDialogProps = {
     isOpen: true,
     viewmodel: viewmodel,
-    bodyRenderer: (bodyProps: CollectionDialogBodyProps) => {
-      return (<CollectionDialogBody {...bodyProps} />);
+    bodyRenderer: (bodyProps: CollectionDialog.CollectionDialogBodyProps) => {
+      return (<CollectionDialog.CollectionDialogBody {...bodyProps} />);
     },
-    footerRenderer: (footerProps: BaseDialogFooterProps<CollectionDto, CollectionViewmodelField, CollectionViewmodel>) => {
+    footerRenderer: (footerProps: DefaultDialogFooterProps<CollectionDto, CollectionViewmodel>) => {
       return (
-        <CollectionDialogFooter
+        <CollectionDialog.CollectionDialogFooter
           {...footerProps}
           onCollectionAdded={onCollectionAdded}
           onCollectionModified={noop}

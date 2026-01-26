@@ -1,7 +1,7 @@
 import { Button, DialogBody, DialogFooter } from "@blueprintjs/core";
 import { useReducer } from "react";
 import { useServices, useSession } from "../../../hooks";
-import { PreferencesDialogBody } from "../../../shared/components/dialogs/preferences-dialog/preferences-dialog-body";
+import { PreferencesDialogBody } from "../../../shared/components/dialogs";
 import { PreferencePanelProps } from "./preferences-panel.props";
 
 export function PreferencesPanel(props: PreferencePanelProps) {
@@ -32,7 +32,6 @@ export function PreferencesPanel(props: PreferencePanelProps) {
         <PreferencesDialogBody
           viewmodelChanged={forceUpdate}
           viewmodel={props.viewmodel}
-          onValidationCompleted={forceUpdate}
           isOpen={true}
         />
       </DialogBody>

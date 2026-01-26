@@ -1,5 +1,5 @@
 import { inject, singleton } from "tsyringe";
-import { LoginRequestDto, LoginResponseDto } from "../../../../common/dto";
+import { LoginRequestDto, SessionDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
 import { DeleteRouteCallback, IResult, IRouter, RouteCallback, RoutedRequest } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
@@ -33,11 +33,11 @@ export class SessionRouter implements IRouter {
     return this.sessionService.deleteSessionData();
   }
 
-  private getSessionData(_request: RoutedRequest<void>): Promise<IResult<LoginResponseDto | null>> {
+  private getSessionData(_request: RoutedRequest<void>): Promise<IResult<SessionDto | null>> {
     return this.sessionService.getSessionData();
   }
 
-  private setSessionData(request: RoutedRequest<LoginResponseDto>): Promise<IResult<void>> {
+  private setSessionData(request: RoutedRequest<SessionDto>): Promise<IResult<void>> {
     return this.sessionService.setSessionData(request.data);
   }
 

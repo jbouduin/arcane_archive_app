@@ -1,14 +1,11 @@
-import { Callout, Checkbox, ControlGroup, FormGroup, HTMLSelect, HTMLTable, Icon, Tab, Tabs, Tooltip } from "@blueprintjs/core";
-import { CachedImageSize, CardSetGroupBy, CardSetSort } from "../../../../../common/types";
+import { Callout, ControlGroup, HTMLTable, Tab, Tabs } from "@blueprintjs/core";
 import { useServices, useSession } from "../../../../hooks";
-import { CardSortField, SelectOption } from "../../../types";
+import { SelectOption } from "../../../types";
 import { SetTreeSettingsViewmodel } from "../../../viewmodel/settings";
-import { SortDirection } from "../../base/base-table";
-import { handleBooleanChange } from "../../util/handle-boolean-change";
-import { handleValueChange } from "../../util/handle-value-change";
+import { BaseCheckbox, BaseHtmlSelect, ToggleCheckbox } from "../../input";
 import { PreferencesDialogBodyProps } from "./preferences-dialog.props";
 
-export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
+export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const { loggedIn } = useSession();
   const serviceContainer = useServices();
@@ -46,125 +43,61 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
   function renderBasicPreferences(): React.JSX.Element {
     return (
       <>
-        <Checkbox
-          key="dark-theme"
-          checked={props.viewmodel.useDarkTheme}
-          onChange={
-            handleBooleanChange((value: boolean) => {
-              props.viewmodel.useDarkTheme = value;
-              props.viewmodelChanged();
-            })
-          }
+        <BaseCheckbox
+          viewmodel={props.viewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="useDarkTheme"
         >
           Dark Theme
-        </Checkbox>
-        <Checkbox
-          key="refresh-cache"
-          checked={props.viewmodel.refreshCacheAtStartup}
-          onChange={
-            handleBooleanChange((value: boolean) => {
-              props.viewmodel.refreshCacheAtStartup = value;
-              props.viewmodelChanged();
-            })
-          }
+        </BaseCheckbox>
+        <BaseCheckbox
+          viewmodel={props.viewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="refreshCacheAtStartup"
         >
           Refresh cache at startup
-          <Tooltip
-            openOnTargetFocus={false}
-            content={(<span>Explain ...</span>)}
-          >
-            <Icon style={{ paddingLeft: "5px" }} icon="help" intent="primary" />
-          </Tooltip>
-        </Checkbox>
-        <Checkbox
-          key="log-server-response"
-          checked={props.viewmodel.logServerResponses}
-          onChange={
-            handleBooleanChange((value: boolean) => {
-              props.viewmodel.logServerResponses = value;
-              props.viewmodelChanged();
-            })
-          }
-        >
-          Log server responses in console
-        </Checkbox>
+        </BaseCheckbox>
         <ControlGroup
           key="group-1"
           fill={true}
           vertical={false}
         >
-          <FormGroup label="Size of cached images" labelFor="cached-image" fill={true}>
-            <HTMLSelect
-              id="cached-image"
-              minimal={true}
-              fill={true}
-              onChange={
-                handleValueChange((value: CachedImageSize) => {
-                  props.viewmodel.cachedImageSize = value;
-                  props.viewmodelChanged();
-                })
-              }
-              options={props.viewmodel.cachedImageSizeOptions}
-              value={props.viewmodel.cachedImageSize}
-            />
-          </FormGroup>
-          <FormGroup label="Default Page size" labelFor="page-size" fill={true}>
-            <HTMLSelect
-              id="page-size"
-              minimal={true}
-              fill={true}
-              onChange={
-                handleValueChange((value: number) => {
-                  props.viewmodel.defaultPageSize = value;
-                  props.viewmodelChanged();
-                })
-              }
-              options={props.viewmodel.pageSizeOptions}
-              value={props.viewmodel.defaultPageSize}
-            />
-          </FormGroup>
+          <BaseHtmlSelect
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="cachedImageSize"
+            label="Size of Cached Images"
+          />
+          <BaseHtmlSelect
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="defaultPageSize"
+            label="Default Page SIze"
+          />
         </ControlGroup>
         <ControlGroup
           key="group-2"
           fill={true}
           vertical={false}
         >
-          <FormGroup label="Default Sort field (Cards)" labelFor="card-sort-field" fill={true}>
-            <HTMLSelect
-              id="card-sort-field"
-              minimal={true}
-              fill={true}
-              onChange={
-                handleValueChange((value: CardSortField) => {
-                  props.viewmodel.defaultCardSortField = value;
-                  props.viewmodelChanged();
-                })
-              }
-              options={props.viewmodel.cardSortFieldOptions}
-              value={props.viewmodel.defaultCardSortField}
-            />
-          </FormGroup>
-          <FormGroup label="Sort Direction" labelFor="card-sort-direction" fill={true}>
-            <HTMLSelect
-              id="card-sort-direction"
-              minimal={true}
-              fill={true}
-              onChange={
-                handleValueChange((value: SortDirection) => {
-                  props.viewmodel.defaultCardSortDirection = value;
-                  props.viewmodelChanged();
-                })
-              }
-              options={props.viewmodel.sortDirectionOptions}
-              value={props.viewmodel.defaultCardSortDirection}
-            />
-          </FormGroup>
+          <BaseHtmlSelect
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="defaultCardSortField"
+            label="Default Sort Field (Cards)"
+          />
+          <BaseHtmlSelect
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="defaultCardSortField"
+            label="Sort Direction"
+          />
         </ControlGroup>
       </>
     );
   }
 
-  function renderLibraryTreeviewmodel() {
+  function renderLibraryTreeviewmodel(): JSX.Element {
     const viewmodel = props.viewmodel.librarySetTreeSettingsViewmodel;
     return (
       <>
@@ -173,36 +106,18 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
           fill={true}
           vertical={false}
         >
-          <FormGroup label="Sort sets in tree by" labelFor="sort-sets-by" fill={true}>
-            <HTMLSelect
-              id="sort-sets-by"
-              minimal={true}
-              fill={true}
-              onChange={
-                handleValueChange((value: CardSetSort) => {
-                  viewmodel.cardSetSort = value;
-                  props.viewmodelChanged();
-                })
-              }
-              options={viewmodel.cardSetSortOptions}
-              value={viewmodel.cardSetSort}
-            />
-          </FormGroup>
-          <FormGroup label="Group sets in tree by" labelFor="group-sets-by" fill={true}>
-            <HTMLSelect
-              id="group-sets-by"
-              minimal={true}
-              fill={true}
-              onChange={
-                handleValueChange((value: CardSetGroupBy) => {
-                  viewmodel.cardSetGroupBy = value;
-                  props.viewmodelChanged();
-                })
-              }
-              options={viewmodel.cardSetGroupByOptions}
-              value={viewmodel.cardSetGroupBy}
-            />
-          </FormGroup>
+          <BaseHtmlSelect
+            viewmodel={viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="cardSetSort"
+            label="Sort sets in tree by"
+          />
+          <BaseHtmlSelect
+            viewmodel={viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="cardSetGroupBy"
+            label="Group sets in tree by"
+          />
         </ControlGroup>
         <HTMLTable
           bordered={false}
@@ -236,17 +151,14 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps) {
         }
         currentRow.push((
           <td key={`cell-${opt.value}`} style={{ paddingLeft: "0px" }}>
-            <Checkbox
-              checked={viewmodel.cardSetTypeFilter.indexOf(opt.value) >= 0}
-              key={opt.value}
-              label={opt.label}
-              onChange={
-                handleBooleanChange((_value: boolean) => {
-                  viewmodel.toggleCardSetFilterType(opt.value);
-                  props.viewmodelChanged();
-                })
-              }
-            />
+            <ToggleCheckbox
+              viewmodel={viewmodel}
+              viewmodelChanged={props.viewmodelChanged}
+              fieldName="cardSetTypeFilter"
+              value={opt.value}
+            >
+              {opt.label}
+            </ToggleCheckbox>
           </td>
         ));
         if (idx % 3 == 1) {

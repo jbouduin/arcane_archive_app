@@ -1,121 +1,40 @@
-import { isEqual } from "lodash";
-import { SystemSettingsDto } from "../../../../common/dto";
+import { SystemConfigurationDto } from "../../../../common/dto";
 import { LogLevel } from "../../../../common/enums";
-import { LogSetting } from "../../../../common/types";
-import { stringNotNullOrEmpty } from "../../components/util";
+import { MainLogSetting, MainLogSource, ResponseLogSetting, ResponseLogSource } from "../../../../common/types";
 import { SelectOption, ValidationResult } from "../../types";
-import { BaseViewmodel, viewmodelMode } from "../base.viewmodel";
+import { BaseViewmodel, ViewmodelMode } from "../base.viewmodel";
+import { DataConfigurationViewmodel } from "./data-configuration.viewmodel";
+import { LogSettingViewmodel, MainLogSettingViewmodel, ResponseLogSettingViewmodel } from "./log-setting.viewmodel";
 
-export type SystemSettingsViewmodelField = "rootDataDirectory" | "cacheDirectory" | "logDirectory" | "databaseName" | "discovery";
-
-export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto, SystemSettingsViewmodelField> {
+export class SystemSettingsViewmodel extends BaseViewmodel<SystemConfigurationDto> {
   // #region Private fields ---------------------------------------------------
   private readonly invalidUrlResult: ValidationResult;
-  // private readonly _firstTime: boolean;
-  private readonly _logLevelOptions: Array<SelectOption<LogLevel>>;
-  // #endregion
-
-  // #region Getters/Setters apiConfiguration ---------------------------------
-  public get discovery(): string {
-    return this._dto.discovery;
-  }
-
-  public set discovery(value: string) {
-    this._dto.discovery = value;
-  }
-  // #endregion
-
-  // #region Getters/Setters dataConfiguration --------------------------------
-  public get rootDataDirectory(): string {
-    return this._dto.dataConfiguration.rootDataDirectory;
-  }
-
-  public set rootDataDirectory(value: string) {
-    this._dto.dataConfiguration.rootDataDirectory = value;
-  }
-
-  public get cacheDirectory(): string {
-    return this._dto.dataConfiguration.cacheDirectory;
-  }
-
-  public set cacheDirectory(value: string) {
-    this._dto.dataConfiguration.cacheDirectory = value;
-  }
-
-  public get databaseName(): string {
-    return this._dto.dataConfiguration.databaseName;
-  }
-
-  public set databaseName(value: string) {
-    this._dto.dataConfiguration.databaseName = value;
-  }
-
-  public get logDirectory(): string {
-    return this._dto.dataConfiguration.logDirectory;
-  }
-
-  public set logDirectory(value: string) {
-    this._dto.dataConfiguration.logDirectory = value;
-  }
-  // #endregion
-
-  // #region Getters/Setters logging ------------------------------------------
-  public get logLevelOptions(): Array<SelectOption<LogLevel>> {
-    return this._logLevelOptions;
-  }
-
-  public get rendererLogLevel(): LogLevel {
-    return this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "Renderer")!.level;
-  }
-
-  public set rendererLogLevel(value: LogLevel) {
-    this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "Renderer")!.level = value;
-  }
-
-  public get mainLogLevel(): LogLevel {
-    return this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "Main")!.level;
-  }
-
-  public set mainLogLevel(value: LogLevel) {
-    this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "Main")!.level = value;
-  }
-
-  public get apiLogLevel(): LogLevel {
-    return this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "API")!.level;
-  }
-
-  public set apiLogLevel(value: LogLevel) {
-    this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "API")!.level = value;
-  }
-
-  public get databaseLogLevel(): LogLevel {
-    return this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "DB")!.level;
-  }
-
-  public set databaseLogLevel(value: LogLevel) {
-    this._dto.loggingConfiguration.find((l: LogSetting) => l.source == "DB")!.level = value;
-  }
-  // #endregion
-
-  // #region Getter -----------------------------------------------------------
-  public get restartRequired(): boolean {
-    return this._dto.discovery != this._org.discovery ||
-      !isEqual(this._dto.dataConfiguration, this._org.dataConfiguration);
-  }
-  // #endregion
+  private readonly _mainLogSettingsViewmodels: Map<MainLogSource, MainLogSettingViewmodel>;
+  private readonly _responseLogSettingsViewmodels: Map<ResponseLogSource, ResponseLogSettingViewmodel>;
+  private readonly _dataConfigurationViewmodel: DataConfigurationViewmodel;
+  //#endregion
 
   // #region Getters/Setters --------------------------------------------------
-  // public get firstTime(): boolean {
-  //   return this._firstTime;
-  // }
-  // #endregion
+  public get dataConfigurationViewmodel(): DataConfigurationViewmodel {
+    return this._dataConfigurationViewmodel;
+  }
 
-  // #region Constructor ------------------------------------------------------
-  public constructor(dto: SystemSettingsDto, mode: viewmodelMode) {
+  public get restartRequired(): boolean {
+    return this._dto.discovery != this._org.discovery || this._dataConfigurationViewmodel.hasChanges;
+  }
+  //#endregion
+
+  //#region Constructor & C° --------------------------------------------------
+  public constructor(dto: SystemConfigurationDto, mode: ViewmodelMode) {
     super(dto, mode);
     this.invalidUrlResult = { helperText: "Please enter a valid internet address", intent: "danger" };
-    // this._firstTime = firstTime;
-    this._logLevelOptions = [
+    // --- data configuration view model
+    this._dataConfigurationViewmodel = new DataConfigurationViewmodel(dto.dataConfiguration, mode);
+    this.registerChildViewmodel(this._dataConfigurationViewmodel);
+    // --- log level viewmodels ---
+    this._mainLogSettingsViewmodels = new Map<MainLogSource, MainLogSettingViewmodel>();
+    this._responseLogSettingsViewmodels = new Map<ResponseLogSource, ResponseLogSettingViewmodel>();
+    const options = [
       { value: LogLevel.None, label: "No logging" },
       { value: LogLevel.Error, label: "Error (default)" },
       { value: LogLevel.Warning, label: "Warning" },
@@ -123,55 +42,73 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto, Sy
       { value: LogLevel.Debug, label: "Debug - pretty verbose" },
       { value: LogLevel.Trace, label: "Trace - silly verbose" },
     ];
+    this.registerSelectOptions("rendererLogLevel", options);
+    // --- main log settings
+    this.registerMainLogSettingsViewmodel(dto, mode, "API", options);
+    this.registerMainLogSettingsViewmodel(dto, mode, "DB", options);
+    this.registerMainLogSettingsViewmodel(dto, mode, "Main", options);
+    this.registerMainLogSettingsViewmodel(dto, mode, "Renderer", options);
+    // --- renderer log settings
+    this.registerRendererLogSettingsViewmodel(dto, mode, "IPC", options);
+    this.registerRendererLogSettingsViewmodel(dto, mode, "authentication", options);
+    this.registerRendererLogSettingsViewmodel(dto, mode, "collection", options);
+    this.registerRendererLogSettingsViewmodel(dto, mode, "deck", options);
+    this.registerRendererLogSettingsViewmodel(dto, mode, "library", options);
+    // --- validations ---
+    this.registerValidation("discovery", () => this.validateDiscovery());
   }
-  // #endregion
+
+  private registerMainLogSettingsViewmodel(
+    dto: SystemConfigurationDto,
+    mode: ViewmodelMode,
+    source: MainLogSource,
+    options: Array<SelectOption<LogLevel>>
+  ): void {
+    const viewmodel = new LogSettingViewmodel(
+      dto.mainLoggingConfiguration.find((l: MainLogSetting) => l.source == source)!, mode, options);
+    this._mainLogSettingsViewmodels.set(source, viewmodel);
+    this.registerChildViewmodel(viewmodel);
+  }
+
+  private registerRendererLogSettingsViewmodel(
+    dto: SystemConfigurationDto,
+    mode: ViewmodelMode,
+    source: ResponseLogSource,
+    options: Array<SelectOption<LogLevel>>
+  ): void {
+    const viewmodel = new LogSettingViewmodel(
+      dto.responseLoggingConfiguration.find((l: ResponseLogSetting) => l.source == source)!, mode, options);
+    this._responseLogSettingsViewmodels.set(source, viewmodel);
+    this.registerChildViewmodel(viewmodel);
+  }
+  //#endregion
+
+  // #region Public methods ---------------------------------------------------
+  public setFactoryDefaults(dto: SystemConfigurationDto): void {
+    Object.assign(this.dto, dto);
+    Object.assign(this._dataConfigurationViewmodel.dto, dto.dataConfiguration);
+    this._mainLogSettingsViewmodels
+      .forEach((lsvm: MainLogSettingViewmodel, source: MainLogSource) => {
+        lsvm.dto.level = dto.mainLoggingConfiguration.find((l: MainLogSetting) => l.source == source)!.level;
+      });
+    this._responseLogSettingsViewmodels
+      .forEach((lsvm: ResponseLogSettingViewmodel, source: ResponseLogSource) => {
+        lsvm.dto.level = dto.responseLoggingConfiguration.find((l: ResponseLogSetting) => l.source == source)!.level;
+      });
+  }
+
+  public getMainLogSettingsViewmodel(source: MainLogSource): MainLogSettingViewmodel {
+    return this._mainLogSettingsViewmodels.get(source)!;
+  }
+
+  public getResponseLogSettingsViewmodel(source: ResponseLogSource): ResponseLogSettingViewmodel {
+    return this._responseLogSettingsViewmodels.get(source)!;
+  }
+  //#endregion
 
   // #region Validations ------------------------------------------------------
-  public validateRootDataDirectory(): void {
-    if (stringNotNullOrEmpty(this._dto.dataConfiguration.rootDataDirectory)) {
-      this.setFieldValid("rootDataDirectory");
-    } else {
-      this.setFieldInvalid(
-        "rootDataDirectory",
-        { helperText: "You must specify a directory", intent: "danger" }
-      );
-    }
-  }
-
-  public validateCacheDataDirectory(): void {
-    if (stringNotNullOrEmpty(this._dto.dataConfiguration.cacheDirectory)) {
-      this.setFieldValid("cacheDirectory");
-    } else {
-      this.setFieldInvalid(
-        "cacheDirectory",
-        { helperText: "You must specify a directory", intent: "danger" }
-      );
-    }
-  }
-
-  public validateLogDirectory(): void {
-    if (stringNotNullOrEmpty(this._dto.dataConfiguration.logDirectory)) {
-      this.setFieldValid("logDirectory");
-    } else {
-      this.setFieldInvalid(
-        "logDirectory",
-        { helperText: "You must specify a directory", intent: "danger" }
-      );
-    }
-  }
-
-  public validateDatabaseName(): void {
-    if (stringNotNullOrEmpty(this._dto.dataConfiguration.databaseName)) {
-      this.setFieldValid("databaseName");
-    } else {
-      this.setFieldInvalid(
-        "databaseName",
-        { helperText: "You must specify a database name", intent: "danger" }
-      );
-    }
-  }
-
-  public validateDiscovery(): void {
+  private validateDiscovery(): void {
+    // LATER make async and call discovery
     try {
       const url = new URL(this._dto.discovery);
       if (url.protocol == "http:" || url.protocol == "https:") {
@@ -183,5 +120,5 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemSettingsDto, Sy
       this.setFieldInvalid("discovery", this.invalidUrlResult);
     }
   }
-  // #endregion
+  //#endregion
 }

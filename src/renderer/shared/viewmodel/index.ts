@@ -1,4 +1,5 @@
 export * from "./authentication";
+export * from "./base.viewmodel";
 export * from "./collection";
 export * from "./factory/interface";
 export * from "./mtg-card";

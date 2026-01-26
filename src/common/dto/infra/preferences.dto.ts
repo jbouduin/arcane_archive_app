@@ -6,7 +6,6 @@ import { SetTreeSettingsDto } from "./set-tree-settings.dto";
 export type PreferencesDto = {
   refreshCacheAtStartup: boolean;
   useDarkTheme: boolean;
-  logServerResponses: boolean;
   librarySetTreeSettings: SetTreeSettingsDto;
   cachedImageSize: CachedImageSize;
   defaultCardSortField: CardSortField;

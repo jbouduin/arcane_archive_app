@@ -1,10 +1,10 @@
 import { container, Lifecycle } from "tsyringe";
 import { IRouter } from "../base";
 import { INFRASTRUCTURE, LIBRARY } from "../service.tokens";
+import { CardImageService } from "./implementation/card-image.service";
 import { CardSymbolService } from "./implementation/card-symbol.service";
 import { ICardImageService, ICardSymbolService } from "./interface";
 import { CardSymbolRouter } from "./router";
-import { CardImageService } from "./implementation/card-image.service";
 
 export class LibraryDi {
   public static register(): void {
@@ -14,7 +14,11 @@ export class LibraryDi {
     // #endregion
 
     // #region Routers --------------------------------------------------------
-    container.register<IRouter>(INFRASTRUCTURE.Router, { useClass: CardSymbolRouter }, { lifecycle: Lifecycle.Singleton });
+    container.register<IRouter>(
+      INFRASTRUCTURE.Router,
+      { useClass: CardSymbolRouter },
+      { lifecycle: Lifecycle.Singleton }
+    );
     // #endregion
   }
 }

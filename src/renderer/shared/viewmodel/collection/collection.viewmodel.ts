@@ -1,13 +1,9 @@
 import { stringHasMinimalLength } from "../../components/util";
 import { CollectionDto } from "../../dto";
 import { CollectionType } from "../../types";
-import { IAuditFieldsViewmodel } from "../audit-fields.viewmodel";
-import { BaseViewmodel, viewmodelMode } from "../base.viewmodel";
+import { BaseViewmodel, ViewmodelMode } from "../base.viewmodel";
 
-export type CollectionViewmodelField = "code";
-export class CollectionViewmodel
-  extends BaseViewmodel<CollectionDto, CollectionViewmodelField>
-  implements IAuditFieldsViewmodel {
+export class CollectionViewmodel extends BaseViewmodel<CollectionDto> {
   // #region Private fields ---------------------------------------------------
   private readonly _parentPath: Array<string>;
   // #endregion
@@ -33,36 +29,8 @@ export class CollectionViewmodel
     }
   }
 
-  public get idAsString(): string {
-    if (this._dto.id) {
-      return this._dto.id.toString();
-    } else {
-      return "-";
-    }
-  }
-
   public get type(): CollectionType {
     return this._dto.type;
-  }
-
-  public get createdAtString(): string {
-    return this._dto.createdAt != null
-      ? new Date(this._dto.createdAt).toLocaleString()
-      : "-";
-  }
-
-  public get createdBy(): string {
-    return this._dto.createdBy || "-";
-  }
-
-  public get modifiedAtString(): string {
-    return this._dto.modifiedAt != null
-      ? new Date(this._dto.modifiedAt).toLocaleString()
-      : "-";
-  }
-
-  public get modifiedBy(): string {
-    return this._dto.modifiedBy || "-";
   }
 
   public get parentPath(): Array<string> {
@@ -75,16 +43,18 @@ export class CollectionViewmodel
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: CollectionDto, parentPath: Array<string>, mode: viewmodelMode) {
+  public constructor(dto: CollectionDto, parentPath: Array<string>, mode: ViewmodelMode) {
     super(dto, mode);
     this._parentPath = parentPath;
     if (mode == "update") {
       this.validateCode();
     }
+    this.registerValidation("code", () => this.validateCode());
   }
   // #endregion
 
-  public validateCode(): void {
+  // #region Auxiliary Methods ------------------------------------------------
+  private validateCode(): void {
     if (stringHasMinimalLength(this._dto.code, 3)) {
       this.setFieldValid("code");
     } else {
@@ -94,4 +64,5 @@ export class CollectionViewmodel
       );
     }
   }
+  // #endregion
 }

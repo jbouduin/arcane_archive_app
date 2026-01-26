@@ -1,7 +1,7 @@
 import { Button, DialogBody, DialogFooter } from "@blueprintjs/core";
 import { useReducer } from "react";
 import { useServices, useSession } from "../../../hooks";
-import { SystemSettingsDialogBody } from "../../../shared/components/dialogs/system-settings-dialog/system-settings-dialog-body";
+import { SystemSettingsDialogBody } from "../../../shared/components/dialogs";
 import { SystemPanelProps } from "./system-panel.props";
 
 export function SystemPanel(props: SystemPanelProps) {
@@ -33,7 +33,7 @@ export function SystemPanel(props: SystemPanelProps) {
           viewmodelChanged={forceUpdate}
           viewmodel={props.viewmodel}
           isOpen={true}
-          onValidationCompleted={forceUpdate}
+
         />
       </DialogBody>
       <DialogFooter>

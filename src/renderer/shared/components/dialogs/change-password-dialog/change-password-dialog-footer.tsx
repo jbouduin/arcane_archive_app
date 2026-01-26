@@ -1,16 +1,16 @@
 import { noop } from "lodash";
 import { useServices } from "../../../../hooks";
 import { ChangePasswordRequestDto } from "../../../dto";
-import { SaveCancelResetFooter } from "../../base/base-dialog";
+import { DefaultDialogFooter } from "../../base/base-dialog";
 import { showLoginDialog } from "../factory";
 import { ChangePasswordDialogFooterProps } from "./change-password-dialog.props";
 
 export function ChangePasswordDialogFooter(props: ChangePasswordDialogFooterProps) {
-  // #region Hooks ------------------------------------------------------------
+  //#region Hooks -------------------------------------------------------------
   const serviceContainer = useServices();
-  // #endregion
+  //#endregion
 
-  // #region Event handling ---------------------------------------------------
+  //#region Event Handling ----------------------------------------------------
   function changeClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: ChangePasswordRequestDto): Promise<void> {
     return serviceContainer.sessionService
       .changePassword(serviceContainer.arcaneArchiveProxy, serviceContainer.ipcProxy, dto)
@@ -24,16 +24,16 @@ export function ChangePasswordDialogFooter(props: ChangePasswordDialogFooterProp
         noop
       );
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
-    <SaveCancelResetFooter
+    <DefaultDialogFooter
       {...props}
       showResetButton={false}
       commitButtonLabel="Change password"
       onCommitButtonClick={changeClick}
     />
   );
-  // #endregion
+  //#endregion
 }

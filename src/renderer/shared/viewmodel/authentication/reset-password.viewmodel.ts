@@ -1,28 +1,17 @@
 import { stringHasMinimalLength } from "../../components/util";
 import { ResetPasswordRequestDto } from "../../dto";
-import { PasswordViewmodel } from "./password-viewmodel";
+import { PasswordViewmodel } from "./password.viewmodel";
 
-export type ResetPasswordViewmodelField = "resetToken";
-
-export class ResetPasswordViewmodel extends PasswordViewmodel<ResetPasswordRequestDto, ResetPasswordViewmodelField> {
-  // #region Getters/Setters --------------------------------------------------
-  public get resetToken(): string {
-    return this._dto.resetToken;
-  }
-
-  public set resetToken(value: string) {
-    this._dto.resetToken = value;
-  }
-  // #endregion
-
+export class ResetPasswordViewmodel extends PasswordViewmodel<ResetPasswordRequestDto> {
   // #region Constructor ------------------------------------------------------
   public constructor(dto: ResetPasswordRequestDto) {
     super(dto, "update");
+    this.registerValidation("resetToken", () => this.validateResetToken());
   }
   // #endregion
 
   // #region Auxiliary Methods ------------------------------------------------
-  public validateResetToken(): void {
+  private validateResetToken(): void {
     if (!stringHasMinimalLength(this._dto.resetToken, 16)) {
       this.setFieldInvalid(
         "resetToken",

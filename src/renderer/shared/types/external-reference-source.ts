@@ -1,8 +1,8 @@
 export type ExternalReferenceSource =
   /**
-       * ABU games
-       * https://abugames.com/
-       */
+   * ABU games
+   * https://abugames.com/
+   */
   "ABU" |
   "CARD_HOARDER" |
   /**

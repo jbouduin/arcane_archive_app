@@ -1,15 +1,15 @@
 import { LogRequestDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
-import { IIpcProxyService } from "../interface";
-import { ILogService } from "../interface/log.service";
+import { IIpcProxy } from "../interface";
+import { ILogService } from "../interface";
 
 export class LogService implements ILogService {
   // #region Private fields ---------------------------------------------------
-  private ipcProxy!: IIpcProxyService;
+  private ipcProxy!: IIpcProxy;
   // #endregion
 
   // #region ILogService Members ----------------------------------------------
-  public initialize(ipcProxy: IIpcProxyService): void {
+  public initialize(ipcProxy: IIpcProxy): void {
     this.ipcProxy = ipcProxy;
   }
 

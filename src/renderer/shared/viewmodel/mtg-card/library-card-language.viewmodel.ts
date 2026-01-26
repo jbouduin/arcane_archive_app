@@ -13,7 +13,9 @@ export class LibraryCardLanguageViewmodel {
 
   // #region Constructor ------------------------------------------------------
   public constructor(dto: LibraryCardDto, language: string) {
-    const cardLanguage = dto.cardLanguages.find((cardLanguageDto: LibraryCardLanguageDto) => cardLanguageDto.language == language)!;
+    const cardLanguage = dto.cardLanguages.find(
+      (cardLanguageDto: LibraryCardLanguageDto) => cardLanguageDto.language == language
+    )!;
     this.cardLanguageId = cardLanguage.id;
     this.imageStatus = cardLanguage.imageStatus;
     this.cardfaces = this.createCardFaceviewmodels(dto, language);

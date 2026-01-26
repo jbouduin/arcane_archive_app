@@ -1,19 +1,21 @@
-import { IArcaneArchiveProxyService, IServiceContainer } from "../../../context";
-import { AdvancedCardSearchDto, LibraryCardListDto } from "../../../dto";
+import { IArcaneArchiveProxy, IServiceContainer } from "../../../context";
+import { AdvancedCardSearchDto, CollectionCardListDto, LibraryCardListDto } from "../../../dto";
+import { CollectionCardListViewmodel } from "../../collection";
 import { AdvancedCardSearchViewmodel, LibraryCardListViewmodel, LibraryCardViewmodel, LibraryRulingViewmodel } from "../../mtg-card";
 
 export interface IMtgCardViewmodelFactory {
-  getMtgCardListViewmodel(dto: LibraryCardListDto): LibraryCardListViewmodel;
+  getLibraryCardListViewmodel(dto: LibraryCardListDto): LibraryCardListViewmodel;
   getLibraryCardDetailViewmodel(
-    arcaneArchiveProxy: IArcaneArchiveProxyService,
+    arcaneArchiveProxy: IArcaneArchiveProxy,
     cardId: number
   ): Promise<LibraryCardViewmodel>;
   getRulingsViewmodel(
-    arcaneArchiveProxy: IArcaneArchiveProxyService,
+    arcaneArchiveProxy: IArcaneArchiveProxy,
     oracleId: string
   ): Promise<Array<LibraryRulingViewmodel>>;
   getAdvancedCardSearchViewmodel(
     advancedCardSearch: AdvancedCardSearchDto,
     serviceContainer: IServiceContainer
   ): AdvancedCardSearchViewmodel;
+  getCollectionCardlistViewmodel(dto: CollectionCardListDto): CollectionCardListViewmodel;
 }

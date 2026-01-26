@@ -1,31 +1,33 @@
+import { noop } from "lodash";
 import { PreferencesDto } from "../../../../../common/dto";
 import { useServices, useSession } from "../../../../hooks";
-import { SaveCancelResetFooter } from "../../base/base-dialog";
+import { DefaultDialogFooter } from "../../base/base-dialog";
 import { PreferencesDialogFooterProps } from "./preferences-dialog.props";
 
-export function PreferencesDialogFooter(props: PreferencesDialogFooterProps) {
+export function PreferencesDialogFooter(props: PreferencesDialogFooterProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
-  const serviceContainer = useServices();
+  const { configurationService, arcaneArchiveProxy } = useServices();
   const { loggedIn } = useSession();
   // #endregion
 
   // #region Event handling ---------------------------------------------------
   function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, _dto: PreferencesDto): Promise<void> {
-    serviceContainer.configurationService.savePreferences(
-      serviceContainer.arcaneArchiveProxy,
-      props.viewmodel.dto,
-      loggedIn
-    );
-    if (props.onClose) {
-      props.onClose(event);
-    }
-    return Promise.resolve();
+    return configurationService
+      .savePreferences(arcaneArchiveProxy, props.viewmodel.dto, loggedIn)
+      .then(
+        (_resp: PreferencesDto) => {
+          if (props.onClose) {
+            props.onClose(event);
+          }
+        },
+        noop
+      );
   }
   // #endregion
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter
+    <DefaultDialogFooter
       {...props}
       showResetButton={true}
       commitButtonLabel="Save"

@@ -1,38 +1,23 @@
-import { ControlGroup, FormGroup, InputGroup, SectionCard } from "@blueprintjs/core";
-import { useServices } from "../../../../hooks";
-import { PasswordInput } from "../../password-input/password-input";
-import { handleStringChange } from "../../util";
-import { ValidatedInput } from "../../validated-input/validated-input";
-import { PwdSecurityBar } from "./pwd-security-bar";
+import { ControlGroup, SectionCard } from "@blueprintjs/core";
+import { BaseInput, PasswordInput } from "../../input";
+import { PasswordSecurityBar } from "../shared";
 import { RegisterDialogBodyProps } from "./register-dialog.props";
 
 export function RegisterDialogBody(props: RegisterDialogBodyProps) {
-  // #region Hooks ------------------------------------------------------------
-  const serviceContainer = useServices();
-  // #endregion
-
   // #region Rendering --------------------------------------------------------
   return (
     <SectionCard padded={false}>
-      <ValidatedInput
-        keyPrefix="user-name"
+      <BaseInput
+        viewmodel={props.viewmodel}
+        viewmodelChanged={props.viewmodelChanged}
+        validation="asynchronous"
+        fieldName="userName"
         label="Username"
         labelInfo="*"
-        validationResult={props.viewmodel.getValidation("userName")}
-        validateAsync={() => props.viewmodel.validateUserName(serviceContainer)}
-        startValidation={() => props.viewmodel.startValidation()}
-        endValidation={() => props.viewmodel.endValidation()}
-        onValidationComplete={() => props.onValidationCompleted()}
         debounceMs={500}
-        touched={true}
         useRightElement={true}
         inputProps={{
           required: true,
-          value: props.viewmodel.userName,
-          onChange: handleStringChange((newValue: string) => {
-            props.viewmodel.userName = newValue;
-            props.viewmodelChanged();
-          }),
           placeholder: "Enter a username..."
         }}
       />
@@ -41,48 +26,32 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
         fill={true}
         vertical={false}
       >
-        <ValidatedInput
-          keyPrefix="email"
+        <BaseInput
+          viewmodel={props.viewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="email"
           label="Email"
           labelInfo="*"
-          validationResult={props.viewmodel.getValidation("email")}
-          validate={() => props.viewmodel.validateEmail()}
-          startValidation={() => props.viewmodel.startValidation()}
-          endValidation={() => props.viewmodel.endValidation()}
-          onValidationComplete={() => props.onValidationCompleted()}
+          validation="synchronous"
           inputProps={{
             required: true,
             inputMode: "email",
             placeholder: "Enter your email address...",
-            onChange:
-              handleStringChange((newValue: string) => {
-                props.viewmodel.email = newValue;
-                props.viewmodelChanged();
-              }),
-            type: "email",
-            value: props.viewmodel.email
+            type: "email"
           }}
         />
-        <ValidatedInput
-          keyPrefix="repeat-email"
+        <BaseInput
+          viewmodel={props.viewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="emailRepeat"
           label="Repeat Email"
           labelInfo="*"
-          validationResult={props.viewmodel.getValidation("emailRepeat")}
-          validate={() => props.viewmodel.validateEmailRepeat()}
-          startValidation={() => props.viewmodel.startValidation()}
-          endValidation={() => props.viewmodel.endValidation()}
-          onValidationComplete={() => props.onValidationCompleted()}
+          validation="synchronous"
           inputProps={{
             required: true,
             inputMode: "email",
             placeholder: "Repeat your email address...",
-            onChange:
-              handleStringChange((newValue: string) => {
-                props.viewmodel.emailRepeat = newValue;
-                props.viewmodelChanged();
-              }),
-            type: "email",
-            value: props.viewmodel.emailRepeat
+            type: "email"
           }}
         />
       </ControlGroup>
@@ -92,44 +61,31 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
         vertical={false}
       >
         <PasswordInput
-          keyPrefix="password"
+          viewmodel={props.viewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="password"
           label="Password"
           labelInfo="*"
-          validationResult={props.viewmodel.getValidation("password")}
-          startValidation={() => props.viewmodel.startValidation()}
-          endValidation={() => props.viewmodel.endValidation()}
-          onValidationComplete={() => props.onValidationCompleted()}
+          validation="synchronous"
           inputProps={{
             required: true,
-            onChange: handleStringChange((newValue: string) => {
-              props.viewmodel.password = newValue;
-              props.viewmodelChanged();
-            }),
-            placeholder: "Enter your password",
-            value: (props.viewmodel).password
+            placeholder: "Enter your password..."
           }}
         />
         <PasswordInput
-          keyPrefix="repeat-password"
+          viewmodel={props.viewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="passwordRepeat"
           label="Repeat Password"
           labelInfo="*"
-          validationResult={props.viewmodel.getValidation("passwordRepeat")}
-          validate={() => props.viewmodel.validatePasswordRepeat()}
-          startValidation={() => props.viewmodel.startValidation()}
-          endValidation={() => props.viewmodel.endValidation()}
-          onValidationComplete={() => props.onValidationCompleted()}
+          validation="synchronous"
           inputProps={{
             required: true,
-            placeholder: "Repeat your password",
-            value: (props.viewmodel).passwordRepeat,
-            onChange: handleStringChange((newValue: string) => {
-              props.viewmodel.passwordRepeat = newValue;
-              props.viewmodelChanged();
-            })
+            placeholder: "Repeat your password..."
           }}
         />
       </ControlGroup>
-      <PwdSecurityBar
+      <PasswordSecurityBar
         score={props.viewmodel.score}
         guessesLog10={props.viewmodel.guessesLog10}
         warning={props.viewmodel.warning}
@@ -140,46 +96,24 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps) {
         fill={true}
         vertical={false}
       >
-        <FormGroup
-          key="fn-group"
+        <BaseInput
+          viewmodel={props.viewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="firstName"
           label="First Name"
-          labelFor="first-name"
-        >
-          <InputGroup
-            id="first-name"
-            inputMode="text"
-            placeholder="Enter your first name..."
-            onChange={
-              handleStringChange((newValue: string) => {
-                props.viewmodel.firstName = newValue;
-                props.viewmodelChanged();
-              })
-            }
-            size="small"
-            type="text"
-            value={props.viewmodel.firstName}
-          />
-        </FormGroup>
-        <FormGroup
-          key="ln-group"
+          inputProps={{
+            placeholder: "Enter your first name..."
+          }}
+        />
+        <BaseInput
+          viewmodel={props.viewmodel}
+          viewmodelChanged={props.viewmodelChanged}
+          fieldName="lastName"
           label="Last Name"
-          labelFor="last-name"
-        >
-          <InputGroup
-            id="last-name"
-            inputMode="text"
-            placeholder="Enter your last name..."
-            onChange={
-              handleStringChange((newValue: string) => {
-                props.viewmodel.lastName = newValue;
-                props.viewmodelChanged();
-              })
-            }
-            size="small"
-            type="text"
-            value={props.viewmodel.lastName}
-          />
-        </FormGroup>
+          inputProps={{
+            placeholder: "Enter your last name..."
+          }}
+        />
       </ControlGroup>
     </SectionCard>
   );

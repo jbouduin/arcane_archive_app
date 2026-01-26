@@ -1,7 +1,7 @@
-import { SystemSettingsDto } from "../../../../../common/dto";
-import { SystemSettingsViewmodel, SystemSettingsViewmodelField } from "../../../viewmodel";
-import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
+import { SystemConfigurationDto } from "../../../../../common/dto";
+import { SystemSettingsViewmodel } from "../../../viewmodel";
+import { BaseDialogBodyProps, DefaultDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 
-export type SystemSettingsDialogProps = BaseDialogProps<SystemSettingsDto, SystemSettingsViewmodelField, SystemSettingsViewmodel>;
-export type SystemSettingsDialogBodyProps = BaseDialogBodyProps<SystemSettingsDto, SystemSettingsViewmodelField, SystemSettingsViewmodel>;
-export type SystemSettingsDialogFooterProps = BaseDialogFooterProps<SystemSettingsDto, SystemSettingsViewmodelField, SystemSettingsViewmodel>;
+export type SystemSettingsDialogProps = BaseDialogProps<SystemConfigurationDto, SystemSettingsViewmodel>;
+export type SystemSettingsDialogBodyProps = BaseDialogBodyProps<SystemConfigurationDto, SystemSettingsViewmodel>;
+export type SystemSettingsDialogFooterProps = DefaultDialogFooterProps<SystemConfigurationDto, SystemSettingsViewmodel>;

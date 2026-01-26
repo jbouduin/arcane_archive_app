@@ -1,13 +1,10 @@
 import { RecoverPasswordRequestDto } from "../../../dto";
-import { RecoverPasswordViewmodelField, PasswordViewmodelField, RecoverPasswordViewmodel } from "../../../viewmodel";
-import { BaseDialogProps, BaseDialogBodyProps, BaseDialogFooterProps } from "../../base/base-dialog";
+import { RecoverPasswordViewmodel } from "../../../viewmodel";
+import { BaseDialogBodyProps, DefaultDialogFooterProps, BaseDialogProps } from "../../base/base-dialog";
 
-export type RecoverPasswordDialogProps = BaseDialogProps<
-  RecoverPasswordRequestDto, RecoverPasswordViewmodelField | PasswordViewmodelField, RecoverPasswordViewmodel
->;
-export type RecoverPasswordDialogBodyProps = BaseDialogBodyProps<
-  RecoverPasswordRequestDto, RecoverPasswordViewmodelField | PasswordViewmodelField, RecoverPasswordViewmodel
->;
-export type RecoverPasswordDialogFooterProps = BaseDialogFooterProps<
-  RecoverPasswordRequestDto, RecoverPasswordViewmodelField | PasswordViewmodelField, RecoverPasswordViewmodel
+export type RecoverPasswordDialogProps = BaseDialogProps<RecoverPasswordRequestDto, RecoverPasswordViewmodel>;
+export type RecoverPasswordDialogBodyProps = BaseDialogBodyProps<RecoverPasswordRequestDto, RecoverPasswordViewmodel>;
+export type RecoverPasswordDialogFooterProps = DefaultDialogFooterProps<
+  RecoverPasswordRequestDto,
+  RecoverPasswordViewmodel
 >;

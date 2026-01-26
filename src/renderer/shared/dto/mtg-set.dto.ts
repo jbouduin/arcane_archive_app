@@ -64,7 +64,9 @@ export type MtgSetDto = AuditableDto & MasterDataDto<string> & {
   languages: Array<string>;
   // #endregion
 
-  // #region External References -----------------------------------------------
-  // externalReferences: Map<ExternalReferenceKey, string>;
-  // #endregion
+  /**
+   * #region External References -----------------------------------------------
+   * externalReferences: Map<ExternalReferenceKey, string>;
+   * #endregion
+   */
 };

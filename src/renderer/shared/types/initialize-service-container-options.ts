@@ -1,5 +1,5 @@
 export type InitializeServiceContainerOptions = {
-  skipCardSearchService?: boolean;
+  // skipCardSearchService?: boolean;
   skipCardSymbolService?: boolean;
   skipColorService?: boolean;
   skipDisplayValueService?: boolean;

@@ -1,6 +1,6 @@
 import { join } from "path";
 import { inject, singleton } from "tsyringe";
-import { ApiConfigurationDto, PreferencesDto, ResultDto, SettingsDto, SystemSettingsDto } from "../../../../common/dto";
+import { ApiConfigurationDto, PreferencesDto, ResultDto, SettingsDto, SystemConfigurationDto } from "../../../../common/dto";
 import { LogLevel, ScryfallImageSize } from "../../../../common/enums";
 import { DiscoveryDto } from "../../../dto";
 import { BaseService, IResult } from "../../base";
@@ -10,16 +10,16 @@ import { mergeWithChangeDetails } from "../../../../common/util";
 
 @singleton()
 export class ConfigurationService extends BaseService implements IConfigurationService {
-  // #region private fields ---------------------------------------------------
+  //#region private fields ----------------------------------------------------
   private readonly ioService: IIoService;
-  private _systemSettings!: SystemSettingsDto;
+  private _systemSettings!: SystemConfigurationDto;
   private _apiConfiguration: ApiConfigurationDto | null;
   private _preferences!: PreferencesDto;
   private _isFirstUsage!: boolean;
   private discover!: (() => Promise<ResultDto<DiscoveryDto>>) | null;
-  // #endregion
+  //#endregion
 
-  // #region IConfigurationService properties ---------------------------------
+  //#region IConfigurationService properties ----------------------------------
   public get apiConfiguration(): ApiConfigurationDto | null {
     return this._apiConfiguration;
   }
@@ -28,7 +28,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     this._apiConfiguration = value;
   }
 
-  public get configuration(): SystemSettingsDto {
+  public get systemConfiguration(): SystemConfigurationDto {
     return this._systemSettings;
   }
 
@@ -43,9 +43,9 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   public get cacheDatabaseFilePath(): string {
     return join(this._systemSettings.dataConfiguration.cacheDirectory, "index.sqlite");
   }
-  // #endregion
+  //#endregion
 
-  // #region Constructor & C° -------------------------------------------------
+  //#region Constructor & C° --------------------------------------------------
   public constructor(
     @inject(INFRASTRUCTURE.LogService) logService: ILogService,
     @inject(INFRASTRUCTURE.ResultFactory) resultFactory: IResultFactory,
@@ -56,24 +56,24 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     this._apiConfiguration = null;
     this.discover = null;
   }
-  // #endregion
+  //#endregion
 
-  // #region IConfigurationService methods ------------------------------------
+  //#region IConfigurationService members -------------------------------------
   public initialize(useDarkTheme: boolean): void {
-    const systemSettings = this.ioService.readSystemSettings<SystemSettingsDto>();
+    const systemSettings = this.ioService.readSystemSettings<SystemConfigurationDto>();
     // --- system settings ---
     if (systemSettings == null) {
-      this._systemSettings = this.createConfigurationFactoryDefault();
+      this._systemSettings = this.createSystemSettingsFactoryDefault();
       this._isFirstUsage = true;
     } else {
-      const mergeResult = mergeWithChangeDetails(this.createConfigurationFactoryDefault(), systemSettings);
+      const mergeResult = mergeWithChangeDetails(this.createSystemSettingsFactoryDefault(), systemSettings);
       if (mergeResult.changed) {
         void this.ioService.saveSystemSettings(mergeResult.merged);
       }
       this._systemSettings = mergeResult.merged;
       this._isFirstUsage = false;
     }
-    this.logService.setLogSettings(this._systemSettings.loggingConfiguration);
+    this.logService.setLogSettings(this._systemSettings.mainLoggingConfiguration);
     this.logService.trace("Main", "Loaded system settings:", this._systemSettings);
     this.logService.trace("Main", "First time usage:", this.isFirstUsage);
     // --- preferences ---
@@ -98,15 +98,13 @@ export class ConfigurationService extends BaseService implements IConfigurationS
         () => this._apiConfiguration = null
       );
   }
-  // #endregion
 
-  // #region Route callbacks --------------------------------------------------
-  public getSystemSettings(): Promise<IResult<SystemSettingsDto>> {
+  public getSystemSettings(): Promise<IResult<SystemConfigurationDto>> {
     return this.resultFactory.createSuccessResultPromise(this._systemSettings);
   }
 
-  public getSystemSettingsFactoryDefault(): Promise<IResult<SystemSettingsDto>> {
-    return this.resultFactory.createSuccessResultPromise(this.createConfigurationFactoryDefault());
+  public getSystemSettingsFactoryDefault(): Promise<IResult<SystemConfigurationDto>> {
+    return this.resultFactory.createSuccessResultPromise(this.createSystemSettingsFactoryDefault());
   }
 
   public async getSettings(): Promise<IResult<SettingsDto>> {
@@ -119,17 +117,18 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     }
     const result: SettingsDto = {
       apiConfiguration: this._apiConfiguration,
-      preferences: this._preferences
+      preferences: this._preferences,
+      systemConfiguration: this._systemSettings
     };
     return this.resultFactory.createSuccessResultPromise(result);
   }
 
-  public saveSystemSettings(configuration: SystemSettingsDto): Promise<IResult<SystemSettingsDto>> {
-    this.ioService.saveSystemSettings(configuration);
-    this._systemSettings = configuration;
+  public saveSystemSettings(systemSettings: SystemConfigurationDto): Promise<IResult<SystemConfigurationDto>> {
+    this.ioService.saveSystemSettings(systemSettings);
+    this._systemSettings = systemSettings;
     this._isFirstUsage = false;
-    this.logService.setLogSettings(configuration.loggingConfiguration);
-    return this.resultFactory.createSuccessResultPromise<SystemSettingsDto>(configuration);
+    this.logService.setLogSettings(systemSettings.mainLoggingConfiguration);
+    return this.resultFactory.createSuccessResultPromise<SystemConfigurationDto>(systemSettings);
   }
 
   public savePreferences(preferences: PreferencesDto): Promise<IResult<PreferencesDto>> {
@@ -137,11 +136,11 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     this._preferences = preferences;
     return this.resultFactory.createSuccessResultPromise<PreferencesDto>(this._preferences);
   }
-  // #endregion
+  //#endregion
 
-  // #region Auxiliary factory default methods --------------------------------
-  private createConfigurationFactoryDefault(): SystemSettingsDto {
-    const result: SystemSettingsDto = {
+  //#region Auxiliary methods - factory defaults ------------------------------
+  private createSystemSettingsFactoryDefault(): SystemConfigurationDto {
+    const result: SystemConfigurationDto = {
       discovery: "http://localhost:5402/api/public/discover",
       dataConfiguration: {
         rootDataDirectory: this.ioService.defaultDataDirectory,
@@ -149,11 +148,19 @@ export class ConfigurationService extends BaseService implements IConfigurationS
         logDirectory: this.ioService.defaultLogDirectory,
         databaseName: "arcane_archive.sqlite"
       },
-      loggingConfiguration: [
+      mainLoggingConfiguration: [
         { source: "API", level: LogLevel.Error },
         { source: "DB", level: LogLevel.Error },
         { source: "Main", level: LogLevel.Error },
         { source: "Renderer", level: LogLevel.Error }
+      ],
+      rendererLogLevel: LogLevel.Error,
+      responseLoggingConfiguration: [
+        { source: "IPC", level: LogLevel.Error },
+        { source: "authentication", level: LogLevel.Error },
+        { source: "collection", level: LogLevel.Error },
+        { source: "deck", level: LogLevel.Error },
+        { source: "library", level: LogLevel.Error }
       ]
     };
     return result;
@@ -164,7 +171,6 @@ export class ConfigurationService extends BaseService implements IConfigurationS
       refreshCacheAtStartup: false,
       cachedImageSize: ScryfallImageSize.NORMAL,
       useDarkTheme: useDarkTheme,
-      logServerResponses: false,
       defaultCardSortField: "collectorNumberSortValue",
       defaultCardSortDirection: "ASC",
       defaultPageSize: 50,
@@ -183,8 +189,5 @@ export class ConfigurationService extends BaseService implements IConfigurationS
     };
     return result;
   }
-  // #endregion
-
-  // #region Auxiliary validation related methods -----------------------------
-  // #endregion
+  //#endregion
 }

@@ -1,16 +1,19 @@
+import { noop } from "lodash";
 import { useState } from "react";
 import { Mosaic, MosaicNode } from "react-mosaic-component";
-import { useSession } from "../../../hooks";
+import { useServices, useSession } from "../../../hooks";
 import { NotLoggedInView } from "../../../shared/components/not-logged-view/not-logged-in-view";
-import { CollectionTreeViewmodel } from "../../../shared/viewmodel/collection/collection-tree.viewmodel";
+import { CollectionCardListDto, CollectionDto, QueryResultDto } from "../../../shared/dto";
 import { CollectionViewCenter } from "./collection-view-center/collection-view-center";
 import { CollectionViewLeft } from "./collection-view-left/collection-view-left";
 import { CollectionViewRight } from "./collection-view-right/collection-view-right";
 import { CollectionViewProps } from "./collection-view.props";
+import { CollectionViewState } from "./collection-view.state";
 
-export function CollectionView(props: CollectionViewProps) {
+export function CollectionView(props: CollectionViewProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const { loggedIn } = useSession();
+  const { cardSearchService } = useServices();
   // #endregion
 
   // #region State ------------------------------------------------------------
@@ -24,31 +27,35 @@ export function CollectionView(props: CollectionViewProps) {
     },
     splitPercentage: 20,
   };
+  const initialCollectionViewState: CollectionViewState = {
+    cardQueryParams: cardSearchService.collectionQueryParams,
+    queryResult: cardSearchService.collectionQueryResult,
+    collectionFilter: new Array<CollectionDto>()
+  };
   const [mosaicLayout, setMosaicLayout] = useState<MosaicNode<string>>(initialLayout);
-  const [selectedCollection, setSelectedCollection] = useState<number | undefined>(undefined);
+  const [state, setState] = useState<CollectionViewState>(initialCollectionViewState);
   // #endregion
 
   // #region Rendering --------------------------------------------------------
   const elementMap: { [viewId: string]: React.JSX.Element; } = {
     left: (
       <CollectionViewLeft onCollectionSelected={
-        (collections: Array<CollectionTreeViewmodel>) => {
-          if (collections.length == 0) {
-            setSelectedCollection(undefined);
-          } else {
-            const firstSelected = collections[0];
-            if (firstSelected.folder) {
-              setSelectedCollection(undefined);
-            } else {
-              setSelectedCollection(firstSelected.id);
-            }
-          }
+        (selection: Array<CollectionDto>) => {
+          cardSearchService.collectionFilter = selection;
+          cardSearchService.getCollectionCards(state.cardQueryParams, selection)
+            .then(
+              (res: QueryResultDto<CollectionCardListDto>) => {
+                cardSearchService.collectionQueryResult = res;
+                setState(prev => ({ ...prev, collectionFilter: selection, queryResult: res }));
+              },
+              noop
+            );
         }
       }
       />
     ),
     center: (
-      <CollectionViewCenter selectedCollectionId={selectedCollection} />
+      <CollectionViewCenter queryResult={state.queryResult} cardQueryParams={state.cardQueryParams} />
     ),
     right: (
       <CollectionViewRight />

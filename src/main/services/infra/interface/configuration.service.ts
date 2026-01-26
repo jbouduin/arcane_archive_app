@@ -1,16 +1,16 @@
-import { ApiConfigurationDto, PreferencesDto, ResultDto, SettingsDto, SystemSettingsDto } from "../../../../common/dto";
+import { ApiConfigurationDto, PreferencesDto, ResultDto, SettingsDto, SystemConfigurationDto } from "../../../../common/dto";
 import { DiscoveryDto } from "../../../dto";
 import { IResult } from "../../base";
 
 export interface IConfigurationService {
   readonly apiConfiguration: ApiConfigurationDto | null;
   readonly isFirstUsage: boolean;
-  readonly configuration: SystemSettingsDto;
+  readonly systemConfiguration: SystemConfigurationDto;
   readonly preferences: PreferencesDto;
   readonly cacheDatabaseFilePath: string;
 
-  getSystemSettings(): Promise<IResult<SystemSettingsDto>>;
-  getSystemSettingsFactoryDefault(): Promise<IResult<SystemSettingsDto>>;
+  getSystemSettings(): Promise<IResult<SystemConfigurationDto>>;
+  getSystemSettingsFactoryDefault(): Promise<IResult<SystemConfigurationDto>>;
   getSettings(): Promise<IResult<SettingsDto>>;
   /**
    * Initialize the service. Loads the settings and preferences file. Creating defaults when first use.
@@ -19,6 +19,6 @@ export interface IConfigurationService {
    */
   initialize(useDarkTheme: boolean): void;
   runDiscovery(discover: () => Promise<ResultDto<DiscoveryDto>>): Promise<void>;
-  saveSystemSettings(settings: SystemSettingsDto): Promise<IResult<SystemSettingsDto>>;
+  saveSystemSettings(settings: SystemConfigurationDto): Promise<IResult<SystemConfigurationDto>>;
   savePreferences(preferences: PreferencesDto): Promise<IResult<PreferencesDto>>;
 }

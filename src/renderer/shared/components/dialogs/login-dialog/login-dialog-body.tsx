@@ -1,9 +1,7 @@
 import { SectionCard, Tag } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { useServices } from "../../../../hooks";
-import { PasswordInput } from "../../password-input/password-input";
-import { handleStringChange } from "../../util";
-import { ValidatedInput } from "../../validated-input/validated-input";
+import { BaseInput, PasswordInput } from "../../input";
 import { LoginDialogBodyProps } from "./login-dialog.props";
 
 export function LoginDialogBody(props: LoginDialogBodyProps) {
@@ -13,12 +11,12 @@ export function LoginDialogBody(props: LoginDialogBodyProps) {
 
   // #region Event handling ---------------------------------------------------
   function onSelectUser(userName: string): void {
-    props.viewmodel.user = userName;
+    props.viewmodel.dto["user"] = userName;
     void serviceContainer.sessionService
       .getPassword(serviceContainer.ipcProxy, userName)
       .then(
         (pwd: string) => {
-          props.viewmodel.password = pwd;
+          props.viewmodel.dto["password"] = pwd;
           props.viewmodel.selectedExistingPassword = pwd;
         },
         noop
@@ -35,12 +33,12 @@ export function LoginDialogBody(props: LoginDialogBodyProps) {
           if (props.viewmodel.savedUserNames.size == 1) {
             const onlyUser = Array.of(...props.viewmodel.savedUserNames)[0];
             const password = await serviceContainer.sessionService.getPassword(serviceContainer.ipcProxy, onlyUser);
-            props.viewmodel.user = onlyUser;
-            props.viewmodel.password = password;
+            props.viewmodel.dto["user"] = onlyUser;
+            props.viewmodel.dto["password"] = password;
             props.viewmodel.selectedExistingPassword = password;
           } else {
-            props.viewmodel.user = "";
-            props.viewmodel.password = "";
+            props.viewmodel.dto["user"] = "";
+            props.viewmodel.dto["password"] = "";
           }
         },
         noop)
@@ -51,43 +49,28 @@ export function LoginDialogBody(props: LoginDialogBodyProps) {
   // #region Rendering --------------------------------------------------------
   return (
     <SectionCard padded={false}>
-      <ValidatedInput
-        keyPrefix="user"
+      <BaseInput
+        viewmodel={props.viewmodel}
+        viewmodelChanged={props.viewmodelChanged}
+        fieldName="user"
+        validation="synchronous"
         label="Username or email"
         labelInfo="*"
-        validationResult={props.viewmodel.getValidation("user")}
-        validate={() => props.viewmodel.validateUser()}
-        startValidation={() => props.viewmodel.startValidation()}
-        endValidation={() => props.viewmodel.endValidation()}
-        onValidationComplete={() => props.onValidationCompleted()}
         inputProps={{
           required: true,
-          inputMode: "text",
-          placeholder: "Enter your username or email address...",
-          onChange:
-            handleStringChange((newValue: string) => {
-              props.viewmodel.user = newValue;
-              props.viewmodelChanged();
-            }),
-          value: props.viewmodel.user
+          placeholder: "Enter your username or email address..."
         }}
       />
       <PasswordInput
-        keyPrefix="password"
+        viewmodel={props.viewmodel}
+        viewmodelChanged={props.viewmodelChanged}
+        fieldName="password"
+        validation="synchronous"
         label="Password"
         labelInfo="*"
-        validationResult={props.viewmodel.getValidation("password")}
-        validate={() => props.viewmodel.validatePassword()}
-        startValidation={() => props.viewmodel.startValidation()}
-        endValidation={() => props.viewmodel.endValidation()}
-        onValidationComplete={() => props.onValidationCompleted()}
         inputProps={{
           required: true,
-          value: props.viewmodel.password,
-          onChange: handleStringChange((newValue: string) => {
-            props.viewmodel.password = newValue;
-            props.viewmodelChanged();
-          })
+          placeholder: "Enter your password ..."
         }}
       />
       {

@@ -1,27 +1,31 @@
 import { noop } from "lodash";
+import { PreferencesDto } from "../../../../../common/dto";
 import { IServiceContainer } from "../../../context";
 import { RegisterViewmodel } from "../../../viewmodel";
-import { RegisterDialogBody } from "../register-dialog/register-dialog-body";
-import { RegisterDialogFooter } from "../register-dialog/register-dialog-footer";
-import { RegisterDialogBodyProps, RegisterDialogFooterProps, RegisterDialogProps } from "../register-dialog/register-dialog.props";
+import * as RegisterDialog from "../register-dialog";
 
-export function showRegisterDialog(serviceContainer: IServiceContainer, showLoginButton: boolean): void {
+export function showRegisterDialog(
+  serviceContainer: IServiceContainer,
+  showLoginButton: boolean,
+  preferences: PreferencesDto
+): void {
+  // the viewmodel factory goes to the backend to retrieve an available user name for the new user
   void serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
-    .getRegisterViewmodel(showLoginButton, serviceContainer)
+    .getRegisterViewmodel(showLoginButton, serviceContainer, preferences)
     .then(
       (viewmodel: RegisterViewmodel) => {
-        const loginDialogProps: RegisterDialogProps = {
+        const loginDialogProps: RegisterDialog.RegisterDialogProps = {
           isOpen: true,
           isCloseButtonShown: true,
           canEscapeKeyClose: true,
           canOutsideClickClose: false,
           title: "Register",
           viewmodel: viewmodel,
-          bodyRenderer: (bodyProps: RegisterDialogBodyProps) => {
-            return (<RegisterDialogBody {...bodyProps} />);
+          bodyRenderer: (bodyProps: RegisterDialog.RegisterDialogBodyProps) => {
+            return (<RegisterDialog.RegisterDialogBody {...bodyProps} />);
           },
-          footerRenderer: (footerProps: RegisterDialogFooterProps) => {
-            return (<RegisterDialogFooter {...footerProps} />);
+          footerRenderer: (footerProps: RegisterDialog.RegisterDialogFooterProp) => {
+            return (<RegisterDialog.RegisterDialogFooter {...footerProps} />);
           }
         };
         serviceContainer.overlayService.openDialog(loginDialogProps);

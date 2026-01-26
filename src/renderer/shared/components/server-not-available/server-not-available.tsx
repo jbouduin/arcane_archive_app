@@ -1,11 +1,14 @@
 import { Card, H1, H3, ToastProps } from "@blueprintjs/core";
 import classNames from "classnames";
 import { ServerNotAvailableProps } from "./server-not-available.props";
+import { usePreferences } from "../../../hooks";
 
-export function ServerNotAvailable(props: ServerNotAvailableProps) {
+export function ServerNotAvailable(props: ServerNotAvailableProps): JSX.Element {
+  //#region Hooks -------------------------------------------------------------
+  const { themeClassName } = usePreferences();
   // #region Rendering --------------------------------------------------------
   return (
-    <Card className={classNames("server-not-available", props.className)}>
+    <Card className={classNames("server-not-available", themeClassName)}>
       <H1>Server not available</H1>
       {
         props.nextTry == 0 &&

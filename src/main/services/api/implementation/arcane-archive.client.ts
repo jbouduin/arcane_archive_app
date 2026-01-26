@@ -26,7 +26,7 @@ export class ArcaneArchiveClient extends BaseService implements IArcaneArchiveCl
 
   // #region IarcaneArchiveProxy Members --------------------------------------
   public async discover(): Promise<ResultDto<DiscoveryDto>> {
-    return this.sendRequest(this.configurationService.configuration.discovery);
+    return this.sendRequest(this.configurationService.systemConfiguration.discovery);
   }
 
   public async getData<T>(path: string): Promise<ResultDto<T>> {

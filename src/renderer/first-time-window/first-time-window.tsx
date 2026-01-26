@@ -1,11 +1,11 @@
-import { BlueprintProvider, Classes, FocusStyleManager, OverlayToaster, Position, ToastProps } from "@blueprintjs/core";
+import { BlueprintProvider, FocusStyleManager, OverlayToaster, Position, ToastProps } from "@blueprintjs/core";
 import { createRoot } from "react-dom/client";
-import { SystemSettingsDto } from "../../common/dto";
 import { IpcPaths } from "../../common/ipc";
 import { DialogRenderer } from "../shared/components/base/base-dialog/dialog-renderer";
 import { ServerNotAvailable } from "../shared/components/server-not-available/server-not-available";
 import { PreferencesProvider, ServiceContainerContext, SessionProvider } from "../shared/context";
 import { ServiceContainer } from "../shared/context/implementation/service.container";
+import { ShowToastFn } from "../shared/types";
 import { FirstTimeView } from "./first-time-view/first-time-view";
 
 FocusStyleManager.onlyShowFocusOnTabs();
@@ -23,7 +23,7 @@ void (async () => {
     }
   );
 
-  const toastCall = (props: ToastProps, key?: string) => appToaster.show(props, key);
+  const toastCall: ShowToastFn = (props: ToastProps, key?: string) => appToaster.show(props, key);
   const serviceContainer = new ServiceContainer();
   const container = document.getElementById("root")!;
   const root = createRoot(container);
@@ -31,7 +31,7 @@ void (async () => {
   let initialization = await serviceContainer.initialize(
     toastCall,
     {
-      skipCardSearchService: true,
+      // skipCardSearchService: true,
       skipColorService: true,
       skipCardSymbolService: true,
       skipLanguageService: true,
@@ -41,18 +41,19 @@ void (async () => {
   );
 
   let windowShown = false;
-  const theme = serviceContainer.configurationService.preferences.useDarkTheme ? Classes.DARK : "";
   while (initialization == null || !initialization.isOk) {
     let count = 30;
 
     // Show main window if not already shown
     if (!windowShown) {
-      serviceContainer.ipcProxy.postEmptyBody<never>(IpcPaths.MAIN_WINDOW_SHOW);
+      void serviceContainer.ipcProxy.postEmptyBody<never>(IpcPaths.MAIN_WINDOW_SHOW);
       windowShown = true;
     }
 
     root.render(
-      <ServerNotAvailable initializationResult={initialization} nextTry={count} className={theme} />
+      <PreferencesProvider preferences={initialization.settings!.preferences}>
+        <ServerNotAvailable initializationResult={initialization} nextTry={count} />
+      </PreferencesProvider>
     );
 
     // Countdown loop
@@ -60,7 +61,9 @@ void (async () => {
       const interval = setInterval(() => {
         count--;
         root.render(
-          <ServerNotAvailable initializationResult={initialization} nextTry={count} className={theme} />
+          <PreferencesProvider preferences={initialization.settings!.preferences}>
+            <ServerNotAvailable initializationResult={initialization} nextTry={count} />
+          </PreferencesProvider>
         );
         if (count == 0) {
           clearInterval(interval);
@@ -72,21 +75,23 @@ void (async () => {
     initialization = await serviceContainer.initialize(toastCall);
   }
 
-  const [systemSettings, loginViewmodel, registerViewmodel] = await Promise.all([
-    serviceContainer.ipcProxy.getData<SystemSettingsDto>(IpcPaths.SYSTEM_SETTINGS_FACTORY_DEFAULT),
-    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getLoginViewmodel(false, serviceContainer),
-    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory.getRegisterViewmodel(false, serviceContainer)
+  const [loginViewmodel, registerViewmodel] = await Promise.all([
+    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
+      .getLoginViewmodel(false, serviceContainer),
+    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
+      .getRegisterViewmodel(false, serviceContainer, initialization.settings!.preferences)
   ]);
 
   root.render(
     <BlueprintProvider>
       <ServiceContainerContext.Provider value={serviceContainer}>
-        <SessionProvider>
-          <PreferencesProvider>
+        <SessionProvider sessionData={null}>
+          <PreferencesProvider preferences={initialization.settings!.preferences}>
             <FirstTimeView
-              systemSettings={systemSettings}
+              systemSettings={initialization.settings!.systemConfiguration}
               loginViewmodel={loginViewmodel}
               registerViewmodel={registerViewmodel}
+              preferences={initialization.settings!.preferences}
             />
             <DialogRenderer overlayService={serviceContainer.overlayService} />
           </PreferencesProvider>
@@ -95,6 +100,6 @@ void (async () => {
     </BlueprintProvider>
   );
   if (!windowShown) {
-    serviceContainer.ipcProxy.postEmptyBody<never>(IpcPaths.FIRST_TIME_WINDOW_SHOW);
+    void serviceContainer.ipcProxy.postEmptyBody<never>(IpcPaths.FIRST_TIME_WINDOW_SHOW);
   }
 })();

@@ -1,5 +1,5 @@
-import { SystemSettingsDto } from "../../../../common/dto";
-import { SystemSettingsViewmodel, SystemSettingsViewmodelField } from "../../../shared/viewmodel/settings";
+import { SystemConfigurationDto } from "../../../../common/dto";
+import { SystemSettingsViewmodel } from "../../../shared/viewmodel";
 import { FirstTimeViewPanelProps } from "./first-time-view-panel.props";
 
-export type SystemPanelProps = FirstTimeViewPanelProps<SystemSettingsDto, SystemSettingsViewmodelField, SystemSettingsViewmodel>;
+export type SystemPanelProps = FirstTimeViewPanelProps<SystemConfigurationDto, SystemSettingsViewmodel>;

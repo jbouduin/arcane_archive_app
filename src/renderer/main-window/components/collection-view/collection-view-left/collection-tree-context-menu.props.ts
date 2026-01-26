@@ -10,7 +10,9 @@ export interface CollectionTreeContextMenuProps extends Props {
   children: ReactNode;
 
   onDeleteCollection: (collection: CollectionDto) => void;
-  onEditCollection: (collection: CollectionDto, parentCollection: CollectionDto | null, parentPath: Array<string>) => void;
+  onEditCollection: (
+    collection: CollectionDto, parentCollection: CollectionDto | null, parentPath: Array<string>
+  ) => void;
   onAddFolder: (collection: CollectionDto | null, parentPath: Array<string>) => void;
   onAddCollection: (collection: CollectionDto | null, parentPath: Array<string>) => void;
 }

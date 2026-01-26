@@ -1,21 +1,21 @@
 import { H5, Section, SectionCard, Tab, Tabs } from "@blueprintjs/core";
 import React from "react";
 import { ScryFallImageStatus } from "../../../../common/enums";
-import { useServices } from "../../../hooks";
+import { usePreferences, useServices } from "../../../hooks";
 import { LanguageDto } from "../../dto";
 import { ScryfallLanguageMap } from "../../types";
 import { LibraryCardfaceViewmodel, LibraryCardViewmodel } from "../../viewmodel";
 import { CardSymbolRenderer } from "../card-symbol-renderer";
+import { LanguageButtonBar } from "../language-button-bar";
 import { CardDetailViewProps } from "./card-detail-view.props";
 import { CardfaceView } from "./card-face-view/cardface-view";
 import { CardHeaderView } from "./card-header-view/card-header-view";
 import { CardImageView } from "./card-image-view/card-image-view";
-import { LanguageButtonBar } from "./language-button-bar/language-button-bar";
 import { LegalitiesView } from "./legalities-view/legalities-view";
 import { RulingsView } from "./rulings-view/rulings-view";
 
 export function CardDetailView(props: CardDetailViewProps) {
-  // #region State ------------------------------------------------------------
+  //#region State -------------------------------------------------------------
   const [cardViewmodel, setCardviewmodel] = React.useState<LibraryCardViewmodel | null>(null);
   const [currentLanguage, setCurrentLanguage] = React.useState<LanguageDto>({
     language: "",
@@ -24,13 +24,14 @@ export function CardDetailView(props: CardDetailViewProps) {
     displayValue: "",
     buttonText: ""
   });
-  // #endregion
+  //#endregion
 
-  // #region Hooks ------------------------------------------------------------
+  //#region Hooks -------------------------------------------------------------
   const serviceContainer = useServices();
-  // #endregion
+  const { preferences } = usePreferences();
+  //#endregion
 
-  // #region Effects ----------------------------------------------------------
+  //#region Effects -----------------------------------------------------------
   React.useEffect(
     () => {
       if (props.cardId) {
@@ -49,9 +50,9 @@ export function CardDetailView(props: CardDetailViewProps) {
     },
     [props.cardId]
   );
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <div className="card-view-wrapper">
       {
@@ -68,9 +69,7 @@ export function CardDetailView(props: CardDetailViewProps) {
       }
     </div>
   );
-  // #endregion
 
-  // #region Auxiliary Methods : rendering ------------------------------------
   function renderTopSection(card: LibraryCardViewmodel): React.JSX.Element {
     return (
       <Section
@@ -93,7 +92,7 @@ export function CardDetailView(props: CardDetailViewProps) {
         }
         <CardImageView
           cardLayout={card.layout}
-          cachedImageSize={serviceContainer.configurationService.preferences.cachedImageSize}
+          cachedImageSize={preferences.cachedImageSize}
           cardBackId={card.cardBackId}
           setCode={card.layout != "TOKEN" ? card.setCode : card.tokenSetCode}
           collectorNumber={card.collectorNumber}
@@ -174,5 +173,5 @@ export function CardDetailView(props: CardDetailViewProps) {
       </Section>
     );
   }
-  // #endregion
+  //#endregion
 }

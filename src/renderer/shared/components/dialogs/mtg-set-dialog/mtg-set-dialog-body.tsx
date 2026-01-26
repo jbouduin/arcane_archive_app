@@ -1,21 +1,22 @@
-import { Checkbox, ControlGroup, FormGroup, HTMLTable, InputGroup, NumericInput, Tab, Tabs, Text, TextAlignment } from "@blueprintjs/core";
+import { ControlGroup, HTMLTable, Tab, Tabs, Text, TextAlignment } from "@blueprintjs/core";
 import { useState } from "react";
 import { useServices } from "../../../../hooks";
-import { LanguageDto } from "../../../dto";
-import { createAuditableLabelValueItems, LabelValuePanel, renderBoolean } from "../../base/label-value-panel";
-import { LanguageButtonBar } from "../../card-detail-view/language-button-bar/language-button-bar";
+import { LanguageDto, MtgSetDto } from "../../../dto";
+import { createAuditableLabelValueItems, LabelValueItem, LabelValuePanel } from "../../base/label-value-panel";
+import { BaseCheckbox, BaseInput } from "../../input";
+import { LanguageButtonBar } from "../../language-button-bar";
 import { MtgSetDialogBodyProps } from "./mtg-set-dialog.props";
 
-export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
-  // #region State ------------------------------------------------------------
+export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
+  //#region State -------------------------------------------------------------
   const [currentLanguage, setCurrentLanguage] = useState<LanguageDto>(props.viewmodel.languages[0]);
-  // #endregion
+  //#endregion
 
-  // #region Hooks ------------------------------------------------------------
+  //#region Hooks -------------------------------------------------------------
   const serviceContainer = useServices();
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <>
       {renderSetDetailsLanguageHeader()}
@@ -61,7 +62,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
             onButtonClick={setCurrentLanguage}
           />
           <Text style={{ textAlign: TextAlignment.CENTER, paddingTop: "5px", paddingBottom: "5px" }}>
-            {props.viewmodel.name.get(currentLanguage.language) ?? props.viewmodel.setName}
+            {props.viewmodel.name.get(currentLanguage.language) ?? props.viewmodel.dto["setName"]}
           </Text>
         </>
       );
@@ -82,12 +83,12 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
   }
 
   function renderReadOnlyAdditionalInfo(): JSX.Element {
-    const items = createAuditableLabelValueItems(props.viewmodel);
+    const items = createAuditableLabelValueItems(props.viewmodel.dto);
     return (<LabelValuePanel items={items} columns={2} style={{ padding: "0px" }} />);
   }
 
   function renderReadWriteAdditionalInfo(): JSX.Element {
-    const items = createAuditableLabelValueItems(props.viewmodel);
+    const items = createAuditableLabelValueItems(props.viewmodel.dto);
     return (
       <>
         <ControlGroup
@@ -95,58 +96,63 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
           fill={true}
           vertical={false}
         >
-          <FormGroup
-            id="set-code-group"
+          <BaseInput
+            viewmodel={props.viewmodel}
+            fieldName="code"
+            viewmodelChanged={props.viewmodelChanged}
+            validation="none"
             label="Set Code"
-            labelFor="set-code"
-          >
-            <InputGroup
-              id="set-code"
-              inputMode="text"
-              readOnly={true}
-              size="small"
-              type="text"
-              value={props.viewmodel.code}
-            />
-          </FormGroup>
-          <FormGroup
-            id="token-code-group"
+            inputProps={{
+              readOnly: true
+            }}
+          />
+          <BaseInput
+            viewmodel={props.viewmodel}
+            fieldName="tokenSetCode"
+            viewmodelChanged={props.viewmodelChanged}
+            validation="none"
             label="Token Set Code"
-            labelFor="token-code"
-          >
-            <InputGroup
-              id="token-code"
-              inputMode="text"
-              readOnly={true}
-              size="small"
-              type="text"
-              value={props.viewmodel.tokenSetCode ?? ""}
-            />
-          </FormGroup>
+            inputProps={{
+              readOnly: true
+            }}
+          />
         </ControlGroup>
         <LabelValuePanel items={items} columns={2} style={{ padding: "0px" }} />
       </>
     );
   }
 
-  function renderTableRow(value1: boolean, label1: string, value2: boolean, label2: string): JSX.Element {
+  function renderTableRow(
+    fieldName1: keyof MtgSetDto,
+    label1: string,
+    fieldName2: keyof MtgSetDto,
+    label2: string
+  ): JSX.Element {
     return (
       <tr>
         <td style={{ paddingLeft: "0px" }}>
-          <Checkbox
-            checked={value1}
-            readOnly={true}
+          <BaseCheckbox
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName={fieldName1}
+            checkBoxProps={{
+              readOnly: true
+            }}
           >
             {label1}
-          </Checkbox>
+          </BaseCheckbox>
         </td>
         <td>
-          <Checkbox
-            checked={value2}
-            readOnly={true}
+          <BaseCheckbox
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName={fieldName2}
+            checkBoxProps={{
+              readOnly: true
+            }}
           >
             {label2}
-          </Checkbox>
+          </BaseCheckbox>
         </td>
       </tr>
     );
@@ -154,18 +160,18 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
 
   function renderReadOnlyDetails(): JSX.Element {
     const items = new Map<string, JSX.Element>([
-      ["Set Code", (<Text>{props.viewmodel.code}</Text>)],
-      ["Release Date", (<Text>{props.viewmodel.releaseDate}</Text>)],
-      ["Set Type", (<Text>{props.viewmodel.type}</Text>)],
-      ["Block", (<Text>{props.viewmodel.block ?? ""}</Text>)],
-      ["Base Set Size", (<Text>{props.viewmodel.baseSetSize}</Text>)],
-      ["Total Set Size", (<Text>{props.viewmodel.totalSetSize}</Text>)],
-      ["Partial Preview", renderBoolean(props.viewmodel.partialPreview)],
-      ["Non-English Only", renderBoolean(props.viewmodel.foreignOnly)],
-      ["Foil Only", renderBoolean(props.viewmodel.foilOnly)],
-      ["Non-foil Only", renderBoolean(props.viewmodel.nonFoilOnly)],
-      ["Online Only", renderBoolean(props.viewmodel.onlineOnly)],
-      ["Paper Only", renderBoolean(props.viewmodel.paperOnly)]
+      ["Set Code", (<LabelValueItem viewmodel={props.viewmodel} fieldName="code" fieldType="string" />)],
+      ["Release Date", (<LabelValueItem viewmodel={props.viewmodel} fieldName="releaseDate" fieldType="date" />)],
+      ["Set Type", (<LabelValueItem viewmodel={props.viewmodel} fieldName="type" fieldType="string" />)],
+      ["Block", (<LabelValueItem viewmodel={props.viewmodel} fieldName="block" fieldType="string" />)],
+      ["Base Set Size", (<LabelValueItem viewmodel={props.viewmodel} fieldName="baseSetSize" fieldType="number" />)],
+      ["Total Set Size", (<LabelValueItem viewmodel={props.viewmodel} fieldName="totalSetSize" fieldType="string" />)],
+      ["Partial Preview", (<LabelValueItem viewmodel={props.viewmodel} fieldName="partialPreview" fieldType="boolean" />)],
+      ["Non-English Only", (<LabelValueItem viewmodel={props.viewmodel} fieldName="foreignOnly" fieldType="boolean" />)],
+      ["Foil Only", (<LabelValueItem viewmodel={props.viewmodel} fieldName="foilOnly" fieldType="boolean" />)],
+      ["Non-foil Only", (<LabelValueItem viewmodel={props.viewmodel} fieldName="nonFoilOnly" fieldType="boolean" />)],
+      ["Online Only", (<LabelValueItem viewmodel={props.viewmodel} fieldName="onlineOnly" fieldType="boolean" />)],
+      ["Paper Only", (<LabelValueItem viewmodel={props.viewmodel} fieldName="paperOnly" fieldType="boolean" />)]
     ]);
     return (<LabelValuePanel items={items} columns={2} style={{ padding: "0px" }} />);
   }
@@ -178,102 +184,82 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
           fill={true}
           vertical={false}
         >
-          <FormGroup
-            id="set-code-group"
+          <BaseInput
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="code"
+            validation="none"
             label="Set Code"
-            labelFor="set-code"
-          >
-            <InputGroup
-              id="set-code"
-              inputMode="text"
-              readOnly={true}
-              size="small"
-              type="text"
-              value={props.viewmodel.code}
-            />
-          </FormGroup>
-          <FormGroup
-            id="release-date-group"
+            inputProps={{
+              readOnly: true
+            }}
+          />
+          <BaseInput
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="releaseDate"
+            validation="none"
             label="Release Date"
-            labelFor="release-date "
-          >
-            <InputGroup
-              id="release-date"
-              inputMode="text"
-              readOnly={true}
-              size="small"
-              type="text"
-              value={props.viewmodel.releaseDate}
-            />
-          </FormGroup>
+            inputProps={{
+              readOnly: true
+            }}
+          />
         </ControlGroup>
         <ControlGroup
           key="type-block-group"
           fill={true}
           vertical={false}
         >
-          <FormGroup
-            id="type-group"
+          <BaseInput
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="type"
             label="Set Type"
-            labelFor="set-type"
-          >
-            <InputGroup
-              id="set-type"
-              inputMode="text"
-              readOnly={true}
-              size="small"
-              type="text"
-              value={props.viewmodel.type}
-            />
-          </FormGroup>
-          <FormGroup
-            id="block-group"
+            validation="none"
+            inputProps={{
+              readOnly: true
+            }}
+          />
+          <BaseInput
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="block"
             label="Block"
-            labelFor="block"
-          >
-            <InputGroup
-              id="block"
-              inputMode="text"
-              readOnly={true}
-              size="small"
-              type="text"
-              value={props.viewmodel.block ?? ""}
-            />
-          </FormGroup>
+            validation="none"
+            inputProps={{
+              readOnly: true
+            }}
+          />
         </ControlGroup>
         <ControlGroup
           key="size-group"
           fill={true}
           vertical={false}
         >
-          <FormGroup
-            id="base-size-group"
+          <BaseInput
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="baseSetSize"
             label="Base Set Size"
-            labelFor="base-size"
-          >
-            <NumericInput
-              id="base-size"
-              readOnly={true}
-              size="small"
-              stepSize={1}
-              fill={true}
-              value={props.viewmodel.baseSetSize}
-            />
-          </FormGroup>
-          <FormGroup
-            id="total-size-group"
+            validation="none"
+            numericInputProps={{
+              readOnly: true,
+              stepSize: 1,
+              fill: true
+            }}
+          />
+          <BaseInput
+            viewmodel={props.viewmodel}
+            viewmodelChanged={props.viewmodelChanged}
+            fieldName="totalSetSize"
             label="Total Set Size"
-            labelFor="total-size"
-          >
-            <NumericInput
-              id="total-size"
-              readOnly={true}
-              size="small"
-              stepSize={1}
-              fill={true}
-              value={props.viewmodel.totalSetSize}
-            />
-          </FormGroup>
+            validation="none"
+            numericInputProps={{
+              readOnly: true,
+              stepSize: 1,
+              fill: true
+            }}
+          />
         </ControlGroup>
         <HTMLTable
           bordered={false}
@@ -282,13 +268,19 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps) {
         >
           <thead></thead>
           <tbody>
-            {renderTableRow(props.viewmodel.partialPreview, "Partial Preview", props.viewmodel.foreignOnly, "Non-English only")}
-            {renderTableRow(props.viewmodel.foilOnly, "Foil Only", props.viewmodel.nonFoilOnly, "Non-foil only")}
-            {renderTableRow(props.viewmodel.onlineOnly, "Online only", props.viewmodel.paperOnly, "Paper only")}
+            {
+              renderTableRow("partialPreview", "Partial Preview", "foreignOnly", "Non-English only")
+            }
+            {
+              renderTableRow("foilOnly", "Foil Only", "nonFoilOnly", "Non-foil only")
+            }
+            {
+              renderTableRow("onlineOnly", "Online only", "paperOnly", "Paper only")
+            }
           </tbody>
         </HTMLTable>
       </>
     );
   }
-  // #endregion
+  //#endregion
 }

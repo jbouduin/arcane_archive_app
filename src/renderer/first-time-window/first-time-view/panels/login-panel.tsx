@@ -1,26 +1,26 @@
 import { Button, ButtonGroup, DialogBody, DialogFooter } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { useReducer } from "react";
-import { LoginResponseDto } from "../../../../common/dto";
+import { SessionDto } from "../../../../common/dto";
 import { useServices } from "../../../hooks";
-import { LoginDialogBody } from "../../../shared/components/dialogs/login-dialog/login-dialog-body";
+import { LoginDialogBody } from "../../../shared/components/dialogs";
 import { LoginPanelProps } from "./login-panel.props";
 
-export function LoginPanel(props: LoginPanelProps) {
-  // #region State ------------------------------------------------------------
+export function LoginPanel(props: LoginPanelProps): JSX.Element {
+  //#region State -------------------------------------------------------------
   const [_forceUpdate, forceUpdate] = useReducer(x => x + 1, 0);
-  // #endregion
+  //#endregion
 
-  // #region Hooks ------------------------------------------------------------
+  //#region Hooks -------------------------------------------------------------
   const serviceContainer = useServices();
-  // #endregion
+  //#endregion
 
-  // #region Event handling ---------------------------------------------------
+  //#region Event Handling ----------------------------------------------------
   function loginClick(): void {
     if (props.viewmodel.isValid) {
       void serviceContainer.sessionService.login(serviceContainer, props.viewmodel.dto)
         .then(
-          (r: LoginResponseDto) => {
+          (r: SessionDto) => {
             props.afterLogin(r);
             props.navigateTo("system");
           },
@@ -28,15 +28,14 @@ export function LoginPanel(props: LoginPanelProps) {
         );
     }
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <>
       <DialogBody className="first-time-view-panel-body">
         <LoginDialogBody
           viewmodelChanged={forceUpdate}
-          onValidationCompleted={forceUpdate}
           viewmodel={props.viewmodel}
           isOpen={true}
         />
@@ -60,5 +59,5 @@ export function LoginPanel(props: LoginPanelProps) {
       </DialogFooter>
     </>
   );
-  // #endregion
+  //#endregion
 }

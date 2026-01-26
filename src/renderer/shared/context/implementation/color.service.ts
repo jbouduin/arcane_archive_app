@@ -1,7 +1,7 @@
 import { noop } from "lodash";
 import { ColorDto } from "../../dto";
 import { SelectOption } from "../../types";
-import { IArcaneArchiveProxyService, IColorService } from "../interface";
+import { IArcaneArchiveProxy, IColorService } from "../interface";
 
 export class ColorService implements IColorService {
   // #region Private fields ---------------------------------------------------
@@ -28,7 +28,7 @@ export class ColorService implements IColorService {
       .map((c: ColorDto) => ({ label: c.name["ENGLISH"], value: c }));
   }
 
-  public initialize(arcaneArchiveProxy: IArcaneArchiveProxyService): Promise<void> {
+  public initialize(arcaneArchiveProxy: IArcaneArchiveProxy): Promise<void> {
     return arcaneArchiveProxy.getData<Array<ColorDto>>("library", "/public/color")
       .then(
         (allColors: Array<ColorDto>) => allColors

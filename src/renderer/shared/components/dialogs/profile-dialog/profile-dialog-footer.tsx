@@ -1,7 +1,7 @@
 import { noop } from "lodash";
 import { useServices, useSession } from "../../../../hooks";
-import { UserDto } from "../../../dto";
-import { SaveCancelResetFooter } from "../../base/base-dialog";
+import { ProfileDto, UserDto } from "../../../dto";
+import { DefaultDialogFooter } from "../../base/base-dialog";
 import { ProfileDialogFooterProps } from "./profile-dialog.props";
 
 export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
@@ -11,12 +11,16 @@ export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
   // #endregion
 
   // #region Event handling ---------------------------------------------------
-  function onSaveClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: UserDto): Promise<void> {
+  function onSaveClick(event: React.SyntheticEvent<HTMLElement, Event>): Promise<void> {
     let result: Promise<UserDto>;
-    if (serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") && userName == dto.account.accountName) {
-      result = serviceContainer.sessionService.saveUser(serviceContainer.arcaneArchiveProxy, dto);
+    const userDto: UserDto = {
+      account: props.viewmodel.accountViewmodel.dto,
+      profile: props.viewmodel.dto
+    };
+    if (serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") && userName == userDto.account.accountName) {
+      result = serviceContainer.sessionService.saveUser(serviceContainer.arcaneArchiveProxy, userDto);
     } else {
-      result = serviceContainer.sessionService.saveSelf(serviceContainer.arcaneArchiveProxy, dto);
+      result = serviceContainer.sessionService.saveSelf(serviceContainer.arcaneArchiveProxy, userDto);
     }
     return result.then(
       (_r: object) => {
@@ -31,10 +35,12 @@ export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter
+    <DefaultDialogFooter
       {...props}
       showResetButton={true}
-      onCommitButtonClick={onSaveClick}
+      onCommitButtonClick={
+        (event: React.SyntheticEvent<HTMLElement, Event>, _dto: ProfileDto) => onSaveClick(event)
+      }
     />
   );
   // #endregion

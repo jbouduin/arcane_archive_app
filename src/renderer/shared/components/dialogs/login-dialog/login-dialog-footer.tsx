@@ -1,22 +1,23 @@
 import { AlertProps, Button, Callout } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { ReactNode } from "react";
-import { LoginRequestDto, LoginResponseDto } from "../../../../../common/dto";
-import { useServices } from "../../../../hooks/use-services";
-import { SaveCancelResetFooter } from "../../base/base-dialog";
+import { LoginRequestDto, SessionDto } from "../../../../../common/dto";
+import { usePreferences, useServices } from "../../../../hooks";
+import { DefaultDialogFooter } from "../../base/base-dialog";
 import { showRecoverPasswordDialog, showRegisterDialog } from "../factory";
 import { LoginDialogFooterProps } from "./login-dialog.props";
 
-export function LoginDialogFooter(props: LoginDialogFooterProps) {
+export function LoginDialogFooter(props: LoginDialogFooterProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
+  const { preferences } = usePreferences();
   // #endregion
 
   // #region Event handling ---------------------------------------------------
   function loginClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: LoginRequestDto): Promise<void> {
     return serviceContainer.sessionService.login(serviceContainer, dto)
       .then(
-        (_resp: LoginResponseDto) => {
+        (_resp: SessionDto) => {
           if (props.viewmodel.nonExistinguser) {
             saveUserAlert(dto);
           } else if (props.viewmodel.modifiedPasswordOfExistingUser) {
@@ -31,7 +32,7 @@ export function LoginDialogFooter(props: LoginDialogFooterProps) {
   }
 
   function registerClick(): void {
-    showRegisterDialog(serviceContainer, false);
+    showRegisterDialog(serviceContainer, false, preferences);
   }
 
   function saveUser(dto: LoginRequestDto): void {
@@ -49,7 +50,7 @@ export function LoginDialogFooter(props: LoginDialogFooterProps) {
 
   // #region Rendering --------------------------------------------------------
   return (
-    <SaveCancelResetFooter
+    <DefaultDialogFooter
       additionalLeftButtons={additionalLeftButtons()}
       {...props}
       showResetButton={false}
