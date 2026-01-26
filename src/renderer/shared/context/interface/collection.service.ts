@@ -1,5 +1,4 @@
 import { CollectionCardDto, CollectionDto } from "../../dto";
-import { SelectOption } from "../../types";
 import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
 
 export interface ICollectionService {
