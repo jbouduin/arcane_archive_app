@@ -12,17 +12,8 @@ export function CollectionCardDialogFooter(props: CollectionCardDialogFooterProp
 
   //#region Event Handling ----------------------------------------------------
   function createClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: CollectionCardDto): Promise<void> {
-    // NOW move this to viewmodel as getDtoToSave() which returns the dto in the baseviewmodel and override in subclasses
-    const toSave: CollectionCardDto = {
-      id: null,
-      collectionId: dto.collectionId,
-      setCode: dto.setCode,
-      collectorNumber: dto.collectorNumber,
-      language: dto.language,
-      quantities: props.viewmodel.getChangedQuantityViewmodels().map((vm: CollectionCardQuantityViewmodel) => vm.dto)
-    };
     return collectionService
-      .createCollectionCard(toSave)
+      .createCollectionCard(dto)
       .then(
         (_resp: CollectionCardDto) => {
           // props.onCollectionAdded(resp);

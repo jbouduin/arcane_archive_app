@@ -18,8 +18,6 @@ export interface ICollectionService {
   //#region CollectionCard ----------------------------------------------------
   createCollectionCard(collectionCard: CollectionCardDto): Promise<CollectionCardDto>;
   deleteCollectionCard(collectionCard: CollectionCardDto): Promise<number>;
-  // TODO use CollectionCardListDto
-  getCollectionCards(collectionId: number): Promise<Array<unknown>>;
   updateCollectionCard(collectionCard: CollectionCardDto): Promise<CollectionCardDto>;
   //#endregion
 }

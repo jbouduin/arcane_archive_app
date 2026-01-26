@@ -18,7 +18,7 @@ export function LoginPanel(props: LoginPanelProps): JSX.Element {
   //#region Event Handling ----------------------------------------------------
   function loginClick(): void {
     if (props.viewmodel.isValid) {
-      void serviceContainer.sessionService.login(serviceContainer, props.viewmodel.dto)
+      void serviceContainer.sessionService.login(serviceContainer, props.viewmodel.dtoToSave)
         .then(
           (r: SessionDto) => {
             props.afterLogin(r);

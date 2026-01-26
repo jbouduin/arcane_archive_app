@@ -24,6 +24,27 @@ export class SystemSettingsViewmodel extends BaseViewmodel<SystemConfigurationDt
   }
   //#endregion
 
+  //#region BaseViewmodel Members ---------------------------------------------
+  override get dtoToSave(): SystemConfigurationDto {
+    return {
+          discovery: this._dto.discovery,
+          dataConfiguration: this.dataConfigurationViewmodel.dtoToSave,
+          mainLoggingConfiguration: new Array<MainLogSetting>(
+            this.getMainLogSettingsViewmodel("API").dtoToSave,
+            this.getMainLogSettingsViewmodel("DB").dtoToSave,
+            this.getMainLogSettingsViewmodel("Main").dtoToSave,
+            this.getMainLogSettingsViewmodel("Renderer").dtoToSave,
+          ),
+          rendererLogLevel: this._dto["rendererLogLevel"],
+          responseLoggingConfiguration: new Array<ResponseLogSetting>(
+            this.getResponseLogSettingsViewmodel("IPC").dtoToSave,
+            this.getResponseLogSettingsViewmodel("authentication").dtoToSave,
+            this.getResponseLogSettingsViewmodel("collection").dtoToSave,
+            this.getResponseLogSettingsViewmodel("deck").dtoToSave,
+            this.getResponseLogSettingsViewmodel("library").dtoToSave,
+          )
+        };
+  }
   //#region Constructor & C° --------------------------------------------------
   public constructor(dto: SystemConfigurationDto, mode: ViewmodelMode) {
     super(dto, mode);

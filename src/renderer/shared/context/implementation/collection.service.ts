@@ -57,10 +57,6 @@ export class CollectionService implements ICollectionService {
     );
   }
 
-  public getCollectionCards(_collectionId: number): Promise<Array<unknown>> {
-    throw new Error("Not implemented");
-  }
-
   public updateCollectionCard(collectionCard: CollectionCardDto): Promise<CollectionCardDto> {
     return this.arcaneArchiveProxy.putData<CollectionCardDto, CollectionCardDto>(
       "collection",

@@ -52,7 +52,7 @@ export function DefaultDialogFooter<Dto extends object, Vm extends BaseViewmodel
                 (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
                   if (props.viewmodel.isValid) {
                     if (props.onCommitButtonClick) {
-                      void props.onCommitButtonClick(e, props.viewmodel.dto);
+                      void props.onCommitButtonClick(e, props.viewmodel.dtoToSave);
                     } else if (props.onClose) {
                       props.onClose(e);
                     }
