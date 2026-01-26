@@ -9,11 +9,15 @@ export class CollectionViewmodelFactory implements ICollectionViewmodelFactory {
     return new CollectionTreeViewmodel(dto);
   }
 
-  public getCollectionViewmodel(dto: CollectionDto, parentDto: CollectionDto | null, parentPath: Array<string>): CollectionViewmodel {
+  public getCollectionViewmodel(
+    dto: CollectionDto, parentDto: CollectionDto | null, parentPath: Array<string>
+  ): CollectionViewmodel {
     return new CollectionViewmodel(dto, parentPath, "update");
   }
 
-  public getNewCollectionViewmodel(type: CollectionType, parentDto: CollectionDto | null, parentPath: Array<string>): CollectionViewmodel {
+  public getNewCollectionViewmodel(
+    type: CollectionType, parentDto: CollectionDto | null, parentPath: Array<string>
+  ): CollectionViewmodel {
     const newCollection: CollectionDto = {
       code: "",
       type: type,

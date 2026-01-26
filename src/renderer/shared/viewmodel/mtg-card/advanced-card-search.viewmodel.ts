@@ -127,14 +127,16 @@ export class AdvancedCardSearchViewmodel {
   // #region Constructor ------------------------------------------------------
   public constructor(dto: AdvancedCardSearchDto, serviceContainer: IServiceContainer) {
     this._dto = dto;
+    // --- set all select options ---
     this._allCardSets = serviceContainer.mtgSetService.getSelectOptions();
     this._allColors = serviceContainer.colorService.getSelectOptions();
     this._allRarities = serviceContainer.displayValueService.getSelectOptions("rarity");
     this._allGameFormats = serviceContainer.displayValueService.getSelectOptions("gameFormat");
-    this._allSuperTypes = serviceContainer.cardSearchService.getCardSuperTypeSelectOptions();
-    this._allCardTypes = serviceContainer.cardSearchService.getCardTypeSelectOptions();
-    this._allPowers = serviceContainer.cardSearchService.getPowerValueSelectOptions();
-    this._allToughnesses = serviceContainer.cardSearchService.getToughnessValueSelectOptions();
+    this._allSuperTypes = serviceContainer.displayValueService.getSelectOptions("superType");
+    this._allCardTypes = serviceContainer.displayValueService.getSelectOptions("cardType");
+    this._allPowers = serviceContainer.displayValueService.getSelectOptions("powerValues");
+    this._allToughnesses = serviceContainer.displayValueService.getSelectOptions("thoughnessValues");
+    // --- set selected values ---
     this._selectedAbilities = dto.cardFilterParams.abilities.map((value: string) => ({ value: value, label: value }));
     this._selectedActions = dto.cardFilterParams.actions.map((value: string) => ({ value: value, label: value }));
     this._selectedCardColors = this.initializeSelected(this._allColors, dto.cardFilterParams.cardColors);
@@ -142,7 +144,10 @@ export class AdvancedCardSearchViewmodel {
     this._selectedGameFormats = this.initializeSelected(this._allGameFormats, dto.cardFilterParams.gameFormats);
     this._selectedIdentityColors = this.initializeSelected(this._allColors, dto.cardFilterParams.identityColors);
     this._selectedPowers = this.initializeSelected(this._allPowers, dto.cardFilterParams.powers);
-    this._selectedProducedManaColors = this.initializeSelected(this._allColors, dto.cardFilterParams.producedManaColors);
+    this._selectedProducedManaColors = this.initializeSelected(
+      this._allColors,
+      dto.cardFilterParams.producedManaColors
+    );
     this._selectedRarities = this.initializeSelected(this._allRarities, dto.cardFilterParams.rarities);
     this._selectedSets = this.initializeSelected(this._allCardSets, dto.cardSetFilter);
     this._selectedSubTypes = dto.cardFilterParams.subTypes.map((value: string) => ({ value: value, label: value }));

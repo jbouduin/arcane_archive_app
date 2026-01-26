@@ -1,6 +1,6 @@
 import { SvgProviderProps } from "./svg-renderer.props";
 
-export function SvgRenderer(props: SvgProviderProps) {
+export function SvgRenderer(props: SvgProviderProps): JSX.Element {
   // #region Rendering --------------------------------------------------------
   const start = props.svg.indexOf(">");
   const end = props.svg.indexOf("</svg");

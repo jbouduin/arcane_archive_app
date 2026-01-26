@@ -156,16 +156,12 @@ export class ServiceContainer implements IServiceContainer {
         async (configuration: SettingsDto) => {
           result.settings = configuration;
           this._arcaneArchiveProxy.initialize(configuration.apiConfiguration);
+          this._cardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
           // --- get api status once, automatic refresh is started by the  ---
           const apiStatus = await this._arcaneArchiveProxy.forceRefresh();
           if (apiStatus.get("library") != null) {
             // Skippable services do (may!) not reject
             const skippableServices = new Array<Promise<void>>();
-            if (!options.skipCardSearchService) {
-              skippableServices.push(
-                this._cardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences)
-              );
-            }
             if (!options.skipCardSymbolService) {
               skippableServices.push(this._cardSymbolService.initialize(this._ipcProxy));
             }

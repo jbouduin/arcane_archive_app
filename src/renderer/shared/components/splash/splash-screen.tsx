@@ -5,7 +5,7 @@ import { usePreferences } from "../../../hooks";
 import { SplashContent } from "./splash-content";
 import { SplashScreenProps } from "./splash-screen.props";
 
-export function SplashScreen(props: SplashScreenProps) {
+export function SplashScreen(props: SplashScreenProps): JSX.Element {
   const { themeClassName } = usePreferences();
   return (
     <Dialog

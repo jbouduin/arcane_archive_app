@@ -1,5 +1,5 @@
 import { Colors, FormGroup, Icon, InputGroup, NumericInput, Spinner } from "@blueprintjs/core";
-import { useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { handleStringChange, handleValueChange, stringNotNullOrEmpty } from "../util";
 import { BaseInputProps } from "./base-input.props";
 
@@ -47,6 +47,7 @@ export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>): JSX.E
   //#region Rendering ---------------------------------------------------------
   const validationResult = props.viewmodel.getValidation(props.fieldName);
   const keyName = props.fieldName.toString();
+  const style: CSSProperties = props.label ? {} : { margin: "0px" };
   return (
     <FormGroup
       key={props.fieldName.toString() + "-group"}
@@ -57,6 +58,7 @@ export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>): JSX.E
       helperText={validationResult.helperText}
       intent={validationResult.intent}
       disabled={props.inputProps?.disabled || props.numericInputProps?.disabled}
+      style={style}
     >
       {
         props.inputProps &&

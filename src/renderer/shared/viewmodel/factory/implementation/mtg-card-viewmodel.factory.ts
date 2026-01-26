@@ -1,5 +1,6 @@
 import { IArcaneArchiveProxy, IColorService, IDisplayValueService, ILanguageService, IMtgSetService, IServiceContainer } from "../../../context";
-import { AdvancedCardSearchDto, LibraryCardDto, LibraryCardListDto, LibraryRulingDto } from "../../../dto";
+import { AdvancedCardSearchDto, CollectionCardListDto, LibraryCardDto, LibraryCardListDto, LibraryRulingDto } from "../../../dto";
+import { CollectionCardListViewmodel } from "../../collection";
 import { AdvancedCardSearchViewmodel, LibraryCardListViewmodel, LibraryCardViewmodel, LibraryRulingViewmodel } from "../../mtg-card";
 import { IMtgCardViewmodelFactory } from "../interface";
 
@@ -40,7 +41,7 @@ export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
       ));
   }
 
-  public getMtgCardListViewmodel(dto: LibraryCardListDto): LibraryCardListViewmodel {
+  public getLibraryCardListViewmodel(dto: LibraryCardListDto): LibraryCardListViewmodel {
     return new LibraryCardListViewmodel(
       this.colorService, this.displayValueService, this.languageService, this.mtgSetService, dto
     );
@@ -65,6 +66,15 @@ export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
     serviceContainer: IServiceContainer
   ): AdvancedCardSearchViewmodel {
     return new AdvancedCardSearchViewmodel(advancedCardSearch, serviceContainer);
+  }
+
+  public getCollectionCardlistViewmodel(dto: CollectionCardListDto): CollectionCardListViewmodel {
+    return new CollectionCardListViewmodel(
+      this.colorService,
+      this.displayValueService,
+      this.languageService,
+      this.mtgSetService,
+      dto);
   }
   // #endregion
 }

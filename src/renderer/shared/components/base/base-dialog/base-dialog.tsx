@@ -4,7 +4,9 @@ import { usePreferences } from "../../../../hooks";
 import { BaseViewmodel } from "../../../viewmodel";
 import { BaseDialogBodyProps, BaseDialogFooterProps, BaseDialogProps } from "./base-dialog.props";
 
-export function BaseDialog<Dto extends object, Vm extends BaseViewmodel<Dto>>(props: BaseDialogProps<Dto, Vm>) {
+export function BaseDialog<Dto extends object, Vm extends BaseViewmodel<Dto>>(
+  props: BaseDialogProps<Dto, Vm>
+): JSX.Element {
   // #region State ------------------------------------------------------------
   const { themeClassName } = usePreferences();
   // Use a mutable viewmodel and force update after changes using reducer

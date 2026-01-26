@@ -6,12 +6,12 @@ import { CollectionDialogFooterProps } from "./collection-dialog.props";
 
 export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
   //#region Hooks -------------------------------------------------------------
-  const serviceContainer = useServices();
+  const { collectionService } = useServices();
   //#endregion
 
   //#region Event Handling ----------------------------------------------------
   function createClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: CollectionDto): Promise<void> {
-    return serviceContainer.collectionService
+    return collectionService
       .createCollection(dto)
       .then(
         (resp: CollectionDto) => {
@@ -25,7 +25,7 @@ export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
   }
 
   function updateClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: CollectionDto): Promise<void> {
-    return serviceContainer.collectionService
+    return collectionService
       .updateCollection(dto)
       .then(
         (resp: CollectionDto) => {
@@ -40,7 +40,7 @@ export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
   //#endregion
 
   //#region Rendering ---------------------------------------------------------
-  if (!props.viewmodel.dto.id) {
+  if (props.viewmodel.mode == "create") {
     return (
       <DefaultDialogFooter
         {...props}

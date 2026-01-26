@@ -1,7 +1,7 @@
 import { LibraryExternalReferenceDto } from "../../dto";
 import { LibraryCardfaceLanguageDto } from "../../dto/library-cardface-language.dto";
 import { LibraryCardfaceDto } from "../../dto/library-cardface.dto";
-import { AbstractCardViewmodel } from "./abstract-card.viewmodel";
+import { AbstractCardViewmodel } from "../abstract-card.viewmodel";
 
 export class LibraryCardfaceViewmodel extends AbstractCardViewmodel {
   // #region Fields Members ---------------------------------------------------

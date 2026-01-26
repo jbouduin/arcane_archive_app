@@ -1,19 +1,19 @@
 import { IColorService, IDisplayValueService, ILanguageService, IMtgSetService } from "../../context";
-import { LanguageDto, LibraryCardListDto } from "../../dto";
-import { ColorDto } from "../../dto/color.dto";
+import { CollectionCardListDto, ColorDto } from "../../dto";
 import { AbstractCardViewmodel } from "../abstract-card.viewmodel";
 
-export class LibraryCardListViewmodel extends AbstractCardViewmodel {
-  // #region public fields Members --------------------------------------------
+// TODO create an AbstractCardListViewmodel as superclass and use it for LibraryCardListVIewmodel also
+export class CollectionCardListViewmodel extends AbstractCardViewmodel {
   public readonly cardId: number;
+  public readonly cardName: string;
   public readonly setName: string;
   public readonly setKeyruneCode: string;
-  public readonly cardName: string;
-  public readonly convertedManaCost: number;
   public readonly collectorNumber: string;
   public readonly collectorNumberSortValue: string;
   public readonly colorIdentity: Array<string>;
   public readonly colorIdentitySortValue: string;
+  public readonly convertedManaCost: number;
+  public readonly language: string;
   public readonly rarity: string;
   public readonly rarityDisplayValue: string;
   public readonly raritySortValue: number;
@@ -21,25 +21,22 @@ export class LibraryCardListViewmodel extends AbstractCardViewmodel {
   public readonly manaCost: Array<string>;
   public readonly power: string;
   public readonly toughness: string;
-  public readonly languages: string;
-  // #endregion
 
-  // #region Constructor ------------------------------------------------------
   public constructor(
     colorService: IColorService,
     displayValueService: IDisplayValueService,
     languageService: ILanguageService,
     mtgSetService: IMtgSetService,
-    dto: LibraryCardListDto) {
+    dto: CollectionCardListDto) {
     super();
     this.cardId = dto.id;
+    this.cardName = dto.cardName;
     const mtgSet = mtgSetService.getSetById(dto.mtgSetId);
     this.setName = mtgSet?.setName || "Unknown set";
     this.setKeyruneCode = mtgSet?.keyruneCode || "DEFAULT";
-    this.cardName = dto.cardName;
-    this.convertedManaCost = dto.convertedManaCost;
     this.collectorNumber = dto.collectorNumber;
     this.collectorNumberSortValue = dto.collectorNumberSortValue;
+    this.convertedManaCost = dto.convertedManaCost;
     const identityColors = dto.colorIdentities
       .map((color: string) => colorService.getColor(color))
       .filter((color: ColorDto | undefined) => color != undefined)
@@ -53,12 +50,6 @@ export class LibraryCardListViewmodel extends AbstractCardViewmodel {
     this.manaCost = this.calculateCardManaCost(dto.manaCost);
     this.power = dto.power;
     this.toughness = dto.toughness;
-    this.languages = dto.languages
-      .map((lng: string) => languageService.getLanguage(lng))
-      .filter((lng: LanguageDto | undefined) => lng != undefined)
-      .sort((a: LanguageDto, b: LanguageDto) => a.sequence - b.sequence)
-      .map((lng: LanguageDto) => lng.buttonText)
-      .join(", ");
+    this.language = languageService.getLanguage(dto.language)?.buttonText || "?";
   }
-  // #endregion
 }

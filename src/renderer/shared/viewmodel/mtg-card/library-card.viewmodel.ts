@@ -4,7 +4,7 @@ import { ColorDto } from "../../dto/color.dto";
 import { LibraryCardLanguageDto } from "../../dto/library-card-language.dto";
 import { LibraryCardfaceDto } from "../../dto/library-cardface.dto";
 import { CardLayout } from "../../types/card-layout";
-import { AbstractCardViewmodel } from "./abstract-card.viewmodel";
+import { AbstractCardViewmodel } from "../abstract-card.viewmodel";
 import { LibraryCardLanguageViewmodel } from "./library-card-language.viewmodel";
 import { LibraryCardfaceViewmodel } from "./library-cardface.viewmodel";
 

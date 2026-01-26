@@ -13,7 +13,7 @@ export abstract class BaseViewmodel<Dto extends object> {
   private invalidFields: Array<keyof Dto>;
   private pendingValidations: number;
   private validationResults: Map<keyof Dto, ValidationResult>;
-  private childViewmodels: Array<BaseViewmodel<object>>;
+  private _childViewmodels: Array<BaseViewmodel<object>>;
   private selectOptions: Map<keyof Dto, Array<SelectOption<unknown>>>;
   private readonly _mode: ViewmodelMode;
   //#endregion
@@ -26,7 +26,7 @@ export abstract class BaseViewmodel<Dto extends object> {
 
   //#region Getters/Setters ---------------------------------------------------
   public get isValid(): boolean {
-    return this.invalidFields.length == 0 && this.childViewmodels.every((vm: BaseViewmodel<object>) => vm.isValid);
+    return this.invalidFields.length == 0 && this._childViewmodels.every((vm: BaseViewmodel<object>) => vm.isValid);
   }
 
   public get dto(): Dto {
@@ -35,8 +35,8 @@ export abstract class BaseViewmodel<Dto extends object> {
 
   public get hasChanges(): boolean {
     let result = !isEqual(this._dto, this._org);
-    if (this.childViewmodels.length > 0) {
-      result = result || this.childViewmodels.some((vm: BaseViewmodel<object>) => vm.hasChanges);
+    if (this._childViewmodels.length > 0) {
+      result = result || this._childViewmodels.some((vm: BaseViewmodel<object>) => vm.hasChanges);
     }
     return result;
   }
@@ -47,10 +47,10 @@ export abstract class BaseViewmodel<Dto extends object> {
 
   public get isValidationInProgress(): boolean {
     return this.pendingValidations > 0 ||
-      this.childViewmodels.some((vm: BaseViewmodel<object>) => vm.isValidationInProgress);
+      this._childViewmodels.some((vm: BaseViewmodel<object>) => vm.isValidationInProgress);
   }
 
-  public get mode(): ViewmodelMode {
+  public get mode(): Readonly<ViewmodelMode> {
     return this._mode;
   }
   //#endregion
@@ -68,7 +68,7 @@ export abstract class BaseViewmodel<Dto extends object> {
     this.validationFunctions = this.validationFunctions = new Map<keyof Dto, () => void>();
     this.asyncValidationFunctions = new Map<keyof Dto, (signal: AbortSignal) => Promise<void>>();
     this.touchedFields = new Set<keyof Dto>();
-    this.childViewmodels = new Array<BaseViewmodel<object>>();
+    this._childViewmodels = new Array<BaseViewmodel<object>>();
     this.selectOptions = new Map<keyof Dto, Array<SelectOption<unknown>>>();
   }
   //#endregion
@@ -97,7 +97,7 @@ export abstract class BaseViewmodel<Dto extends object> {
   }
 
   protected registerChildViewmodel<T extends object>(viewmodel: BaseViewmodel<T>): void {
-    this.childViewmodels.push(viewmodel as unknown as BaseViewmodel<object>);
+    this._childViewmodels.push(viewmodel as unknown as BaseViewmodel<object>);
   }
 
   protected registerSelectOptions(fieldName: keyof Dto, options: Array<SelectOption<unknown>>): void {
@@ -116,7 +116,7 @@ export abstract class BaseViewmodel<Dto extends object> {
 
   public cancelChanges(): void {
     this._dto = cloneDeep(this._org);
-    this.childViewmodels.forEach((cvm: BaseViewmodel<object>) => cvm.cancelChanges());
+    this._childViewmodels.forEach((cvm: BaseViewmodel<object>) => cvm.cancelChanges());
     this.invalidFields.slice(0);
   }
 

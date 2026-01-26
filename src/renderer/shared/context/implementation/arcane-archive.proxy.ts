@@ -243,10 +243,10 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
         );
       }
     } else {
-      let message: Array<string>;
+      let message: Array<string> | null = null;
       if (response.errors) {
         message = response.errors;
-      } else {
+      } else if (response.validationErrors?.length > 0) {
         message = response.validationErrors.map((v: ValidationErrorDto) => v.errorMessage);
       }
 

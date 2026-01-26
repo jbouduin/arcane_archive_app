@@ -31,7 +31,7 @@ void (async () => {
   let initialization = await serviceContainer.initialize(
     toastCall,
     {
-      skipCardSearchService: true,
+      // skipCardSearchService: true,
       skipColorService: true,
       skipCardSymbolService: true,
       skipLanguageService: true,

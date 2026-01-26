@@ -14,7 +14,9 @@ export function addSelectOption<T>(
   }
 }
 
-export function removeSelectOption<T>(dtoArray: Array<T>, viewmodelArray: Array<SelectOption<T>>, option: SelectOption<T>): void {
+export function removeSelectOption<T>(
+  dtoArray: Array<T>, viewmodelArray: Array<SelectOption<T>>, option: SelectOption<T>
+): void {
   let idx = dtoArray.indexOf(option.value);
   if (idx >= 0) {
     dtoArray.splice(idx, 1);

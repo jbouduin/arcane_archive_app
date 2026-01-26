@@ -6,7 +6,9 @@ import { BaseTreeViewReducer, getTreeNodeItemsRecursive } from "./base-tree-view
 import { BaseTreeViewAction, NodePath } from "./types";
 
 // BUG after adding or modifying everything collapses and nothing is selected anymore
-export function BaseTreeView<TData extends IBaseTreeNodeViewmodel, TFilter>(props: BaseTreeViewProps<TData, TFilter>) {
+export function BaseTreeView<TData extends IBaseTreeNodeViewmodel, TFilter>(props: BaseTreeViewProps<TData, TFilter>
+
+): JSX.Element {
   // #region State ------------------------------------------------------------
   const [nodes, dispatch] = React.useReducer(
     BaseTreeViewReducer as React.Reducer<Array<TreeNodeInfo<TData>>, BaseTreeViewAction>,
@@ -18,7 +20,9 @@ export function BaseTreeView<TData extends IBaseTreeNodeViewmodel, TFilter>(prop
   React.useEffect(
     () => {
       const nodes = props.filterProps
-        ? props.buildTree(props.filterProps.applyFilterProps(props.data, props.filterProps.filter), props.filterProps.filter)
+        ? props.buildTree(
+          props.filterProps.applyFilterProps(props.data, props.filterProps.filter), props.filterProps.filter
+        )
         : props.buildTree(props.data, undefined);
       dispatch({
         type: "FILTER",

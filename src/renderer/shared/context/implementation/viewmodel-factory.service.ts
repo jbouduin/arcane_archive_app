@@ -40,7 +40,12 @@ export class ViewmodelFactoryService implements IViewmodelFactoryService {
 
   public get mtgCardViewmodelFactory(): IMtgCardViewmodelFactory {
     return this._mtgCardViewmodelFactory ??
-      (this._mtgCardViewmodelFactory = new MtgCardViewmodelFactory(this.colorService, this.displayValueService, this.languageService, this.mtgSetService));
+      (this._mtgCardViewmodelFactory = new MtgCardViewmodelFactory(
+        this.colorService,
+        this.displayValueService,
+        this.languageService,
+        this.mtgSetService)
+      );
   }
 
   public get settingsViewmodelFactory(): ISettingsViewmodelFactory {

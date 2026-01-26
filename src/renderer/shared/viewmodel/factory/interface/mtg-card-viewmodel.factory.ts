@@ -1,9 +1,10 @@
 import { IArcaneArchiveProxy, IServiceContainer } from "../../../context";
-import { AdvancedCardSearchDto, LibraryCardListDto } from "../../../dto";
+import { AdvancedCardSearchDto, CollectionCardListDto, LibraryCardListDto } from "../../../dto";
+import { CollectionCardListViewmodel } from "../../collection";
 import { AdvancedCardSearchViewmodel, LibraryCardListViewmodel, LibraryCardViewmodel, LibraryRulingViewmodel } from "../../mtg-card";
 
 export interface IMtgCardViewmodelFactory {
-  getMtgCardListViewmodel(dto: LibraryCardListDto): LibraryCardListViewmodel;
+  getLibraryCardListViewmodel(dto: LibraryCardListDto): LibraryCardListViewmodel;
   getLibraryCardDetailViewmodel(
     arcaneArchiveProxy: IArcaneArchiveProxy,
     cardId: number
@@ -16,4 +17,5 @@ export interface IMtgCardViewmodelFactory {
     advancedCardSearch: AdvancedCardSearchDto,
     serviceContainer: IServiceContainer
   ): AdvancedCardSearchViewmodel;
+  getCollectionCardlistViewmodel(dto: CollectionCardListDto): CollectionCardListViewmodel;
 }

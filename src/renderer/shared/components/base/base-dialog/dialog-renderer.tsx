@@ -11,7 +11,9 @@ import { DialogRendererProps } from "./dialog-renderer.props";
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export function DialogRenderer(props: DialogRendererProps): JSX.Element {
   // #region State ------------------------------------------------------------
-  const [dialogsNew, setDialogsNew] = useState<Map<number, BaseDialogProps<any, any>>>(new Map<number, BaseDialogProps<any, any>>());
+  const [dialogsNew, setDialogsNew] = useState<Map<number, BaseDialogProps<any, any>>>(
+    new Map<number, BaseDialogProps<any, any>>()
+  );
   const [splashScreen, setSplashScreen] = useState<ProgressCallbackValue | null>(null);
   const [alert, setAlert] = useState<AlertProps | null>(null);
   // #endregion

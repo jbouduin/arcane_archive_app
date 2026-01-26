@@ -1,29 +1,41 @@
 import { PreferencesDto } from "../../../../common/dto";
 import { CardFilterParamsDto, CardQueryParamsDto, LibraryCardListDto, MtgSetTreeDto, QueryResultDto } from "../../dto";
-import { SelectOption } from "../../types";
+import { CollectionDto, CollectionCardListDto } from "../../dto";
+
 import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
 
 export interface ICardSearchService {
-  cardQueryParams: CardQueryParamsDto;
-  cardFilterParams: CardFilterParamsDto;
-  cardSetFilter: Array<MtgSetTreeDto>;
-  lastQueryResult: QueryResultDto<LibraryCardListDto>;
-  currentSelectedSearchTab: string | number;
+  //#region Library Search ----------------------------------------------------
+  libraryQueryParams: CardQueryParamsDto;
+  libraryFilterParams: CardFilterParamsDto;
+  librarySetFilter: Array<MtgSetTreeDto>;
+  libraryQueryResult: QueryResultDto<LibraryCardListDto>;
+  librarySelectedSearchTab: string | number;
 
   /**
    * Query cards
-   * @param cardQuery the query parameters
-   * @param cardFilterParams
-   * @param cardSetFilter
+   * @param libraryQueryParams the query parameters
+   * @param libraryFilterParams
+   * @param librarySetFilter
    */
-  getCards(
-    cardQueryParams: CardQueryParamsDto,
-    cardFilterParams: CardFilterParamsDto | null,
-    cardSetFilter: Array<MtgSetTreeDto>
+  getLibraryCards(
+    libraryQueryParams: CardQueryParamsDto,
+    libraryFilterParams: CardFilterParamsDto | null,
+    librarySetFilter: Array<MtgSetTreeDto>
   ): Promise<QueryResultDto<LibraryCardListDto>>;
-  getCardTypeSelectOptions(): Array<SelectOption<string>>;
-  getCardSuperTypeSelectOptions(): Array<SelectOption<string>>;
-  getPowerValueSelectOptions(): Array<SelectOption<string>>;
-  getToughnessValueSelectOptions(): Array<SelectOption<string>>;
-  initialize(arcaneArchiveProxy: IArcaneArchiveProxy, preferences: PreferencesDto): Promise<void>;
+  //#endregion
+
+  //#region Collection Search -------------------------------------------------
+  collectionQueryParams: CardQueryParamsDto;
+  collectionQueryResult: QueryResultDto<CollectionCardListDto>;
+  collectionFilter: Array<CollectionDto>;
+  getCollectionCards(
+    collectionQueryParams: CardQueryParamsDto,
+    collectionFilter: Array<CollectionDto>
+  ): Promise<QueryResultDto<CollectionCardListDto>>;
+  //#endregion
+
+  //#region Service methods ---------------------------------------------------
+  initialize(arcaneArchiveProxy: IArcaneArchiveProxy, preferences: PreferencesDto): void;
+  //#endregion
 }

@@ -1,4 +1,4 @@
-import { InputGroupProps, NumericInputProps } from "@blueprintjs/core";
+import { HTMLInputProps, InputGroupProps, NumericInputProps } from "@blueprintjs/core";
 import { BaseProps } from "./base.props";
 import { ValidationType } from "./validation-type";
 
@@ -16,14 +16,14 @@ export interface BaseInputProps<Dto extends object> extends BaseProps<Dto> {
   /**
    * If set, ValidatedInput renders an {@link InputGroup}. Mutually exclusive with numericInputProps
    */
-  inputProps?: InputGroupProps;
+  inputProps?: HTMLInputProps & InputGroupProps;
   // #endregion
 
   // #region Input related ----------------------------------------------------
   /**
    * If set, ValidatedInput renders an {@link NumericInput}. Mutually exclusive with InputProps
    */
-  numericInputProps?: NumericInputProps;
+  numericInputProps?: HTMLInputProps & NumericInputProps;
   /**
    * Only used on InputGroup. Default: <i>false</i>
    */

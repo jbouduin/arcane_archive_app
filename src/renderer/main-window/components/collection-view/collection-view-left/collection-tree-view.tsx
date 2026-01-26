@@ -146,7 +146,10 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
           data={collections}
           filterProps={{ filter: {}, applyFilterProps: (data: Array<CollectionTreeViewmodel>) => data }}
           buildTree={buildTree}
-          onDataSelected={props.onCollectionSelected}
+          onDataSelected={
+            (collections: Array<CollectionTreeViewmodel>) =>
+              props.onCollectionSelected(collections.map((c: CollectionTreeViewmodel) => c.dto))
+          }
         />
       </ContextMenu>
     </>
