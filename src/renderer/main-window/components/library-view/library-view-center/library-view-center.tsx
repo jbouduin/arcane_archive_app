@@ -3,15 +3,15 @@ import { memo, useMemo } from "react";
 import { useServices } from "../../../../hooks/use-services";
 import { BaseLookupResult, GenericTextColumn, IBaseColumn, PagingView, SortDirection } from "../../../../shared/components/base/base-table";
 import { CardSetColumn, CardTableView, CollectiorNumberColumn, ColorIdentityColumn, ManaCostColumn } from "../../../../shared/components/card-table-view";
-import { CardQueryParamsDto, LibraryCardListDto, QueryResultDto } from "../../../../shared/dto";
+import { QueryParamsDto, LibraryCardListDto, QueryResultDto } from "../../../../shared/dto";
 import { CardSortField } from "../../../../shared/types";
 import { LibraryCardListViewmodel } from "../../../../shared/viewmodel/mtg-card";
 import { LibraryViewCenterProps } from "./library-view-center.props";
 
 const MemoCardTableView = memo(
   CardTableView<LibraryCardListViewmodel>,
-  (prev, next) => isEqual(prev.data, next.data) && isEqual(prev.sortableColumnDefinitions, next.sortableColumnDefinitions)
-
+  (prev, next) => isEqual(prev.data, next.data) &&
+    isEqual(prev.sortableColumnDefinitions, next.sortableColumnDefinitions)
 );
 
 export const LibraryViewCenter = memo(
@@ -62,7 +62,11 @@ export const LibraryViewCenter = memo(
           "Mana cost",
           "cmc",
           (card: LibraryCardListViewmodel) => {
-            return { defaultSortColumn: card.collectorNumberSortValue, convertedManaCost: card.convertedManaCost, symbols: card.manaCost };
+            return {
+              defaultSortColumn: card.collectorNumberSortValue,
+              convertedManaCost: card.convertedManaCost,
+              symbols: card.manaCost
+            };
           }
         ));
         result.push(new CardSetColumn<LibraryCardListViewmodel>(
@@ -71,7 +75,10 @@ export const LibraryViewCenter = memo(
           "setName",
           (card: LibraryCardListViewmodel) => {
             return {
-              defaultSortColumn: card.collectorNumberSortValue, cardSetName: card.setName, keyruneCode: card.setKeyruneCode, rarity: card.rarity
+              defaultSortColumn: card.collectorNumberSortValue,
+              cardSetName: card.setName,
+              keyruneCode: card.setKeyruneCode,
+              rarity: card.rarity
             };
           }
         ));
@@ -115,7 +122,10 @@ export const LibraryViewCenter = memo(
       },
       []
     );
-    const tableData = useMemo(() => getTableData(props.queryResult, props.cardQueryParams), [props.cardQueryParams, props.queryResult]);
+    const tableData = useMemo(
+      () => getTableData(props.queryResult, props.cardQueryParams),
+      [props.cardQueryParams, props.queryResult]
+    );
     // #endregion
 
     // #region Rendering --------------------------------------------------------
@@ -124,10 +134,11 @@ export const LibraryViewCenter = memo(
         <MemoCardTableView
           // bodyContextMenuRenderer={(context: MenuContext) => contextMenu(context)}
           data={tableData}
-          onServerColumnSort={(columName: CardSortField, sortDirection: SortDirection) => props.onSortChanged(columName, sortDirection)}
+          onServerColumnSort={(columName: CardSortField, sortDirection: SortDirection) =>
+            props.sortChanged(columName, sortDirection)}
           onDataSelected={
             (cards?: Array<LibraryCardListViewmodel>) => {
-              props.onCardSelected(cards && cards.length > 0 ? cards[0].cardId : null);
+              props.cardSelected(cards && cards.length > 0 ? cards[0].cardId : null);
             }
           }
           sortableColumnDefinitions={sortableColumnDefinitions}
@@ -137,14 +148,14 @@ export const LibraryViewCenter = memo(
           hasMore={props.queryResult.hasMore}
           currentPageNumber={props.queryResult.currentPageNumber}
           currentPageSize={props.queryResult.currentPageSize}
-          currentPageChanged={(newPage: number) => props.onCurrentPageChanged(newPage)}
-          currentPageSizeChanged={(newPageSize: number) => props.onCurrentPageSizeChanged(newPageSize)}
+          currentPageChanged={(newPage: number) => props.pageNumberChanged(newPage)}
+          currentPageSizeChanged={(newPageSize: number) => props.pageSizeChanged(newPageSize)}
         />
       </div>
     );
 
     function getTableData(
-      qryResult: QueryResultDto<LibraryCardListDto>, cardQuery: CardQueryParamsDto
+      qryResult: QueryResultDto<LibraryCardListDto>, cardQuery: QueryParamsDto
     ): Array<LibraryCardListViewmodel> {
       const result: Array<LibraryCardListViewmodel> = qryResult.resultList
         .map((c: LibraryCardListDto) => viewmodelFactoryService.mtgCardViewmodelFactory.getLibraryCardListViewmodel(c));

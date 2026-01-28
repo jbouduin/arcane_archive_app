@@ -3,15 +3,16 @@ import { SettingsDto } from "../../../../common/dto";
 import { InitializeServiceContainerOptions, ShowToastFn } from "../../types";
 import {
   IArcaneArchiveProxy,
-  ICardSearchService, ICardSymbolService,
+  ILibraryCardSearchService, ICardSymbolService,
   ICollectionService,
   IColorService, IConfigurationService,
   IDisplayValueService, IIpcProxy, ILanguageService, ILogService, IMtgSetService,
-  IOverlayService, IServiceContainer, ISessionService, IViewmodelFactoryService
+  IOverlayService, IServiceContainer, ISessionService, IViewmodelFactoryService,
+  ICollectionCardSearchService
 } from "../interface";
 import { InitializationResult } from "../types";
 import { ArcaneArchiveProxy } from "./arcane-archive.proxy";
-import { CardSearchService } from "./card-search.service";
+import { LibraryCardSearchService } from "./library-card-search.service";
 import { CardSymbolService } from "./card-symbol.service";
 import { CollectionService } from "./collection.service";
 import { ColorService } from "./color.service";
@@ -24,40 +25,42 @@ import { MtgSetService } from "./mtg-set.service";
 import { OverlayService } from "./overlay.service";
 import { SessionService } from "./session.service";
 import { ViewmodelFactoryService } from "./viewmodel-factory.service";
+import { CollectionCardSearchService } from "./collection-card-search.service";
 
 export class ServiceContainer implements IServiceContainer {
   //#region Private fields ----------------------------------------------------
-  private _cardSearchService: ICardSearchService;
-  private _cardSymbolService: ICardSymbolService;
   private _arcaneArchiveProxy: IArcaneArchiveProxy;
+  private _cardSymbolService: ICardSymbolService;
   private _collectionSerivce: ICollectionService;
+  private _collectionCardSearchService: ICollectionCardSearchService;
   private _colorService: IColorService;
   private _configurationService: IConfigurationService;
   private _displayValueService: IDisplayValueService;
-  private _overlayService: IOverlayService;
   private _ipcProxy: IIpcProxy;
   private _languageService: ILanguageService;
+  private _libraryCardSearchService: ILibraryCardSearchService;
   private _logService: ILogService;
   private _mtgSetService: IMtgSetService;
+  private _overlayService: IOverlayService;
   private _sessionService: ISessionService;
   private _viewmodelFactoryService: IViewmodelFactoryService;
   //#endregion
 
   //#region IServiceContainer Members (getters) -------------------------------
-  public get cardSearchService(): ICardSearchService {
-    return this._cardSearchService;
+  public get arcaneArchiveProxy(): IArcaneArchiveProxy {
+    return this._arcaneArchiveProxy;
   }
 
   public get cardSymbolService(): ICardSymbolService {
     return this._cardSymbolService;
   }
 
-  public get arcaneArchiveProxy(): IArcaneArchiveProxy {
-    return this._arcaneArchiveProxy;
-  }
-
   public get collectionService(): ICollectionService {
     return this._collectionSerivce;
+  }
+
+  public get collectionCardSearchService(): ICollectionCardSearchService {
+    return this._collectionCardSearchService;
   }
 
   public get colorService(): IColorService {
@@ -66,10 +69,6 @@ export class ServiceContainer implements IServiceContainer {
 
   public get configurationService(): IConfigurationService {
     return this._configurationService;
-  }
-
-  public get overlayService(): IOverlayService {
-    return this._overlayService;
   }
 
   public get displayValueService(): IDisplayValueService {
@@ -84,12 +83,20 @@ export class ServiceContainer implements IServiceContainer {
     return this._languageService;
   }
 
+  public get libraryCardSearchService(): ILibraryCardSearchService {
+    return this._libraryCardSearchService;
+  }
+
   public get logService(): ILogService {
     return this._logService;
   }
 
   public get mtgSetService(): IMtgSetService {
     return this._mtgSetService;
+  }
+
+  public get overlayService(): IOverlayService {
+    return this._overlayService;
   }
 
   public get sessionService(): ISessionService {
@@ -103,10 +110,11 @@ export class ServiceContainer implements IServiceContainer {
 
   //#region Constructor & C° --------------------------------------------------
   public constructor() {
-    this._cardSearchService = new CardSearchService();
+    this._libraryCardSearchService = new LibraryCardSearchService();
     this._cardSymbolService = new CardSymbolService();
     this._arcaneArchiveProxy = new ArcaneArchiveProxy();
     this._collectionSerivce = new CollectionService();
+    this._collectionCardSearchService = new CollectionCardSearchService();
     this._colorService = new ColorService();
     this._configurationService = new ConfigurationService();
     this._displayValueService = new DisplayValueService();
@@ -156,7 +164,8 @@ export class ServiceContainer implements IServiceContainer {
         async (configuration: SettingsDto) => {
           result.settings = configuration;
           this._arcaneArchiveProxy.initialize(configuration.apiConfiguration);
-          this._cardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
+          this._libraryCardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
+          this._collectionCardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
           // --- get api status once, automatic refresh is started by the  ---
           const apiStatus = await this._arcaneArchiveProxy.forceRefresh();
           if (apiStatus.get("library") != null) {

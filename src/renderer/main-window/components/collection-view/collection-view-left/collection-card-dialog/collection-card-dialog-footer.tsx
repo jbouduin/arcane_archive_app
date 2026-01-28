@@ -3,7 +3,6 @@ import { useServices } from "../../../../../hooks";
 import { DefaultDialogFooter } from "../../../../../shared/components/base/base-dialog";
 import { CollectionCardDto } from "../../../../../shared/dto";
 import { CollectionCardDialogFooterProps } from "./collection-card-dialog.props";
-import { CollectionCardQuantityViewmodel } from "../../../../../shared/viewmodel/collection/collection-card-quantity.viewmodel";
 
 export function CollectionCardDialogFooter(props: CollectionCardDialogFooterProps): JSX.Element {
   //#region Hooks -------------------------------------------------------------
@@ -45,18 +44,18 @@ export function CollectionCardDialogFooter(props: CollectionCardDialogFooterProp
     return (
       <DefaultDialogFooter
         {...props}
-        showResetButton={false}
         commitButtonLabel="Create"
         onCommitButtonClick={createClick}
+        showResetButton={false}
       />
     );
   } else {
     return (
       <DefaultDialogFooter
         {...props}
-        showResetButton={true}
         commitButtonLabel="Save"
         onCommitButtonClick={updateClick}
+        showResetButton={true}
       />
     );
   }

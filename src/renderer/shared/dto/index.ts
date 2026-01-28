@@ -3,7 +3,7 @@ export * from "./advanced-card-search.dto";
 export * from "./api-info.dto";
 export * from "./base-card-list.dto";
 export * from "./card-filter-params.dto";
-export * from "./card-query-params.dto";
+export * from "./query-params.dto";
 export * from "./change-password-request.dto";
 export * from "./collection-card-list.dto";
 export * from "./collection-card-quantity.dto";

@@ -1,19 +1,24 @@
-import { isEqual, noop } from "lodash";
+import { isEqual } from "lodash";
 import { memo, useMemo } from "react";
 import { useServices } from "../../../../hooks";
-import { BaseLookupResult, GenericTextColumn, IBaseColumn, PagingView } from "../../../../shared/components/base/base-table";
-import { CardSetColumn, CardTableView, CollectiorNumberColumn, ColorIdentityColumn, ManaCostColumn } from "../../../../shared/components/card-table-view";
-import { CardQueryParamsDto, CollectionCardListDto, QueryResultDto } from "../../../../shared/dto";
+import {
+  BaseLookupResult, GenericTextColumn, IBaseColumn, PagingView, SortDirection
+} from "../../../../shared/components/base/base-table";
+import {
+  CardSetColumn, CardTableView, CollectiorNumberColumn, ColorIdentityColumn, ManaCostColumn
+} from "../../../../shared/components/card-table-view";
+import { CollectionCardListDto, QueryParamsDto, QueryResultDto } from "../../../../shared/dto";
+import { CardSortField } from "../../../../shared/types";
 import { CollectionCardListViewmodel } from "../../../../shared/viewmodel";
 import { CollectionViewCenterProps } from "./collection-view-center.props";
 
 const MemoCardTableView = memo(
   CardTableView<CollectionCardListViewmodel>,
-  (prev, next) => isEqual(prev.data, next.data) && isEqual(prev.sortableColumnDefinitions, next.sortableColumnDefinitions)
-
+  (prev, next) => isEqual(prev.data, next.data) &&
+    isEqual(prev.sortableColumnDefinitions, next.sortableColumnDefinitions)
 );
 
-export function CollectionViewCenter(props: CollectionViewCenterProps) {
+export function CollectionViewCenter(props: CollectionViewCenterProps): JSX.Element {
   //#region Hooks -------------------------------------------------------------
   const { viewmodelFactoryService } = useServices();
   //#endregion
@@ -60,7 +65,11 @@ export function CollectionViewCenter(props: CollectionViewCenterProps) {
         "Mana cost",
         "cmc",
         (card: CollectionCardListViewmodel) => {
-          return { defaultSortColumn: card.collectorNumberSortValue, convertedManaCost: card.convertedManaCost, symbols: card.manaCost };
+          return {
+            defaultSortColumn: card.collectorNumberSortValue,
+            convertedManaCost: card.convertedManaCost,
+            symbols: card.manaCost
+          };
         }
       ));
       result.push(new CardSetColumn<CollectionCardListViewmodel>(
@@ -69,7 +78,10 @@ export function CollectionViewCenter(props: CollectionViewCenterProps) {
         "setName",
         (card: CollectionCardListViewmodel) => {
           return {
-            defaultSortColumn: card.collectorNumberSortValue, cardSetName: card.setName, keyruneCode: card.setKeyruneCode, rarity: card.rarity
+            defaultSortColumn: card.collectorNumberSortValue,
+            cardSetName: card.setName,
+            keyruneCode: card.setKeyruneCode,
+            rarity: card.rarity
           };
         }
       ));
@@ -113,7 +125,10 @@ export function CollectionViewCenter(props: CollectionViewCenterProps) {
     },
     []
   );
-  const tableData = useMemo(() => getTableData(props.queryResult, props.cardQueryParams), [props.cardQueryParams, props.queryResult]);
+  const tableData = useMemo(
+    () => getTableData(props.queryResult, props.cardQueryParams),
+    [props.cardQueryParams, props.queryResult]
+  );
   // #endregion
 
   //#region Rendering ---------------------------------------------------------
@@ -122,32 +137,29 @@ export function CollectionViewCenter(props: CollectionViewCenterProps) {
       <MemoCardTableView
         // bodyContextMenuRenderer={(context: MenuContext) => contextMenu(context)}
         data={tableData}
-        onServerColumnSort={noop}
-        // onServerColumnSort={(columName: CardSortField, sortDirection: SortDirection) => props.onSortChanged(columName, sortDirection)}
-        onDataSelected={noop}
-        /*
-         * onDataSelected={
-         *   (cards?: Array<LibraryCardListViewmodel>) => {
-         *     props.onCardSelected(cards && cards.length > 0 ? cards[0].cardId : null);
-         *   }
-         * }
-         */
+        onServerColumnSort={(columName: CardSortField, sortDirection: SortDirection) =>
+          props.sortChanged(columName, sortDirection)}
+        onDataSelected={
+          (cards?: Array<CollectionCardListViewmodel>) => {
+            props.cardSelected(cards && cards.length > 0 ? cards[0].cardId : null);
+          }
+        }
         sortableColumnDefinitions={sortableColumnDefinitions}
         sortType="server"
       />
       <PagingView
-        hasMore={props.queryResult.hasMore}
         currentPageNumber={props.queryResult.currentPageNumber}
         currentPageSize={props.queryResult.currentPageSize}
-        currentPageChanged={noop}
-        // currentPageChanged={(newPage: number) => props.onCurrentPageChanged(newPage)}
-        currentPageSizeChanged={noop}
-        // currentPageSizeChanged={(newPageSize: number) => props.onCurrentPageSizeChanged(newPageSize)}
+        hasMore={props.queryResult.hasMore}
+        currentPageChanged={props.pageNumberChanged}
+        currentPageSizeChanged={props.pageSizeChanged}
       />
     </div>
   );
 
-  function getTableData(qryResult: QueryResultDto<CollectionCardListDto>, _cardQuery: CardQueryParamsDto): Array<CollectionCardListViewmodel> {
+  function getTableData(
+    qryResult: QueryResultDto<CollectionCardListDto>, _cardQuery: QueryParamsDto
+  ): Array<CollectionCardListViewmodel> {
     const result: Array<CollectionCardListViewmodel> = qryResult.resultList.map(
       (c: CollectionCardListDto) => viewmodelFactoryService.mtgCardViewmodelFactory.getCollectionCardlistViewmodel(c)
     );

@@ -1,24 +1,25 @@
 import { Tab, Tabs } from "@blueprintjs/core";
+import { noop } from "lodash";
 import { useMemo } from "react";
+import { usePreferences } from "../../../../hooks";
 import { useServices } from "../../../../hooks/use-services";
 import { AdvancedCardSearchView } from "../../../../shared/components/advanced-card-search-view/advanced-card-search-view";
 import { SetTreeView } from "../../../../shared/components/set-tree-view/set-tree-view";
-import { AdvancedCardSearchDto, CardFilterParamsDto, MtgSetTreeDto } from "../../../../shared/dto";
+import { AdvancedCardSearchDto, CardFilterParamsDto, CollectionDto, MtgSetTreeDto } from "../../../../shared/dto";
 import { MtgSetTreeConfigurationViewmodel } from "../../../../shared/viewmodel";
 import { LibraryViewLeftProps } from "./library-view-left.props";
-import { usePreferences } from "../../../../hooks";
 
 export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
-  const serviceContainer = useServices();
+  const { mtgSetService, viewmodelFactoryService } = useServices();
   const { preferences } = usePreferences();
   // #endregion#
 
   // #region memo -------------------------------------------------------------
   const cardSets = useMemo(
     () => {
-      return serviceContainer.mtgSetService.allSets.map(
-        (set: MtgSetTreeDto) => serviceContainer.viewmodelFactoryService.mtgSetViewmodelFactory
+      return mtgSetService.allSets.map(
+        (set: MtgSetTreeDto) => viewmodelFactoryService.mtgSetViewmodelFactory
           .getMtgSetTreeViewmodel(set)
       );
     },
@@ -34,7 +35,7 @@ export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
         className="left-panel-tabs"
         selectedTabId={props.currentSelectedSearchTab}
         renderActiveTabPanelOnly={true}
-        onChange={props.onSelectedSearchTabChanged}
+        onChange={props.selectedSearchTabChanged}
       >
         <Tab
           className="left-panel-tab-panel"
@@ -46,7 +47,7 @@ export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
                 {...props}
                 cardSets={cardSets}
                 configuration={new MtgSetTreeConfigurationViewmodel(preferences.librarySetTreeSettings)}
-                onSetsSelected={(sets: Array<MtgSetTreeDto>) => props.onSetSelectionChanged(sets, true)}
+                onSetsSelected={(sets: Array<MtgSetTreeDto>) => props.setSelectionChanged(sets, true)}
               />
             )
           }
@@ -59,12 +60,17 @@ export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
           panel={
             (
               <AdvancedCardSearchView
-                advancedCardSearch={{ cardFilterParams: props.cardFilterParams, cardSetFilter: props.cardSetFilter }}
-                onCardSetsChanged={(sets: Array<MtgSetTreeDto>) => props.onSetSelectionChanged(sets, false)}
-                onCardFilterParamsChanged={(filter: CardFilterParamsDto) => props.onCardFilterParamsChanged(filter)}
-                onSearch={
+                advancedCardSearch={{
+                  cardFilterParams: props.cardFilterParams,
+                  cardSetFilter: props.cardSetFilter,
+                  collectionFilter: new Array<CollectionDto>()
+                }}
+                cardSetsChanged={(sets: Array<MtgSetTreeDto>) => props.setSelectionChanged(sets, false)}
+                cardFilterParamsChanged={(filter: CardFilterParamsDto) => props.cardFilterParamsChanged(filter)}
+                collectionsChanged={noop}
+                search={
                   (cardSearch: AdvancedCardSearchDto) =>
-                    props.onSearch(cardSearch.cardSetFilter, cardSearch.cardFilterParams)
+                    props.search(cardSearch.cardSetFilter, cardSearch.cardFilterParams)
                 }
               />
             )

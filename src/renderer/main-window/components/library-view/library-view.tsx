@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Mosaic, MosaicNode } from "react-mosaic-component";
 import { useServices } from "../../../hooks";
 import { SortDirection } from "../../../shared/components/base/base-table";
-import { CardQueryParamsDto, LibraryCardListDto, MtgSetTreeDto, QueryResultDto } from "../../../shared/dto";
+import { QueryParamsDto, LibraryCardListDto, MtgSetTreeDto, QueryResultDto } from "../../../shared/dto";
 import { CardFilterParamsDto } from "../../../shared/dto/card-filter-params.dto";
 import { CardSortField } from "../../../shared/types";
 import { LibraryViewCenter } from "./library-view-center/library-view-center";
@@ -14,7 +14,7 @@ import { LibraryViewState } from "./library-view.state";
 
 export function LibraryView(props: LibraryViewProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
-  const containerService = useServices();
+  const { libraryCardSearchService: searchService } = useServices();
   // #endregion
 
   // #region State ------------------------------------------------------------
@@ -29,12 +29,12 @@ export function LibraryView(props: LibraryViewProps): JSX.Element {
     splitPercentage: 20,
   };
   const initialLibraryViewState: LibraryViewState = {
-    cardQueryParams: containerService.cardSearchService.libraryQueryParams,
-    cardFilterParams: containerService.cardSearchService.libraryFilterParams,
-    cardSetFilter: containerService.cardSearchService.librarySetFilter,
+    cardFilterParams: searchService.cardFilterParams,
+    queryParams: searchService.queryParams,
+    queryResult: searchService.queryResult,
     selectedCard: null,
-    queryResult: containerService.cardSearchService.libraryQueryResult,
-    currentSelectedSearchTab: containerService.cardSearchService.librarySelectedSearchTab
+    selectedSearchTab: searchService.selectedSearchTab,
+    setFilter: searchService.setFilter
   };
   const [mosaicLayout, setMosaicLayout] = useState<MosaicNode<string>>(initialLayout);
   const [state, setState] = useState<LibraryViewState>(initialLibraryViewState);
@@ -45,45 +45,45 @@ export function LibraryView(props: LibraryViewProps): JSX.Element {
     a: (
       <LibraryViewLeft
         cardFilterParams={state.cardFilterParams}
-        cardSetFilter={state.cardSetFilter}
-        currentSelectedSearchTab={state.currentSelectedSearchTab}
-        onSetSelectionChanged={
+        cardSetFilter={state.setFilter}
+        currentSelectedSearchTab={state.selectedSearchTab}
+        setSelectionChanged={
           (selection: Array<MtgSetTreeDto>, execute: boolean) => {
-            containerService.cardSearchService.librarySetFilter = selection;
+            searchService.setFilter = selection;
             if (execute) {
-              containerService.cardSearchService
-                .getLibraryCards(state.cardQueryParams, null, selection)
+              searchService
+                .getLibraryCards(null, state.queryParams, selection)
                 .then(
                   (resp: QueryResultDto<LibraryCardListDto>) => {
-                    containerService.cardSearchService.libraryQueryResult = resp;
-                    setState(prev => ({ ...prev, cardSetFilter: selection, queryResult: resp }));
+                    searchService.queryResult = resp;
+                    setState(prev => ({ ...prev, setFilter: selection, queryResult: resp }));
                   },
                   noop
                 );
             } else {
-              setState(prev => ({ ...prev, cardSetFilter: selection }));
+              setState(prev => ({ ...prev, setFilter: selection }));
             }
           }
         }
-        onCardFilterParamsChanged={
+        cardFilterParamsChanged={
           (cardFilterParams: CardFilterParamsDto) => {
-            containerService.cardSearchService.libraryFilterParams = cardFilterParams;
+            searchService.cardFilterParams = cardFilterParams;
             setState(prev => ({ ...prev, cardFilterParams: cardFilterParams }));
           }
         }
-        onSearch={
+        search={
           (sets: Array<MtgSetTreeDto>, filterParams: CardFilterParamsDto) => {
-            containerService.cardSearchService.librarySetFilter = sets;
-            containerService.cardSearchService.libraryFilterParams = filterParams;
-            containerService.cardSearchService
-              .getLibraryCards(state.cardQueryParams, filterParams, sets)
+            searchService.setFilter = sets;
+            searchService.cardFilterParams = filterParams;
+            searchService
+              .getLibraryCards(filterParams, state.queryParams, sets)
               .then(
                 (resp: QueryResultDto<LibraryCardListDto>) => {
-                  containerService.cardSearchService.libraryQueryResult = resp;
+                  searchService.queryResult = resp;
                   setState(prev => ({
                     ...prev,
                     cardFilterParams: filterParams,
-                    cardSetFilter: sets,
+                    setFilter: sets,
                     queryResult: resp
                   }));
                 },
@@ -91,58 +91,58 @@ export function LibraryView(props: LibraryViewProps): JSX.Element {
               );
           }
         }
-        onSelectedSearchTabChanged={
+        selectedSearchTabChanged={
           (newSelection: string | number) => {
-            containerService.cardSearchService.librarySelectedSearchTab = newSelection;
-            setState(prev => ({ ...prev, currentSelectedSearchTab: newSelection }));
+            searchService.selectedSearchTab = newSelection;
+            setState(prev => ({ ...prev, selectedSearchTab: newSelection }));
           }
         }
       />
     ),
     b: (
       <LibraryViewCenter
-        cardQueryParams={state.cardQueryParams}
+        cardQueryParams={state.queryParams}
         queryResult={state.queryResult}
-        onCardSelected={(cardId: number | null) => setState(prev => ({ ...prev, selectedCard: cardId }))}
-        onCurrentPageChanged={(newPage: number) => {
-          const newCardQueryParams: CardQueryParamsDto = { ...state.cardQueryParams, pageNumber: newPage };
-          containerService.cardSearchService.libraryQueryParams = newCardQueryParams;
-          containerService.cardSearchService
-            .getLibraryCards(newCardQueryParams, state.cardFilterParams, state.cardSetFilter)
+        cardSelected={(cardId: number | null) => setState(prev => ({ ...prev, selectedCard: cardId }))}
+        pageNumberChanged={(newPage: number) => {
+          const newCardQueryParams: QueryParamsDto = { ...state.queryParams, pageNumber: newPage };
+          searchService.queryParams = newCardQueryParams;
+          searchService
+            .getLibraryCards(state.cardFilterParams, newCardQueryParams, state.setFilter)
             .then(
               (resp: QueryResultDto<LibraryCardListDto>) => {
-                containerService.cardSearchService.libraryQueryResult = resp;
-                setState(prev => ({ ...prev, cardQueryParams: newCardQueryParams, queryResult: resp }));
+                searchService.queryResult = resp;
+                setState(prev => ({ ...prev, queryParams: newCardQueryParams, queryResult: resp }));
               },
               noop
             );
         }}
-        onCurrentPageSizeChanged={(newPageSize: number) => {
-          const newCardQueryParams: CardQueryParamsDto = { ...state.cardQueryParams, pageSize: newPageSize };
-          containerService.cardSearchService.libraryQueryParams = newCardQueryParams;
-          containerService.cardSearchService
-            .getLibraryCards(newCardQueryParams, state.cardFilterParams, state.cardSetFilter)
+        pageSizeChanged={(newPageSize: number) => {
+          const newCardQueryParams: QueryParamsDto = { ...state.queryParams, pageSize: newPageSize };
+          searchService.queryParams = newCardQueryParams;
+          searchService
+            .getLibraryCards(state.cardFilterParams, newCardQueryParams, state.setFilter)
             .then(
               (resp: QueryResultDto<LibraryCardListDto>) => {
-                containerService.cardSearchService.libraryQueryResult = resp;
-                setState(prev => ({ ...prev, cardQueryParams: newCardQueryParams, queryResult: resp }));
+                searchService.queryResult = resp;
+                setState(prev => ({ ...prev, queryParams: newCardQueryParams, queryResult: resp }));
               },
               noop
             );
         }}
-        onSortChanged={(fieldName: CardSortField, direction: SortDirection) => {
-          const newCardQueryParams: CardQueryParamsDto = {
-            ...state.cardQueryParams,
+        sortChanged={(fieldName: CardSortField, direction: SortDirection) => {
+          const newCardQueryParams: QueryParamsDto = {
+            ...state.queryParams,
             sortDirection: direction,
             sortField: fieldName
           };
-          containerService.cardSearchService.libraryQueryParams = newCardQueryParams;
-          containerService.cardSearchService
-            .getLibraryCards(newCardQueryParams, state.cardFilterParams, state.cardSetFilter)
+          searchService.queryParams = newCardQueryParams;
+          searchService
+            .getLibraryCards(state.cardFilterParams, newCardQueryParams, state.setFilter)
             .then(
               (resp: QueryResultDto<LibraryCardListDto>) => {
-                containerService.cardSearchService.libraryQueryResult = resp;
-                setState(prev => ({ ...prev, cardQueryParams: newCardQueryParams, queryResult: resp }));
+                searchService.queryResult = resp;
+                setState(prev => ({ ...prev, queryParams: newCardQueryParams, queryResult: resp }));
               },
               noop
             );

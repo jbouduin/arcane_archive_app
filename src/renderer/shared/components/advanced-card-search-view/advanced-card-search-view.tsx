@@ -10,7 +10,7 @@ import { BaseServerSelect } from "../base/base-server-select/base-server-select"
 import { CardSymbolRenderer } from "../card-symbol-renderer";
 import { AdvancedCardSearchViewProps } from "./advanced-card-search-view.props";
 
-export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps) {
+export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps): JSX.Element {
   // #region Context ----------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
@@ -30,7 +30,7 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps) {
   React.useEffect(
     () => {
       const container = document.querySelector(".left-panel-search-panel");
-      const handleScroll = () => {
+      const handleScroll: () => void = () => {
         setScrollVersion(v => v + 1); // triggers re-render
       };
       container?.addEventListener("scroll", handleScroll);
@@ -43,12 +43,12 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps) {
   // #region Event handling ---------------------------------------------------
   function onSelectOptionEvent(callBack: (viewModel: AdvancedCardSearchViewmodel) => void): void {
     callBack(searchViewmodel);
-    props.onCardFilterParamsChanged(searchViewmodel.dto.cardFilterParams);
+    props.cardFilterParamsChanged(searchViewmodel.dto.cardFilterParams);
   }
 
   function onSelectSetOptionEvent(callBack: (viewModel: AdvancedCardSearchViewmodel) => void): void {
     callBack(searchViewmodel);
-    props.onCardSetsChanged(searchViewmodel.dto.cardSetFilter);
+    props.cardSetsChanged(searchViewmodel.dto.cardSetFilter);
   }
   // #endregion
 
@@ -72,6 +72,8 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps) {
   );
   // #endregion
 
+  // NEXT add collections to advanced search
+
   // #region Rendering --------------------------------------------------------
   return (
     <div className="left-panel-search-panel">
@@ -81,9 +83,12 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps) {
         formGroupLabel="Set"
         itemComparer={(a: MtgSetTreeDto, b: MtgSetTreeDto) => a.id == b.id}
         selectedOptions={searchViewmodel.selectedSets}
-        onClearSelectedOptions={() => onSelectSetOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearCardSetSelection())}
-        onOptionAdded={(item: SelectOption<MtgSetTreeDto>) => onSelectSetOptionEvent((v: AdvancedCardSearchViewmodel) => v.addCardSet(item))}
-        onOptionRemoved={(item: SelectOption<MtgSetTreeDto>) => onSelectSetOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeCardSet(item))}
+        onClearSelectedOptions={() =>
+          onSelectSetOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearCardSetSelection())}
+        onOptionAdded={(item: SelectOption<MtgSetTreeDto>) =>
+          onSelectSetOptionEvent((v: AdvancedCardSearchViewmodel) => v.addCardSet(item))}
+        onOptionRemoved={(item: SelectOption<MtgSetTreeDto>) =>
+          onSelectSetOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeCardSet(item))}
         preTextElement={setImageRenderer}
         itemLabel={(option: SelectOption<MtgSetTreeDto>) => option.value.code}
       />
@@ -96,18 +101,24 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps) {
         serverBaseUrl="/public/catalog/CARD_NAMES/item"
         itemSort={(a: string, b: string) => a.localeCompare(b)}
         itemLabel={(item: string) => item}
-        onOptionAdded={(item: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addCardName(item))}
-        onOptionsRemoved={(item: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeCardName(item))}
-        onClearSelectedOptions={() => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearCardNameSelection())}
+        onOptionAdded={(item: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addCardName(item))}
+        onOptionsRemoved={(item: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeCardName(item))}
+        onClearSelectedOptions={() =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearCardNameSelection())}
       />
       <BaseMultiSelect<ColorDto>
         key={`card-color-select-${scrollVersion}`}
         allItems={searchViewmodel.allColors}
         formGroupLabel="Card color"
         itemComparer={(a: ColorDto, b: ColorDto) => a.id == b.id}
-        onClearSelectedOptions={() => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearColorSelection("card"))}
-        onOptionAdded={(color: SelectOption<ColorDto>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addColor("card", color))}
-        onOptionRemoved={(color: SelectOption<ColorDto>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeColor("card", color))}
+        onClearSelectedOptions={() =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearColorSelection("card"))}
+        onOptionAdded={(color: SelectOption<ColorDto>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addColor("card", color))}
+        onOptionRemoved={(color: SelectOption<ColorDto>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeColor("card", color))}
         selectedOptions={searchViewmodel.selectedCardColors}
         preTextElement={colorSymbolRenderer}
       />
@@ -116,9 +127,12 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps) {
         allItems={searchViewmodel.allColors}
         formGroupLabel="Produced mana color"
         itemComparer={(a: ColorDto, b: ColorDto) => a.id == b.id}
-        onClearSelectedOptions={() => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearColorSelection("produced_mana"))}
-        onOptionAdded={(color: SelectOption<ColorDto>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addColor("produced_mana", color))}
-        onOptionRemoved={(color: SelectOption<ColorDto>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeColor("produced_mana", color))}
+        onClearSelectedOptions={() =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearColorSelection("produced_mana"))}
+        onOptionAdded={(color: SelectOption<ColorDto>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addColor("produced_mana", color))}
+        onOptionRemoved={(color: SelectOption<ColorDto>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeColor("produced_mana", color))}
         selectedOptions={searchViewmodel.selectedProducedManaColors}
         preTextElement={colorSymbolRenderer}
       />
@@ -127,9 +141,12 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps) {
         allItems={searchViewmodel.allColors}
         formGroupLabel="Identity color"
         itemComparer={(a: ColorDto, b: ColorDto) => a.id == b.id}
-        onClearSelectedOptions={() => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearColorSelection("identity"))}
-        onOptionAdded={(color: SelectOption<ColorDto>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addColor("identity", color))}
-        onOptionRemoved={(color: SelectOption<ColorDto>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeColor("identity", color))}
+        onClearSelectedOptions={() =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearColorSelection("identity"))}
+        onOptionAdded={(color: SelectOption<ColorDto>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addColor("identity", color))}
+        onOptionRemoved={(color: SelectOption<ColorDto>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeColor("identity", color))}
         selectedOptions={searchViewmodel.selectedIdentityColors}
         preTextElement={colorSymbolRenderer}
       />
@@ -137,36 +154,48 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps) {
         allItems={searchViewmodel.allRarities}
         key={`rarity-select-${scrollVersion}`}
         formGroupLabel="Rarity"
-        onClearSelectedOptions={() => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearRaritiesSelection())}
-        onOptionAdded={(option: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addRarity(option))}
-        onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeRarity(option))}
+        onClearSelectedOptions={() =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearRaritiesSelection())}
+        onOptionAdded={(option: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addRarity(option))}
+        onOptionRemoved={(option: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeRarity(option))}
         selectedOptions={searchViewmodel.selectedRarities}
       />
       <BaseMultiSelect<string>
         allItems={searchViewmodel.allFormats}
         key={`game-format-select-${scrollVersion}`}
         formGroupLabel="Game Format"
-        onClearSelectedOptions={() => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearGameFormatSelection())}
-        onOptionAdded={(option: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addGameFormat(option))}
-        onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeGameFormat(option))}
+        onClearSelectedOptions={() =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearGameFormatSelection())}
+        onOptionAdded={(option: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addGameFormat(option))}
+        onOptionRemoved={(option: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeGameFormat(option))}
         selectedOptions={searchViewmodel.selectedGameFormats}
       />
       <BaseMultiSelect<string>
         allItems={searchViewmodel.allCardTypes}
         key={`card-type-select-${scrollVersion}`}
         formGroupLabel="Card type"
-        onClearSelectedOptions={() => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearCardTypeSelection())}
-        onOptionAdded={(option: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addCardType(option))}
-        onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeCardType(option))}
+        onClearSelectedOptions={() =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearCardTypeSelection())}
+        onOptionAdded={(option: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addCardType(option))}
+        onOptionRemoved={(option: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeCardType(option))}
         selectedOptions={searchViewmodel.selectedTypes}
       />
       <BaseMultiSelect<string>
         allItems={searchViewmodel.allSuperTypes}
         key={`super-type-select-${scrollVersion}`}
         formGroupLabel="Super-type"
-        onClearSelectedOptions={() => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearSuperTypeSelection())}
-        onOptionAdded={(option: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addSuperType(option))}
-        onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeSuperType(option))}
+        onClearSelectedOptions={() =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearSuperTypeSelection())}
+        onOptionAdded={(option: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addSuperType(option))}
+        onOptionRemoved={(option: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeSuperType(option))}
         selectedOptions={searchViewmodel.selectedSuperTypes}
       />
       <BaseServerSelect<string>
@@ -178,26 +207,35 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps) {
         serverBaseUrl="/public/card-sub-type"
         itemSort={(a: string, b: string) => a.localeCompare(b)}
         itemLabel={(item: string) => item}
-        onOptionAdded={(item: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addSubType(item))}
-        onOptionsRemoved={(item: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeSubType(item))}
-        onClearSelectedOptions={() => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearSubTypeSelection())}
+        onOptionAdded={(item: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addSubType(item))}
+        onOptionsRemoved={(item: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeSubType(item))}
+        onClearSelectedOptions={() =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearSubTypeSelection())}
       />
       <BaseMultiSelect<string>
         allItems={searchViewmodel.allPowers}
         key={`power-select-${scrollVersion}`}
         formGroupLabel="Power"
-        onClearSelectedOptions={() => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearPowerSelection())}
-        onOptionAdded={(option: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addPower(option))}
-        onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removePower(option))}
+        onClearSelectedOptions={() =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearPowerSelection())}
+        onOptionAdded={(option: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addPower(option))}
+        onOptionRemoved={(option: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removePower(option))}
         selectedOptions={searchViewmodel.selectedPowers}
       />
       <BaseMultiSelect<string>
         allItems={searchViewmodel.allToughnesses}
         key={`toughness-select-${scrollVersion}`}
         formGroupLabel="Toughness"
-        onClearSelectedOptions={() => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearToughnessSelection())}
-        onOptionAdded={(option: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addToughness(option))}
-        onOptionRemoved={(option: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeToughness(option))}
+        onClearSelectedOptions={() =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearToughnessSelection())}
+        onOptionAdded={(option: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addToughness(option))}
+        onOptionRemoved={(option: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeToughness(option))}
         selectedOptions={searchViewmodel.selectedToughnesses}
       />
       <BaseServerSelect<string>
@@ -209,9 +247,13 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps) {
         serverBaseUrl="/public/catalog/KEYWORD_ABILITIES/item"
         itemSort={(a: string, b: string) => a.localeCompare(b)}
         itemLabel={(item: string) => item}
-        onOptionAdded={(item: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addAbility(item))}
-        onOptionsRemoved={(item: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeAbility(item))}
-        onClearSelectedOptions={() => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearAbilitySelection())}
+        onOptionAdded={(item: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addAbility(item))}
+        onOptionsRemoved={(item: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeAbility(item))}
+        onClearSelectedOptions={
+          () => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearAbilitySelection())
+        }
       />
       <BaseServerSelect<string>
         key={`action-key-word-select-${scrollVersion}`}
@@ -222,13 +264,15 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps) {
         serverBaseUrl="/public/catalog/KEYWORD_ACTIONS/item"
         itemSort={(a: string, b: string) => a.localeCompare(b)}
         itemLabel={(item: string) => item}
-        onOptionAdded={(item: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addAction(item))}
-        onOptionsRemoved={(item: SelectOption<string>) => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeAction(item))}
+        onOptionAdded={(item: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addAction(item))}
+        onOptionsRemoved={(item: SelectOption<string>) =>
+          onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeAction(item))}
         onClearSelectedOptions={() => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearActionSelection())}
       />
       <Button
         icon="search"
-        onClick={() => props.onSearch(searchViewmodel.dto)}
+        onClick={() => props.search(searchViewmodel.dto)}
       >
         Search
       </Button>

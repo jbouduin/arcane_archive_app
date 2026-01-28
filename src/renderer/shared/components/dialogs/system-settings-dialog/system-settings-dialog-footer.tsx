@@ -13,7 +13,6 @@ export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProp
 
   // #region Event handling ---------------------------------------------------
   function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: SystemConfigurationDto): Promise<void> {
-
     return serviceContainer.configurationService.saveSystemSettings(dto)
       .then(
         (_r: SystemConfigurationDto) => {

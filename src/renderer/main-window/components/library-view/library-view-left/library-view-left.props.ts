@@ -7,8 +7,8 @@ export interface LibraryViewLeftProps extends Props {
   cardSetFilter: Array<MtgSetTreeDto>;
   currentSelectedSearchTab: string | number;
 
-  onSetSelectionChanged: (sets: Array<MtgSetTreeDto>, execute: boolean) => void;
-  onCardFilterParamsChanged: (cardFilterParams: CardFilterParamsDto) => void;
-  onSearch: (sets: Array<MtgSetTreeDto>, cardFilterParams: CardFilterParamsDto) => void;
-  onSelectedSearchTabChanged: (newSelectedSearchTab: string | number) => void;
+  setSelectionChanged: (sets: Array<MtgSetTreeDto>, execute: boolean) => void;
+  cardFilterParamsChanged: (cardFilterParams: CardFilterParamsDto) => void;
+  search: (sets: Array<MtgSetTreeDto>, cardFilterParams: CardFilterParamsDto) => void;
+  selectedSearchTabChanged: (newSelectedSearchTab: string | number) => void;
 }
