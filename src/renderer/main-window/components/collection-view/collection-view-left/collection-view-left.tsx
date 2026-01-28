@@ -5,21 +5,7 @@ import { CollectionTreeView } from "./collection-tree-view";
 import { CollectionViewLeftProps } from "./collection-view-left.props";
 
 export function CollectionViewLeft(props: CollectionViewLeftProps): JSX.Element {
-  // #region memo -------------------------------------------------------------
-  /*
-   * const cardSets = useMemo(
-   * () => {
-   *   return mtgSetService.allSets.map(
-   *     (set: MtgSetTreeDto) => viewmodelFactoryService.mtgSetViewmodelFactory
-   *       .getMtgSetTreeViewmodel(set)
-   *   );
-   * },
-   * []
-   * );
-   */
-  // #endregion
-
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <div className="mosaic-tile-content-wrapper">
       <Tabs
@@ -53,8 +39,9 @@ export function CollectionViewLeft(props: CollectionViewLeftProps): JSX.Element 
                 advancedCardSearch={{
                   cardFilterParams: props.cardFilterParams,
                   cardSetFilter: props.cardSetFilter,
-                  collectionFilter: new Array<CollectionDto>()
+                  collectionFilter: props.collectionFilter
                 }}
+                useCollections={true}
                 cardSetsChanged={props.setSelectionChanged}
                 cardFilterParamsChanged={(filter: CardFilterParamsDto) => props.cardFilterParamsChanged(filter)}
                 collectionsChanged={(selectedData: Array<CollectionDto>) =>

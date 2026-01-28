@@ -3,6 +3,7 @@ import { AdvancedCardSearchDto, CardFilterParamsDto, CollectionDto, MtgSetTreeDt
 
 export interface AdvancedCardSearchViewProps extends Props {
   advancedCardSearch: AdvancedCardSearchDto;
+  useCollections?: boolean;
 
   cardSetsChanged: (sets: Array<MtgSetTreeDto>) => void;
   collectionsChanged: (collections: Array<CollectionDto>) => void;

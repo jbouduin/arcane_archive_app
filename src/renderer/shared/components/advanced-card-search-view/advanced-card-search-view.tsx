@@ -2,7 +2,7 @@ import { Button } from "@blueprintjs/core";
 import classNames from "classnames";
 import React from "react";
 import { useServices } from "../../../hooks";
-import { ColorDto, MtgSetTreeDto } from "../../dto";
+import { CollectionDto, ColorDto, MtgSetTreeDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { AdvancedCardSearchViewmodel } from "../../viewmodel";
 import { BaseMultiSelect } from "../base/base-multi-select/base-multi-select";
@@ -11,11 +11,11 @@ import { CardSymbolRenderer } from "../card-symbol-renderer";
 import { AdvancedCardSearchViewProps } from "./advanced-card-search-view.props";
 
 export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps): JSX.Element {
-  // #region Context ----------------------------------------------------------
+  //#region Context -----------------------------------------------------------
   const serviceContainer = useServices();
-  // #endregion
+  //#endregion
 
-  // #region State ------------------------------------------------------------
+  //#region State -------------------------------------------------------------
   const searchViewmodel = serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory
     .getAdvancedCardSearchViewmodel(props.advancedCardSearch, serviceContainer);
   /**
@@ -24,9 +24,9 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps): JSX.
    * re-render the selects
    */
   const [scrollVersion, setScrollVersion] = React.useState(0);
-  // #endregion
+  //#endregion
 
-  // #region Effects ----------------------------------------------------------
+  //#region Effects -----------------------------------------------------------
   React.useEffect(
     () => {
       const container = document.querySelector(".left-panel-search-panel");
@@ -38,9 +38,9 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps): JSX.
     },
     []
   );
-  // #endregion
+  //#endregion
 
-  // #region Event handling ---------------------------------------------------
+  //#region Event handling ----------------------------------------------------
   function onSelectOptionEvent(callBack: (viewModel: AdvancedCardSearchViewmodel) => void): void {
     callBack(searchViewmodel);
     props.cardFilterParamsChanged(searchViewmodel.dto.cardFilterParams);
@@ -50,9 +50,9 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps): JSX.
     callBack(searchViewmodel);
     props.cardSetsChanged(searchViewmodel.dto.cardSetFilter);
   }
-  // #endregion
+  //#endregion
 
-  // #region Memo -------------------------------------------------------------
+  //#region Memo --------------------------------------------------------------
   const setImageRenderer = React.useCallback(
     (option: SelectOption<MtgSetTreeDto>) => (
       <i
@@ -70,13 +70,29 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps): JSX.
     ),
     []
   );
-  // #endregion
+  //#endregion
 
-  // NEXT add collections to advanced search
-
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <div className="left-panel-search-panel">
+      {
+        props.useCollections && (
+          <BaseMultiSelect<CollectionDto>
+            allItems={searchViewmodel.allCollections}
+            key={`collection-set-select-${scrollVersion}`}
+            formGroupLabel="Collection"
+            itemComparer={(a: CollectionDto, b: CollectionDto) => a.id == b.id}
+            selectedOptions={searchViewmodel.selectedCollections}
+            onClearSelectedOptions={() =>
+              onSelectSetOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearCollectionSelection())}
+            onOptionAdded={(item: SelectOption<CollectionDto>) =>
+              onSelectSetOptionEvent((v: AdvancedCardSearchViewmodel) => v.addCollection(item))}
+            onOptionRemoved={(item: SelectOption<CollectionDto>) =>
+              onSelectSetOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeCollection(item))}
+            itemLabel={(option: SelectOption<CollectionDto>) => option.value.code}
+          />
+        )
+      }
       <BaseMultiSelect<MtgSetTreeDto>
         allItems={searchViewmodel.allCardSets}
         key={`card-set-select-${scrollVersion}`}
@@ -278,5 +294,5 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps): JSX.
       </Button>
     </div>
   );
-  // #endregion
+  //#endregion
 }

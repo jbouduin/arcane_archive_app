@@ -142,6 +142,7 @@ export class ServiceContainer implements IServiceContainer {
     this._arcaneArchiveProxy.initializeSubscriptions(this._sessionService, this._configurationService);
     this._ipcProxy.initializeSubscriptions(this._configurationService);
     this._sessionService.initializeSubscriptions(this._arcaneArchiveProxy, this._ipcProxy);
+    this._collectionSerivce.initializeSubscriptions(this._sessionService);
 
     // --- show toast "interceptor" to be used during initialization ---
     const initializationShowToast: ShowToastFn = (props: ToastProps, _key?: string) => {
