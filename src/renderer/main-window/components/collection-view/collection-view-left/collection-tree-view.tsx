@@ -32,6 +32,14 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
   //#endregion
 
   //#region Event Handling ----------------------------------------------------
+  function onAddCollection(parentCollection: CollectionDto | null, parentPath: Array<string>): void {
+    showNewCollectionDialog(serviceContainer, "COLLECTION", parentCollection, parentPath, onCollectionAdded);
+  }
+
+  function onAddFolder(parentCollection: CollectionDto | null, parentPath: Array<string>): void {
+    showNewCollectionDialog(serviceContainer, "FOLDER", parentCollection, parentPath, onCollectionAdded);
+  }
+
   function onCollectionAdded(dto: CollectionDto): void {
     const viewmodel = serviceContainer.viewmodelFactoryService.collectionViewmodelFactory
       .getCollectionTreeViewmodel(dto);
@@ -82,14 +90,6 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
   ): void {
     showEditCollectionDialog(serviceContainer, collection, parentCollection, parentPath, onCollectionModified);
   }
-
-  function onAddFolder(parentCollection: CollectionDto | null, parentPath: Array<string>): void {
-    showNewCollectionDialog(serviceContainer, "FOLDER", parentCollection, parentPath, onCollectionAdded);
-  }
-
-  function onAddCollection(parentCollection: CollectionDto | null, parentPath: Array<string>): void {
-    showNewCollectionDialog(serviceContainer, "COLLECTION", parentCollection, parentPath, onCollectionAdded);
-  }
   //#endregion
 
   //#region Effects -----------------------------------------------------------
@@ -120,23 +120,23 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
             <Menu>
               <MenuItem
                 key="add-folder"
+                text="Add Folder"
                 onClick={
                   (e) => {
                     e.preventDefault();
                     onAddFolder(null, new Array<string>());
                   }
                 }
-                text="Add Folder"
               />
               <MenuItem
                 key="add-collection"
+                text="Add Collection"
                 onClick={
                   (e) => {
                     e.preventDefault();
                     onAddCollection(null, new Array<string>());
                   }
                 }
-                text="Add Collection"
               />
             </Menu>
           )
@@ -148,7 +148,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
           buildTree={buildTree}
           onDataSelected={
             (collections: Array<CollectionTreeViewmodel>) =>
-              props.onCollectionSelected(collections.map((c: CollectionTreeViewmodel) => c.dto))
+              props.collectionSelected(collections.map((c: CollectionTreeViewmodel) => c.dto), true)
           }
         />
       </ContextMenu>

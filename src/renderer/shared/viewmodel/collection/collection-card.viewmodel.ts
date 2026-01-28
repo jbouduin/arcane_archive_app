@@ -33,6 +33,15 @@ export class CollectionCardViewmodel extends BaseViewmodel<CollectionCardDto> {
   }
   //#endregion
 
+  //#region BaseViewmodel Members ---------------------------------------------
+  override get dtoToSave(): CollectionCardDto {
+    return {
+      ...this._dto,
+      quantities: this.getChangedQuantityViewmodels().map((vm: CollectionCardQuantityViewmodel) => vm.dto)
+    };
+  }
+  //#endregion
+
   //#region Constructor & C° --------------------------------------------------
   public constructor(dto: CollectionCardDto, mode: ViewmodelMode, cardConditions: Array<SelectOption<string>>) {
     super(dto, mode);

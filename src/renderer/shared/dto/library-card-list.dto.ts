@@ -1,19 +1,5 @@
-import { MasterDataDto } from "../../../common/dto";
+import { BaseCardListDto } from "./base-card-list.dto";
 
-export type LibraryCardListDto = MasterDataDto<string> & {
-  id: number;
-  mtgSetId: number;
-  cardName: string;
-  convertedManaCost: number;
-  collectorNumber: string;
-  rarity: string;
-  type: string;
-  manaCost: Array<string>;
-  power: string;
-  toughness: string;
-  colorIdentities: Array<string>;
+export type LibraryCardListDto = BaseCardListDto & {
   languages: Array<string>;
-  collectorNumberSortValue: string;
-  colorIdentitiesSortValue: string;
-  raritySortValue: number;
 };

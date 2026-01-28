@@ -1,12 +1,13 @@
 import { addSelectOption, clearSelection, removeSelectOption } from "../../components/util";
 import { IServiceContainer } from "../../context";
-import { AdvancedCardSearchDto, ColorDto, MtgSetTreeDto } from "../../dto";
+import { AdvancedCardSearchDto, CollectionDto, ColorDto, MtgSetTreeDto } from "../../dto";
 import { ColorType, SelectOption } from "../../types";
 
 export class AdvancedCardSearchViewmodel {
-  // #region Private fields ---------------------------------------------------
+  //#region Private fields ----------------------------------------------------
   private _dto: AdvancedCardSearchDto;
   private _allCardSets: Array<SelectOption<MtgSetTreeDto>>;
+  private _allCollections: Array<SelectOption<CollectionDto>>;
   private _allColors: Array<SelectOption<ColorDto>>;
   private _allRarities: Array<SelectOption<string>>;
   private _allGameFormats: Array<SelectOption<string>>;
@@ -18,6 +19,7 @@ export class AdvancedCardSearchViewmodel {
   private _selectedActions: Array<SelectOption<string>>;
   private _selectedCardColors: Array<SelectOption<ColorDto>>;
   private _selectedCardNames: Array<SelectOption<string>>;
+  private _selectedCollections: Array<SelectOption<CollectionDto>>;
   private _selectedIdentityColors: Array<SelectOption<ColorDto>>;
   private _selectedGameFormats: Array<SelectOption<string>>;
   private _selectedPowers: Array<SelectOption<string>>;
@@ -28,9 +30,9 @@ export class AdvancedCardSearchViewmodel {
   private _selectedSuperTypes: Array<SelectOption<string>>;
   private _selectedToughnesses: Array<SelectOption<string>>;
   private _selectedTypes: Array<SelectOption<string>>;
-  // #endregion
+  //#endregion
 
-  // #region Getters - Setters --------------------------------------------------
+  //#region Getters - Setters -------------------------------------------------
   public get selectedAbilities(): Array<SelectOption<string>> {
     return this._selectedAbilities;
   }
@@ -45,6 +47,10 @@ export class AdvancedCardSearchViewmodel {
 
   public get selectedCardNames(): Array<SelectOption<string>> {
     return this._selectedCardNames;
+  }
+
+  public get selectedCollections(): Array<SelectOption<CollectionDto>> {
+    return this._selectedCollections;
   }
 
   public get selectedIdentityColors(): Array<SelectOption<ColorDto>> {
@@ -95,6 +101,10 @@ export class AdvancedCardSearchViewmodel {
     return this._allColors;
   }
 
+  public get allCollections(): Array<SelectOption<CollectionDto>> {
+    return this._allCollections;
+  }
+
   public get allRarities(): Array<SelectOption<string>> {
     return this._allRarities;
   }
@@ -122,14 +132,15 @@ export class AdvancedCardSearchViewmodel {
   public get dto(): AdvancedCardSearchDto {
     return this._dto;
   }
-  // #endregion
+  //#endregion
 
-  // #region Constructor ------------------------------------------------------
+  //#region Constructor -------------------------------------------------------
   public constructor(dto: AdvancedCardSearchDto, serviceContainer: IServiceContainer) {
     this._dto = dto;
     // --- set all select options ---
     this._allCardSets = serviceContainer.mtgSetService.getSelectOptions();
     this._allColors = serviceContainer.colorService.getSelectOptions();
+    this._allCollections = serviceContainer.collectionService.getSelectOptions();
     this._allRarities = serviceContainer.displayValueService.getSelectOptions("rarity");
     this._allGameFormats = serviceContainer.displayValueService.getSelectOptions("gameFormat");
     this._allSuperTypes = serviceContainer.displayValueService.getSelectOptions("superType");
@@ -140,6 +151,7 @@ export class AdvancedCardSearchViewmodel {
     this._selectedAbilities = dto.cardFilterParams.abilities.map((value: string) => ({ value: value, label: value }));
     this._selectedActions = dto.cardFilterParams.actions.map((value: string) => ({ value: value, label: value }));
     this._selectedCardColors = this.initializeSelected(this._allColors, dto.cardFilterParams.cardColors);
+    this._selectedCollections = this.initializeSelected(this._allCollections, dto.collectionFilter);
     this._selectedCardNames = dto.cardFilterParams.cardNames.map((value: string) => ({ value: value, label: value }));
     this._selectedGameFormats = this.initializeSelected(this._allGameFormats, dto.cardFilterParams.gameFormats);
     this._selectedIdentityColors = this.initializeSelected(this._allColors, dto.cardFilterParams.identityColors);
@@ -161,9 +173,9 @@ export class AdvancedCardSearchViewmodel {
     result.push(...allValues.filter((o: SelectOption<T>) => selected.includes(o.value)));
     return result;
   }
-  // #endregion
+  //#endregion
 
-  // #region CardColors -------------------------------------------------------
+  //#region CardColors --------------------------------------------------------
   public addColor(type: ColorType, color: SelectOption<ColorDto>): void {
     switch (type) {
       case "card":
@@ -232,9 +244,9 @@ export class AdvancedCardSearchViewmodel {
         break;
     }
   }
-  // #endregion
+  //#endregion
 
-  // #region Ability ----------------------------------------------------------
+  //#region Ability -----------------------------------------------------------
   public addAbility(ability: SelectOption<string>): void {
     addSelectOption(this._dto.cardFilterParams.abilities, this._selectedAbilities, ability);
   }
@@ -246,9 +258,9 @@ export class AdvancedCardSearchViewmodel {
   public clearAbilitySelection(): void {
     clearSelection(this._dto.cardFilterParams.abilities, this._selectedAbilities);
   }
-  // #endregion
+  //#endregion
 
-  // #region Actions ----------------------------------------------------------
+  //#region Actions -----------------------------------------------------------
   public addAction(action: SelectOption<string>): void {
     addSelectOption(this._dto.cardFilterParams.actions, this._selectedActions, action);
   }
@@ -260,9 +272,23 @@ export class AdvancedCardSearchViewmodel {
   public clearActionSelection(): void {
     clearSelection(this._dto.cardFilterParams.actions, this._selectedActions);
   }
-  // #endregion
+  //#endregion
 
-  // #region CardName -----------------------------------------------------------
+  //#region Collection --------------------------------------------------------
+  public addCollection(collection: SelectOption<CollectionDto>): void {
+    addSelectOption(this._dto.collectionFilter, this._selectedCollections, collection);
+  }
+
+  public removeCollection(collection: SelectOption<CollectionDto>): void {
+    removeSelectOption(this._dto.collectionFilter, this._selectedCollections, collection);
+  }
+
+  public clearCollectionSelection(): void {
+    clearSelection(this._dto.collectionFilter, this._selectedCollections);
+  }
+  //#endregion
+
+  //#region CardName ----------------------------------------------------------
   public addCardName(cardName: SelectOption<string>): void {
     addSelectOption(this._dto.cardFilterParams.cardNames, this._selectedCardNames, cardName);
   }
@@ -274,9 +300,9 @@ export class AdvancedCardSearchViewmodel {
   public clearCardNameSelection(): void {
     clearSelection(this._dto.cardFilterParams.cardNames, this._selectedCardNames);
   }
-  // #endregion
+  //#endregion
 
-  // #region GameFormat -------------------------------------------------------
+  //#region GameFormat --------------------------------------------------------
   public addGameFormat(gameFormat: SelectOption<string>): void {
     addSelectOption(this._dto.cardFilterParams.gameFormats, this._selectedGameFormats, gameFormat);
   }
@@ -288,9 +314,9 @@ export class AdvancedCardSearchViewmodel {
   public clearGameFormatSelection(): void {
     clearSelection(this._dto.cardFilterParams.gameFormats, this._selectedGameFormats);
   }
-  // #endregion
+  //#endregion
 
-  // #region Rarity -----------------------------------------------------------
+  //#region Rarity ------------------------------------------------------------
   public addRarity(rarity: SelectOption<string>): void {
     addSelectOption(this._dto.cardFilterParams.rarities, this._selectedRarities, rarity);
   }
@@ -302,9 +328,9 @@ export class AdvancedCardSearchViewmodel {
   public clearRaritiesSelection(): void {
     clearSelection(this._dto.cardFilterParams.rarities, this._selectedRarities);
   }
-  // #endregion
+  //#endregion
 
-  // #region Card set ---------------------------------------------------------
+  //#region Card set ----------------------------------------------------------
   public addCardSet(cardSet: SelectOption<MtgSetTreeDto>): void {
     addSelectOption(this._dto.cardSetFilter, this._selectedSets, cardSet);
   }
@@ -316,9 +342,9 @@ export class AdvancedCardSearchViewmodel {
   public clearCardSetSelection(): void {
     clearSelection(this._dto.cardSetFilter, this._selectedSets);
   }
-  // #endregion
+  //#endregion
 
-  // #region Subtypes ---------------------------------------------------------
+  //#region Subtypes ----------------------------------------------------------
   public addSubType(subtype: SelectOption<string>): void {
     addSelectOption(this._dto.cardFilterParams.subTypes, this._selectedSubTypes, subtype);
   }
@@ -330,9 +356,9 @@ export class AdvancedCardSearchViewmodel {
   public clearSubTypeSelection(): void {
     clearSelection(this._dto.cardFilterParams.subTypes, this._selectedSubTypes);
   }
-  // #endregion
+  //#endregion
 
-  // #region Card Types -------------------------------------------------------
+  //#region Card Types --------------------------------------------------------
   public addCardType(cardType: SelectOption<string>): void {
     addSelectOption(this._dto.cardFilterParams.types, this._selectedTypes, cardType);
   }
@@ -345,9 +371,9 @@ export class AdvancedCardSearchViewmodel {
     clearSelection(this._dto.cardFilterParams.types, this._selectedTypes);
   }
 
-  // #endregion
+  //#endregion
 
-  // #region SuperTypes -------------------------------------------------------
+  //#region SuperTypes --------------------------------------------------------
   public addSuperType(superType: SelectOption<string>): void {
     addSelectOption(this._dto.cardFilterParams.superTypes, this._selectedSuperTypes, superType);
   }
@@ -359,9 +385,9 @@ export class AdvancedCardSearchViewmodel {
   public clearSuperTypeSelection(): void {
     clearSelection(this._dto.cardFilterParams.superTypes, this._selectedSuperTypes);
   }
-  // #endregion
+  //#endregion
 
-  // #region Powers -----------------------------------------------------------
+  //#region Powers ------------------------------------------------------------
   public addPower(power: SelectOption<string>): void {
     addSelectOption(this._dto.cardFilterParams.powers, this.selectedPowers, power);
   }
@@ -373,9 +399,9 @@ export class AdvancedCardSearchViewmodel {
   public clearPowerSelection(): void {
     clearSelection(this._dto.cardFilterParams.powers, this.selectedPowers);
   }
-  // #endregion
+  //#endregion
 
-  // #region Toughnesses ------------------------------------------------------
+  //#region Toughnesses -------------------------------------------------------
   public addToughness(toughness: SelectOption<string>): void {
     addSelectOption(this._dto.cardFilterParams.toughnesses, this._selectedToughnesses, toughness);
   }
@@ -387,5 +413,5 @@ export class AdvancedCardSearchViewmodel {
   public clearToughnessSelection(): void {
     clearSelection(this._dto.cardFilterParams.toughnesses, this._selectedToughnesses);
   }
-  // #endregion
+  //#endregion
 }

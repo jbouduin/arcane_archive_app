@@ -2,26 +2,27 @@ import { SettingsDto as _ConfigurationDto } from "../../../../common/dto";
 import { LanguageDto as _LanguageDto, MtgSetTreeDto as _MtgSetTreeDto } from "../../dto";
 import { InitializeServiceContainerOptions, ShowToastFn } from "../../types";
 import { InitializationResult } from "../types";
-import { ICardSearchService } from "./card-search.service";
-import { ICardSymbolService } from "./card-symbol.service";
 import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
+import { ICardSymbolService } from "./card-symbol.service";
+import { ICollectionCardSearchService } from "./collection-card-search.service";
+import { ICollectionService } from "./collection.service";
 import { IColorService } from "./color.service";
 import { IConfigurationService } from "./configuration.service";
 import { IDisplayValueService } from "./display-value.service";
 import { IIpcProxy } from "./ipc-proxy";
 import { ILanguageService } from "./language.service";
+import { ILibraryCardSearchService } from "./library-card-search.service";
 import { ILogService } from "./log.service";
 import { IMtgSetService } from "./mtg-set.service";
 import { IOverlayService } from "./overlay.service";
 import { ISessionService } from "./session.service";
 import { IViewmodelFactoryService } from "./viewmodel-factory.service";
-import { ICollectionService } from "./collection.service";
 
 export interface IServiceContainer {
   /**
-   * Service that caches card search params
+   * Arcane Archive back end proxy
    */
-  readonly cardSearchService: ICardSearchService;
+  readonly arcaneArchiveProxy: IArcaneArchiveProxy;
 
   /**
    * Service that caches the card symbol svg's
@@ -29,14 +30,14 @@ export interface IServiceContainer {
   readonly cardSymbolService: ICardSymbolService;
 
   /**
-   * Arcane Archive back end proxy
-   */
-  readonly arcaneArchiveProxy: IArcaneArchiveProxy;
-
-  /**
    * Collection service
    */
   readonly collectionService: ICollectionService;
+
+  /**
+   * Service to search collection cards. Also serves as cache for queryparams and result.
+   */
+  readonly collectionCardSearchService: ICollectionCardSearchService;
 
   /**
    * Service that caches ColorDtos
@@ -49,11 +50,6 @@ export interface IServiceContainer {
   readonly configurationService: IConfigurationService;
 
   /**
-   * Service that displays dialogs, toasts, alert, and splash screen
-   */
-  readonly overlayService: IOverlayService;
-
-  /**
    * Dictionaries with display values for enums.
    */
   readonly displayValueService: IDisplayValueService;
@@ -62,6 +58,16 @@ export interface IServiceContainer {
    * Proxy to use Ipc Channels. Processes the response and displays a toast in case of error response.
    */
   readonly ipcProxy: IIpcProxy;
+
+  /**
+   * Service that caches all {@link _LanguageDto LanguageDto}
+   */
+  readonly languageService: ILanguageService;
+
+  /**
+   * Service to search library cards. Also serves as cache for queryparams and result.
+   */
+  readonly libraryCardSearchService: ILibraryCardSearchService;
 
   /**
    * Log service
@@ -74,9 +80,9 @@ export interface IServiceContainer {
   readonly mtgSetService: IMtgSetService;
 
   /**
-   * Service that caches all {@link _LanguageDto LanguageDto}
+   * Service that displays dialogs, toasts, alert, and splash screen
    */
-  readonly languageService: ILanguageService;
+  readonly overlayService: IOverlayService;
 
   /**
    * Session service

@@ -33,6 +33,11 @@ export abstract class BaseViewmodel<Dto extends object> {
     return this._dto;
   }
 
+  /** Override this one if there are child viewmodels */
+  public get dtoToSave(): Dto {
+    return this._dto;
+  }
+
   public get hasChanges(): boolean {
     let result = !isEqual(this._dto, this._org);
     if (this._childViewmodels.length > 0) {

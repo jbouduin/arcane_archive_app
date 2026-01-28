@@ -3,7 +3,6 @@ import { useServices } from "../../../../../hooks";
 import { DefaultDialogFooter } from "../../../../../shared/components/base/base-dialog";
 import { CollectionCardDto } from "../../../../../shared/dto";
 import { CollectionCardDialogFooterProps } from "./collection-card-dialog.props";
-import { CollectionCardQuantityViewmodel } from "../../../../../shared/viewmodel/collection/collection-card-quantity.viewmodel";
 
 export function CollectionCardDialogFooter(props: CollectionCardDialogFooterProps): JSX.Element {
   //#region Hooks -------------------------------------------------------------
@@ -12,17 +11,8 @@ export function CollectionCardDialogFooter(props: CollectionCardDialogFooterProp
 
   //#region Event Handling ----------------------------------------------------
   function createClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: CollectionCardDto): Promise<void> {
-    // NOW move this to viewmodel as getDtoToSave() which returns the dto in the baseviewmodel and override in subclasses
-    const toSave: CollectionCardDto = {
-      id: null,
-      collectionId: dto.collectionId,
-      setCode: dto.setCode,
-      collectorNumber: dto.collectorNumber,
-      language: dto.language,
-      quantities: props.viewmodel.getChangedQuantityViewmodels().map((vm: CollectionCardQuantityViewmodel) => vm.dto)
-    };
     return collectionService
-      .createCollectionCard(toSave)
+      .createCollectionCard(dto)
       .then(
         (_resp: CollectionCardDto) => {
           // props.onCollectionAdded(resp);
@@ -54,18 +44,18 @@ export function CollectionCardDialogFooter(props: CollectionCardDialogFooterProp
     return (
       <DefaultDialogFooter
         {...props}
-        showResetButton={false}
         commitButtonLabel="Create"
         onCommitButtonClick={createClick}
+        showResetButton={false}
       />
     );
   } else {
     return (
       <DefaultDialogFooter
         {...props}
-        showResetButton={true}
         commitButtonLabel="Save"
         onCommitButtonClick={updateClick}
+        showResetButton={true}
       />
     );
   }

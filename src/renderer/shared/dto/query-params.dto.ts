@@ -1,9 +1,9 @@
 import { SortDirection } from "../components/base/base-table";
 import { CardSortField } from "../types";
 
-export type CardQueryParamsDto = {
-  pageSize: number;
+export type QueryParamsDto = {
   pageNumber: number;
-  sortField: CardSortField;
+  pageSize: number;
   sortDirection: SortDirection;
+  sortField: CardSortField;
 };

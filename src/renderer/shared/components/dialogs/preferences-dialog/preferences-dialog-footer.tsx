@@ -11,9 +11,9 @@ export function PreferencesDialogFooter(props: PreferencesDialogFooterProps): JS
   // #endregion
 
   // #region Event handling ---------------------------------------------------
-  function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, _dto: PreferencesDto): Promise<void> {
+  function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: PreferencesDto): Promise<void> {
     return configurationService
-      .savePreferences(arcaneArchiveProxy, props.viewmodel.dto, loggedIn)
+      .savePreferences(arcaneArchiveProxy, dto, loggedIn)
       .then(
         (_resp: PreferencesDto) => {
           if (props.onClose) {

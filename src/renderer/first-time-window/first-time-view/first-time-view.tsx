@@ -42,10 +42,10 @@ export function FirstTimeView(props: FirstTimeViewProps): JSX.Element {
     Promise.all([
       serviceContainer.configurationService.savePreferences(
         serviceContainer.arcaneArchiveProxy,
-        preferencesViewmodelRef.current.dto,
+        preferencesViewmodelRef.current.dtoToSave,
         loggedIn
       ),
-      serviceContainer.configurationService.saveSystemSettings(systemSettingsViewmodelRef.current.dto)
+      serviceContainer.configurationService.saveSystemSettings(systemSettingsViewmodelRef.current.dtoToSave)
     ]).then(
       () => window.close(),
       noop

@@ -14,7 +14,7 @@ export function RegisterPanel(props: RegisterPanelProps) {
   // #region Event handling ---------------------------------------------------
   function registerClick() {
     return serviceContainer.sessionService
-      .register(serviceContainer.arcaneArchiveProxy, props.viewmodel.dto)
+      .register(serviceContainer.arcaneArchiveProxy, props.viewmodel.dtoToSave)
       .then(
         () => props.navigateTo("login"),
         noop

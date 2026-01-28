@@ -1,17 +1,5 @@
-export type CollectionCardListDto = {
-  id: number;
-  mtgSetId: number;
-  cardName: string;
-  convertedManaCost: number;
-  collectorNumber: string;
-  rarity: string;
-  type: string;
-  manaCost: Array<string>;
-  power: string;
-  toughness: string;
-  colorIdentities: Array<string>;
+import { BaseCardListDto } from "./base-card-list.dto";
+
+export type CollectionCardListDto = BaseCardListDto & {
   language: string;
-  collectorNumberSortValue: string;
-  colorIdentitiesSortValue: string;
-  raritySortValue: number;
 };
