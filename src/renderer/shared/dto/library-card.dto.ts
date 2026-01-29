@@ -17,10 +17,10 @@ export type LibraryCardDto = MasterDataDto<string> & AuditableDto & {
   colorIdentities: Array<string>;
   rarity: string;
   layout: CardLayout;
-  finishes: Array<string>;
-  games: Array<string>;
+  // finishes: Array<string>;
+  // games: Array<string>;
   releasedAt: Date;
-  externalReferences: Array<LibraryExternalReferenceDto>;
+  // externalReferences: Array<LibraryExternalReferenceDto>;
   legalities: Array<LibraryLegality>;
   cardfaces: Array<LibraryCardfaceDto>;
   cardLanguages: Array<LibraryCardLanguageDto>;
