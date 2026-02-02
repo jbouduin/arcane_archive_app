@@ -1,8 +1,8 @@
 import { LogLevel } from "../enums";
-import { ArcanArchiveServer } from "./arcane-archive-server";
+import { ArcaneArchiveServer } from "./arcane-archive-server";
 
 export type MainLogSource = "Main" | "Renderer" | "API" | "DB";
-export type ResponseLogSource = ArcanArchiveServer | "IPC";
+export type ResponseLogSource = ArcaneArchiveServer | "IPC";
 export type LogSetting<T> = {
   source: T;
   level: LogLevel;

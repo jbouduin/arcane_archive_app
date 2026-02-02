@@ -2,11 +2,11 @@ import { Icon, MaybeElement, Section, Text } from "@blueprintjs/core";
 import { cloneDeep } from "lodash";
 import { useState } from "react";
 import { versionInfo } from "../../../../../common/dto/arcane-archive/version-info";
-import { ArcanArchiveServer } from "../../../../../common/types";
+import { ArcaneArchiveServer } from "../../../../../common/types";
 import { LabelValuePanel } from "../../base/label-value-panel";
 import { SystemInfoDialogBodyProps } from "./system-info-dialog.props";
 
-type SectionCardKey = ArcanArchiveServer | "application";
+type SectionCardKey = ArcaneArchiveServer | "application";
 
 export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps): JSX.Element {
   // #region State ------------------------------------------------------------
@@ -52,7 +52,7 @@ export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps): JSX.Elem
 
   function renderApiSections(): Array<JSX.Element> {
     return Array.from(props.viewmodel.apiRoots.keys())
-      .map((mtgServer: ArcanArchiveServer) => {
+      .map((mtgServer: ArcaneArchiveServer) => {
         const status = props.viewmodel.apiStatus.get(mtgServer);
         const items = new Map<string, JSX.Element>([
           ["URL", (<Text>{props.viewmodel.apiRoots.get(mtgServer)}</Text>)],

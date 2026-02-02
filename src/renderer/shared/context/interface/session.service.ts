@@ -10,7 +10,6 @@ export interface ISessionService {
   //#region Service methods ---------------------------------------------------
   initialize(serviceContainer: IServiceContainer): Promise<void>;
   initializeSubscriptions(arcaneArchiveProxy: IArcaneArchiveProxy, ipcProxy: IIpcProxy): void;
-  selectDirectory(ipcProxy: IIpcProxy, currentValue: string): Promise<string | undefined>;
   subscribePreferencesLoadedListener(listener: PreferencesLoadedListener): () => void;
   subscribeSessionChangeListener(listener: SessionChangeListener): () => void;
   //#endregion

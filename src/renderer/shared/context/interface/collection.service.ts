@@ -1,11 +1,13 @@
 import { CollectionCardDto, CollectionDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
+import { IIpcProxy } from "./ipc-proxy";
+import { IOverlayService } from "./overlay.service";
 import { ISessionService } from "./session.service";
 
 export interface ICollectionService {
   //#region Service methods ---------------------------------------------------
-  initialize(arcaneArchiveProxy: IArcaneArchiveProxy): void;
+  initialize(ipcProxy: IIpcProxy, arcaneArchiveProxy: IArcaneArchiveProxy): void;
   initializeSubscriptions(sessionService: ISessionService): void;
   //#endregion
 
@@ -22,6 +24,7 @@ export interface ICollectionService {
   //#region CollectionCard ----------------------------------------------------
   createCollectionCard(collectionCard: CollectionCardDto): Promise<CollectionCardDto>;
   deleteCollectionCard(collectionCard: CollectionCardDto): Promise<number>;
+  importCollectionData(overlayService: IOverlayService): Promise<void>;
   updateCollectionCard(collectionCard: CollectionCardDto): Promise<CollectionCardDto>;
   //#endregion
 }

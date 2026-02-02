@@ -1,1 +1,1 @@
-export type ArcanArchiveServer = "library" | "authentication" | "collection" | "deck";
+export type ArcaneArchiveServer = "library" | "authentication" | "collection" | "deck";

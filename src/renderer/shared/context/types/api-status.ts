@@ -1,4 +1,4 @@
-import { ArcanArchiveServer } from "../../../../common/types";
+import { ArcaneArchiveServer } from "../../../../common/types";
 import { ApiInfoDto } from "../../dto";
 
-export type ApiStatus = Map<ArcanArchiveServer, ApiInfoDto | null>;
+export type ApiStatus = Map<ArcaneArchiveServer, ApiInfoDto | null>;

@@ -6,7 +6,7 @@ import { SvgRenderer } from "../../../../shared/components/svg-renderer";
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
 import { ButtonBarButtonProps } from "./button-bar-button.props";
 
-export function ButtonBarButton(props: ButtonBarButtonProps) {
+export function ButtonBarButton(props: ButtonBarButtonProps): JSX.Element {
   // #region State ------------------------------------------------------------
   const [svg, setSvg] = React.useState<string | undefined>(undefined);
   // #endregion
@@ -26,7 +26,8 @@ export function ButtonBarButton(props: ButtonBarButtonProps) {
   // #region Effect -----------------------------------------------------------
   React.useEffect(
     () => {
-      void serviceContainer.ipcProxy.getData<string>(`${IpcPaths.IO_ASSET}?path=${props.assetPath}`)
+      void serviceContainer.ipcProxy
+        .getData<string>(IpcPaths.getIoAssetPath(props.assetPath))
         .then(
           (response: string) => setSvg(response),
           (_r: Error) => setSvg(undefined)

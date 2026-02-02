@@ -1,16 +1,20 @@
+import { noop } from "lodash";
+import { IpcPaths } from "../../../../common/ipc";
 import { CollectionCardDto, CollectionDto } from "../../dto";
 import { SelectOption } from "../../types";
-import { IArcaneArchiveProxy, ICollectionService, ISessionService } from "../interface";
+import { IArcaneArchiveProxy, ICollectionService, IIpcProxy, IOverlayService, ISessionService } from "../interface";
+import { ImportCollectionDataDto } from "../../../../common/dto/collection";
 
 export class CollectionService implements ICollectionService {
-  // #region Private fields ---------------------------------------------------
+  //#region Private fields ----------------------------------------------------
   private arcaneArchiveProxy!: IArcaneArchiveProxy;
+  private ipcProxy!: IIpcProxy;
   private collections: Map<number, CollectionDto> | null;
   private selectOptions: Map<number, SelectOption<CollectionDto>> | null;
   private unsubscribeSession: (() => void) | null;
   // #endregion
 
-  //#region Constructor & C° --------------------------------------------------
+  //#region Constructor & C° ---------------------------------------------------
   public constructor() {
     this.collections = null;
     this.selectOptions = null;
@@ -18,8 +22,9 @@ export class CollectionService implements ICollectionService {
   }
   //#endregion
 
-  // #region ICollectionService Members - service methods ---------------------
-  public initialize(arcaneArchiveProxy: IArcaneArchiveProxy): void {
+  //#region ICollectionService Members - service methods ----------------------
+  public initialize(ipcProxy: IIpcProxy, arcaneArchiveProxy: IArcaneArchiveProxy): void {
+    this.ipcProxy = ipcProxy;
     this.arcaneArchiveProxy = arcaneArchiveProxy;
   }
 
@@ -35,7 +40,7 @@ export class CollectionService implements ICollectionService {
   }
   //#endregion
 
-  // #region ICollectionService Members - Collection --------------------------
+  //#region ICollectionService Members - Collection ---------------------------
   public createCollection(collection: CollectionDto): Promise<CollectionDto> {
     return this.arcaneArchiveProxy
       .postData<Omit<CollectionDto, "id">, CollectionDto>(
@@ -115,7 +120,7 @@ export class CollectionService implements ICollectionService {
   }
   //#endregion
 
-  // #region ICollectionService Members - Collection Card ---------------------
+  //#region ICollectionService Members - Collection Card ----------------------
   public createCollectionCard(collectionCard: CollectionCardDto): Promise<CollectionCardDto> {
     return this.arcaneArchiveProxy.postData<CollectionCardDto, CollectionCardDto>(
       "collection",
@@ -129,6 +134,26 @@ export class CollectionService implements ICollectionService {
       "collection",
       `/auth/collection/${collectionCard.collectionId}/card/${collectionCard.id}`
     );
+  }
+
+  public importCollectionData(overlayService: IOverlayService): Promise<void> {
+    return overlayService.selectFile(this.ipcProxy, "collection-import")
+      .then(
+        (file: string | undefined) => {
+          if (file) {
+            overlayService.showSplashScreen("Importing data");
+            const options: ImportCollectionDataDto = {
+              fileName: file
+            };
+            this.ipcProxy.postData<ImportCollectionDataDto, object>(IpcPaths.IMPORT_COLLECTION_DATA, options)
+              .then(
+                () => overlayService.hideSplashSceen(),
+                () => overlayService.hideSplashSceen()
+              );
+          }
+        },
+        noop
+      );
   }
 
   public updateCollectionCard(collectionCard: CollectionCardDto): Promise<CollectionCardDto> {

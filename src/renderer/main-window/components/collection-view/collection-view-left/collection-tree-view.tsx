@@ -1,4 +1,4 @@
-import { ContextMenu, Icon, Menu, MenuItem, TreeNodeInfo } from "@blueprintjs/core";
+import { ContextMenu, Divider, Icon, Menu, MenuItem, TreeNodeInfo } from "@blueprintjs/core";
 import { isEqual } from "lodash";
 import { memo, useEffect, useState } from "react";
 import { useServices } from "../../../../hooks";
@@ -28,26 +28,26 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
   //#endregion
 
   //#region Hooks -------------------------------------------------------------
-  const serviceContainer = useServices();
+  const { collectionService, overlayService, viewmodelFactoryService } = useServices();
   //#endregion
 
   //#region Event Handling ----------------------------------------------------
   function onAddCollection(parentCollection: CollectionDto | null, parentPath: Array<string>): void {
-    showNewCollectionDialog(serviceContainer, "COLLECTION", parentCollection, parentPath, onCollectionAdded);
+    showNewCollectionDialog(viewmodelFactoryService, overlayService, "COLLECTION", parentCollection, parentPath, onCollectionAdded);
   }
 
   function onAddFolder(parentCollection: CollectionDto | null, parentPath: Array<string>): void {
-    showNewCollectionDialog(serviceContainer, "FOLDER", parentCollection, parentPath, onCollectionAdded);
+    showNewCollectionDialog(viewmodelFactoryService, overlayService, "FOLDER", parentCollection, parentPath, onCollectionAdded);
   }
 
   function onCollectionAdded(dto: CollectionDto): void {
-    const viewmodel = serviceContainer.viewmodelFactoryService.collectionViewmodelFactory
+    const viewmodel = viewmodelFactoryService.collectionViewmodelFactory
       .getCollectionTreeViewmodel(dto);
     setCollections([...collections, viewmodel]);
   }
 
   function onCollectionModified(dto: CollectionDto): void {
-    const viewmodel = serviceContainer.viewmodelFactoryService.collectionViewmodelFactory
+    const viewmodel = viewmodelFactoryService.collectionViewmodelFactory
       .getCollectionTreeViewmodel(dto);
     const newState = collections.filter((vm: CollectionTreeViewmodel) => vm.id != dto.id);
     newState.push(viewmodel);
@@ -55,7 +55,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
   }
 
   function onDeleteCollection(collection: CollectionDto): void {
-    serviceContainer.overlayService.showAlert({
+    overlayService.showAlert({
       isOpen: true,
       canEscapeKeyCancel: true,
       canOutsideClickCancel: true,
@@ -73,7 +73,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
         </p>
       ),
       onConfirm: () => {
-        void serviceContainer.collectionService
+        void collectionService
           .deleteCollection(collection.id!)
           .then((resp: number) => {
             if (resp > 0) {
@@ -88,18 +88,20 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
   function onEditCollection(
     collection: CollectionDto, parentCollection: CollectionDto | null, parentPath: Array<string>
   ): void {
-    showEditCollectionDialog(serviceContainer, collection, parentCollection, parentPath, onCollectionModified);
+    showEditCollectionDialog(
+      viewmodelFactoryService, overlayService, collection, parentCollection, parentPath, onCollectionModified
+    );
   }
   //#endregion
 
   //#region Effects -----------------------------------------------------------
   useEffect(
     () => {
-      void serviceContainer.collectionService.getCollections()
+      void collectionService.getCollections()
         .then(
           (collections: Array<CollectionDto>) => setCollections(
             collections.map(
-              c => serviceContainer.viewmodelFactoryService.collectionViewmodelFactory.getCollectionTreeViewmodel(c)
+              c => viewmodelFactoryService.collectionViewmodelFactory.getCollectionTreeViewmodel(c)
             )
           ),
           () => setCollections(new Array<CollectionTreeViewmodel>())
@@ -135,6 +137,17 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
                   (e) => {
                     e.preventDefault();
                     onAddCollection(null, new Array<string>());
+                  }
+                }
+              />
+              <Divider />
+              <MenuItem
+                key="import"
+                text="Import Collection Data"
+                onClick={
+                  (e) => {
+                    e.preventDefault();
+                    void collectionService.importCollectionData(overlayService);
                   }
                 }
               />

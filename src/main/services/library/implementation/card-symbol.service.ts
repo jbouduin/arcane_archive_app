@@ -70,7 +70,9 @@ export class CardSymbolService extends BaseService implements ICardSymbolService
         this.cardSymbolCacheDirectory
       )
     );
-    const cardSymbols = await this.arcaneArchiveClient.getData<Array<CardSymbolDto>>("/public/card-symbol");
+    const cardSymbols = await this.arcaneArchiveClient.getData<Array<CardSymbolDto>>(
+      "library", "/public/card-symbol"
+    );
     await runSerial(
       cardSymbols.data,
       async (cardSymbol: CardSymbolDto, idx: number, total: number) => {

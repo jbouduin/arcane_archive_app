@@ -194,7 +194,7 @@ export class ServiceContainer implements IServiceContainer {
             await Promise.all(skippableServices)
               .then(
                 () => {
-                  this._collectionSerivce.initialize(this._arcaneArchiveProxy);
+                  this._collectionSerivce.initialize(this._ipcProxy, this._arcaneArchiveProxy);
                   this._viewmodelFactoryService.initialize(
                     this._colorService,
                     this._displayValueService,

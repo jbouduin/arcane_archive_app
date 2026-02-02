@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { ArcanArchiveServer } from "../../../common/types";
+import { ArcaneArchiveServer } from "../../../common/types";
 import { ApiInfoDto } from "../dto";
 import { ServiceContainer } from "./implementation/service.container";
 import { IServiceContainer } from "./interface";
@@ -7,8 +7,8 @@ import { ApiInfoContextType, PreferencesContextType, SessionContextType } from "
 
 export const ApiStatusContext = createContext<ApiInfoContextType>(
   {
-    apiStatus: new Map<ArcanArchiveServer, ApiInfoDto | null>(),
-    apiRoots: new Map<ArcanArchiveServer, string>(),
+    apiStatus: new Map<ArcaneArchiveServer, ApiInfoDto | null>(),
+    apiRoots: new Map<ArcaneArchiveServer, string>(),
     authenticationServiceAvailable: false,
     libraryServiceAvailable: false,
     collectionServiceAvailable: false,

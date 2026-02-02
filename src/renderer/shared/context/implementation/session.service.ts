@@ -53,10 +53,6 @@ export class SessionService implements ISessionService {
     }
   }
 
-  public selectDirectory(ipcProxy: IIpcProxy, currentValue: string): Promise<string | undefined> {
-    return ipcProxy.getData<string>(`${IpcPaths.IO_SELECT_DIRECTORY}/${encodeURIComponent(currentValue)}`);
-  }
-
   public subscribePreferencesLoadedListener(listener: PreferencesLoadedListener): () => void {
     this.preferencesLoadedListeners.push(listener);
     return () => {

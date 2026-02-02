@@ -12,7 +12,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps): 
 
   // #region Event Handling ---------------------------------------------------
   function onSearchDirectory(target: DirectoryTarget): void {
-    void serviceContainer.sessionService
+    void serviceContainer.overlayService
       .selectDirectory(
         serviceContainer.ipcProxy, props.viewmodel.dataConfigurationViewmodel.getCurrentDirectoryValue(target)
       )

@@ -1,5 +1,6 @@
 export * from "./application.router";
 export * from "./configuration.router";
+export * from "./dialog.router";
 export * from "./io.router";
 export * from "./log.router";
 export * from "./session.router";

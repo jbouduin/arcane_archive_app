@@ -1,4 +1,4 @@
-import { ArcanArchiveServer } from "../../../../common/types";
+import { ArcaneArchiveServer } from "../../../../common/types";
 import { ApiInfoDto, SystemInfoDto } from "../../dto";
 import { BaseViewmodel } from "../base.viewmodel";
 
@@ -7,11 +7,11 @@ import { BaseViewmodel } from "../base.viewmodel";
  */
 export class SystemInfoViewmodel extends BaseViewmodel<SystemInfoDto> {
   // #region Getters/Setters --------------------------------------------------
-  public get apiRoots(): Map<ArcanArchiveServer, string> {
+  public get apiRoots(): Map<ArcaneArchiveServer, string> {
     return this._dto.apiRoots;
   }
 
-  public get apiStatus(): Map<ArcanArchiveServer, ApiInfoDto | null> {
+  public get apiStatus(): Map<ArcaneArchiveServer, ApiInfoDto | null> {
     return this._dto.apiStatus;
   }
   // #endregion

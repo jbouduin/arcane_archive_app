@@ -3,7 +3,7 @@ import {
   ApiConfigurationDto, ResultDto, SessionDto, SystemConfigurationDto, ValidationErrorDto
 } from "../../../../common/dto";
 import { LogLevel } from "../../../../common/enums";
-import { ArcanArchiveServer, ResponseLogSetting, ResponseLogSource } from "../../../../common/types";
+import { ArcaneArchiveServer, ResponseLogSetting, ResponseLogSource } from "../../../../common/types";
 import { runSerial } from "../../../../common/util";
 import { ApiInfoDto } from "../../dto";
 import { ShowToastFn } from "../../types";
@@ -12,7 +12,7 @@ import { ApiStatus, ApiStatusChangeListener, ArcaneArchiveRequestOptions, Invali
 
 export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
   //#region Private fields ----------------------------------------------------
-  private _apiRoots: Map<ArcanArchiveServer, string>;
+  private _apiRoots: Map<ArcaneArchiveServer, string>;
   private _apiStatus: ApiStatus;
   private intervalId: NodeJS.Timeout | null;
   private invalidSessionListeners: Array<InvalidSessionListener>;
@@ -28,8 +28,8 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
 
   //#region Constructor & C° --------------------------------------------------
   public constructor() {
-    this._apiRoots = new Map<ArcanArchiveServer, string>();
-    this._apiStatus = new Map<ArcanArchiveServer, ApiInfoDto>();
+    this._apiRoots = new Map<ArcaneArchiveServer, string>();
+    this._apiStatus = new Map<ArcaneArchiveServer, ApiInfoDto>();
     this.intervalId = null;
     this.invalidSessionListeners = new Array<InvalidSessionListener>();
     this.jwt = null;
@@ -76,12 +76,13 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
   //#endregion
 
   //#region IArcaneArchiveProxyService Members - Data methods -----------------
-  public delete(server: ArcanArchiveServer, path: string): Promise<number> {
+  public delete(server: ArcaneArchiveServer, path: string): Promise<number> {
     return this.sendRequest<never, never>("DELETE", server, path, null)
       .then(() => 1);
   }
 
-  public async downloadFile(server: ArcanArchiveServer, path: string): Promise<void> {
+  // TODO move download to main. just ask save-as here before
+  public async downloadFile(server: ArcaneArchiveServer, path: string): Promise<void> {
     const headers: Record<string, string> = {
       /*
        * # TODO "accept": "application/json",
@@ -116,7 +117,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
   }
 
   public getData<T extends object>(
-    server: ArcanArchiveServer,
+    server: ArcaneArchiveServer,
     path: string,
     options?: ArcaneArchiveRequestOptions
   ): Promise<T> {
@@ -124,7 +125,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
   }
 
   public postData<Req extends object, Res extends object>(
-    server: ArcanArchiveServer,
+    server: ArcaneArchiveServer,
     path: string, data: Req | null,
     options?: ArcaneArchiveRequestOptions
   ): Promise<Res> {
@@ -132,7 +133,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
   }
 
   public putData<Req extends object, Res extends object>(
-    server: ArcanArchiveServer,
+    server: ArcaneArchiveServer,
     path: string,
     data: Req | null,
     options?: ArcaneArchiveRequestOptions
@@ -142,7 +143,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
   //#endregion
 
   //#region Api Status / Session related methods ------------------------------
-  public async forceRefresh(): Promise<Map<ArcanArchiveServer, ApiInfoDto | null>> {
+  public async forceRefresh(): Promise<Map<ArcaneArchiveServer, ApiInfoDto | null>> {
     if (this.refreshing != null) {
       // -- if currently refreshing: just wait for the result --
       await this.refreshing;
@@ -157,7 +158,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
     return this._apiStatus;
   }
 
-  public async startRefreshing(): Promise<Map<ArcanArchiveServer, ApiInfoDto | null>> {
+  public async startRefreshing(): Promise<Map<ArcaneArchiveServer, ApiInfoDto | null>> {
     // --- execute once immediately ---
     await this.refreshApiStatus();
     // --- schedule ---
@@ -205,7 +206,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
    * @returns      a rejected promise, with the same reason
    */
   private processRejection<T>(
-    server: ArcanArchiveServer,
+    server: ArcaneArchiveServer,
     path: string,
     reason: Error,
     suppressErrorMessage: boolean
@@ -245,7 +246,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
    * @returns    A rejected promise
    */
   private processErrorResponse<T>(
-    server: ArcanArchiveServer,
+    server: ArcaneArchiveServer,
     path: string,
     response: ResultDto<T>,
     suppressErrorMessage: boolean,
@@ -306,7 +307,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
    * @returns the data contained in the ResultDto
    */
   private processSuccessResponse<T>(
-    server: ArcanArchiveServer,
+    server: ArcaneArchiveServer,
     path: string,
     resultDto: ResultDto<T>,
     suppressSuccessMessage: boolean
@@ -331,7 +332,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
 
   private sendRequest<Req extends object, Res extends object>(
     verb: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
-    server: ArcanArchiveServer,
+    server: ArcaneArchiveServer,
     path: string,
     data: Req | null,
     options?: ArcaneArchiveRequestOptions
@@ -388,7 +389,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
     return result;
   }
 
-  private buildPath(server: ArcanArchiveServer, path: string): string {
+  private buildPath(server: ArcaneArchiveServer, path: string): string {
     if (!path.startsWith("/")) {
       path = "/" + path;
     }
@@ -411,7 +412,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
       const taskParameters = Array.of(...this._apiRoots.keys());
       this.refreshing = runSerial(
         taskParameters,
-        (server: ArcanArchiveServer) => {
+        (server: ArcaneArchiveServer) => {
           return this.getData<ApiInfoDto>(
             server,
             "/public/system/info",
@@ -431,7 +432,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
     }
   }
 
-  private getLogLevel(server: ArcanArchiveServer): LogLevel {
+  private getLogLevel(server: ArcaneArchiveServer): LogLevel {
     return this.logLevels.get(server) || LogLevel.Error;
   }
   //#endregion
