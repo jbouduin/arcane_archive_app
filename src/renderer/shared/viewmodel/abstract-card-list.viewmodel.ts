@@ -30,7 +30,7 @@ export class AbstractCardListViewmodel extends AbstractCardViewmodel {
     dto: BaseCardListDto) {
     super();
     this.cardId = dto.id;
-    const mtgSet = mtgSetService.getSetById(dto.mtgSetId);
+    const mtgSet = mtgSetService.getSetTreeDtoById(dto.mtgSetId);
     this.setName = mtgSet?.setName || "Unknown set";
     this.setKeyruneCode = mtgSet?.keyruneCode || "DEFAULT";
     this.cardName = dto.cardName;

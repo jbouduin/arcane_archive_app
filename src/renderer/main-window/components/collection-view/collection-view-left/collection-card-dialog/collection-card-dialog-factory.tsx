@@ -11,7 +11,7 @@ export function showNewCollectionCardDialog(
   const viewmodel = new CollectionCardViewmodel(
     {
       collectionId: collectionId,
-      collectorNumber: "",
+      cardCode: "",
       id: null,
       language: "ENGLISH",
       setCode: "",

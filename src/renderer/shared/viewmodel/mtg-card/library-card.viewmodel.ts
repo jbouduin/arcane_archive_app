@@ -49,7 +49,7 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
     this.code = dto.code;
     this.cardName = dto.cardName;
     this.cardBackId = dto.cardBackId;
-    const mtgSet = mtgSetService.getSetById(dto.mtgSetId);
+    const mtgSet = mtgSetService.getSetTreeDtoById(dto.mtgSetId);
     this.setCode = mtgSet?.code || "";
     this.tokenSetCode = mtgSet?.tokenSetCode || "";
     this.setKeyruneCode = mtgSet?.keyruneCode || "DEFAULT";

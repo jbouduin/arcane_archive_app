@@ -24,12 +24,12 @@ export class CollectionCardViewmodel extends BaseViewmodel<CollectionCardDto> {
     this._dto.setCode = value;
   }
 
-  public get collectorNumber(): string {
-    return this._dto.collectorNumber;
+  public get cardCode(): string {
+    return this._dto.cardCode;
   }
 
-  public set collectorNumber(value: string) {
-    this._dto.collectorNumber = value;
+  public set cardCode(value: string) {
+    this._dto.cardCode = value;
   }
   //#endregion
 

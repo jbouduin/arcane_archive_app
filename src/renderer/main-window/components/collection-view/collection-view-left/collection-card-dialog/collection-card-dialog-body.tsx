@@ -29,11 +29,11 @@ export function CollectionCardDialogBody(props: CollectionCardDialogBodyProps): 
         <BaseInput
           viewmodel={props.viewmodel}
           viewmodelChanged={props.viewmodelChanged}
-          fieldName="collectorNumber"
+          fieldName="cardCode"
           label="Collector number"
           labelInfo="*"
           inputProps={{
-            placeholder: "Please enter a collector number..."
+            placeholder: "Please enter the card code..."
           }}
         />
       </ControlGroup>

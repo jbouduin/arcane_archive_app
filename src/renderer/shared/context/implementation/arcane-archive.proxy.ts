@@ -81,6 +81,40 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
       .then(() => 1);
   }
 
+  public async downloadFile(server: ArcanArchiveServer, path: string): Promise<void> {
+    const headers: Record<string, string> = {
+      /*
+       * # TODO "accept": "application/json",
+       * "Content-Type": "application/json"
+       */
+    };
+    if (this.jwt != null) {
+      headers["Authorization"] = "Bearer " + this.jwt;
+    }
+    // TODO error handling
+    const response = await fetch(
+      this.buildPath(server, path),
+      {
+        method: "GET",
+        headers: this.buildHeaders(),
+      }
+    );
+
+    const blob = await response.blob();
+
+    const urlObject = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = urlObject;
+    a.download = "set.xlsx";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(urlObject);
+
+    // return new Uint8Array(arrayBuffer);
+  }
+
   public getData<T extends object>(
     server: ArcanArchiveServer,
     path: string,

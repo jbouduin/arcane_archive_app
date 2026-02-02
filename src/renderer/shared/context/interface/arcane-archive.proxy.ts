@@ -19,6 +19,7 @@ export interface IArcaneArchiveProxy {
   //#region Data methods ------------------------------------------------------
   delete(server: ArcanArchiveServer, path: string): Promise<number>;
 
+  downloadFile(server: ArcanArchiveServer, path: string): Promise<void>;
   /**
    * Fetch data from backend
    * @param path the path

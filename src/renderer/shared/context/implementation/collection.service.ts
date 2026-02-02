@@ -80,7 +80,7 @@ export class CollectionService implements ICollectionService {
           this.selectOptions = new Map<number, SelectOption<CollectionDto>>();
           resp.forEach((c: CollectionDto) => {
             this.collections!.set(c.id!, c);
-            this.selectOptions!.set(c.id!, {value: c, label: c.code});
+            this.selectOptions!.set(c.id!, { value: c, label: c.code });
           });
           return resp;
         });
