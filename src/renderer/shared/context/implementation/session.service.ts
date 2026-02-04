@@ -1,7 +1,9 @@
 import { noop } from "lodash";
-import { LoginRequestDto, SessionDto, PreferencesDto } from "../../../../common/dto";
+import { LoginRequestDto, PreferencesDto, SessionDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
-import { ChangePasswordRequestDto, RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto } from "../../dto";
+import {
+  ChangePasswordRequestDto, RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto
+} from "../../dto";
 import { ApplicationRole } from "../../types";
 import { IArcaneArchiveProxy, IIpcProxy, IServiceContainer, ISessionService } from "../interface";
 import { PreferencesLoadedListener, SessionChangeListener } from "../types";
@@ -123,7 +125,11 @@ export class SessionService implements ISessionService {
     );
   }
 
-  public userExists(arcaneArchiveProxy: IArcaneArchiveProxy, userName: string, signal: AbortSignal): Promise<boolean> {
+  public userExists(
+    arcaneArchiveProxy: IArcaneArchiveProxy,
+    userName: string,
+    signal: AbortSignal
+  ): Promise<boolean> {
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     return arcaneArchiveProxy
       .getData<Boolean>("authentication", `/public/account/user-exist?user=${userName}`, { signal: signal })
@@ -144,13 +150,14 @@ export class SessionService implements ISessionService {
   public login(serviceContainer: IServiceContainer, loginRequest: LoginRequestDto): Promise<SessionDto> {
     return serviceContainer.arcaneArchiveProxy
       .postData<LoginRequestDto, SessionDto>(
-        "authentication", "/auth/login", loginRequest, { suppressSuccessMessage: true }
+        "authentication", "/public/login", loginRequest, { suppressSuccessMessage: true }
       ).then(
         (r: SessionDto) => {
           this.setSessionData(r, serviceContainer);
-          this.broadcastPreferencesLoaded(r.profile.preferences);
+          if (r.profile.preferences != null) {
+            this.broadcastPreferencesLoaded(r.profile.preferences);
+          }
           void serviceContainer.ipcProxy.postData<SessionDto, never>(IpcPaths.SESSION, r);
-
           return r;
         }
       );
@@ -166,7 +173,7 @@ export class SessionService implements ISessionService {
       )
       .then(
         () => this.clearSessionData(serviceContainer.ipcProxy),
-        () => this.clearSessionData(serviceContainer.ipcProxy) // swallow any reject
+        () => this.clearSessionData(serviceContainer.ipcProxy) // deliberately swallow any reject
       );
   }
 

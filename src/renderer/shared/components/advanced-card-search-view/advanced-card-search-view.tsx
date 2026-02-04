@@ -1,8 +1,8 @@
 import { Button } from "@blueprintjs/core";
 import classNames from "classnames";
-import React from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useServices } from "../../../hooks";
-import { CollectionDto, ColorDto, MtgSetTreeDto } from "../../dto";
+import { AppColorDto, CollectionDto, MtgSetTreeDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { AdvancedCardSearchViewmodel } from "../../viewmodel";
 import { BaseMultiSelect } from "../base/base-multi-select/base-multi-select";
@@ -23,11 +23,11 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps): JSX.
    * to be closed when scrolling does not work. In order to close dropdowns, we use scrollVersion and use it to
    * re-render the selects
    */
-  const [scrollVersion, setScrollVersion] = React.useState(0);
+  const [scrollVersion, setScrollVersion] = useState(0);
   //#endregion
 
   //#region Effects -----------------------------------------------------------
-  React.useEffect(
+  useEffect(
     () => {
       const container = document.querySelector(".left-panel-search-panel");
       const handleScroll: () => void = () => {
@@ -53,7 +53,7 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps): JSX.
   //#endregion
 
   //#region Memo --------------------------------------------------------------
-  const setImageRenderer = React.useCallback(
+  const setImageRenderer = useCallback(
     (option: SelectOption<MtgSetTreeDto>) => (
       <i
         key={`icon-${option.value.keyruneCode}`}
@@ -64,8 +64,8 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps): JSX.
     ),
     []
   );
-  const colorSymbolRenderer = React.useCallback(
-    (option: SelectOption<ColorDto>) => (
+  const colorSymbolRenderer = useCallback(
+    (option: SelectOption<AppColorDto>) => (
       <CardSymbolRenderer cardSymbols={[option.value.manaSymbol]} className="mana-cost-image-in-text" />
     ),
     []
@@ -124,44 +124,44 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps): JSX.
         onClearSelectedOptions={() =>
           onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearCardNameSelection())}
       />
-      <BaseMultiSelect<ColorDto>
+      <BaseMultiSelect<AppColorDto>
         key={`card-color-select-${scrollVersion}`}
         allItems={searchViewmodel.allColors}
         formGroupLabel="Card color"
-        itemComparer={(a: ColorDto, b: ColorDto) => a.id == b.id}
+        itemComparer={(a: AppColorDto, b: AppColorDto) => a.code == b.code}
         onClearSelectedOptions={() =>
           onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearColorSelection("card"))}
-        onOptionAdded={(color: SelectOption<ColorDto>) =>
+        onOptionAdded={(color: SelectOption<AppColorDto>) =>
           onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addColor("card", color))}
-        onOptionRemoved={(color: SelectOption<ColorDto>) =>
+        onOptionRemoved={(color: SelectOption<AppColorDto>) =>
           onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeColor("card", color))}
         selectedOptions={searchViewmodel.selectedCardColors}
         preTextElement={colorSymbolRenderer}
       />
-      <BaseMultiSelect<ColorDto>
+      <BaseMultiSelect<AppColorDto>
         key={`produced-mana-color-select-${scrollVersion}`}
         allItems={searchViewmodel.allColors}
         formGroupLabel="Produced mana color"
-        itemComparer={(a: ColorDto, b: ColorDto) => a.id == b.id}
+        itemComparer={(a: AppColorDto, b: AppColorDto) => a.code == b.code}
         onClearSelectedOptions={() =>
           onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearColorSelection("produced_mana"))}
-        onOptionAdded={(color: SelectOption<ColorDto>) =>
+        onOptionAdded={(color: SelectOption<AppColorDto>) =>
           onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addColor("produced_mana", color))}
-        onOptionRemoved={(color: SelectOption<ColorDto>) =>
+        onOptionRemoved={(color: SelectOption<AppColorDto>) =>
           onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeColor("produced_mana", color))}
         selectedOptions={searchViewmodel.selectedProducedManaColors}
         preTextElement={colorSymbolRenderer}
       />
-      <BaseMultiSelect<ColorDto>
+      <BaseMultiSelect<AppColorDto>
         key={`identity-color-select-${scrollVersion}`}
         allItems={searchViewmodel.allColors}
         formGroupLabel="Identity color"
-        itemComparer={(a: ColorDto, b: ColorDto) => a.id == b.id}
+        itemComparer={(a: AppColorDto, b: AppColorDto) => a.code == b.code}
         onClearSelectedOptions={() =>
           onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearColorSelection("identity"))}
-        onOptionAdded={(color: SelectOption<ColorDto>) =>
+        onOptionAdded={(color: SelectOption<AppColorDto>) =>
           onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addColor("identity", color))}
-        onOptionRemoved={(color: SelectOption<ColorDto>) =>
+        onOptionRemoved={(color: SelectOption<AppColorDto>) =>
           onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeColor("identity", color))}
         selectedOptions={searchViewmodel.selectedIdentityColors}
         preTextElement={colorSymbolRenderer}

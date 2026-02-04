@@ -1,6 +1,7 @@
 import { PreferencesDto } from "../../../../common/dto";
 import {
-  CardFilterParamsDto, CollectionDto, ColorDto, MtgSetTreeDto, QueryParamsDto, QueryResultDto
+  AppColorDto, CardFilterParamsDto, CollectionDto,
+  MtgSetTreeDto, QueryParamsDto, QueryResultDto
 } from "../../dto";
 import { IArcaneArchiveProxy } from "../interface";
 
@@ -121,12 +122,12 @@ export abstract class BaseCardSearchService<T> {
     if (cardFilterParams) {
       cardFilterParams.abilities.forEach((ability: string) => result.append("kw", ability));
       cardFilterParams.actions.forEach((action: string) => result.append("kw", action));
-      cardFilterParams.cardColors.forEach((color: ColorDto) => result.append("cc", color.code));
+      cardFilterParams.cardColors.forEach((color: AppColorDto) => result.append("cc", color.code));
       cardFilterParams.cardNames.forEach((cardName: string) => result.append("cn", cardName));
       cardFilterParams.gameFormats.forEach((gameFormat: string) => result.append("gf", gameFormat));
-      cardFilterParams.identityColors.forEach((color: ColorDto) => result.append("ic", color.code));
+      cardFilterParams.identityColors.forEach((color: AppColorDto) => result.append("ic", color.code));
       cardFilterParams.powers.forEach((power: string) => result.append("pw", power));
-      cardFilterParams.producedManaColors.forEach((color: ColorDto) => result.append("pm", color.code));
+      cardFilterParams.producedManaColors.forEach((color: AppColorDto) => result.append("pm", color.code));
       cardFilterParams.rarities.forEach((rarity: string) => result.append("rar", rarity));
       cardFilterParams.subTypes.forEach((type: string) => result.append("sub", type));
       cardFilterParams.superTypes.forEach((type: string) => result.append("sup", type));
@@ -144,11 +145,11 @@ export abstract class BaseCardSearchService<T> {
     return {
       abilities: new Array<string>(),
       actions: new Array<string>(),
-      cardColors: new Array<ColorDto>(),
+      cardColors: new Array<AppColorDto>(),
       cardNames: new Array<string>(),
       gameFormats: new Array<string>(),
-      identityColors: new Array<ColorDto>(),
-      producedManaColors: new Array<ColorDto>(),
+      identityColors: new Array<AppColorDto>(),
+      producedManaColors: new Array<AppColorDto>(),
       powers: new Array<string>(),
       rarities: new Array<string>(),
       subTypes: new Array<string>(),

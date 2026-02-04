@@ -257,7 +257,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
     }
     if (response.status == "UNAUTHORIZED") {
       this.invalidSessionListeners.forEach(l => l());
-      if (path == "/auth/login") {
+      if (path == "/public/login") {
         this.showToast(
           {
             message: "Invalid username or password",

@@ -1,12 +1,16 @@
 import { ControlGroup, HTMLTable } from "@blueprintjs/core";
-import { useServices } from "../../../../../hooks";
+import { usePreferences, useServices } from "../../../../../hooks";
 import { BaseInput } from "../../../../../shared/components/input";
+import { CardConditionDto } from "../../../../../shared/dto/card-condition.dto";
 import { SelectOption } from "../../../../../shared/types";
-import { CollectionCardQuantityViewmodel } from "../../../../../shared/viewmodel/collection/collection-card-quantity.viewmodel";
+import { CollectionCardQuantityViewmodel } from "../../../../../shared/viewmodel";
 import { CollectionCardDialogBodyProps } from "./collection-card-dialog.props";
 
 export function CollectionCardDialogBody(props: CollectionCardDialogBodyProps): JSX.Element {
-  const { displayValueService } = useServices();
+  //#region Hooks -------------------------------------------------------------
+  const { basicDataService } = useServices();
+  const { preferences } = usePreferences();
+  //#endregion
 
   //#region Rendering ---------------------------------------------------------
   return (
@@ -73,17 +77,18 @@ export function CollectionCardDialogBody(props: CollectionCardDialogBodyProps): 
   //#endregion
 
   function renderTable(): Array<JSX.Element> {
-    return displayValueService
-      .getSelectOptions("cardCondition")
-      .map((condition: SelectOption<string>) => {
+    return basicDataService
+      .getCardConditionSelectOptions()
+      .filter((value: SelectOption<CardConditionDto>) => preferences.cardConditions.includes(value.value.condition))
+      .map((condition: SelectOption<CardConditionDto>) => {
         return (
-          <tr key={condition.value}>
+          <tr key={condition.value.condition}>
             <td key="col1" style={{ paddingLeft: "0px" }}>{condition.label}</td>
             <td key="col2" style={{ paddingLeft: "0px" }}>
-              {renderQuantityInput(props.viewmodel.getQuantityViewmodel(condition.value, false))}
+              {renderQuantityInput(props.viewmodel.getQuantityViewmodel(condition.value.condition, false))}
             </td>
             <td key="col3" style={{ paddingLeft: "0px" }}>
-              {renderQuantityInput(props.viewmodel.getQuantityViewmodel(condition.value, true))}
+              {renderQuantityInput(props.viewmodel.getQuantityViewmodel(condition.value.condition, true))}
             </td>
           </tr>
         );

@@ -93,7 +93,7 @@ export class ConfigurationService implements IConfigurationService {
     promises.push(this.ipcProxy.postData<PreferencesDto, PreferencesDto>(IpcPaths.PREFERENCES, preferences));
     if (loggedIn) {
       promises.push(arcaneArchiveProxy.putData<PreferencesDto, PreferencesDto>(
-        "authentication", "/app/account/preferences", preferences
+        "authentication", "/auth/profile/preferences", preferences
       ));
     }
     return Promise.all(promises)

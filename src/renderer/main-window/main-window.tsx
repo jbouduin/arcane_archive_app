@@ -42,15 +42,14 @@ void (async () => {
   let initialization = await serviceContainer.initialize(toastCall);
 
   let mainWindowShown = false;
+  const preferences = loginResponse?.profile.preferences != null
+    ? loginResponse.profile.preferences
+    : initialization.settings!.preferences;
   while (initialization == null || !initialization.isOk) {
     let count = 30;
 
     root.render(
-      <PreferencesProvider
-        preferences={loginResponse != null
-          ? loginResponse.profile.preferences
-          : initialization.settings!.preferences}
-      >
+      <PreferencesProvider preferences={preferences}>
         <ServerNotAvailable initializationResult={initialization} nextTry={count} />
       </PreferencesProvider>
     );
@@ -66,11 +65,7 @@ void (async () => {
       const interval = setInterval(() => {
         count--;
         root.render(
-          <PreferencesProvider
-            preferences={loginResponse != null
-              ? loginResponse.profile.preferences
-              : initialization.settings!.preferences}
-          >
+          <PreferencesProvider preferences={preferences}>
             <ServerNotAvailable initializationResult={initialization} nextTry={count} />
           </PreferencesProvider>
         );
@@ -92,10 +87,7 @@ void (async () => {
       <PortalProvider>
         <ServiceContainerContext.Provider value={serviceContainer}>
           <SessionProvider sessionData={loginResponse || null}>
-            <PreferencesProvider preferences={loginResponse != null
-              ? loginResponse.profile.preferences
-              : initialization.settings!.preferences}
-            >
+            <PreferencesProvider preferences={preferences}>
               <ApiInfoProvider apiConfiguration={initialization.settings!.apiConfiguration!} apiStatus={apiStatus!}>
                 <MainWindowDesktop toastCall={toastCall} />
                 <DialogRenderer overlayService={serviceContainer.overlayService} />

@@ -1,5 +1,6 @@
 import { Callout, ControlGroup, HTMLTable, Tab, Tabs } from "@blueprintjs/core";
 import { useServices, useSession } from "../../../../hooks";
+import { CardConditionDto } from "../../../dto/card-condition.dto";
 import { SelectOption } from "../../../types";
 import { SetTreeSettingsViewmodel } from "../../../viewmodel/settings";
 import { BaseCheckbox, BaseHtmlSelect, ToggleCheckbox } from "../../input";
@@ -15,7 +16,8 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
   return (
     <>
       {
-        !loggedIn && (
+        !loggedIn &&
+        (
           <Callout compact={true} intent="warning">
             You are not logged in.
             Your preferences will be stored locally only.
@@ -35,6 +37,17 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
           title="Library Set Tree"
           panel={renderLibraryTreeviewmodel()}
         />
+        {
+          loggedIn &&
+          (
+            <Tab
+              id="card-conditions"
+              key="card-conditions"
+              title="Card Conditions"
+              panel={renderCardConditions()}
+            />
+          )
+        }
       </Tabs>
 
     </>
@@ -143,11 +156,16 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
     let currentRow: Array<React.JSX.Element>;
     let idx = 0;
     serviceContainer
-      .displayValueService
+      .basicDataService
       .getSelectOptions("setType")
       .forEach((opt: SelectOption<string>) => {
         if (idx % 3 == 0) {
           currentRow = new Array<React.JSX.Element>();
+          table.push((
+            <tr key={`row-${idx}`}>
+              {currentRow}
+            </tr>
+          ));
         }
         currentRow.push((
           <td key={`cell-${opt.value}`} style={{ paddingLeft: "0px" }}>
@@ -161,16 +179,65 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
             </ToggleCheckbox>
           </td>
         ));
-        if (idx % 3 == 1) {
+        idx = idx + 1;
+      });
+    while (idx % 3 != 0) {
+      currentRow!.push(<td key={`cell-${idx}`} style={{ paddingLeft: "0px" }}></td>);
+      idx = idx + 1;
+    }
+    return table;
+  }
+
+  function renderCardConditions(): JSX.Element {
+    const table = new Array<React.JSX.Element>();
+    let currentRow: Array<React.JSX.Element>;
+    let idx = 0;
+    serviceContainer
+      .basicDataService
+      .getCardConditionSelectOptions()
+      .forEach((opt: SelectOption<CardConditionDto>) => {
+        if (idx % 3 == 0) {
+          currentRow = new Array<React.JSX.Element>();
           table.push((
             <tr key={`row-${idx}`}>
               {currentRow}
             </tr>
           ));
         }
+        currentRow.push((
+          <td key={`cell-${opt.value}`} style={{ paddingLeft: "0px" }}>
+            <ToggleCheckbox
+              viewmodel={props.viewmodel}
+              viewmodelChanged={props.viewmodelChanged}
+              fieldName="cardConditions"
+              value={opt.value.condition}
+            >
+              {opt.label}
+            </ToggleCheckbox>
+          </td>
+        ));
         idx = idx + 1;
       });
-    return table;
+    while (idx % 3 != 0) {
+      currentRow!.push(<td key={`cell-${idx}`} style={{ paddingLeft: "0px" }}></td>);
+      idx = idx + 1;
+    }
+
+    return (
+      <HTMLTable
+        bordered={false}
+        compact={true}
+        key="set-type-filter"
+        width="100%"
+      >
+        <thead>
+          <tr><td colSpan={3} style={{ paddingLeft: "0px" }}>Set types filter</td></tr>
+        </thead>
+        <tbody>
+          {table}
+        </tbody>
+      </HTMLTable>
+    );
   }
   // #endregion
 }

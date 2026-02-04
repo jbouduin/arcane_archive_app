@@ -7,7 +7,7 @@ import { ButtonBar } from "./button-bar/button-bar";
 import { EDesktopView } from "./desktop-view.enum";
 import { MainWindowDesktopProps } from "./main-window-desktop.props";
 
-export function MainWindowDesktop(_props: MainWindowDesktopProps) {
+export function MainWindowDesktop(_props: MainWindowDesktopProps): JSX.Element {
   // #region State ------------------------------------------------------------
   const [desktopView, setDesktopView] = useState<EDesktopView>(EDesktopView.Library);
   // #endregion

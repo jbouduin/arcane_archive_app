@@ -1,27 +1,22 @@
-import { IArcaneArchiveProxy, IColorService, IDisplayValueService, ILanguageService, IMtgSetService, IServiceContainer } from "../../../context";
-import { AdvancedCardSearchDto, CollectionCardListDto, LibraryCardDto, LibraryCardListDto, LibraryRulingDto } from "../../../dto";
+import { IArcaneArchiveProxy, IBasicDataService, IMtgSetService, IServiceContainer } from "../../../context";
+import {
+  AdvancedCardSearchDto, CollectionCardListDto, LibraryCardDto, LibraryCardListDto, LibraryRulingDto
+} from "../../../dto";
 import { CollectionCardListViewmodel } from "../../collection";
-import { AdvancedCardSearchViewmodel, LibraryCardListViewmodel, LibraryCardViewmodel, LibraryRulingViewmodel } from "../../mtg-card";
+import {
+  AdvancedCardSearchViewmodel, LibraryCardListViewmodel, LibraryCardViewmodel, LibraryRulingViewmodel
+} from "../../mtg-card";
 import { IMtgCardViewmodelFactory } from "../interface";
 
 export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
   // #region Private fields ---------------------------------------------------
-  private readonly colorService: IColorService;
-  private readonly displayValueService: IDisplayValueService;
-  private readonly languageService: ILanguageService;
+  private readonly basicDataService: IBasicDataService;
   private readonly mtgSetService: IMtgSetService;
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(
-    colorService: IColorService,
-    displayValueService: IDisplayValueService,
-    languageService: ILanguageService,
-    mtgSetService: IMtgSetService
-  ) {
-    this.colorService = colorService;
-    this.displayValueService = displayValueService;
-    this.languageService = languageService;
+  public constructor(basicDataService: IBasicDataService, mtgSetService: IMtgSetService) {
+    this.basicDataService = basicDataService;
     this.mtgSetService = mtgSetService;
   }
   // #endregion
@@ -33,18 +28,11 @@ export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
   ): Promise<LibraryCardViewmodel> {
     return arcaneArchiveProxy
       .getData<LibraryCardDto>("library", "/public/card/" + cardId)
-      .then((dto: LibraryCardDto) => new LibraryCardViewmodel(
-        this.colorService,
-        this.displayValueService,
-        this.languageService,
-        this.mtgSetService, dto
-      ));
+      .then((dto: LibraryCardDto) => new LibraryCardViewmodel(this.basicDataService, this.mtgSetService, dto));
   }
 
   public getLibraryCardListViewmodel(dto: LibraryCardListDto): LibraryCardListViewmodel {
-    return new LibraryCardListViewmodel(
-      this.colorService, this.displayValueService, this.languageService, this.mtgSetService, dto
-    );
+    return new LibraryCardListViewmodel(this.basicDataService, this.mtgSetService, dto);
   }
 
   public getRulingsViewmodel(
@@ -69,12 +57,7 @@ export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
   }
 
   public getCollectionCardlistViewmodel(dto: CollectionCardListDto): CollectionCardListViewmodel {
-    return new CollectionCardListViewmodel(
-      this.colorService,
-      this.displayValueService,
-      this.languageService,
-      this.mtgSetService,
-      dto);
+    return new CollectionCardListViewmodel(this.basicDataService, this.mtgSetService, dto);
   }
   // #endregion
 }

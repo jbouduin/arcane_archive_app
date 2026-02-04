@@ -1,10 +1,15 @@
 import { noop } from "lodash";
 import { useState } from "react";
 import { Mosaic, MosaicNode } from "react-mosaic-component";
-import { useServices, useSession } from "../../../hooks";
+import { useApiStatus, useServices, useSession } from "../../../hooks";
 import { SortDirection } from "../../../shared/components/base/base-table";
 import { NotLoggedInView } from "../../../shared/components/not-logged-view/not-logged-in-view";
-import { CardFilterParamsDto, QueryParamsDto, CollectionCardListDto, CollectionDto, MtgSetTreeDto, QueryResultDto } from "../../../shared/dto";
+import {
+  ServiceNotAvailableView
+} from "../../../shared/components/service-not-available-view/service-not-available-view";
+import {
+  CardFilterParamsDto, CollectionCardListDto, CollectionDto, MtgSetTreeDto, QueryParamsDto, QueryResultDto
+} from "../../../shared/dto";
 import { CardSortField } from "../../../shared/types";
 import { CollectionViewCenter } from "./collection-view-center/collection-view-center";
 import { CollectionViewLeft } from "./collection-view-left/collection-view-left";
@@ -16,6 +21,7 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const { loggedIn } = useSession();
   const { collectionCardSearchService: searchService } = useServices();
+  const { collectionServiceAvailable } = useApiStatus();
   // #endregion
 
   // #region State ------------------------------------------------------------
@@ -157,7 +163,10 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
   return (
     <>
       {
-        loggedIn && (
+        !collectionServiceAvailable && <ServiceNotAvailableView serviceName="Collection service" />
+      }
+      {
+        collectionServiceAvailable && loggedIn && (
           <Mosaic
             renderTile={(id: string) => elementMap[id]}
             value={mosaicLayout}
@@ -167,8 +176,8 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
         )
       }
       {
-        !loggedIn && (
-          <NotLoggedInView {...props} server="collection" />
+        collectionServiceAvailable && !loggedIn && (
+          <NotLoggedInView {...props} />
         )
       }
     </>

@@ -1,16 +1,14 @@
 import { SettingsDto as _ConfigurationDto } from "../../../../common/dto";
-import { LanguageDto as _LanguageDto, MtgSetTreeDto as _MtgSetTreeDto } from "../../dto";
+import { MtgSetTreeDto as _MtgSetTreeDto } from "../../dto";
 import { InitializeServiceContainerOptions, ShowToastFn } from "../../types";
 import { InitializationResult } from "../types";
 import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
+import { IBasicDataService } from "./basic-data.service";
 import { ICardSymbolService } from "./card-symbol.service";
 import { ICollectionCardSearchService } from "./collection-card-search.service";
 import { ICollectionService } from "./collection.service";
-import { IColorService } from "./color.service";
 import { IConfigurationService } from "./configuration.service";
-import { IDisplayValueService } from "./display-value.service";
 import { IIpcProxy } from "./ipc-proxy";
-import { ILanguageService } from "./language.service";
 import { ILibraryCardSearchService } from "./library-card-search.service";
 import { ILogService } from "./log.service";
 import { IMtgSetService } from "./mtg-set.service";
@@ -23,6 +21,11 @@ export interface IServiceContainer {
    * Arcane Archive back end proxy
    */
   readonly arcaneArchiveProxy: IArcaneArchiveProxy;
+
+  /**
+   * Dictionaries with basic data. (Display values, Colors, Languages, Card Conditions)
+   */
+  readonly basicDataService: IBasicDataService;
 
   /**
    * Service that caches the card symbol svg's
@@ -40,29 +43,14 @@ export interface IServiceContainer {
   readonly collectionCardSearchService: ICollectionCardSearchService;
 
   /**
-   * Service that caches ColorDtos
-   */
-  readonly colorService: IColorService;
-
-  /**
    * Service that caches the {@link _ConfigurationDto ConfigurationDto}
    */
   readonly configurationService: IConfigurationService;
 
   /**
-   * Dictionaries with display values for enums.
-   */
-  readonly displayValueService: IDisplayValueService;
-
-  /**
    * Proxy to use Ipc Channels. Processes the response and displays a toast in case of error response.
    */
   readonly ipcProxy: IIpcProxy;
-
-  /**
-   * Service that caches all {@link _LanguageDto LanguageDto}
-   */
-  readonly languageService: ILanguageService;
 
   /**
    * Service to search library cards. Also serves as cache for queryparams and result.

@@ -1,4 +1,4 @@
-import { IColorService, IDisplayValueService, ILanguageService, IMtgSetService } from "../../context";
+import { IBasicDataService, IMtgSetService } from "../../context";
 import { LanguageDto, LibraryCardListDto } from "../../dto";
 import { AbstractCardListViewmodel } from "../abstract-card-list.viewmodel";
 
@@ -8,15 +8,10 @@ export class LibraryCardListViewmodel extends AbstractCardListViewmodel {
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(
-    colorService: IColorService,
-    displayValueService: IDisplayValueService,
-    languageService: ILanguageService,
-    mtgSetService: IMtgSetService,
-    dto: LibraryCardListDto) {
-    super(colorService, displayValueService, mtgSetService, dto);
+  public constructor(basicDataService: IBasicDataService, mtgSetService: IMtgSetService, dto: LibraryCardListDto) {
+    super(basicDataService, mtgSetService, dto);
     this.languages = dto.languages
-      .map((lng: string) => languageService.getLanguage(lng))
+      .map((lng: string) => basicDataService.getLanguage(lng))
       .filter((lng: LanguageDto | undefined) => lng != undefined)
       .sort((a: LanguageDto, b: LanguageDto) => a.sequence - b.sequence)
       .map((lng: LanguageDto) => lng.buttonText)

@@ -2,9 +2,7 @@ import {
   IAuthenticationViewmodelFactory, ICollectionViewmodelFactory, IMtgCardViewmodelFactory,
   IMtgSetViewmodelFactory, ISettingsViewmodelFactory
 } from "../../viewmodel/factory/interface";
-import { IColorService } from "./color.service";
-import { IDisplayValueService } from "./display-value.service";
-import { ILanguageService } from "./language.service";
+import { IBasicDataService } from "./basic-data.service";
 import { IMtgSetService } from "./mtg-set.service";
 
 export interface IViewmodelFactoryService {
@@ -14,9 +12,5 @@ export interface IViewmodelFactoryService {
   readonly mtgCardViewmodelFactory: IMtgCardViewmodelFactory;
   readonly settingsViewmodelFactory: ISettingsViewmodelFactory;
 
-  initialize(colorService: IColorService,
-    displayValueService: IDisplayValueService,
-    languageService: ILanguageService,
-    mtgSetService: IMtgSetService
-  ): void;
+  initialize(displayValueService: IBasicDataService, mtgSetService: IMtgSetService): void;
 }

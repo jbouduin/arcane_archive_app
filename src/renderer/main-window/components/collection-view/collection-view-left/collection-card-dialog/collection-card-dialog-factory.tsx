@@ -1,12 +1,12 @@
-import { IDisplayValueService, IOverlayService } from "../../../../../shared/context";
+import { IBasicDataService, IOverlayService } from "../../../../../shared/context";
 import { CollectionCardQuantityDto } from "../../../../../shared/dto";
 import { CollectionCardViewmodel } from "../../../../../shared/viewmodel";
 import { CollectionCardDialogBody } from "./collection-card-dialog-body";
 import { CollectionCardDialogFooter } from "./collection-card-dialog-footer";
-import { CollectionCardDialogBodyProps, CollectionCardDialogFooterProps, CollectionCardDialogProps } from "./collection-card-dialog.props";
+import * as DialogProps from "./collection-card-dialog.props";
 
 export function showNewCollectionCardDialog(
-  overlayService: IOverlayService, displayValueService: IDisplayValueService, collectionId: number
+  overlayService: IOverlayService, basicDataService: IBasicDataService, collectionId: number
 ): void {
   const viewmodel = new CollectionCardViewmodel(
     {
@@ -18,15 +18,15 @@ export function showNewCollectionCardDialog(
       quantities: new Array<CollectionCardQuantityDto>()
     },
     "create",
-    displayValueService.getSelectOptions("cardCondition")
+    basicDataService.getCardConditionSelectOptions()
   );
-  const dialogProps: CollectionCardDialogProps = {
+  const dialogProps: DialogProps.CollectionCardDialogProps = {
     isOpen: true,
     viewmodel: viewmodel,
-    bodyRenderer: (bodyProps: CollectionCardDialogBodyProps) => {
+    bodyRenderer: (bodyProps: DialogProps.CollectionCardDialogBodyProps) => {
       return (<CollectionCardDialogBody {...bodyProps} />);
     },
-    footerRenderer: (footerProps: CollectionCardDialogFooterProps) => {
+    footerRenderer: (footerProps: DialogProps.CollectionCardDialogFooterProps) => {
       return (<CollectionCardDialogFooter {...footerProps} />);
     }
   };
@@ -34,5 +34,5 @@ export function showNewCollectionCardDialog(
 }
 
 export function showEditCollectionCardDialog(): void {
-
+  // TODO
 }

@@ -1,4 +1,5 @@
 import { CollectionCardDto, CollectionCardQuantityDto } from "../../dto";
+import { CardConditionDto } from "../../dto/card-condition.dto";
 import { SelectOption } from "../../types";
 import { BaseViewmodel, ViewmodelMode } from "../base.viewmodel";
 import { CollectionCardQuantityViewmodel } from "./collection-card-quantity.viewmodel";
@@ -43,14 +44,18 @@ export class CollectionCardViewmodel extends BaseViewmodel<CollectionCardDto> {
   //#endregion
 
   //#region Constructor & C° --------------------------------------------------
-  public constructor(dto: CollectionCardDto, mode: ViewmodelMode, cardConditions: Array<SelectOption<string>>) {
+  public constructor(
+    dto: CollectionCardDto,
+    mode: ViewmodelMode,
+    cardConditions: Array<SelectOption<CardConditionDto>>
+  ) {
     super(dto, mode);
     this.foilQuantitiesViewmodels = new Map<string, CollectionCardQuantityViewmodel>();
     this.nonFoilQuantitiesViewmodels = new Map<string, CollectionCardQuantityViewmodel>();
     this._allQuantitiesViewmodels = new Array<CollectionCardQuantityViewmodel>();
-    cardConditions.forEach((cc: SelectOption<string>) => {
-      this.registerQuantityViewmodel(cc.value, true);
-      this.registerQuantityViewmodel(cc.value, false);
+    cardConditions.forEach((cc: SelectOption<CardConditionDto>) => {
+      this.registerQuantityViewmodel(cc.value.condition, true);
+      this.registerQuantityViewmodel(cc.value.condition, false);
     });
   }
 

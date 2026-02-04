@@ -1,5 +1,5 @@
-import { IColorService, IDisplayValueService, IMtgSetService } from "../context";
-import { BaseCardListDto, ColorDto } from "../dto";
+import { IBasicDataService, IMtgSetService } from "../context";
+import { BaseCardListDto, AppColorDto } from "../dto";
 import { AbstractCardViewmodel } from "./abstract-card.viewmodel";
 
 export class AbstractCardListViewmodel extends AbstractCardViewmodel {
@@ -24,8 +24,7 @@ export class AbstractCardListViewmodel extends AbstractCardViewmodel {
 
   // #region Constructor ------------------------------------------------------
   public constructor(
-    colorService: IColorService,
-    displayValueService: IDisplayValueService,
+    basicDataService: IBasicDataService,
     mtgSetService: IMtgSetService,
     dto: BaseCardListDto) {
     super();
@@ -38,13 +37,13 @@ export class AbstractCardListViewmodel extends AbstractCardViewmodel {
     this.collectorNumber = dto.collectorNumber;
     this.collectorNumberSortValue = dto.collectorNumberSortValue;
     const identityColors = dto.colorIdentities
-      .map((color: string) => colorService.getColor(color))
-      .filter((color: ColorDto | undefined) => color != undefined)
-      .sort((a: ColorDto, b: ColorDto) => a.sequence - b.sequence);
-    this.colorIdentity = identityColors.map((color: ColorDto) => color.manaSymbol);
+      .map((color: string) => basicDataService.getColor(color))
+      .filter((color: AppColorDto | undefined) => color != undefined)
+      .sort((a: AppColorDto, b: AppColorDto) => a.sequence - b.sequence);
+    this.colorIdentity = identityColors.map((color: AppColorDto) => color.manaSymbol);
     this.colorIdentitySortValue = dto.colorIdentitiesSortValue;
     this.rarity = dto.rarity;
-    this.rarityDisplayValue = displayValueService.getDisplayValue("rarity", dto.rarity);
+    this.rarityDisplayValue = basicDataService.getDisplayValue("rarity", dto.rarity);
     this.raritySortValue = dto.raritySortValue;
     this.type = dto.type;
     this.manaCost = this.calculateCardManaCost(dto.manaCost);

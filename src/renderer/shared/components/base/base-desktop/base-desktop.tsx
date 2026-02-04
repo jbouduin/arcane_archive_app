@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { usePreferences } from "../../../../hooks";
 import { BaseDesktopProps } from "./base-desktop.props";
 
-export function BaseDesktop(props: BaseDesktopProps) {
+export function BaseDesktop(props: BaseDesktopProps): JSX.Element {
   // #region State ------------------------------------------------------------
   const { themeClassName } = usePreferences();
   // #endregion

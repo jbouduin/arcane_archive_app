@@ -1,18 +1,16 @@
-import { IDisplayValueService, ILanguageService } from "../../../context";
+import { IBasicDataService } from "../../../context";
 import { MtgSetDto, MtgSetTreeDto } from "../../../dto";
 import { MtgSetDetailViewmodel, MtgSetTreeViewmodel } from "../../mtg-set";
 import { IMtgSetViewmodelFactory } from "../interface";
 
 export class MtgSetViewmodelFactory implements IMtgSetViewmodelFactory {
   // #region Private fields ---------------------------------------------------
-  private readonly displayValueService: IDisplayValueService;
-  private readonly languageService: ILanguageService;
+  private readonly basicDataService: IBasicDataService;
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(displayValueService: IDisplayValueService, languageService: ILanguageService) {
-    this.displayValueService = displayValueService;
-    this.languageService = languageService;
+  public constructor(basicDataService: IBasicDataService) {
+    this.basicDataService = basicDataService;
   }
   // #endregion
 
@@ -39,7 +37,7 @@ export class MtgSetViewmodelFactory implements IMtgSetViewmodelFactory {
   }
 
   public getMtgSetDetailViewmodel(dto: MtgSetDto): MtgSetDetailViewmodel {
-    return new MtgSetDetailViewmodel(this.displayValueService, this.languageService, dto);
+    return new MtgSetDetailViewmodel(this.basicDataService, dto);
   }
   // #endregion
 }

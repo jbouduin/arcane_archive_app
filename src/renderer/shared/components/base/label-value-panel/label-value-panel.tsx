@@ -1,8 +1,10 @@
 import { Classes } from "@blueprintjs/core";
 import { LabelValuePanelProps } from "./label-value-panel.props";
 
-export function LabelValuePanel(props: LabelValuePanelProps) {
+export function LabelValuePanel(props: LabelValuePanelProps): JSX.Element {
+  //#region Initialize defaults -----------------------------------------------
   const numCol = props.columns || 1;
+  //#endregion
 
   // #region Rendering --------------------------------------------------------
   return (

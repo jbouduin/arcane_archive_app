@@ -1,6 +1,6 @@
 import { ContextMenu, Menu, MenuItem } from "@blueprintjs/core";
 import { noop } from "lodash";
-import { useServices, useSession } from "../../../hooks";
+import { useApiStatus, useServices, useSession } from "../../../hooks";
 import { CollectionDto, MtgSetDto } from "../../dto";
 import { showSetDialog } from "../dialogs/factory";
 import { SetTreeContextMenuProps } from "./set-tree-context-menu.props";
@@ -9,6 +9,7 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element 
   // #region Hooks ------------------------------------------------------------
   const { collectionService, overlayService, mtgSetService, viewmodelFactoryService, sessionService } = useServices();
   const { loggedIn } = useSession();
+  const { collectionServiceAvailable } = useApiStatus();
   // #endregion
 
   // #region Rendering --------------------------------------------------------
@@ -36,6 +37,8 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element 
               (
                 <MenuItem
                   key={`export-${props.cardSetId}`}
+                  disabled={!collectionServiceAvailable}
+                  text="Export to XL"
                   onClick={
                     (e) => {
                       e.preventDefault();
@@ -48,7 +51,6 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element 
                       );
                     }
                   }
-                  text="Export to XL"
                 />
               )
             }

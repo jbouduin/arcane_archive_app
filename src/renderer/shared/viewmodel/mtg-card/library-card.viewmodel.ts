@@ -1,6 +1,6 @@
-import { IColorService, IDisplayValueService, ILanguageService, IMtgSetService } from "../../context";
+import { IBasicDataService, IMtgSetService } from "../../context";
 import { LanguageDto, LibraryCardDto, LibraryLegality } from "../../dto";
-import { ColorDto } from "../../dto/color.dto";
+import { AppColorDto } from "../../dto/app-color.dto";
 import { LibraryCardLanguageDto } from "../../dto/library-card-language.dto";
 import { LibraryCardfaceDto } from "../../dto/library-cardface.dto";
 import { CardLayout } from "../../types/card-layout";
@@ -31,17 +31,15 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
 
   // #region Constructor ------------------------------------------------------
   public constructor(
-    colorService: IColorService,
-    displayValueService: IDisplayValueService,
-    languageService: ILanguageService,
+    basicDataService: IBasicDataService,
     mtgSetService: IMtgSetService,
     dto: LibraryCardDto) {
     super();
     // --- sort card faces and languages ---
     dto.cardfaces.sort((a: LibraryCardfaceDto, b: LibraryCardfaceDto) => a.sequence - b.sequence);
     dto.cardLanguages.sort((a: LibraryCardLanguageDto, b: LibraryCardLanguageDto) => {
-      const languageA = languageService.getLanguage(a.language)?.sequence || 0;
-      const languageB = languageService.getLanguage(b.language)?.sequence || 0;
+      const languageA = basicDataService.getLanguage(a.language)?.sequence || 0;
+      const languageB = basicDataService.getLanguage(b.language)?.sequence || 0;
       return languageA - languageB;
     });
     // --- assign card fields ---
@@ -55,17 +53,19 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
     this.setKeyruneCode = mtgSet?.keyruneCode || "DEFAULT";
     this.collectorNumber = dto.collectorNumber;
     this.colorIdentity = dto.colorIdentities
-      .map((color: string) => colorService.getColor(color))
-      .filter((color: ColorDto | undefined) => color != undefined)
-      .sort((a: ColorDto, b: ColorDto) => a.sequence - b.sequence)
-      .map((color: ColorDto) => color.manaSymbol);
+      .map((color: string) => basicDataService.getColor(color))
+      .filter((color: AppColorDto | undefined) => color != undefined)
+      .sort((a: AppColorDto, b: AppColorDto) => a.sequence - b.sequence)
+      .map((color: AppColorDto) => color.manaSymbol);
     this.languages = dto.cardLanguages
-      .map((cardLanguage: LibraryCardLanguageDto) => languageService.getLanguage(cardLanguage.language))
+      .map((cardLanguage: LibraryCardLanguageDto) => basicDataService.getLanguage(cardLanguage.language))
       .filter((lng: LanguageDto | undefined) => lng != undefined)
       .sort((a: LanguageDto, b: LanguageDto) => a.sequence - b.sequence);
     this.rarity = dto.rarity;
     this.layout = dto.layout;
-    this.manaCost = this.calculateCardManaCost(dto.cardfaces.map((cardface: LibraryCardfaceDto) => cardface.manaCost));
+    this.manaCost = this.calculateCardManaCost(
+      dto.cardfaces.map((cardface: LibraryCardfaceDto) => cardface.manaCost)
+    );
     this.cardLanguages = this.createCardLanguageViewmodels(dto);
     const firstLanguage = this.cardLanguages.values().next().value!;
     this.typeline = Array.of(...firstLanguage.cardfaces.values())
@@ -74,8 +74,8 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
     this.legalities = new Map<string, string>();
     dto.legalities.forEach((l: LibraryLegality) => {
       this.legalities.set(
-        displayValueService.getDisplayValue("gameFormat", l.gameFormat),
-        displayValueService.getDisplayValue("legality", l.legality)
+        basicDataService.getDisplayValue("gameFormat", l.gameFormat),
+        basicDataService.getDisplayValue("legality", l.legality)
       );
     });
     this.oracleId = dto.cardfaces[0].oracleId;

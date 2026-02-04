@@ -5,7 +5,7 @@ import { CollectionTreeContextMenuProps } from "./collection-tree-context-menu.p
 
 export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps): JSX.Element {
   //#region Hooks -------------------------------------------------------------
-  const { overlayService, displayValueService } = useServices();
+  const { overlayService, basicDataService: displayValueService } = useServices();
   //#endregion
 
   // #region Event handling ---------------------------------------------------
