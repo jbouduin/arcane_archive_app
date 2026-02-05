@@ -3,29 +3,33 @@ import { CollectionDto } from "../../dto";
 import { CollectionType } from "../../types";
 import { BaseViewmodel, ViewmodelMode } from "../base.viewmodel";
 
+/**
+ * The viewmodle for a collection. This viewmodel does not contain getter/setter for the field `code`,
+ * as that value is maintained by the back-end. The translatabel field `name` is also not used.
+ */
 export class CollectionViewmodel extends BaseViewmodel<CollectionDto> {
   // #region Private fields ---------------------------------------------------
   private readonly _parentPath: Array<string>;
   // #endregion
 
   // #region Getters/Setters --------------------------------------------------
-  public get code(): string {
-    return this._dto.code;
+  public get collectionName(): string {
+    return this._dto.collectionName;
   }
 
-  public set code(value: string) {
-    this._dto.code = value;
+  public set collectionName(value: string) {
+    this._dto.collectionName = value;
   }
 
   public get description(): string {
-    return this._dto.name["ENGLISH"] || "";
+    return this._dto.description || "";
   }
 
   public set description(value: string) {
     if (value.trim().length == 0) {
-      delete this._dto.name["ENGLISH"];
+      this._dto.description = null;
     } else {
-      this._dto.name["ENGLISH"] = value;
+      this._dto.description = value;
     }
   }
 
@@ -37,25 +41,22 @@ export class CollectionViewmodel extends BaseViewmodel<CollectionDto> {
     return this._parentPath;
   }
 
-  public get parentPathJoin(): string {
-    return this._parentPath.join();
-  }
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: CollectionDto, parentPath: Array<string>, mode: ViewmodelMode) {
+  public constructor(dto: CollectionDto, parentCode: string, mode: ViewmodelMode) {
     super(dto, mode);
-    this._parentPath = parentPath;
+    this._parentPath = parentCode.split("/").filter((p: string) => p != "");
     if (mode == "update") {
-      this.validateCode();
+      this.validateCollectionName();
     }
-    this.registerValidation("code", () => this.validateCode());
+    this.registerValidation("collectionName", () => this.validateCollectionName());
   }
   // #endregion
 
   // #region Auxiliary Methods ------------------------------------------------
-  private validateCode(): void {
-    if (stringHasMinimalLength(this._dto.code, 3)) {
+  private validateCollectionName(): void {
+    if (stringHasMinimalLength(this._dto.collectionName, 3)) {
       this.setFieldValid("code");
     } else {
       this.setFieldInvalid(

@@ -3,7 +3,6 @@ import { CollectionDto } from "../../dto";
 
 export class CollectionTreeViewmodel implements IBaseTreeNodeViewmodel {
   private readonly _dto: CollectionDto;
-  private readonly _path: Array<string>;
 
   // #region IBaseTreeNodeViewmodel Members -----------------------------------
   public isSelected: boolean;
@@ -19,24 +18,20 @@ export class CollectionTreeViewmodel implements IBaseTreeNodeViewmodel {
     return this._dto.parentId;
   }
 
-  public get code(): string {
-    return this._dto.code;
-  }
-
   public get folder(): boolean {
     return this._dto.type == "FOLDER";
   }
 
+  public get path(): string {
+    return this._dto.code;
+  }
+
+  public get name(): string {
+    return this._dto.collectionName;
+  }
+
   public get dto(): CollectionDto {
     return this._dto;
-  }
-
-  public get path(): Array<string> {
-    return this._path;
-  }
-
-  public set path(value: Array<string>) {
-    this._path.push(...value);
   }
   // #endregion
 
@@ -45,7 +40,6 @@ export class CollectionTreeViewmodel implements IBaseTreeNodeViewmodel {
     this._dto = dto;
     this.isSelected = false;
     this.isExpanded = false;
-    this._path = new Array<string>();
   }
   // #endregion
 }

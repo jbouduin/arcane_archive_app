@@ -11,12 +11,11 @@ export function showEditCollectionDialog(
   viewmodelFactoryService: IViewmodelFactoryService,
   overlayService: IOverlayService,
   collection: CollectionDto,
-  parentCollection: CollectionDto | null,
-  parentPath: Array<string>,
+  parent: CollectionDto,
   onCollectionModified: (dto: CollectionDto) => void
 ): void {
   const viewmodel = viewmodelFactoryService.collectionViewmodelFactory
-    .getCollectionViewmodel(collection, parentCollection, parentPath);
+    .getCollectionViewmodel(collection, parent);
   const dialogProps: CollectionDialog.CollectionDialogProps = {
     isOpen: true,
     viewmodel: viewmodel,
@@ -38,7 +37,7 @@ export function showEditCollectionDialog(
         {collection.type != "FOLDER" && <Icon icon="box" />}
         Edit&nbsp;'
         <i>
-          {viewmodel.code}
+          {viewmodel.collectionName}
         </i>
         '
       </>
@@ -51,12 +50,12 @@ export function showNewCollectionDialog(
   viewmodelFactoryService: IViewmodelFactoryService,
   overlayService: IOverlayService,
   type: CollectionType,
-  parentCollection: CollectionDto | null,
-  parentPath: Array<string>,
+  parent: CollectionDto,
   onCollectionAdded: (dto: CollectionDto) => void
 ): void {
+  const titleText = type == "FOLDER" ? "New Folder" : "New Collection";
   const viewmodel = viewmodelFactoryService.collectionViewmodelFactory
-    .getNewCollectionViewmodel(type, parentCollection, parentPath);
+    .getNewCollectionViewmodel(type, parent);
   const dialogProps: CollectionDialog.CollectionDialogProps = {
     isOpen: true,
     viewmodel: viewmodel,
@@ -76,7 +75,7 @@ export function showNewCollectionDialog(
       <>
         {type == "FOLDER" && <Icon icon="folder-close" />}
         {type != "FOLDER" && <Icon icon="box" />}
-        New
+        {titleText}
       </>
     )
   };

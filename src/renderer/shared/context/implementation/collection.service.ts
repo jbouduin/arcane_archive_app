@@ -1,15 +1,16 @@
 import { noop } from "lodash";
+import { ImportCollectionDataDto } from "../../../../common/dto/collection";
 import { IpcPaths } from "../../../../common/ipc";
 import { CollectionCardDto, CollectionDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { IArcaneArchiveProxy, ICollectionService, IIpcProxy, IOverlayService, ISessionService } from "../interface";
-import { ImportCollectionDataDto } from "../../../../common/dto/collection";
 
 export class CollectionService implements ICollectionService {
   //#region Private fields ----------------------------------------------------
   private arcaneArchiveProxy!: IArcaneArchiveProxy;
   private ipcProxy!: IIpcProxy;
   private collections: Map<number, CollectionDto> | null;
+  private rootCollection: CollectionDto | null;
   private selectOptions: Map<number, SelectOption<CollectionDto>> | null;
   private unsubscribeSession: (() => void) | null;
   // #endregion
@@ -18,6 +19,7 @@ export class CollectionService implements ICollectionService {
   public constructor() {
     this.collections = null;
     this.selectOptions = null;
+    this.rootCollection = null;
     this.unsubscribeSession = null;
   }
   //#endregion
@@ -34,6 +36,7 @@ export class CollectionService implements ICollectionService {
         () => {
           this.collections = null;
           this.selectOptions = null;
+          this.rootCollection = null;
         }
       );
     }
@@ -55,7 +58,7 @@ export class CollectionService implements ICollectionService {
           this.selectOptions = new Map<number, SelectOption<CollectionDto>>();
         }
         this.collections.set(resp.id!, resp);
-        this.selectOptions.set(resp.id!, { value: resp, label: resp.code });
+        this.selectOptions.set(resp.id!, { value: resp, label: resp.collectionName });
         return resp;
       });
   }
@@ -79,17 +82,24 @@ export class CollectionService implements ICollectionService {
       return Promise.resolve([...this.collections.values()]);
     } else {
       return this.arcaneArchiveProxy
-        .getData<Array<CollectionDto>>("collection", "/auth/collection")
+        .getData<Array<CollectionDto>>("collection", "/auth/collection/all")
         .then((resp: Array<CollectionDto>) => {
           this.collections = new Map<number, CollectionDto>();
           this.selectOptions = new Map<number, SelectOption<CollectionDto>>();
           resp.forEach((c: CollectionDto) => {
             this.collections!.set(c.id!, c);
             this.selectOptions!.set(c.id!, { value: c, label: c.code });
+            if (c.parentId == null) {
+              this.rootCollection = c;
+            }
           });
-          return resp;
+          return [...this.collections.values()];
         });
     }
+  }
+
+  public getRootCollection(): CollectionDto | null {
+    return this.rootCollection;
   }
 
   public getCollectionDetails(_collectionId: number): Promise<CollectionDto> {

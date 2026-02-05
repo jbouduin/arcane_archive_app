@@ -23,6 +23,7 @@ const TreeView = memo(
 export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element {
   //#region State -------------------------------------------------------------
   const [collections, setCollections] = useState<Array<CollectionTreeViewmodel>>(new Array<CollectionTreeViewmodel>());
+  const [rootCollection, setRootCollection] = useState<CollectionDto | null>(null);
   // TODO store expanded nodes and selected node and check if we solve the bug in basetreeeview with that
 
   //#endregion
@@ -32,12 +33,12 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
   //#endregion
 
   //#region Event Handling ----------------------------------------------------
-  function onAddCollection(parentCollection: CollectionDto | null, parentPath: Array<string>): void {
-    showNewCollectionDialog(viewmodelFactoryService, overlayService, "COLLECTION", parentCollection, parentPath, onCollectionAdded);
+  function onAddCollection(parent: CollectionDto): void {
+    showNewCollectionDialog(viewmodelFactoryService, overlayService, "COLLECTION", parent, onCollectionAdded);
   }
 
-  function onAddFolder(parentCollection: CollectionDto | null, parentPath: Array<string>): void {
-    showNewCollectionDialog(viewmodelFactoryService, overlayService, "FOLDER", parentCollection, parentPath, onCollectionAdded);
+  function onAddFolder(parent: CollectionDto): void {
+    showNewCollectionDialog(viewmodelFactoryService, overlayService, "FOLDER", parent, onCollectionAdded);
   }
 
   function onCollectionAdded(dto: CollectionDto): void {
@@ -85,11 +86,9 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
     });
   }
 
-  function onEditCollection(
-    collection: CollectionDto, parentCollection: CollectionDto | null, parentPath: Array<string>
-  ): void {
+  function onEditCollection(collection: CollectionDto, parentCollection: CollectionDto): void {
     showEditCollectionDialog(
-      viewmodelFactoryService, overlayService, collection, parentCollection, parentPath, onCollectionModified
+      viewmodelFactoryService, overlayService, collection, parentCollection, onCollectionModified
     );
   }
   //#endregion
@@ -99,12 +98,15 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
     () => {
       void collectionService.getCollections()
         .then(
-          (collections: Array<CollectionDto>) => setCollections(
-            collections.map(
-              c => viewmodelFactoryService.collectionViewmodelFactory.getCollectionTreeViewmodel(c)
-            )
-          ),
-          () => setCollections(new Array<CollectionTreeViewmodel>())
+          (collections: Array<CollectionDto>) => {
+            setCollections(
+              collections.map(c => viewmodelFactoryService.collectionViewmodelFactory.getCollectionTreeViewmodel(c)));
+            setRootCollection(collectionService.getRootCollection());
+          },
+          () => {
+            setCollections(new Array<CollectionTreeViewmodel>());
+            setRootCollection(null);
+          }
         );
     },
     []
@@ -122,21 +124,25 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
             <Menu>
               <MenuItem
                 key="add-folder"
+                disabled={rootCollection == null}
                 text="Add Folder"
                 onClick={
                   (e) => {
                     e.preventDefault();
-                    onAddFolder(null, new Array<string>());
+                    // NOW this should be root collection
+                    onAddFolder(rootCollection!);
                   }
                 }
               />
               <MenuItem
                 key="add-collection"
                 text="Add Collection"
+                disabled={rootCollection == null}
                 onClick={
                   (e) => {
                     e.preventDefault();
-                    onAddCollection(null, new Array<string>());
+                    // NOW this should be root collection
+                    onAddCollection(rootCollection!);
                   }
                 }
               />
@@ -170,35 +176,46 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
   //#endregion
 
   //#region Auxiliary Methods -------------------------------------------------
+  /**
+   * Build the nodes for the tree. As we do not want to display the root, which is created by the system,
+   * we find the root first and start buildig the tree from that root.
+   * @param data all collections
+   * @param _filterProps not used
+   * @returns an array of {@link TreeNodeInfo}
+   */
   function buildTree(
     data: Array<CollectionTreeViewmodel>, _filterProps: {} | undefined
   ): Array<TreeNodeInfo<CollectionTreeViewmodel>> {
-    return buildTreeByParentRecursive(data, null);
+    let result = new Array<TreeNodeInfo<CollectionTreeViewmodel>>();
+    if (data.length == 0) {
+      result = new Array<TreeNodeInfo<CollectionTreeViewmodel>>();
+    } else {
+      const root = data.find((ctvm: CollectionTreeViewmodel) => ctvm.id == rootCollection!.id);
+      if (root) {
+        result = buildTreeByParentRecursive(data, root!);
+      }
+    }
+    return result;
   }
 
   function buildTreeByParentRecursive(
     collections: Array<CollectionTreeViewmodel>,
-    parentCollection: CollectionTreeViewmodel | null
+    parentCollection: CollectionTreeViewmodel
   ): Array<TreeNodeInfo<CollectionTreeViewmodel>> {
     return collections
-      .filter((item: CollectionTreeViewmodel) => item.parentId == parentCollection?.id)
+      .filter((item: CollectionTreeViewmodel) => item.parentId == parentCollection.id)
       .sort((a: CollectionTreeViewmodel, b: CollectionTreeViewmodel) => {
         if (a.folder && !b.folder) {
           return -1;
         } else if (!a.folder && b.folder) {
           return 1;
         } else {
-          return a.code.localeCompare(b.code, undefined, { caseFirst: "false" });
+          return a.name.localeCompare(b.name, undefined, { caseFirst: "false" });
         }
       })
       .map((collection: CollectionTreeViewmodel) => {
-        collection.path = parentCollection != null
-          ? new Array<string>(...parentCollection.path, collection.code)
-          : new Array<string>(collection.code);
-
         const childNodes: Array<TreeNodeInfo<CollectionTreeViewmodel>> =
           buildTreeByParentRecursive(collections, collection);
-
         const node = mapViewmodelToTreeItem(collection, parentCollection, childNodes);
         return node;
       });
@@ -206,7 +223,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
 
   function mapViewmodelToTreeItem(
     collection: CollectionTreeViewmodel,
-    parentCollection: CollectionTreeViewmodel | null,
+    parentCollection: CollectionTreeViewmodel,
     childNodes: Array<TreeNodeInfo<CollectionTreeViewmodel>>
   ): TreeNodeInfo<CollectionTreeViewmodel> {
     const subNodes = childNodes.length > 0 ? childNodes : undefined;
@@ -216,8 +233,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
       label: (
         <CollectionTreeContextMenu
           collection={collection.dto}
-          parentCollection={parentCollection?.dto || null}
-          parentPath={parentCollection?.path || new Array<string>()}
+          parentCollection={parentCollection.dto}
           hasChildren={subNodes != undefined}
           onAddCollection={onAddCollection}
           onAddFolder={onAddFolder}
@@ -235,7 +251,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
             )
           }
           {
-            // TODO find a better solution
+            // LATER find a better solution for the icon the one from the button is not good for the tree
             !collection.folder &&
             (
               <Icon
@@ -257,7 +273,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
             )
           } */}
           <div key="name" style={{ alignContent: "center" }}>
-            {collection.code}
+            {collection.name}
           </div>
         </CollectionTreeContextMenu>
       ),

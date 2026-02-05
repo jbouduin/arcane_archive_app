@@ -4,7 +4,7 @@ import { CollectionDto } from "../../../dto";
 import { DefaultDialogFooter } from "../../base/base-dialog";
 import { CollectionDialogFooterProps } from "./collection-dialog.props";
 
-export function CollectionDialogFooter(props: CollectionDialogFooterProps) {
+export function CollectionDialogFooter(props: CollectionDialogFooterProps): JSX.Element {
   //#region Hooks -------------------------------------------------------------
   const { collectionService } = useServices();
   //#endregion

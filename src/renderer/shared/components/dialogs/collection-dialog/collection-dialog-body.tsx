@@ -19,7 +19,7 @@ export function CollectionDialogBody(props: CollectionDialogBodyProps) {
       result.push({ current: true, text: "" });
       return result;
     },
-    [props.viewmodel.parentPathJoin]
+    [props.viewmodel.parentPath]
   );
   // #endregion
 
@@ -39,7 +39,10 @@ export function CollectionDialogBody(props: CollectionDialogBodyProps) {
           key="bc-crumbs"
           items={breadcrumbProps}
           collapseFrom={Boundary.START}
-          // BUG list does not collapse. If it does not work at all, consider displaying path and name as two components.
+          /**
+           * # BUG list does not collapse. If it does not work at all,
+           * consider displaying path and name as two components.
+           */
           overflowListProps={{ alwaysRenderOverflow: false }}
           currentBreadcrumbRenderer={
             (_crumbProps: BreadcrumbProps) => {
@@ -47,14 +50,14 @@ export function CollectionDialogBody(props: CollectionDialogBodyProps) {
                 <InputGroup
                   key="bc-input"
                   fill={true}
-                  value={props.viewmodel.code}
+                  value={props.viewmodel.collectionName}
                   onChange={handleStringChange((newValue: string) => {
-                    props.viewmodel.code = newValue;
-                    props.viewmodel.validate("code");
+                    props.viewmodel.collectionName = newValue;
+                    props.viewmodel.validate("collectionName");
                     props.viewmodelChanged();
                   })}
                   onBlur={() => {
-                    props.viewmodel.markTouched("code");
+                    props.viewmodel.markTouched("collectionName");
                     props.viewmodelChanged();
                   }}
                 />

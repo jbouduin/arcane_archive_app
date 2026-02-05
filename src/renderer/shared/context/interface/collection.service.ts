@@ -15,8 +15,9 @@ export interface ICollectionService {
   createCollection(collection: CollectionDto): Promise<CollectionDto>;
   deleteCollection(collectionId: number): Promise<number>;
   // TODO use CollectionDetailDto
-  getCollections(): Promise<Array<CollectionDto>>;
   getCollectionDetails(collectionId: number): Promise<CollectionDto>;
+  getCollections(): Promise<Array<CollectionDto>>;
+  getRootCollection(): CollectionDto | null;
   getSelectOptions(): Array<SelectOption<CollectionDto>>;
   updateCollection(collection: CollectionDto): Promise<CollectionDto>;
   //#endregion

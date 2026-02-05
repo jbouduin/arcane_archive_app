@@ -31,7 +31,7 @@ export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps)
               onClick={
                 (e) => {
                   e.preventDefault();
-                  props.onEditCollection(props.collection, props.parentCollection, props.parentPath);
+                  props.onEditCollection(props.collection, props.parentCollection);
                 }
               }
               text="Edit"
@@ -74,7 +74,7 @@ export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps)
                     onClick={
                       (e) => {
                         e.preventDefault();
-                        props.onAddFolder(props.collection, props.parentPath);
+                        props.onAddFolder(props.collection);
                       }
                     }
                     text="Add Folder"
@@ -84,7 +84,7 @@ export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps)
                     onClick={
                       (e) => {
                         e.preventDefault();
-                        props.onAddCollection(props.collection, props.parentPath);
+                        props.onAddCollection(props.collection);
                       }
                     }
                     text="Add Collection"

@@ -31,4 +31,3 @@ export * from "./sync-param.dto";
 export * from "./sync-task-param.dto";
 export * from "./system-info.dto";
 export * from "./user.dto";
-
