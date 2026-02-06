@@ -12,6 +12,7 @@ export class BasicDataService implements IBasicDataService {
   private dictionary: Map<DisplayValueDictionaryKey, Map<string, string>>;
   private selectOptions: Map<DisplayValueDictionaryKey, Array<SelectOption<string>>>;
   private languageMap: Map<string, LanguageDto>;
+  private languageSelectOptions: Array<SelectOption<LanguageDto>>;
   private colorMap: Map<string, AppColorDto>;
   private colorSelectOptions: Array<SelectOption<AppColorDto>>;
   // #endregion
@@ -24,6 +25,7 @@ export class BasicDataService implements IBasicDataService {
     this.selectOptions = new Map<DisplayValueDictionaryKey, Array<SelectOption<string>>>();
     this.colorSelectOptions = new Array<SelectOption<AppColorDto>>();
     this.languageMap = new Map<string, LanguageDto>();
+    this.languageSelectOptions = new Array<SelectOption<LanguageDto>>();
   }
   // #endregion
 
@@ -42,6 +44,10 @@ export class BasicDataService implements IBasicDataService {
 
   public getLanguage(language: string): LanguageDto | undefined {
     return this.languageMap.get(language)!;
+  }
+
+  public getLanguageSelectOptions(): Array<SelectOption<LanguageDto>> {
+    return this.languageSelectOptions;
   }
 
   public getDisplayValue(key: EnumDisplayValueDictionaryKey, value: string): string {
@@ -117,7 +123,10 @@ export class BasicDataService implements IBasicDataService {
   private processLanguages(allLanguages: Array<LanguageDto>): void {
     allLanguages
       .sort((a: LanguageDto, b: LanguageDto) => a.sequence - b.sequence)
-      .forEach((language: LanguageDto) => this.languageMap.set(language.language, language));
+      .forEach((language: LanguageDto) => {
+        this.languageMap.set(language.language, language);
+        this.languageSelectOptions.push({ label: language.displayValue, value: language });
+      });
   }
   //#endregion
 }

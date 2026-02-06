@@ -1,6 +1,6 @@
-import { ImportCollectionDataDto } from "../../../../common/dto/collection";
+import { ImportCollectionRequest } from "../../../../common/dto";
 import { IResult } from "../../base";
 
 export interface ICollectionService {
-  importCollectionData(importCollectionData: ImportCollectionDataDto): Promise<IResult<object>>;
+  importCollectionData(importCollectionData: ImportCollectionRequest): Promise<IResult<object>>;
 }

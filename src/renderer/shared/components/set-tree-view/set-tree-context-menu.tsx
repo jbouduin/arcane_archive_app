@@ -1,8 +1,7 @@
 import { ContextMenu, Menu, MenuItem } from "@blueprintjs/core";
-import { noop } from "lodash";
-import { useApiStatus, useServices, useSession } from "../../../hooks";
-import { CollectionDto, MtgSetDto } from "../../dto";
-import { showSetDialog } from "../dialogs/factory";
+import { useApiStatus, usePreferences, useServices, useSession } from "../../../hooks";
+import { MtgSetDto } from "../../dto";
+import { showExportSetDialog, showSetDialog } from "../dialogs/factory";
 import { SetTreeContextMenuProps } from "./set-tree-context-menu.props";
 
 export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element {
@@ -10,6 +9,7 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element 
   const { collectionService, overlayService, mtgSetService, viewmodelFactoryService, sessionService } = useServices();
   const { loggedIn } = useSession();
   const { collectionServiceAvailable } = useApiStatus();
+  const { preferences } = usePreferences();
   // #endregion
 
   // #region Rendering --------------------------------------------------------
@@ -42,12 +42,13 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element 
                   onClick={
                     (e) => {
                       e.preventDefault();
-                      collectionService.getCollections().then(
-                        (collections: Array<CollectionDto>) => mtgSetService.exportToExcel(
-                          props.cardSetId,
-                          collections.filter((c: CollectionDto) => c.type == "COLLECTION")
-                        ),
-                        noop
+                      showExportSetDialog(
+                        props.cardSetId,
+                        preferences.cardConditions,
+                        collectionService,
+                        mtgSetService,
+                        viewmodelFactoryService,
+                        overlayService
                       );
                     }
                   }

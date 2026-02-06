@@ -81,14 +81,9 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
       .then(() => 1);
   }
 
-  // TODO move download to main. just ask save-as here before
+  // LATER move download to main. just ask save-as here before
   public async downloadFile(server: ArcaneArchiveServer, path: string): Promise<void> {
-    const headers: Record<string, string> = {
-      /*
-       * # TODO "accept": "application/json",
-       * "Content-Type": "application/json"
-       */
-    };
+    const headers: Record<string, string> = {};
     if (this.jwt != null) {
       headers["Authorization"] = "Bearer " + this.jwt;
     }
@@ -102,9 +97,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
     );
 
     const blob = await response.blob();
-
     const urlObject = URL.createObjectURL(blob);
-
     const a = document.createElement("a");
     a.href = urlObject;
     a.download = "set.xlsx";
@@ -112,8 +105,6 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
     a.click();
     a.remove();
     URL.revokeObjectURL(urlObject);
-
-    // return new Uint8Array(arrayBuffer);
   }
 
   public getData<T extends object>(

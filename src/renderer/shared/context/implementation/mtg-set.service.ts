@@ -1,5 +1,6 @@
 import { noop } from "lodash";
-import { CollectionDto, MtgSetDto, MtgSetTreeDto, SyncParamDto } from "../../dto";
+import { ExportSetRequest } from "../../../../common/dto";
+import { MtgSetDto, MtgSetTreeDto, SyncParamDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { IArcaneArchiveProxy } from "../interface";
 import { IMtgSetService } from "../interface/mtg-set.service";
@@ -23,9 +24,10 @@ export class MtgSetService implements IMtgSetService {
     return Array.of(...this.setMap.values());
   }
 
-  public exportToExcel(id: number, collections: Array<CollectionDto>): void {
-    const queryParameter = collections.map((c: CollectionDto) => c.id!);
-    void this.arcaneArchiveProxy.downloadFile("library", `/auth/mtg-set/${id}/excel?collectionIds=${queryParameter}`);
+  public exportToExcel(request: ExportSetRequest): void {
+    void this.arcaneArchiveProxy.downloadFile(
+      "library",
+      `/auth/mtg-set/${request.setId}/excel?collections=${request.collectionIds}&conditions=${request.cardConditions}&lang=${request.languages}`);
   }
 
   public getSelectOptions(): Array<SelectOption<MtgSetTreeDto>> {

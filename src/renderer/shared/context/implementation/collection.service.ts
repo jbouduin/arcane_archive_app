@@ -1,5 +1,5 @@
 import { noop } from "lodash";
-import { ImportCollectionDataDto } from "../../../../common/dto/collection";
+import { ImportCollectionRequest } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
 import { CollectionCardDto, CollectionDto } from "../../dto";
 import { SelectOption } from "../../types";
@@ -152,10 +152,10 @@ export class CollectionService implements ICollectionService {
         (file: string | undefined) => {
           if (file) {
             overlayService.showSplashScreen("Importing data");
-            const options: ImportCollectionDataDto = {
+            const options: ImportCollectionRequest = {
               fileName: file
             };
-            this.ipcProxy.postData<ImportCollectionDataDto, object>(IpcPaths.IMPORT_COLLECTION_DATA, options)
+            this.ipcProxy.postData<ImportCollectionRequest, object>(IpcPaths.IMPORT_COLLECTION_DATA, options)
               .then(
                 () => overlayService.hideSplashSceen(),
                 () => overlayService.hideSplashSceen()

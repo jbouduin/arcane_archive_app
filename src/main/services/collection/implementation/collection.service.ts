@@ -1,10 +1,10 @@
 import { inject, injectable } from "tsyringe";
+import { ImportCollectionRequest } from "../../../../common/dto";
+import { IArcaneArchiveClient } from "../../api/interface";
 import { BaseService, IResult } from "../../base";
 import { ILogService, IResultFactory } from "../../infra/interface";
 import { API, INFRASTRUCTURE } from "../../service.tokens";
 import { ICollectionService } from "../interface";
-import { ImportCollectionDataDto } from "../../../../common/dto/collection";
-import { IArcaneArchiveClient } from "../../api/interface";
 
 @injectable()
 export class CollectionService extends BaseService implements ICollectionService {
@@ -24,9 +24,9 @@ export class CollectionService extends BaseService implements ICollectionService
   //#endregion
 
   //#region ICollectionService Members ----------------------------------------
-  public async importCollectionData(importCollectionData: ImportCollectionDataDto): Promise<IResult<object>> {
+  public async importCollectionData(importCollectionRequest: ImportCollectionRequest): Promise<IResult<object>> {
     const postResult = await this.arcaneArchiveClient.postMultiPart(
-      "collection", "/auth/collection/import", importCollectionData.fileName
+      "collection", "/auth/collection/import", importCollectionRequest.fileName
     );
     return this.resultFactory.createSuccessResult(postResult.data);
   }

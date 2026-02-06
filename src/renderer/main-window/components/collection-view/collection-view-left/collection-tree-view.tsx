@@ -129,7 +129,6 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
                 onClick={
                   (e) => {
                     e.preventDefault();
-                    // NOW this should be root collection
                     onAddFolder(rootCollection!);
                   }
                 }
@@ -141,7 +140,6 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
                 onClick={
                   (e) => {
                     e.preventDefault();
-                    // NOW this should be root collection
                     onAddCollection(rootCollection!);
                   }
                 }

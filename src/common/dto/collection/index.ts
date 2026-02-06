@@ -1,2 +1,2 @@
-export * from "./export-set-collection.dto";
-export * from "./import-collection-data.dto";
+export * from "./export-set.request";
+export * from "./import-collection-request";

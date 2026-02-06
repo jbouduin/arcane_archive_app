@@ -53,7 +53,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
     </>
   );
 
-  function renderBasicPreferences(): React.JSX.Element {
+  function renderBasicPreferences(): JSX.Element {
     return (
       <>
         <BaseCheckbox
@@ -151,16 +151,17 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
     );
   }
 
-  function renderSetTypes(viewmodel: SetTreeSettingsViewmodel): Array<React.JSX.Element> {
-    const table = new Array<React.JSX.Element>();
-    let currentRow: Array<React.JSX.Element>;
+  // TODO use CheckBoxTable
+  function renderSetTypes(viewmodel: SetTreeSettingsViewmodel): Array<JSX.Element> {
+    const table = new Array<JSX.Element>();
+    let currentRow: Array<JSX.Element>;
     let idx = 0;
     serviceContainer
       .basicDataService
       .getSelectOptions("setType")
       .forEach((opt: SelectOption<string>) => {
         if (idx % 3 == 0) {
-          currentRow = new Array<React.JSX.Element>();
+          currentRow = new Array<JSX.Element>();
           table.push((
             <tr key={`row-${idx}`}>
               {currentRow}
@@ -188,16 +189,17 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
     return table;
   }
 
+  // TODO use CheckBoxTable
   function renderCardConditions(): JSX.Element {
-    const table = new Array<React.JSX.Element>();
-    let currentRow: Array<React.JSX.Element>;
+    const table = new Array<JSX.Element>();
+    let currentRow: Array<JSX.Element>;
     let idx = 0;
     serviceContainer
       .basicDataService
       .getCardConditionSelectOptions()
       .forEach((opt: SelectOption<CardConditionDto>) => {
         if (idx % 3 == 0) {
-          currentRow = new Array<React.JSX.Element>();
+          currentRow = new Array<JSX.Element>();
           table.push((
             <tr key={`row-${idx}`}>
               {currentRow}
@@ -231,7 +233,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
         width="100%"
       >
         <thead>
-          <tr><td colSpan={3} style={{ paddingLeft: "0px" }}>Set types filter</td></tr>
+          <tr><td colSpan={3} style={{ paddingLeft: "0px" }}>Card Conditions</td></tr>
         </thead>
         <tbody>
           {table}

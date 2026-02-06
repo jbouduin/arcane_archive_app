@@ -8,6 +8,7 @@ export interface IBasicDataService {
   getColor(colorCode: string): AppColorDto | undefined;
   getColorSelectOptions(): Array<SelectOption<AppColorDto>>;
   getLanguage(language: string): LanguageDto | undefined;
+  getLanguageSelectOptions(): Array<SelectOption<LanguageDto>>;
   getDisplayValue(key: DisplayValueDictionaryKey, value: string): string;
   getSelectOptions(key: DisplayValueDictionaryKey): Array<SelectOption<string>>;
   initialize(arcaneArchiveProxy: IArcaneArchiveProxy): Promise<void>;
