@@ -6,8 +6,8 @@ import { ProfileDialogFooterProps } from "./profile-dialog.props";
 
 export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
   // #region Hooks ------------------------------------------------------------
-  const serviceContainer = useServices();
-  const { userName } = useSession();
+  const { arcaneArchiveProxy, sessionService } = useServices();
+  const { userName, isSysAdmin } = useSession();
   // #endregion
 
   // #region Event handling ---------------------------------------------------
@@ -17,10 +17,10 @@ export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
       account: props.viewmodel.accountViewmodel.dto,
       profile: props.viewmodel.dto
     };
-    if (serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") && userName == userDto.account.accountName) {
-      result = serviceContainer.sessionService.saveUser(serviceContainer.arcaneArchiveProxy, userDto);
+    if (isSysAdmin && userName == userDto.account.accountName) {
+      result = sessionService.saveUser(arcaneArchiveProxy, userDto);
     } else {
-      result = serviceContainer.sessionService.saveSelf(serviceContainer.arcaneArchiveProxy, userDto);
+      result = sessionService.saveSelf(arcaneArchiveProxy, userDto);
     }
     return result.then(
       (_r: object) => {

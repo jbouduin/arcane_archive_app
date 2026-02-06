@@ -91,7 +91,7 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
 
   public getUserViewmodel(arcaneArchiveProxy: IArcaneArchiveProxy): Promise<ProfileViewmodel> {
     return arcaneArchiveProxy
-      .getData<UserDto>("authentication", "/app/account")
+      .getData<UserDto>("authentication", "/auth/user")
       .then((userDto: UserDto) => new ProfileViewmodel(userDto));
   }
   // #endregion

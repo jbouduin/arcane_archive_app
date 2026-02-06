@@ -1,6 +1,7 @@
 import { isError, noop } from "lodash";
 import {
-  ApiConfigurationDto, ResultDto, SessionDto, SystemConfigurationDto, ValidationErrorDto
+  ApiConfigurationDto, ResultDto,
+  SystemConfigurationDto, ValidationErrorDto
 } from "../../../../common/dto";
 import { LogLevel } from "../../../../common/enums";
 import { ArcaneArchiveServer, ResponseLogSetting, ResponseLogSource } from "../../../../common/types";
@@ -8,7 +9,7 @@ import { runSerial } from "../../../../common/util";
 import { ApiInfoDto } from "../../dto";
 import { ShowToastFn } from "../../types";
 import { IArcaneArchiveProxy, IConfigurationService, ISessionService } from "../interface";
-import { ApiStatus, ApiStatusChangeListener, ArcaneArchiveRequestOptions, InvalidSessionListener } from "../types";
+import { ApiStatus, ApiStatusChangeListener, ArcaneArchiveRequestOptions, InvalidSessionListener, SessionChangeEvent } from "../types";
 
 export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
   //#region Private fields ----------------------------------------------------
@@ -55,7 +56,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
   public initializeSubscriptions(sessionService: ISessionService, configurationService: IConfigurationService): void {
     if (this.unsubscribeSession == null) {
       this.unsubscribeSession = sessionService.subscribeSessionChangeListener(
-        (data: SessionDto | null) => this.jwt = data ? data.token : null
+        (data: SessionChangeEvent | null) => this.jwt = data ? data.token : null
       );
     }
     if (this.unsubscribeSystemConfiguration == null) {

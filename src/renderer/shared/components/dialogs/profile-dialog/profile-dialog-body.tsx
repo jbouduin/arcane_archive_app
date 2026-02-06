@@ -1,6 +1,5 @@
 import { ControlGroup, HTMLTable, Tab, Tabs } from "@blueprintjs/core";
-import { useMemo } from "react";
-import { useServices } from "../../../../hooks";
+import { useSession } from "../../../../hooks";
 import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption } from "../../../types";
 import { BaseMultiSelect } from "../../base/base-multi-select/base-multi-select";
 import { createAuditableLabelValueItems, LabelValueItem, LabelValuePanel } from "../../base/label-value-panel";
@@ -9,14 +8,7 @@ import { ProfileDialogBodyProps } from "./profile-dialog.props";
 
 export function ProfileDialogBody(props: ProfileDialogBodyProps) {
   // #region Hooks ------------------------------------------------------------
-  const serviceContainer = useServices();
-  // #endregion
-
-  // #region Memo -------------------------------------------------------------
-  const isSysAdmin = useMemo(
-    () => serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN"),
-    [serviceContainer.sessionService]
-  );
+  const { isSysAdmin } = useSession();
   // #endregion
 
   // #region Rendering --------------------------------------------------------

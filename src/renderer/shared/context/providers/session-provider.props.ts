@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
-import { SessionDto } from "../../../../common/dto";
+import { SessionChangeEvent } from "../types";
 
 export interface SessionProviderProps {
-  sessionData: SessionDto | null;
+  sessionData: SessionChangeEvent | null;
   children: ReactNode;
 }

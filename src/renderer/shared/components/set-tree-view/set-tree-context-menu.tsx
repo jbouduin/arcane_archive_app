@@ -6,8 +6,8 @@ import { SetTreeContextMenuProps } from "./set-tree-context-menu.props";
 
 export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
-  const { collectionService, overlayService, mtgSetService, viewmodelFactoryService, sessionService } = useServices();
-  const { loggedIn } = useSession();
+  const { collectionService, overlayService, mtgSetService, viewmodelFactoryService } = useServices();
+  const { loggedIn, isSysAdmin } = useSession();
   const { collectionServiceAvailable } = useApiStatus();
   const { preferences } = usePreferences();
   // #endregion
@@ -56,8 +56,7 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element 
               )
             }
             {
-              loggedIn &&
-              sessionService.hasRole("ROLE_SYS_ADMIN") &&
+              isSysAdmin &&
               (
                 <MenuItem
                   key={`sync-${props.cardSetId}`}

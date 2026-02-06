@@ -6,7 +6,7 @@ import {
 } from "../../dto";
 import { ApplicationRole } from "../../types";
 import { IArcaneArchiveProxy, IIpcProxy, IServiceContainer, ISessionService } from "../interface";
-import { PreferencesLoadedListener, SessionChangeListener } from "../types";
+import { PreferencesLoadedListener, SessionChangeEvent, SessionChangeListener } from "../types";
 
 export class SessionService implements ISessionService {
   //#region Private fields ----------------------------------------------------
@@ -79,7 +79,7 @@ export class SessionService implements ISessionService {
     return arcaneArchiveProxy
       .postData<ChangePasswordRequestDto, never>(
         "authentication",
-        "/app/account/password",
+        "/auth/account/password",
         changePasswordRequest,
         { suppressSuccessMessage: false }
       )
@@ -115,7 +115,7 @@ export class SessionService implements ISessionService {
 
   public saveSelf(arcaneArchiveProxy: IArcaneArchiveProxy, dto: UserDto): Promise<UserDto> {
     return arcaneArchiveProxy.putData<UserDto, UserDto>(
-      "authentication", "/app/account", dto
+      "authentication", "/auth/user", dto
     );
   }
 
@@ -139,14 +139,6 @@ export class SessionService implements ISessionService {
   //#endregion
 
   //#region ISessionService Members - Session ---------------------------------
-  public hasRole(role: ApplicationRole): boolean {
-    return this.roles.has(role);
-  }
-
-  public hasAnyRole(...roles: Array<ApplicationRole>): boolean {
-    return roles.some((role: ApplicationRole) => this.roles.has(role));
-  }
-
   public login(serviceContainer: IServiceContainer, loginRequest: LoginRequestDto): Promise<SessionDto> {
     return serviceContainer.arcaneArchiveProxy
       .postData<LoginRequestDto, SessionDto>(
@@ -251,7 +243,13 @@ export class SessionService implements ISessionService {
       );
     }
     document.title = `Arcane Archive - (logged in as ${data.userName}})`;
-    this.sessionChangeListeners.forEach((l: SessionChangeListener) => l(data));
+    const event: SessionChangeEvent = {
+      profile: data.profile,
+      roles: this.roles,
+      token: data.token,
+      userName: data.userName
+    };
+    this.sessionChangeListeners.forEach((l: SessionChangeListener) => l(event));
   }
   //#endregion
 }

@@ -1,6 +1,7 @@
 export type SessionContextType = {
+  email?: string;
+  isAppAdmin: boolean;
+  isSysAdmin: boolean;
   loggedIn: boolean;
   userName?: string;
-  email?: string;
-  // TODO add isAppAdmin and isSysAdmin
 };

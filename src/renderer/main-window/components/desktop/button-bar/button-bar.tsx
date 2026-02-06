@@ -11,7 +11,7 @@ import { ButtonBarProps } from "./button-bar.props";
 
 export function ButtonBar(props: ButtonBarProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
-  const { loggedIn, userName, email } = useSession();
+  const { loggedIn, userName, email, isSysAdmin } = useSession();
   const apiInfo = useApiStatus();
   const { authenticationServiceAvailable } = useApiStatus();
   const serviceContainer = useServices();
@@ -109,7 +109,10 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
             text="Refresh Card Symbols"
           />
           <MenuItem
-            onClick={() => serviceContainer.overlayService.showToast({ intent: "warning", message: "Feature not Implemented" })}
+            onClick={() => {
+              serviceContainer.overlayService.showToast(
+                { intent: "warning", message: "Feature not Implemented" });
+            }}
             text="Refresh Card Images"
           />
         </MenuItem>
@@ -117,8 +120,7 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
           <MenuItem onClick={() => showSystemSettingsDialog(serviceContainer, false)} text="Settings" />
           <MenuItem onClick={() => showSystemInfoDialog(apiInfo, serviceContainer)} text="Info" />
           {
-            serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") &&
-            <MenuItem onClick={adminClick} text="Admin" />
+            isSysAdmin && <MenuItem onClick={adminClick} text="Admin" />
           }
         </MenuItem>
       </Menu>
