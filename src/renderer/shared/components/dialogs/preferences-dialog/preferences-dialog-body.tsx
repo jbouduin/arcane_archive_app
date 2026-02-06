@@ -1,15 +1,13 @@
-import { Callout, ControlGroup, HTMLTable, Tab, Tabs } from "@blueprintjs/core";
+import { Callout, ControlGroup, Tab, Tabs } from "@blueprintjs/core";
 import { useServices, useSession } from "../../../../hooks";
 import { CardConditionDto } from "../../../dto/card-condition.dto";
-import { SelectOption } from "../../../types";
-import { SetTreeSettingsViewmodel } from "../../../viewmodel/settings";
-import { BaseCheckbox, BaseHtmlSelect, ToggleCheckbox } from "../../input";
+import { BaseCheckbox, BaseHtmlSelect, CheckBoxTable } from "../../input";
 import { PreferencesDialogBodyProps } from "./preferences-dialog.props";
 
 export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const { loggedIn } = useSession();
-  const serviceContainer = useServices();
+  const { basicDataService } = useServices();
   // #endregion
 
   // #region Rendering --------------------------------------------------------
@@ -44,7 +42,18 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
               id="card-conditions"
               key="card-conditions"
               title="Card Conditions"
-              panel={renderCardConditions()}
+              panel={(
+                <CheckBoxTable
+                  key="cardconditions"
+                  columns={3}
+                  allOptions={basicDataService.getCardConditionSelectOptions()}
+                  value={(cardCondition: CardConditionDto) => cardCondition.condition}
+                  viewmodel={props.viewmodel}
+                  fieldName="cardConditions"
+                  viewmodelChanged={props.viewmodelChanged}
+                  validation="synchronous"
+                />
+              )}
             />
           )
         }
@@ -132,113 +141,16 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
             label="Group sets in tree by"
           />
         </ControlGroup>
-        <HTMLTable
-          bordered={false}
-          compact={true}
+        <CheckBoxTable
           key="set-type-filter"
-          width="100%"
-        >
-          <thead>
-            <tr><td colSpan={3} style={{ paddingLeft: "0px" }}>Set types filter</td></tr>
-          </thead>
-          <tbody>
-            {
-              renderSetTypes(viewmodel)
-            }
-          </tbody>
-        </HTMLTable>
+          columns={3}
+          allOptions={basicDataService.getSelectOptions("setType")}
+          value={(setType: string) => setType}
+          viewmodel={viewmodel}
+          fieldName="cardSetTypeFilter"
+          viewmodelChanged={props.viewmodelChanged}
+        />
       </>
-    );
-  }
-
-  // TODO use CheckBoxTable
-  function renderSetTypes(viewmodel: SetTreeSettingsViewmodel): Array<JSX.Element> {
-    const table = new Array<JSX.Element>();
-    let currentRow: Array<JSX.Element>;
-    let idx = 0;
-    serviceContainer
-      .basicDataService
-      .getSelectOptions("setType")
-      .forEach((opt: SelectOption<string>) => {
-        if (idx % 3 == 0) {
-          currentRow = new Array<JSX.Element>();
-          table.push((
-            <tr key={`row-${idx}`}>
-              {currentRow}
-            </tr>
-          ));
-        }
-        currentRow.push((
-          <td key={`cell-${opt.value}`} style={{ paddingLeft: "0px" }}>
-            <ToggleCheckbox
-              viewmodel={viewmodel}
-              viewmodelChanged={props.viewmodelChanged}
-              fieldName="cardSetTypeFilter"
-              value={opt.value}
-            >
-              {opt.label}
-            </ToggleCheckbox>
-          </td>
-        ));
-        idx = idx + 1;
-      });
-    while (idx % 3 != 0) {
-      currentRow!.push(<td key={`cell-${idx}`} style={{ paddingLeft: "0px" }}></td>);
-      idx = idx + 1;
-    }
-    return table;
-  }
-
-  // TODO use CheckBoxTable
-  function renderCardConditions(): JSX.Element {
-    const table = new Array<JSX.Element>();
-    let currentRow: Array<JSX.Element>;
-    let idx = 0;
-    serviceContainer
-      .basicDataService
-      .getCardConditionSelectOptions()
-      .forEach((opt: SelectOption<CardConditionDto>) => {
-        if (idx % 3 == 0) {
-          currentRow = new Array<JSX.Element>();
-          table.push((
-            <tr key={`row-${idx}`}>
-              {currentRow}
-            </tr>
-          ));
-        }
-        currentRow.push((
-          <td key={`cell-${opt.value}`} style={{ paddingLeft: "0px" }}>
-            <ToggleCheckbox
-              viewmodel={props.viewmodel}
-              viewmodelChanged={props.viewmodelChanged}
-              fieldName="cardConditions"
-              value={opt.value.condition}
-            >
-              {opt.label}
-            </ToggleCheckbox>
-          </td>
-        ));
-        idx = idx + 1;
-      });
-    while (idx % 3 != 0) {
-      currentRow!.push(<td key={`cell-${idx}`} style={{ paddingLeft: "0px" }}></td>);
-      idx = idx + 1;
-    }
-
-    return (
-      <HTMLTable
-        bordered={false}
-        compact={true}
-        key="set-type-filter"
-        width="100%"
-      >
-        <thead>
-          <tr><td colSpan={3} style={{ paddingLeft: "0px" }}>Card Conditions</td></tr>
-        </thead>
-        <tbody>
-          {table}
-        </tbody>
-      </HTMLTable>
     );
   }
   // #endregion

@@ -29,6 +29,7 @@ export class PreferencesViewmodel extends BaseViewmodel<PreferencesDto> {
   public constructor(dto: PreferencesDto) {
     super(dto);
     this._librarySetTreeSettingsViewmodel = new SetTreeSettingsViewmodel(dto.librarySetTreeSettings);
+    // --- register select options ---
     this.registerSelectOptions(
       "cachedImageSize",
       [
@@ -65,6 +66,21 @@ export class PreferencesViewmodel extends BaseViewmodel<PreferencesDto> {
         { label: "Descending", value: "DESC" }
       ]
     );
+    // --- validations ---
+    this.registerValidation("cardConditions", () => this.validateCardConditions());
   }
   // #endregion
+
+  //#region Auxiliary Methods -------------------------------------------------
+  private validateCardConditions(): void {
+    if (this._dto.cardConditions.length == 0) {
+      this.setFieldInvalid(
+        "cardConditions",
+        { intent: "danger", helperText: "You have to select at least one card condition" }
+      );
+    } else {
+      this.setFieldValid("cardConditions");
+    }
+  }
+  //#endregion
 }
