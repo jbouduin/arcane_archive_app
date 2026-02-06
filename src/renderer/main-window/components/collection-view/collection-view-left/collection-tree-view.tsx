@@ -24,7 +24,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
   //#region State -------------------------------------------------------------
   const [collections, setCollections] = useState<Array<CollectionTreeViewmodel>>(new Array<CollectionTreeViewmodel>());
   const [rootCollection, setRootCollection] = useState<CollectionDto | null>(null);
-  // TODO store expanded nodes and selected node and check if we solve the bug in basetreeeview with that
+  // LATER store expanded nodes and selected node and check if we solve the bug in basetreeeview with that
 
   //#endregion
 

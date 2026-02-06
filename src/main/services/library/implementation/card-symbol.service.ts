@@ -56,7 +56,7 @@ export class CardSymbolService extends BaseService implements ICardSymbolService
             readFileSync(pathToFile, { encoding: "utf-8" })
           );
         } catch (_err) {
-          // LATER
+          // LATER error handling
         }
       }
     });

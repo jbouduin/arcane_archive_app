@@ -11,7 +11,7 @@ export class OverlayService implements IOverlayService {
   private setAlert!: Dispatch<React.SetStateAction<AlertProps | null>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private setDialogs!: Dispatch<React.SetStateAction<Map<number, BaseDialogProps<any, any>>>>;
-  // TODO check if line above it works with unknown
+  // LATER check if line above it works with unknown
   private setSplashScreen!: Dispatch<React.SetStateAction<ProgressCallbackValue | null>>;
   private _showToast!: ShowToastFn;
   private dialogSequence: number;

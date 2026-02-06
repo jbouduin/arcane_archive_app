@@ -5,7 +5,7 @@ import { SelectOption } from "../../../types";
 import { HighlightText } from "../highlight-text/highlight-text";
 import { BaseMultiSelectProps } from "./base-multi-select.props";
 
-// LATER move this component to ../../input and make it work with BaseViewmodel
+// TODO replace by BaseMultiSelect where used
 /**
  * A multi select component that uses a static (cached) list of items
  */

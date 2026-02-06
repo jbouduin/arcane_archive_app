@@ -88,7 +88,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
     if (this.jwt != null) {
       headers["Authorization"] = "Bearer " + this.jwt;
     }
-    // TODO error handling
+
     const response = await fetch(
       this.buildPath(server, path),
       {
