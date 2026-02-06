@@ -26,7 +26,9 @@ export class CollectionService extends BaseService implements ICollectionService
   //#region ICollectionService Members ----------------------------------------
   public async importCollectionData(importCollectionRequest: ImportCollectionRequest): Promise<IResult<object>> {
     const postResult = await this.arcaneArchiveClient.postMultiPart(
-      "collection", "/auth/collection/import", importCollectionRequest.fileName
+      "collection",
+      `/auth/collection/import?conditions=${importCollectionRequest.cardConditions}`,
+      importCollectionRequest.fileName
     );
     return this.resultFactory.createSuccessResult(postResult.data);
   }

@@ -1,7 +1,7 @@
 import { ContextMenu, Divider, Icon, Menu, MenuItem, TreeNodeInfo } from "@blueprintjs/core";
 import { isEqual } from "lodash";
 import { memo, useEffect, useState } from "react";
-import { useServices } from "../../../../hooks";
+import { usePreferences, useServices } from "../../../../hooks";
 import { BaseTreeView, BaseTreeViewProps } from "../../../../shared/components/base/base-tree-view";
 import { showEditCollectionDialog, showNewCollectionDialog } from "../../../../shared/components/dialogs/factory";
 import { CollectionDto } from "../../../../shared/dto";
@@ -30,6 +30,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
 
   //#region Hooks -------------------------------------------------------------
   const { collectionService, overlayService, viewmodelFactoryService } = useServices();
+  const { preferences } = usePreferences();
   //#endregion
 
   //#region Event Handling ----------------------------------------------------
@@ -151,7 +152,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
                 onClick={
                   (e) => {
                     e.preventDefault();
-                    void collectionService.importCollectionData(overlayService);
+                    void collectionService.importCollectionData(overlayService, preferences.cardConditions);
                   }
                 }
               />

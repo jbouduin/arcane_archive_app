@@ -25,7 +25,7 @@ export interface ICollectionService {
   //#region CollectionCard ----------------------------------------------------
   createCollectionCard(collectionCard: CollectionCardDto): Promise<CollectionCardDto>;
   deleteCollectionCard(collectionCard: CollectionCardDto): Promise<number>;
-  importCollectionData(overlayService: IOverlayService): Promise<void>;
+  importCollectionData(overlayService: IOverlayService, cardConditions: Array<string>): Promise<void>;
   updateCollectionCard(collectionCard: CollectionCardDto): Promise<CollectionCardDto>;
   //#endregion
 }

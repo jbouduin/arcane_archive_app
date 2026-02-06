@@ -146,14 +146,15 @@ export class CollectionService implements ICollectionService {
     );
   }
 
-  public importCollectionData(overlayService: IOverlayService): Promise<void> {
+  public importCollectionData(overlayService: IOverlayService, cardConditions: Array<string>): Promise<void> {
     return overlayService.selectFile(this.ipcProxy, "collection-import")
       .then(
         (file: string | undefined) => {
           if (file) {
             overlayService.showSplashScreen("Importing data");
             const options: ImportCollectionRequest = {
-              fileName: file
+              fileName: file,
+              cardConditions: cardConditions
             };
             this.ipcProxy.postData<ImportCollectionRequest, object>(IpcPaths.IMPORT_COLLECTION_DATA, options)
               .then(
