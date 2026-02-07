@@ -4,7 +4,8 @@ import { AbstractCardListViewmodel } from "../abstract-card-list.viewmodel";
 
 export class CollectionCardListViewmodel extends AbstractCardListViewmodel {
   //#region Public properties -------------------------------------------------
-  public readonly language: string;//#endregion
+  public readonly language: string;
+  public readonly quantity: number;
   //#endregion
 
   //#region Constructor & C° --------------------------------------------------
@@ -15,6 +16,7 @@ export class CollectionCardListViewmodel extends AbstractCardListViewmodel {
   ) {
     super(basicDataService, mtgSetService, dto);
     this.language = basicDataService.getLanguage(dto.language)?.buttonText || "?";
+    this.quantity = dto.quantity;
   }
   //#endregion
 }

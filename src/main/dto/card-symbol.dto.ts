@@ -1,4 +1,3 @@
-
 export type CardSymbolDto = {
   code: string;
   /**
