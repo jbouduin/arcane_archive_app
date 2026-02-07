@@ -3,7 +3,6 @@ import { SelectOption, ValidationResult } from "../types";
 
 export type ViewmodelMode = "read-only" | "create" | "update";
 
-// TODO: when mode is update: validate all (at least the synchronous ones) and mark as touched ?
 export abstract class BaseViewmodel<Dto extends object> {
   //#region Private fields ----------------------------------------------------
   private validationFunctions: Map<keyof Dto, () => void>;
@@ -95,10 +94,21 @@ export abstract class BaseViewmodel<Dto extends object> {
 
   protected registerValidation(fieldName: keyof Dto, validation: () => void): void {
     this.validationFunctions.set(fieldName, validation);
+    // --- when updating: immediately run the validation ---
+    if (this.mode == "update") {
+      this.markTouched(fieldName);
+      validation();
+    }
   }
 
   protected registerAsyncValidation(fieldName: keyof Dto, validation: (signal: AbortSignal) => Promise<void>): void {
     this.asyncValidationFunctions.set(fieldName, validation);
+    // --- when updating: immediately run the validation ---
+    if (this.mode == "update") {
+      this.markTouched(fieldName);
+      // this way the abort signal is useless, but required.
+      validation(new AbortController().signal);
+    }
   }
 
   protected registerChildViewmodel<T extends object>(viewmodel: BaseViewmodel<T>): void {
@@ -174,6 +184,7 @@ export abstract class BaseViewmodel<Dto extends object> {
   }
 
   public validateAsync(fieldName: keyof Dto, signal: AbortSignal): Promise<void> {
+    // Remark: debounce for async validations has to be handled in the input component
     const method = this.asyncValidationFunctions.get(fieldName);
     if (method) {
       return method(signal)

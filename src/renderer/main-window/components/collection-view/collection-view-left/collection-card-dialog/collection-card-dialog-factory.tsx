@@ -32,7 +32,3 @@ export function showNewCollectionCardDialog(
   };
   overlayService.openDialog(dialogProps);
 }
-
-export function showEditCollectionCardDialog(): void {
-  // TODO implement
-}

@@ -5,7 +5,6 @@ import { SelectOption } from "../../../types";
 import { HighlightText } from "../highlight-text/highlight-text";
 import { BaseMultiSelectProps } from "./base-multi-select.props";
 
-// TODO replace by BaseMultiSelect where used
 /**
  * A multi select component that uses a static (cached) list of items
  */

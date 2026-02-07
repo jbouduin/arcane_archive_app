@@ -9,6 +9,8 @@ export interface BaseMultiSelectProps<T, U, Dto extends object> extends BaseProp
    */
   validation?: "none" | "synchronous";
 
+
   idExtractor: (value: T) => U;
+  itemSort?: (a: T, b: T) => number;
   preTextElement?: (option: SelectOption<T>) => React.ReactNode;
 }

@@ -10,6 +10,7 @@ import { BaseServerSelect } from "../base/base-server-select/base-server-select"
 import { CardSymbolRenderer } from "../card-symbol-renderer";
 import { AdvancedCardSearchViewProps } from "./advanced-card-search-view.props";
 
+// LATER refactor to use the new BaseMultiSelect
 export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps): JSX.Element {
   //#region Context -----------------------------------------------------------
   const serviceContainer = useServices();
