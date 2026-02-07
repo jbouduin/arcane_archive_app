@@ -15,7 +15,6 @@ export interface ICollectionService {
   createCollection(collection: CollectionDto): Promise<CollectionDto>;
   deleteCollection(collectionId: number): Promise<number>;
   getCollectionById(collectionId: number): CollectionDto | undefined;
-  // TODO use CollectionDetailDto
   getCollectionDetails(collectionId: number): Promise<CollectionDto>;
   getCollections(): Array<CollectionDto>;
   getRootCollection(): CollectionDto | null;

@@ -1,47 +1,27 @@
-import { addSelectOption, clearSelection, removeSelectOption, stringHasMinimalLength } from "../../components/util";
+import { stringHasMinimalLength } from "../../components/util";
 import { AccountDto } from "../../dto";
-import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption } from "../../types";
+import { ApplicationRole, SelectOption } from "../../types";
 import { BaseViewmodel, ViewmodelMode } from "../base.viewmodel";
 
 export class AccountViewmodel extends BaseViewmodel<AccountDto> {
-  // #region Private fields ---------------------------------------------------
-  private _selectedRoles: Array<SelectOption<ApplicationRole>>;
-  // #endregion
+  //#region Public properties -------------------------------------------------
+  public readonly allRoles: Array<SelectOption<ApplicationRole>>;
+  //#endregion
 
-  // #region Getters/Setters --------------------------------------------------
-  public get selectedRoles(): Array<SelectOption<ApplicationRole>> {
-    return this._selectedRoles;
-  }
-  // #endregion
-
-  // #region Constructor ------------------------------------------------------
+  //#region Constructor & C° --------------------------------------------------
   public constructor(dto: AccountDto, mode: ViewmodelMode) {
     super(dto, mode);
-    this._selectedRoles = new Array<SelectOption<ApplicationRole>>();
-    ROLES_SELECT_OPTIONS.forEach((option: SelectOption<ApplicationRole>) => {
-      if (dto.roles.includes(option.value)) {
-        this._selectedRoles.push(option);
-      }
-    });
+    this.allRoles = [
+      { label: "User", value: "ROLE_USER" },
+      { label: "Application Admin", value: "ROLE_APP_ADMIN" },
+      { label: "System Administrator", value: "ROLE_SYS_ADMIN" }
+    ];
     this.registerValidation("accountName", () => this.validateAccountName());
+    this.registerValidation("roles", () => this.validateRoles());
   }
-  // #endregion
+  //#endregion
 
-  // #region Add remove role --------------------------------------------------
-  public addRole(role: SelectOption<string>): void {
-    addSelectOption(this._dto.roles, this._selectedRoles, role);
-  }
-
-  public removeRole(role: SelectOption<string>): void {
-    removeSelectOption(this._dto.roles, this._selectedRoles, role);
-  }
-
-  public clearSelectedRoles(): void {
-    clearSelection(this._dto.roles, this._selectedRoles);
-  }
-  // #endregion
-
-  // #region Validation methods -----------------------------------------------
+  //#region Validation methods ------------------------------------------------
   private validateAccountName(): void {
     // LATER must become async as in register (currently no issue, as the field is readonly)
     if (stringHasMinimalLength(this._dto.accountName, 8)) {
@@ -53,5 +33,16 @@ export class AccountViewmodel extends BaseViewmodel<AccountDto> {
       );
     }
   }
-  // #endregion
+
+  private validateRoles(): void {
+    if (this._dto.roles.length == 0) {
+      this.setFieldInvalid(
+        "roles",
+        { intent: "danger", helperText: "You have to select at least one role" }
+      );
+    } else {
+      this.setFieldValid("roles");
+    }
+  }
+  //#endregion
 }
