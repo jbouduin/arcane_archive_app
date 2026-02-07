@@ -1,4 +1,4 @@
-import { IArcaneArchiveProxy, IBasicDataService, IMtgSetService, IServiceContainer } from "../../../context";
+import { IArcaneArchiveProxy, IBasicDataService, ICollectionService, IMtgSetService, IServiceContainer } from "../../../context";
 import {
   AdvancedCardSearchDto, CollectionCardListDto, LibraryCardDto, LibraryCardListDto, LibraryRulingDto
 } from "../../../dto";
@@ -11,12 +11,14 @@ import { IMtgCardViewmodelFactory } from "../interface";
 export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
   // #region Private fields ---------------------------------------------------
   private readonly basicDataService: IBasicDataService;
+  private readonly collectionService: ICollectionService;
   private readonly mtgSetService: IMtgSetService;
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(basicDataService: IBasicDataService, mtgSetService: IMtgSetService) {
+  public constructor(basicDataService: IBasicDataService, collectionService: ICollectionService, mtgSetService: IMtgSetService) {
     this.basicDataService = basicDataService;
+    this.collectionService = collectionService;
     this.mtgSetService = mtgSetService;
   }
   // #endregion
@@ -57,7 +59,7 @@ export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
   }
 
   public getCollectionCardlistViewmodel(dto: CollectionCardListDto): CollectionCardListViewmodel {
-    return new CollectionCardListViewmodel(this.basicDataService, this.mtgSetService, dto);
+    return new CollectionCardListViewmodel(this.basicDataService, this.collectionService, this.mtgSetService, dto);
   }
   // #endregion
 }

@@ -13,17 +13,17 @@ export function showExportSetDialog(
   viewmodelFactoryService: IViewmodelFactoryService,
   overlayService: IOverlayService
 ): void {
-  Promise.all([
-    mtgSetService.getSetDetails(cardSetId),
-    collectionService.getCollections()
-  ])
+  mtgSetService
+    .getSetDetails(cardSetId)
     .then(
-      ([set, _collections]: [MtgSetDto, Array<CollectionDto>]) => {
+      (set: MtgSetDto) => {
         const dialogProps: ExportSet.ExportSetDialogProps = {
           viewmodel: viewmodelFactoryService.mtgSetViewmodelFactory.getExportSetViewmodel(
             set,
             cardConditions,
-            collectionService.getSelectOptions().filter((c: SelectOption<CollectionDto>) => c.value.type == "COLLECTION")),
+            collectionService
+              .getSelectOptions()
+              .filter((c: SelectOption<CollectionDto>) => c.value.type == "COLLECTION")),
           bodyRenderer: (bodyProps: ExportSet.ExportSetDialogBodyProps) => {
             return (<ExportSet.ExportSetDialogBody {...bodyProps} />);
           },

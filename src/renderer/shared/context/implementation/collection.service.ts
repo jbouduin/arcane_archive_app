@@ -77,33 +77,26 @@ export class CollectionService implements ICollectionService {
       });
   }
 
-  public getCollections(): Promise<Array<CollectionDto>> {
-    if (this.collections != null) {
-      return Promise.resolve([...this.collections.values()]);
-    } else {
-      return this.arcaneArchiveProxy
-        .getData<Array<CollectionDto>>("collection", "/auth/collection/all")
-        .then((resp: Array<CollectionDto>) => {
-          this.collections = new Map<number, CollectionDto>();
-          this.selectOptions = new Map<number, SelectOption<CollectionDto>>();
-          resp.forEach((c: CollectionDto) => {
-            this.collections!.set(c.id!, c);
-            this.selectOptions!.set(c.id!, { value: c, label: c.code });
-            if (c.parentId == null) {
-              this.rootCollection = c;
-            }
-          });
-          return [...this.collections.values()];
-        });
-    }
-  }
-
-  public getRootCollection(): CollectionDto | null {
-    return this.rootCollection;
+  public getCollectionById(collectionId: number): CollectionDto | undefined {
+    const result: CollectionDto | undefined = this.collections != null
+      ? this.collections.get(collectionId)
+      : undefined;
+    return result;
   }
 
   public getCollectionDetails(_collectionId: number): Promise<CollectionDto> {
     throw new Error("Not implemented");
+  }
+
+  public getCollections(): Array<CollectionDto> {
+    const result: Array<CollectionDto> = this.collections != null
+      ? new Array<CollectionDto>(...this.collections.values())
+      : new Array<CollectionDto>();
+    return result;
+  }
+
+  public getRootCollection(): CollectionDto | null {
+    return this.rootCollection;
   }
 
   public getSelectOptions(): Array<SelectOption<CollectionDto>> {
@@ -112,6 +105,23 @@ export class CollectionService implements ICollectionService {
     } else {
       return new Array<SelectOption<CollectionDto>>();
     }
+  }
+
+  public loadCollections(): Promise<Array<CollectionDto>> {
+    return this.arcaneArchiveProxy
+      .getData<Array<CollectionDto>>("collection", "/auth/collection/all")
+      .then((resp: Array<CollectionDto>) => {
+        this.collections = new Map<number, CollectionDto>();
+        this.selectOptions = new Map<number, SelectOption<CollectionDto>>();
+        resp.forEach((c: CollectionDto) => {
+          this.collections!.set(c.id!, c);
+          this.selectOptions!.set(c.id!, { value: c, label: c.code });
+          if (c.parentId == null) {
+            this.rootCollection = c;
+          }
+        });
+        return [...this.collections.values()];
+      });
   }
 
   public updateCollection(collection: CollectionDto): Promise<CollectionDto> {

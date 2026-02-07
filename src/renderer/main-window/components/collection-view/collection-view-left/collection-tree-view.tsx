@@ -97,7 +97,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
   //#region Effects -----------------------------------------------------------
   useEffect(
     () => {
-      void collectionService.getCollections()
+      void collectionService.loadCollections()
         .then(
           (collections: Array<CollectionDto>) => {
             setCollections(

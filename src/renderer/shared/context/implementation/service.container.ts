@@ -26,7 +26,7 @@ export class ServiceContainer implements IServiceContainer {
   private _arcaneArchiveProxy: IArcaneArchiveProxy;
   private _basicDataService: IBasicDataService;
   private _cardSymbolService: ICardSymbolService;
-  private _collectionSerivce: ICollectionService;
+  private _collectionService: ICollectionService;
   private _collectionCardSearchService: ICollectionCardSearchService;
   private _configurationService: IConfigurationService;
   private _ipcProxy: IIpcProxy;
@@ -52,7 +52,7 @@ export class ServiceContainer implements IServiceContainer {
   }
 
   public get collectionService(): ICollectionService {
-    return this._collectionSerivce;
+    return this._collectionService;
   }
 
   public get collectionCardSearchService(): ICollectionCardSearchService {
@@ -97,7 +97,7 @@ export class ServiceContainer implements IServiceContainer {
     this._arcaneArchiveProxy = new ArcaneArchiveProxy();
     this._basicDataService = new BasicDataService();
     this._cardSymbolService = new CardSymbolService();
-    this._collectionSerivce = new CollectionService();
+    this._collectionService = new CollectionService();
     this._collectionCardSearchService = new CollectionCardSearchService();
     this._configurationService = new ConfigurationService();
     this._ipcProxy = new IpcProxy();
@@ -124,7 +124,7 @@ export class ServiceContainer implements IServiceContainer {
     this._arcaneArchiveProxy.initializeSubscriptions(this._sessionService, this._configurationService);
     this._ipcProxy.initializeSubscriptions(this._configurationService);
     this._sessionService.initializeSubscriptions(this._arcaneArchiveProxy, this._ipcProxy);
-    this._collectionSerivce.initializeSubscriptions(this._sessionService);
+    this._collectionService.initializeSubscriptions(this._sessionService);
 
     // --- show toast "interceptor" to be used during initialization ---
     const initializationShowToast: ShowToastFn = (props: ToastProps, _key?: string) => {
@@ -170,9 +170,10 @@ export class ServiceContainer implements IServiceContainer {
             await Promise.all(skippableServices)
               .then(
                 () => {
-                  this._collectionSerivce.initialize(this._ipcProxy, this._arcaneArchiveProxy);
+                  this._collectionService.initialize(this._ipcProxy, this._arcaneArchiveProxy);
                   this._viewmodelFactoryService.initialize(
                     this._basicDataService,
+                    this._collectionService,
                     this._mtgSetService
                   );
                 },

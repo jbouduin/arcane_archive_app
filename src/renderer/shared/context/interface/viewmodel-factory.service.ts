@@ -3,6 +3,7 @@ import {
   IMtgSetViewmodelFactory, ISettingsViewmodelFactory
 } from "../../viewmodel/factory/interface";
 import { IBasicDataService } from "./basic-data.service";
+import { ICollectionService } from "./collection.service";
 import { IMtgSetService } from "./mtg-set.service";
 
 export interface IViewmodelFactoryService {
@@ -12,5 +13,9 @@ export interface IViewmodelFactoryService {
   readonly mtgCardViewmodelFactory: IMtgCardViewmodelFactory;
   readonly settingsViewmodelFactory: ISettingsViewmodelFactory;
 
-  initialize(displayValueService: IBasicDataService, mtgSetService: IMtgSetService): void;
+  initialize(
+    displayValueService: IBasicDataService,
+    collectionService: ICollectionService,
+    mtgSetService: IMtgSetService
+  ): void;
 }

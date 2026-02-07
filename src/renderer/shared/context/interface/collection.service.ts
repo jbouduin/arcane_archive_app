@@ -14,11 +14,13 @@ export interface ICollectionService {
   //#region Collection --------------------------------------------------------
   createCollection(collection: CollectionDto): Promise<CollectionDto>;
   deleteCollection(collectionId: number): Promise<number>;
+  getCollectionById(collectionId: number): CollectionDto | undefined;
   // TODO use CollectionDetailDto
   getCollectionDetails(collectionId: number): Promise<CollectionDto>;
-  getCollections(): Promise<Array<CollectionDto>>;
+  getCollections(): Array<CollectionDto>;
   getRootCollection(): CollectionDto | null;
   getSelectOptions(): Array<SelectOption<CollectionDto>>;
+  loadCollections(): Promise<Array<CollectionDto>>;
   updateCollection(collection: CollectionDto): Promise<CollectionDto>;
   //#endregion
 

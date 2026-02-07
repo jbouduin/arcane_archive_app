@@ -9,11 +9,12 @@ import {
   IAuthenticationViewmodelFactory, ICollectionViewmodelFactory, IMtgCardViewmodelFactory,
   IMtgSetViewmodelFactory, ISettingsViewmodelFactory
 } from "../../viewmodel/factory/interface";
-import { IBasicDataService, IMtgSetService, IViewmodelFactoryService } from "../interface";
+import { IBasicDataService, ICollectionService, IMtgSetService, IViewmodelFactoryService } from "../interface";
 
 export class ViewmodelFactoryService implements IViewmodelFactoryService {
   // #region Private fields ---------------------------------------------------
-  private displayValueService!: IBasicDataService;
+  private basicDataService!: IBasicDataService;
+  private collectionService!: ICollectionService;
   private mtgSetService!: IMtgSetService;
   private _authenticationViewmodelFactory!: IAuthenticationViewmodelFactory;
   private _collectionViewmodelFactory!: ICollectionViewmodelFactory;
@@ -35,12 +36,14 @@ export class ViewmodelFactoryService implements IViewmodelFactoryService {
 
   public get mtgSetViewmodelFactory(): IMtgSetViewmodelFactory {
     return this._mtgSetViewmodelFactory ??
-      (this._mtgSetViewmodelFactory = new MtgSetViewmodelFactory(this.displayValueService));
+      (this._mtgSetViewmodelFactory = new MtgSetViewmodelFactory(this.basicDataService));
   }
 
   public get mtgCardViewmodelFactory(): IMtgCardViewmodelFactory {
     return this._mtgCardViewmodelFactory ??
-      (this._mtgCardViewmodelFactory = new MtgCardViewmodelFactory(this.displayValueService, this.mtgSetService));
+      (this._mtgCardViewmodelFactory = new MtgCardViewmodelFactory(
+        this.basicDataService, this.collectionService, this.mtgSetService
+      ));
   }
 
   public get settingsViewmodelFactory(): ISettingsViewmodelFactory {
@@ -48,8 +51,13 @@ export class ViewmodelFactoryService implements IViewmodelFactoryService {
       (this._settingsViewmodelFactory = new SettingsViewmodelFactory());
   }
 
-  public initialize(displayValueService: IBasicDataService, mtgSetService: IMtgSetService): void {
-    this.displayValueService = displayValueService;
+  public initialize(
+    basicDataService: IBasicDataService,
+    collectionService: ICollectionService,
+    mtgSetService: IMtgSetService
+  ): void {
+    this.basicDataService = basicDataService;
+    this.collectionService = collectionService;
     this.mtgSetService = mtgSetService;
   }
   // #endregion

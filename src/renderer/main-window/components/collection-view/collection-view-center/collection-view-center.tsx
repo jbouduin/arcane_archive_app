@@ -4,6 +4,7 @@ import { useServices } from "../../../../hooks";
 import {
   BaseLookupResult, GenericTextColumn, IBaseColumn, PagingView, SortDirection
 } from "../../../../shared/components/base/base-table";
+import { GenericNumericColumn } from "../../../../shared/components/base/base-table/generic-numeric-column";
 import {
   CardSetColumn, CardTableView, CollectiorNumberColumn, ColorIdentityColumn, ManaCostColumn
 } from "../../../../shared/components/card-table-view";
@@ -11,7 +12,6 @@ import { CollectionCardListDto, QueryParamsDto, QueryResultDto } from "../../../
 import { CardSortField } from "../../../../shared/types";
 import { CollectionCardListViewmodel } from "../../../../shared/viewmodel";
 import { CollectionViewCenterProps } from "./collection-view-center.props";
-import { GenericNumericColumn } from "../../../../shared/components/base/base-table/generic-numeric-column";
 
 const MemoCardTableView = memo(
   CardTableView<CollectionCardListViewmodel>,
@@ -51,6 +51,14 @@ export function CollectionViewCenter(props: CollectionViewCenterProps): JSX.Elem
         "cardName",
         (card: CollectionCardListViewmodel) => {
           return { defaultSortColumn: card.collectorNumberSortValue, textValue: card.cardName };
+        }
+      ));
+      result.push(new GenericTextColumn<CollectionCardListViewmodel>(
+        columNumber++,
+        "Collection",
+        null,
+        (card: CollectionCardListViewmodel) => {
+          return { defaultSortColumn: card.collectorNumberSortValue, textValue: card.collection };
         }
       ));
       result.push(new GenericNumericColumn<CollectionCardListViewmodel>(
