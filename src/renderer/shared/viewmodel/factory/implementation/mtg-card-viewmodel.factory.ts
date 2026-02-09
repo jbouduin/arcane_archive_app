@@ -16,7 +16,9 @@ export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(basicDataService: IBasicDataService, collectionService: ICollectionService, mtgSetService: IMtgSetService) {
+  public constructor(
+    basicDataService: IBasicDataService, collectionService: ICollectionService, mtgSetService: IMtgSetService
+  ) {
     this.basicDataService = basicDataService;
     this.collectionService = collectionService;
     this.mtgSetService = mtgSetService;

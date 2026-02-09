@@ -43,7 +43,7 @@ export function BaseMultiSelect<T, U, Dto extends object>(props: BaseMultiSelect
   const selectedOptions = props.allItems
     .filter((so: SelectOption<T>) => dtoValue.includes(props.idExtractor(so.value)))
     .sort((a: SelectOption<T>, b: SelectOption<T>) => props.itemSort
-      ? props.itemSort(a.value,b.value)
+      ? props.itemSort(a.value, b.value)
       : a.label.toLowerCase().localeCompare(b.label.toLowerCase())
     );
 

@@ -1,6 +1,9 @@
 import { Region, SelectionModes, Table2, Utils } from "@blueprintjs/table";
 import { CardSortField } from "../../types";
-import { BaseLookupResult, BaseTableViewProps, IBaseColumn, onDataSelected, selectedRegionTransformToRowSelection, SortDirection, SortType } from "../base/base-table";
+import {
+  BaseLookupResult, BaseTableViewProps, IBaseColumn, onDataSelected,
+  selectedRegionTransformToRowSelection, SortDirection, SortType
+} from "../base/base-table";
 
 // LATER if props.data changes clear the selected region -> be carefull: that makes the selected region stuff controlled
 export function CardTableView<T>(props: BaseTableViewProps<T>): JSX.Element {
@@ -14,8 +17,9 @@ export function CardTableView<T>(props: BaseTableViewProps<T>): JSX.Element {
         children={getTableChildren(props.sortableColumnDefinitions, props.sortType)}
         numRows={props.data?.length ?? 0}
         onSelection={
-          (selectedRegions: Array<Region>) => onDataSelected(
-            selectedRegions, props.data, (selected: Array<T>) => props.onDataSelected(selected), props.sortedIndexMap)
+          (selectedRegions: Array<Region>) => props.onDataSelected(
+            onDataSelected(selectedRegions, props.data, props.sortedIndexMap)
+          )
         }
         selectedRegionTransform={(region: Region) => selectedRegionTransformToRowSelection(region)}
         selectionModes={SelectionModes.ROWS_AND_CELLS}

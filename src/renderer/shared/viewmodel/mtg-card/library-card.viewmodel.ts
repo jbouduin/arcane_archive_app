@@ -43,7 +43,7 @@ export class LibraryCardViewmodel extends AbstractCardViewmodel {
       return languageA - languageB;
     });
     // --- assign card fields ---
-    this.id = dto.id;
+    this.id = dto.id!;
     this.code = dto.code;
     this.cardName = dto.cardName;
     this.cardBackId = dto.cardBackId;

@@ -8,6 +8,7 @@ import { IArcaneArchiveProxy, IBasicDataService } from "../interface";
 
 export class BasicDataService implements IBasicDataService {
   // #region private fields ---------------------------------------------------
+  private allLanguages: Array<LanguageDto>;
   private cardConditionSelectOptions: Array<SelectOption<CardConditionDto>>;
   private dictionary: Map<DisplayValueDictionaryKey, Map<string, string>>;
   private selectOptions: Map<DisplayValueDictionaryKey, Array<SelectOption<string>>>;
@@ -19,6 +20,7 @@ export class BasicDataService implements IBasicDataService {
 
   // #region Constructor ------------------------------------------------------
   public constructor() {
+    this.allLanguages = new Array<LanguageDto>();
     this.cardConditionSelectOptions = new Array<SelectOption<CardConditionDto>>();
     this.colorMap = new Map<string, AppColorDto>();
     this.dictionary = new Map<DisplayValueDictionaryKey, Map<string, string>>();
@@ -30,6 +32,10 @@ export class BasicDataService implements IBasicDataService {
   // #endregion
 
   // #region IDisplayValueService Members -------------------------------------
+  public getAllLanguages(): Array<LanguageDto> {
+    return this.allLanguages;
+  }
+
   public getCardConditionSelectOptions(): Array<SelectOption<CardConditionDto>> {
     return this.cardConditionSelectOptions;
   }
@@ -124,6 +130,7 @@ export class BasicDataService implements IBasicDataService {
     allLanguages
       .sort((a: LanguageDto, b: LanguageDto) => a.sequence - b.sequence)
       .forEach((language: LanguageDto) => {
+        this.allLanguages.push(language);
         this.languageMap.set(language.language, language);
         this.languageSelectOptions.push({ label: language.displayValue, value: language });
       });

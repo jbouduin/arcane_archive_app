@@ -4,6 +4,7 @@ import { DisplayValueDictionaryKey, SelectOption } from "../../types";
 import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
 
 export interface IBasicDataService {
+  getAllLanguages(): Array<LanguageDto>;
   getCardConditionSelectOptions(): Array<SelectOption<CardConditionDto>>;
   getColor(colorCode: string): AppColorDto | undefined;
   getColorSelectOptions(): Array<SelectOption<AppColorDto>>;

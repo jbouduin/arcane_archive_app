@@ -1,34 +1,34 @@
 import classNames from "classnames";
-import { noop } from "lodash";
-import { ICollectionService, IMtgSetService, IOverlayService, IViewmodelFactoryService } from "../../../context";
+import { ICollectionService, IMtgSetService, IViewmodelFactoryService } from "../../../context";
 import { CollectionDto, MtgSetDto } from "../../../dto";
 import { SelectOption } from "../../../types";
-import * as ExportSet from "../export-set-dialog";
+import { ExportSetDialogBody } from "./export-set-dialog-body";
+import { ExportSetDialogFooter } from "./export-set-dialog-footer";
+import * as DialogProps from "./export-set-dialog.props";
 
-export function showExportSetDialog(
+function getExportSetDialogPropsImpl(
   cardSetId: number,
   cardConditions: Array<string>,
   collectionService: ICollectionService,
   mtgSetService: IMtgSetService,
-  viewmodelFactoryService: IViewmodelFactoryService,
-  overlayService: IOverlayService
-): void {
-  mtgSetService
+  viewmodelFactoryService: IViewmodelFactoryService
+): Promise<DialogProps.ExportSetDialogProps> {
+  return mtgSetService
     .getSetDetails(cardSetId)
     .then(
       (set: MtgSetDto) => {
-        const dialogProps: ExportSet.ExportSetDialogProps = {
+        const dialogProps: DialogProps.ExportSetDialogProps = {
           viewmodel: viewmodelFactoryService.mtgSetViewmodelFactory.getExportSetViewmodel(
             set,
             cardConditions,
             collectionService
               .getSelectOptions()
               .filter((c: SelectOption<CollectionDto>) => c.value.type == "COLLECTION")),
-          bodyRenderer: (bodyProps: ExportSet.ExportSetDialogBodyProps) => {
-            return (<ExportSet.ExportSetDialogBody {...bodyProps} />);
+          bodyRenderer: (bodyProps: DialogProps.ExportSetDialogBodyProps) => {
+            return (<ExportSetDialogBody {...bodyProps} />);
           },
-          footerRenderer: (footerProps: ExportSet.ExportSetDialogFooterProps) => {
-            return (<ExportSet.ExportSetDialogFooter {...footerProps} />);
+          footerRenderer: (footerProps: DialogProps.ExportSetDialogFooterProps) => {
+            return (<ExportSetDialogFooter {...footerProps} />);
           },
           isOpen: true,
           title: (
@@ -44,8 +44,11 @@ export function showExportSetDialog(
             </>
           )
         };
-        overlayService.openDialog(dialogProps);
-      },
-      noop
+        return dialogProps;
+      }
     );
 }
+
+export const exportSetDialogPropsFactory = {
+  getExportSetDialogProps: getExportSetDialogPropsImpl
+};

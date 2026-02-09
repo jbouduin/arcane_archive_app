@@ -12,11 +12,6 @@ export class CollectionCardViewmodel extends BaseViewmodel<CollectionCardDto> {
   //#endregion
 
   //#region Getters/Setters ---------------------------------------------------
-  public get isValid(): boolean {
-    return super.isValid &&
-      this._allQuantitiesViewmodels.some((vm: CollectionCardQuantityViewmodel) => vm.quantity > 0);
-  }
-
   public get setCode(): string {
     return this._dto.setCode;
   }
@@ -38,7 +33,10 @@ export class CollectionCardViewmodel extends BaseViewmodel<CollectionCardDto> {
   override get dtoToSave(): CollectionCardDto {
     return {
       ...this._dto,
-      quantities: this.getChangedQuantityViewmodels().map((vm: CollectionCardQuantityViewmodel) => vm.dto)
+      // quantities: this.getChangedQuantityViewmodels().map((vm: CollectionCardQuantityViewmodel) => vm.dto)
+      quantities: this._allQuantitiesViewmodels
+        .filter((vm: CollectionCardQuantityViewmodel) => vm.hasChanges || vm.quantity > 0)
+        .map((vm: CollectionCardQuantityViewmodel) => vm.dtoToSave)
     };
   }
   //#endregion

@@ -1,15 +1,13 @@
 import { ContextMenu, Menu, MenuItem } from "@blueprintjs/core";
-import { useApiStatus, usePreferences, useServices, useSession } from "../../../hooks";
-import { MtgSetDto } from "../../dto";
-import { showExportSetDialog, showSetDialog } from "../dialogs/factory";
+import { useApiStatus, useDialogs, useServices, useSession } from "../../../hooks";
 import { SetTreeContextMenuProps } from "./set-tree-context-menu.props";
 
 export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
-  const { collectionService, overlayService, mtgSetService, viewmodelFactoryService } = useServices();
+  const { mtgSetService } = useServices();
   const { loggedIn, isSysAdmin } = useSession();
   const { collectionServiceAvailable } = useApiStatus();
-  const { preferences } = usePreferences();
+  const { showExportSetDialog, showMtgSetDialog } = useDialogs();
   // #endregion
 
   // #region Rendering --------------------------------------------------------
@@ -25,9 +23,7 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element 
               onClick={
                 (e) => {
                   e.preventDefault();
-                  void mtgSetService
-                    .getSetDetails(props.cardSetId)
-                    .then((set: MtgSetDto) => showSetDialog(set, viewmodelFactoryService, overlayService));
+                  showMtgSetDialog(props.cardSetId);
                 }
               }
               text="Properties"
@@ -42,14 +38,7 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element 
                   onClick={
                     (e) => {
                       e.preventDefault();
-                      showExportSetDialog(
-                        props.cardSetId,
-                        preferences.cardConditions,
-                        collectionService,
-                        mtgSetService,
-                        viewmodelFactoryService,
-                        overlayService
-                      );
+                      showExportSetDialog(props.cardSetId);
                     }
                   }
                 />

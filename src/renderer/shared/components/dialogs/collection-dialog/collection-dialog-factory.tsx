@@ -1,30 +1,31 @@
 import { Icon } from "@blueprintjs/core";
 import { noop } from "lodash";
-import { IOverlayService, IViewmodelFactoryService } from "../../../context";
+import { IViewmodelFactoryService } from "../../../context";
 import { CollectionDto } from "../../../dto";
 import { CollectionType } from "../../../types";
 import { CollectionViewmodel } from "../../../viewmodel";
 import { DefaultDialogFooterProps } from "../../base/base-dialog";
-import * as CollectionDialog from "../collection-dialog";
+import { CollectionDialogBody } from "./collection-dialog-body";
+import { CollectionDialogFooter } from "./collection-dialog-footer";
+import { CollectionDialogBodyProps, CollectionDialogProps } from "./collection-dialog.props";
 
-export function showEditCollectionDialog(
-  viewmodelFactoryService: IViewmodelFactoryService,
-  overlayService: IOverlayService,
+function getEditCollectionDialogPropsImpl(
   collection: CollectionDto,
   parent: CollectionDto,
+  viewmodelFactoryService: IViewmodelFactoryService,
   onCollectionModified: (dto: CollectionDto) => void
-): void {
+): CollectionDialogProps {
   const viewmodel = viewmodelFactoryService.collectionViewmodelFactory
     .getCollectionViewmodel(collection, parent);
-  const dialogProps: CollectionDialog.CollectionDialogProps = {
+  const dialogProps: CollectionDialogProps = {
     isOpen: true,
     viewmodel: viewmodel,
-    bodyRenderer: (bodyProps: CollectionDialog.CollectionDialogBodyProps) => {
-      return (<CollectionDialog.CollectionDialogBody {...bodyProps} />);
+    bodyRenderer: (bodyProps: CollectionDialogBodyProps) => {
+      return (<CollectionDialogBody {...bodyProps} />);
     },
     footerRenderer: (footerProps: DefaultDialogFooterProps<CollectionDto, CollectionViewmodel>) => {
       return (
-        <CollectionDialog.CollectionDialogFooter
+        <CollectionDialogFooter
           {...footerProps}
           onCollectionAdded={noop}
           onCollectionModified={onCollectionModified}
@@ -43,28 +44,27 @@ export function showEditCollectionDialog(
       </>
     )
   };
-  overlayService.openDialog(dialogProps);
+  return dialogProps;
 }
 
-export function showNewCollectionDialog(
-  viewmodelFactoryService: IViewmodelFactoryService,
-  overlayService: IOverlayService,
+function getNewCollectionDialogPropsImpl(
   type: CollectionType,
   parent: CollectionDto,
+  viewmodelFactoryService: IViewmodelFactoryService,
   onCollectionAdded: (dto: CollectionDto) => void
-): void {
+): CollectionDialogProps {
   const titleText = type == "FOLDER" ? "New Folder" : "New Collection";
   const viewmodel = viewmodelFactoryService.collectionViewmodelFactory
     .getNewCollectionViewmodel(type, parent);
-  const dialogProps: CollectionDialog.CollectionDialogProps = {
+  const dialogProps: CollectionDialogProps = {
     isOpen: true,
     viewmodel: viewmodel,
-    bodyRenderer: (bodyProps: CollectionDialog.CollectionDialogBodyProps) => {
-      return (<CollectionDialog.CollectionDialogBody {...bodyProps} />);
+    bodyRenderer: (bodyProps: CollectionDialogBodyProps) => {
+      return (<CollectionDialogBody {...bodyProps} />);
     },
     footerRenderer: (footerProps: DefaultDialogFooterProps<CollectionDto, CollectionViewmodel>) => {
       return (
-        <CollectionDialog.CollectionDialogFooter
+        <CollectionDialogFooter
           {...footerProps}
           onCollectionAdded={onCollectionAdded}
           onCollectionModified={noop}
@@ -79,5 +79,10 @@ export function showNewCollectionDialog(
       </>
     )
   };
-  overlayService.openDialog(dialogProps);
+  return dialogProps;
 }
+
+export const collectionDialogPropsFactory = {
+  getEditCollectionDialogProps: getEditCollectionDialogPropsImpl,
+  getNewCollectionDialogProps: getNewCollectionDialogPropsImpl
+};

@@ -11,6 +11,7 @@ import { IConfigurationService } from "./configuration.service";
 import { IIpcProxy } from "./ipc-proxy";
 import { ILibraryCardSearchService } from "./library-card-search.service";
 import { ILogService } from "./log.service";
+import { IMtgCardService } from "./mtg-card.service";
 import { IMtgSetService } from "./mtg-set.service";
 import { IOverlayService } from "./overlay.service";
 import { ISessionService } from "./session.service";
@@ -61,6 +62,11 @@ export interface IServiceContainer {
    * Log service
    */
   readonly logService: ILogService;
+
+  /**
+   * Service to get MtgCard data
+   */
+  readonly mtgCardService: IMtgCardService;
 
   /**
    * Service that caches all available {@link _MtgSetTreeDto MtgSetDto}

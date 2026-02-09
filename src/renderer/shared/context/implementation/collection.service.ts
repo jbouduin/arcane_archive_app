@@ -4,6 +4,7 @@ import { IpcPaths } from "../../../../common/ipc";
 import { CollectionCardDto, CollectionDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { IArcaneArchiveProxy, ICollectionService, IIpcProxy, IOverlayService, ISessionService } from "../interface";
+import { SessionChangeEvent } from "../types";
 
 export class CollectionService implements ICollectionService {
   //#region Private fields ----------------------------------------------------
@@ -33,10 +34,14 @@ export class CollectionService implements ICollectionService {
   public initializeSubscriptions(sessionService: ISessionService): void {
     if (this.unsubscribeSession == null) {
       this.unsubscribeSession = sessionService.subscribeSessionChangeListener(
-        () => {
-          this.collections = null;
-          this.selectOptions = null;
-          this.rootCollection = null;
+        (data: SessionChangeEvent | null) => {
+          if (data != null) {
+            void this.loadCollections();
+          } else {
+            this.collections = null;
+            this.selectOptions = null;
+            this.rootCollection = null;
+          }
         }
       );
     }
@@ -110,18 +115,20 @@ export class CollectionService implements ICollectionService {
   public loadCollections(): Promise<Array<CollectionDto>> {
     return this.arcaneArchiveProxy
       .getData<Array<CollectionDto>>("collection", "/auth/collection/all")
-      .then((resp: Array<CollectionDto>) => {
-        this.collections = new Map<number, CollectionDto>();
-        this.selectOptions = new Map<number, SelectOption<CollectionDto>>();
-        resp.forEach((c: CollectionDto) => {
-          this.collections!.set(c.id!, c);
-          this.selectOptions!.set(c.id!, { value: c, label: c.code });
-          if (c.parentId == null) {
-            this.rootCollection = c;
-          }
-        });
-        return [...this.collections.values()];
-      });
+      .then(
+        (resp: Array<CollectionDto>) => {
+          this.collections = new Map<number, CollectionDto>();
+          this.selectOptions = new Map<number, SelectOption<CollectionDto>>();
+          resp.forEach((c: CollectionDto) => {
+            this.collections!.set(c.id!, c);
+            this.selectOptions!.set(c.id!, { value: c, label: c.code });
+            if (c.parentId == null) {
+              this.rootCollection = c;
+            }
+          });
+          return [...this.collections.values()];
+        }
+      );
   }
 
   public updateCollection(collection: CollectionDto): Promise<CollectionDto> {
@@ -156,6 +163,13 @@ export class CollectionService implements ICollectionService {
     );
   }
 
+  public getCollectionCards(collectionId: number, cardCode: string): Promise<Array<CollectionCardDto>> {
+    return this.arcaneArchiveProxy.getData<Array<CollectionCardDto>>(
+      "collection",
+      `/auth/collection/card?collectionId=${collectionId}&cardCode=${cardCode}`
+    );
+  }
+
   public importCollectionData(overlayService: IOverlayService, cardConditions: Array<string>): Promise<void> {
     return overlayService.selectFile(this.ipcProxy, "collection-import")
       .then(
@@ -177,11 +191,11 @@ export class CollectionService implements ICollectionService {
       );
   }
 
-  public updateCollectionCard(collectionCard: CollectionCardDto): Promise<CollectionCardDto> {
-    return this.arcaneArchiveProxy.putData<CollectionCardDto, CollectionCardDto>(
+  public upsertCollectionCards(collectionCards: Array<CollectionCardDto>): Promise<Array<CollectionCardDto>> {
+    return this.arcaneArchiveProxy.putData<Array<CollectionCardDto>, Array<CollectionCardDto>>(
       "collection",
-      `/auth/collection/${collectionCard.collectionId}/card/${collectionCard.id}`,
-      collectionCard
+      "/auth/collection/card",
+      collectionCards
     );
   }
   // #endregion

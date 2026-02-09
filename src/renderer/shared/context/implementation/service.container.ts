@@ -20,6 +20,8 @@ import { MtgSetService } from "./mtg-set.service";
 import { OverlayService } from "./overlay.service";
 import { SessionService } from "./session.service";
 import { ViewmodelFactoryService } from "./viewmodel-factory.service";
+import { IMtgCardService } from "../interface/mtg-card.service";
+import { MtgCardService } from "./mtg-card.service";
 
 export class ServiceContainer implements IServiceContainer {
   //#region Private fields ----------------------------------------------------
@@ -32,6 +34,7 @@ export class ServiceContainer implements IServiceContainer {
   private _ipcProxy: IIpcProxy;
   private _libraryCardSearchService: ILibraryCardSearchService;
   private _logService: ILogService;
+  private _mtgCardService: IMtgCardService;
   private _mtgSetService: IMtgSetService;
   private _overlayService: IOverlayService;
   private _sessionService: ISessionService;
@@ -75,6 +78,10 @@ export class ServiceContainer implements IServiceContainer {
     return this._logService;
   }
 
+  public get mtgCardService(): IMtgCardService {
+    return this._mtgCardService;
+  }
+
   public get mtgSetService(): IMtgSetService {
     return this._mtgSetService;
   }
@@ -103,6 +110,7 @@ export class ServiceContainer implements IServiceContainer {
     this._ipcProxy = new IpcProxy();
     this._libraryCardSearchService = new LibraryCardSearchService();
     this._logService = new LogService();
+    this._mtgCardService = new MtgCardService();
     this._mtgSetService = new MtgSetService();
     this._overlayService = new OverlayService();
     this._sessionService = new SessionService();
@@ -120,10 +128,11 @@ export class ServiceContainer implements IServiceContainer {
       errors: new Array<ToastProps>()
     };
 
-    // --- pre-initialize: setup listeners ---
+    // --- pre-initialize: setup listeners, unfortunately the order is important ---
     this._arcaneArchiveProxy.initializeSubscriptions(this._sessionService, this._configurationService);
     this._ipcProxy.initializeSubscriptions(this._configurationService);
     this._sessionService.initializeSubscriptions(this._arcaneArchiveProxy, this._ipcProxy);
+
     this._collectionService.initializeSubscriptions(this._sessionService);
 
     // --- show toast "interceptor" to be used during initialization ---
@@ -147,8 +156,11 @@ export class ServiceContainer implements IServiceContainer {
         async (configuration: SettingsDto) => {
           result.settings = configuration;
           this._arcaneArchiveProxy.initialize(configuration.apiConfiguration);
+          // LATER next four services could be skippable (although their initialize doesn't do anything)
           this._libraryCardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
+          this._mtgCardService.initialize(this._arcaneArchiveProxy);
           this._collectionCardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
+          this._collectionService.initialize(this._ipcProxy, this._arcaneArchiveProxy);
           // --- get api status once, automatic refresh is started by the  ---
           const apiStatus = await this._arcaneArchiveProxy.forceRefresh();
           if (apiStatus.get("library") != null) {
@@ -170,7 +182,6 @@ export class ServiceContainer implements IServiceContainer {
             await Promise.all(skippableServices)
               .then(
                 () => {
-                  this._collectionService.initialize(this._ipcProxy, this._arcaneArchiveProxy);
                   this._viewmodelFactoryService.initialize(
                     this._basicDataService,
                     this._collectionService,

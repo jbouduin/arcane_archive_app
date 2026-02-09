@@ -19,7 +19,7 @@ export abstract class BaseViewmodel<Dto extends object> {
 
   //#region Protected fields --------------------------------------------------
   protected _dto: Dto;
-  protected readonly _org: Dto;
+  protected _org: Dto;
   protected readonly validValidation: ValidationResult;
   //#endregion
 
@@ -77,7 +77,15 @@ export abstract class BaseViewmodel<Dto extends object> {
   }
   //#endregion
 
-  //#region Public methods ----------------------------------------------------
+  //#region Protected methods -------------------------------------------------
+  protected clearChildViewmodels(filter?: (cvm: BaseViewmodel<object>) => boolean): void {
+    if (filter) {
+      this._childViewmodels = this._childViewmodels.filter((cvm: BaseViewmodel<object>) => filter(cvm));
+    } else {
+      this._childViewmodels.splice(0);
+    }
+  }
+
   protected setFieldInvalid(fieldName: keyof Dto, validationResult: ValidationResult | null): void {
     if (this.invalidFields.indexOf(fieldName) < 0) {
       this.invalidFields.push(fieldName);
@@ -107,7 +115,7 @@ export abstract class BaseViewmodel<Dto extends object> {
     if (this.mode == "update") {
       this.markTouched(fieldName);
       // this way the abort signal is useless, but required.
-      validation(new AbortController().signal);
+      void validation(new AbortController().signal);
     }
   }
 

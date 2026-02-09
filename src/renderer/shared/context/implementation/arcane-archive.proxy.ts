@@ -203,7 +203,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
     reason: Error,
     suppressErrorMessage: boolean
   ): Promise<T> {
-    if (this.getLogLevel(server) <= 4) {
+    if (this.getLogLevel(server) <= 4 && !suppressErrorMessage) {
       // eslint-disable-next-line no-console
       console.error({ server: server, path: path, response: reason });
     }

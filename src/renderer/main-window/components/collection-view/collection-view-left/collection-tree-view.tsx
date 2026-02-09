@@ -1,9 +1,8 @@
 import { ContextMenu, Divider, Icon, Menu, MenuItem, TreeNodeInfo } from "@blueprintjs/core";
 import { isEqual } from "lodash";
 import { memo, useEffect, useState } from "react";
-import { usePreferences, useServices } from "../../../../hooks";
+import { useDialogs, usePreferences, useServices } from "../../../../hooks";
 import { BaseTreeView, BaseTreeViewProps } from "../../../../shared/components/base/base-tree-view";
-import { showEditCollectionDialog, showNewCollectionDialog } from "../../../../shared/components/dialogs/factory";
 import { CollectionDto } from "../../../../shared/dto";
 import { CollectionTreeViewmodel } from "../../../../shared/viewmodel";
 import { CollectionTreeContextMenu } from "./collection-tree-context.menu";
@@ -21,6 +20,12 @@ const TreeView = memo(
 );
 
 export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element {
+  //#region Hooks -------------------------------------------------------------
+  const { collectionService, overlayService, viewmodelFactoryService } = useServices();
+  const { preferences } = usePreferences();
+  const { showEditCollectionDialog, showNewCollectionDialog } = useDialogs();
+  //#endregion
+
   //#region State -------------------------------------------------------------
   const [collections, setCollections] = useState<Array<CollectionTreeViewmodel>>(new Array<CollectionTreeViewmodel>());
   const [rootCollection, setRootCollection] = useState<CollectionDto | null>(null);
@@ -28,20 +33,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
 
   //#endregion
 
-  //#region Hooks -------------------------------------------------------------
-  const { collectionService, overlayService, viewmodelFactoryService } = useServices();
-  const { preferences } = usePreferences();
-  //#endregion
-
   //#region Event Handling ----------------------------------------------------
-  function onAddCollection(parent: CollectionDto): void {
-    showNewCollectionDialog(viewmodelFactoryService, overlayService, "COLLECTION", parent, onCollectionAdded);
-  }
-
-  function onAddFolder(parent: CollectionDto): void {
-    showNewCollectionDialog(viewmodelFactoryService, overlayService, "FOLDER", parent, onCollectionAdded);
-  }
-
   function onCollectionAdded(dto: CollectionDto): void {
     const viewmodel = viewmodelFactoryService.collectionViewmodelFactory
       .getCollectionTreeViewmodel(dto);
@@ -86,12 +78,6 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
       },
     });
   }
-
-  function onEditCollection(collection: CollectionDto, parentCollection: CollectionDto): void {
-    showEditCollectionDialog(
-      viewmodelFactoryService, overlayService, collection, parentCollection, onCollectionModified
-    );
-  }
   //#endregion
 
   //#region Effects -----------------------------------------------------------
@@ -130,7 +116,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
                 onClick={
                   (e) => {
                     e.preventDefault();
-                    onAddFolder(rootCollection!);
+                    showNewCollectionDialog("FOLDER", rootCollection!, onCollectionAdded);
                   }
                 }
               />
@@ -141,7 +127,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
                 onClick={
                   (e) => {
                     e.preventDefault();
-                    onAddCollection(rootCollection!);
+                    showNewCollectionDialog("COLLECTION", rootCollection!, onCollectionAdded);
                   }
                 }
               />
@@ -234,10 +220,11 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
           collection={collection.dto}
           parentCollection={parentCollection.dto}
           hasChildren={subNodes != undefined}
-          onAddCollection={onAddCollection}
-          onAddFolder={onAddFolder}
+          onAddCollection={(parent: CollectionDto) => showNewCollectionDialog("COLLECTION", parent, onCollectionAdded)}
+          onAddFolder={(parent: CollectionDto) => showNewCollectionDialog("FOLDER", parent, onCollectionAdded)}
           onDeleteCollection={onDeleteCollection}
-          onEditCollection={onEditCollection}
+          onEditCollection={(collection: CollectionDto, parent: CollectionDto) =>
+            showEditCollectionDialog(collection, parent, onCollectionModified)}
         >
           {
             collection.folder &&

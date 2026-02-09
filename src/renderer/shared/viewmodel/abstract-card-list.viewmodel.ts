@@ -5,6 +5,7 @@ import { AbstractCardViewmodel } from "./abstract-card.viewmodel";
 export class AbstractCardListViewmodel extends AbstractCardViewmodel {
   // #region public fields Members --------------------------------------------
   public readonly cardId: number;
+  public readonly cardCode: string;
   public readonly setName: string;
   public readonly setKeyruneCode: string;
   public readonly cardName: string;
@@ -29,6 +30,7 @@ export class AbstractCardListViewmodel extends AbstractCardViewmodel {
     dto: BaseCardListDto) {
     super();
     this.cardId = dto.id;
+    this.cardCode = dto.code;
     const mtgSet = mtgSetService.getSetTreeDtoById(dto.mtgSetId);
     this.setName = mtgSet?.setName || "Unknown set";
     this.setKeyruneCode = mtgSet?.keyruneCode || "DEFAULT";
