@@ -37,7 +37,10 @@ export const CardSymbolRenderer = memo(
     // #endregion
   },
   (prev: CardSymbolRendererProps, next: CardSymbolRendererProps) => {
+    // fast path
+    if (prev === next) return true;
+
     return isEmpty(xor(prev.cardSymbols || new Array<string>(), next.cardSymbols || new Array<string>())) &&
-      compareClassNameProp(prev.className || "", next.className || "");
+      compareClassNameProp(prev.className, next.className);
   }
 );

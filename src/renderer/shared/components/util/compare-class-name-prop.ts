@@ -1,6 +1,5 @@
 import { isEmpty, isNil, xor } from "lodash";
 
-// TODO check all calls to compareClassNameProp not that params can be undefined
 export function compareClassNameProp(prev: string | undefined, current: string | undefined): boolean {
   // both are null/undefined → equal
   if (isNil(prev) && isNil(current)) {

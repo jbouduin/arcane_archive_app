@@ -58,6 +58,9 @@ export const CardTextView = memo(
     // #endregion
   },
   (prev: CardTextViewProps, next: CardTextViewProps) => {
-    return prev.cardText == next.cardText && compareClassNameProp(prev.className || "", next.className || "");
+    // fast path
+    if (prev === next) return true;
+
+    return prev.cardText === next.cardText && compareClassNameProp(prev.className, next.className);
   }
 );

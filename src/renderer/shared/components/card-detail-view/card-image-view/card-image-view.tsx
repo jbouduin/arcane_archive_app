@@ -127,9 +127,12 @@ export const CardImageView = memo(
     // #endregion
   },
   (prev: CardImageViewProps, next: CardImageViewProps) => {
-    return prev.collectorNumber == next.collectorNumber &&
-      prev.setCode == next.setCode &&
-      prev.scryfallLanguage == next.scryfallLanguage &&
+    // fast path
+    if (prev === next) return true;
+
+    return prev.collectorNumber === next.collectorNumber &&
+      prev.setCode === next.setCode &&
+      prev.scryfallLanguage === next.scryfallLanguage &&
       compareClassNameProp(prev.className, next.className);
   }
 );

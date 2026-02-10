@@ -27,7 +27,7 @@ export const CardHeaderView = memo(
     // #endregion
   },
   (prev: CardHeaderViewProps, next: CardHeaderViewProps) => {
-    return prev.code == next.code &&
+    return prev.code === next.code &&
       compareClassNameProp(prev.className, next.className);
   }
 );

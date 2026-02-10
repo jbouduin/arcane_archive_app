@@ -43,10 +43,6 @@ export function ContextMenu(props: ContextMenuProps): JSX.Element | undefined {
         } else if (a.type != "FOLDER" && b.type == "FOLDER") {
           return 1;
         } else {
-          /**
-           * # TODO check code base on localcompare with casefirst, it should be almost everywhere
-           * or better: extract it to a utility or put it into collectionService
-           */
           return a.collectionName.localeCompare(b.collectionName, undefined, { caseFirst: "false" });
         }
       })

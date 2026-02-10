@@ -212,9 +212,12 @@ function headerView(props: HeaderViewProps): JSX.Element {
  * probably not a big gain for the heaer view component
  */
 export const HeaderView = memo(headerView, (prev: HeaderViewProps, next: HeaderViewProps) => {
-  return prev.cardSetGroupBy == next.cardSetGroupBy &&
-    prev.cardSetSort == next.cardSetSort &&
-    prev.cardSetTypeFilter.size == next.cardSetTypeFilter.size &&
+  // fast path
+  if (prev === next) return true;
+
+  return prev.cardSetGroupBy === next.cardSetGroupBy &&
+    prev.cardSetSort === next.cardSetSort &&
+    prev.cardSetTypeFilter.size === next.cardSetTypeFilter.size &&
     Array.from(prev.cardSetTypeFilter).every(item => next.cardSetTypeFilter.has(item)) &&
-    compareClassNameProp(prev.className || "", next.className || "");
+    compareClassNameProp(prev.className, next.className);
 });

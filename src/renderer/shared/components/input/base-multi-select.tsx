@@ -44,7 +44,7 @@ export function BaseMultiSelect<T, U, Dto extends object>(props: BaseMultiSelect
     .filter((so: SelectOption<T>) => dtoValue.includes(props.idExtractor(so.value)))
     .sort((a: SelectOption<T>, b: SelectOption<T>) => props.itemSort
       ? props.itemSort(a.value, b.value)
-      : a.label.toLowerCase().localeCompare(b.label.toLowerCase())
+      : a.label.toLowerCase().localeCompare(b.label.toLowerCase(), undefined, { caseFirst: "false" })
     );
 
   const validationResult = props.viewmodel.getValidation(props.fieldName);
@@ -168,7 +168,7 @@ export function BaseMultiSelect<T, U, Dto extends object>(props: BaseMultiSelect
       .filter(item => item.label.toLowerCase().includes(normalizedQuery))
       .sort((a: SelectOption<T>, b: SelectOption<T>) => props.itemSort
         ? props.itemSort(a.value, b.value)
-        : a.label.toLowerCase().localeCompare(b.label.toLowerCase())
+        : a.label.toLowerCase().localeCompare(b.label.toLowerCase(), undefined, { caseFirst: "false" })
       )
       .slice(0, 20);
   }

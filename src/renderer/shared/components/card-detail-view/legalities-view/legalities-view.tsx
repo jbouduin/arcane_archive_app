@@ -62,6 +62,6 @@ export const LegalitiesView = React.memo(
   },
   (prev: LegalitiesViewProps, next: LegalitiesViewProps) => {
     return prev.collectorNumber == next.collectorNumber && prev.setCode == next.setCode &&
-      compareClassNameProp(prev.className || "", next.className || "");
+      compareClassNameProp(prev.className, next.className);
   }
 );

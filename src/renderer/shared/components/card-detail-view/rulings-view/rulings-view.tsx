@@ -60,6 +60,9 @@ export const RulingsView = memo(
     // #endregion
   },
   (prev: RulingsViewProps, next: RulingsViewProps) => {
-    return prev.oracleId == next.oracleId && compareClassNameProp(prev.className, next.className);
+    // fast path
+    if (prev === next) return true;
+
+    return prev.oracleId === next.oracleId && compareClassNameProp(prev.className, next.className);
   }
 );
