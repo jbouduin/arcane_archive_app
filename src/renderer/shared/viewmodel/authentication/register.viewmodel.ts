@@ -1,5 +1,5 @@
 import { stringCouldBeEmail, stringHasMinimalLength } from "../../components/util";
-import { IArcaneArchiveProxy, IServiceContainer, ISessionService } from "../../context";
+import { IArcaneArchiveProxy, ISessionService } from "../../context";
 import { RegisterRequestDto } from "../../dto";
 import { PasswordViewmodel } from "./password.viewmodel";
 

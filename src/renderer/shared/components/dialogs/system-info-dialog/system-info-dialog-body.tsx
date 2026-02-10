@@ -9,7 +9,7 @@ import { SystemInfoDialogBodyProps } from "./system-info-dialog.props";
 type SectionCardKey = ArcaneArchiveServer | "application";
 
 export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps): JSX.Element {
-  // #region State ------------------------------------------------------------
+  //#region State -------------------------------------------------------------
   const [accordeon, setAccordeon] = useState<Map<SectionCardKey, boolean>>(
     new Map<SectionCardKey, boolean>([
       ["application", true],
@@ -19,9 +19,9 @@ export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps): JSX.Elem
       ["deck", false]
     ])
   );
-  // #endregion
+  //#endregion
 
-  // #region Event handling ---------------------------------------------------
+  //#region Event handling ----------------------------------------------------
   function toggleAccordeon(sectionCardKey: SectionCardKey): void {
     const c = accordeon.get(sectionCardKey);
     let newState: Map<SectionCardKey, boolean>;
@@ -40,9 +40,9 @@ export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps): JSX.Elem
     }
     setAccordeon(newState);
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <div>
       {renderAppSection()}
@@ -114,9 +114,9 @@ export function SystemInfoDialogBody(props: SystemInfoDialogBodyProps): JSX.Elem
       </Section>
     );
   }
-  // #endregion
+  //#endregion
 
-  // #region Auxiliary Methods ------------------------------------------------
+  //#region Auxiliary Methods -------------------------------------------------
   function mtgServerToTitle(sectionCardKey: SectionCardKey): string {
     switch (sectionCardKey) {
       case "application":

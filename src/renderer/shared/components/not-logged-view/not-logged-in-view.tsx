@@ -1,5 +1,5 @@
 import { Button, Callout, H4, Props } from "@blueprintjs/core";
-import { useApiStatus, useDialogs, usePreferences, useServices } from "../../../hooks";
+import { useApiStatus, useDialogs, usePreferences } from "../../../hooks";
 
 export function NotLoggedInView(_props: Props): JSX.Element {
   //#region Hooks -------------------------------------------------------------

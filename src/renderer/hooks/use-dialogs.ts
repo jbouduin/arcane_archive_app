@@ -4,16 +4,19 @@ import {
   CollectionCardsDialogProps, collectionCardsDialogPropsFactory
 } from "../main-window/components/library-view/library-view-center/collection-cards-dialog";
 import {
-  collectionDialogPropsFactory, LoginDialogProps, loginDialogPropsFactory, MtgSetDialogProps, mtgSetDialogPropsFactory,
+  collectionDialogPropsFactory, LoginDialogProps, loginDialogPropsFactory, MtgSetDialogProps,
+  mtgSetDialogPropsFactory,
   PreferencesDialogPropsFactory,
   ProfileDialogProps,
   profileDialogPropsFactory,
   RegisterDialogProps,
-  ResetPasswordDialogPropsFactory
+  ResetPasswordDialogPropsFactory,
+  SystemInfoDialogPropsFacotry
 } from "../shared/components/dialogs";
 import { ExportSetDialogProps, exportSetDialogPropsFactory } from "../shared/components/dialogs/export-set-dialog";
 import { ChangePasswordDialogPropsFactory, RecoverPasswordDialogPropsFactory } from "../shared/components/dialogs/factories";
 import { RegisterDialogPropsFactory } from "../shared/components/dialogs/register-dialog/register-dialog-factory";
+import { ApiInfoContextType } from "../shared/context";
 import { CollectionDto } from "../shared/dto";
 import { CollectionType } from "../shared/types";
 import { usePreferences } from "./use-preferences";
@@ -170,6 +173,14 @@ export function useDialogs() {
       )
     );
   }
+
+  function showSystemInfoDialog(apiInfo: ApiInfoContextType): void {
+    services.overlayService.openDialog(
+      SystemInfoDialogPropsFacotry.getSystemInfoDialogProps(
+        apiInfo, services.viewmodelFactoryService.settingsViewmodelFactory
+      )
+    );
+  }
   //#endregion
 
   //#region Return ------------------------------------------------------------
@@ -185,7 +196,8 @@ export function useDialogs() {
     showProfileDialog,
     showRecoverPasswordDialog,
     showRegisterDialog,
-    showResetPasswordDialog
+    showResetPasswordDialog,
+    showSystemInfoDialog
   };
   //#endregion
 }
