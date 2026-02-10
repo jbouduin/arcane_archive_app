@@ -1,11 +1,12 @@
 import { stringCouldBeEmail, stringHasMinimalLength } from "../../components/util";
-import { IServiceContainer } from "../../context";
+import { IArcaneArchiveProxy, IServiceContainer, ISessionService } from "../../context";
 import { RegisterRequestDto } from "../../dto";
 import { PasswordViewmodel } from "./password.viewmodel";
 
 export class RegisterViewmodel extends PasswordViewmodel<RegisterRequestDto> {
   // #region Private fields ---------------------------------------------------
-  private serviceContainer: IServiceContainer;
+  private arcaneArchiveProxy: IArcaneArchiveProxy;
+  private sessionService: ISessionService;
   // #endregion
 
   // #region non Dto related properties ---------------------------------------
@@ -13,10 +14,15 @@ export class RegisterViewmodel extends PasswordViewmodel<RegisterRequestDto> {
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: RegisterRequestDto, showLoginButton: boolean, serviceContainer: IServiceContainer) {
+  public constructor(
+    dto: RegisterRequestDto,
+    showLoginButton: boolean,
+    arcaneArchiveProxy: IArcaneArchiveProxy,
+    sessionService: ISessionService) {
     super(dto, "create");
     this.showLoginButton = showLoginButton;
-    this.serviceContainer = serviceContainer;
+    this.arcaneArchiveProxy = arcaneArchiveProxy;
+    this.sessionService = sessionService;
     this.registerValidation("email", () => this.validateEmail());
     this.registerValidation("emailRepeat", () => this.validateEmailRepeat());
     this.registerAsyncValidation("userName", (signal: AbortSignal) => this.validateUserName(signal));
@@ -37,8 +43,9 @@ export class RegisterViewmodel extends PasswordViewmodel<RegisterRequestDto> {
         { helperText: "Username may not be an email address", intent: "danger" }
       );
     } else {
-      const userExists = await this.serviceContainer.sessionService
-        .userExists(this.serviceContainer.arcaneArchiveProxy, this._dto.userName, signal);
+      // LATER this should be a callback, VM should not have services as props
+      const userExists = await this.sessionService
+        .userExists(this.arcaneArchiveProxy, this._dto.userName, signal);
       if (userExists) {
         this.setFieldInvalid("userName", { helperText: "Username already in use", intent: "danger" });
       } else {
@@ -49,7 +56,10 @@ export class RegisterViewmodel extends PasswordViewmodel<RegisterRequestDto> {
   }
 
   private validateEmail(): void {
-    // we do not immediately go to server to check if email already in use, as this would unnecessary expose known email addresses
+    /**
+     * we do not immediately go to server to check if email already in use,
+     * as this would unnecessary expose known email addresses
+     */
     if (stringCouldBeEmail(this._dto.email)) {
       this.setFieldValid("email");
     } else {

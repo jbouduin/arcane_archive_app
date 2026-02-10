@@ -1,5 +1,5 @@
-import { IIpcProxy, ISessionService, IViewmodelFactoryService } from "../../../context";
-import { LoginViewmodel } from "../../../viewmodel";
+import { IIpcProxy, ISessionService } from "../../../context";
+import { IAuthenticationViewmodelFactory, LoginViewmodel } from "../../../viewmodel";
 import { LoginDialogBody } from "./login-dialog-body";
 import { LoginDialogFooter } from "./login-dialog-footer";
 import * as DialogProps from "./login-dialog.props";
@@ -8,9 +8,9 @@ async function getLoginDialogPropsImpl(
   showRegisterButton: boolean,
   ipcProxy: IIpcProxy,
   sessionService: ISessionService,
-  viewmodelFactoryService: IViewmodelFactoryService
+  authenticationViewmodelFactory: IAuthenticationViewmodelFactory
 ): Promise<DialogProps.LoginDialogProps> {
-  return getLoginViewmodelImpl(showRegisterButton, ipcProxy, sessionService, viewmodelFactoryService)
+  return getLoginViewmodelImpl(showRegisterButton, ipcProxy, sessionService, authenticationViewmodelFactory)
     .then(
       (viewmodel: LoginViewmodel) => {
         const dialogProps: DialogProps.LoginDialogProps = {
@@ -35,7 +35,8 @@ async function getLoginViewmodelImpl(
   showRegisterButton: boolean,
   ipcProxy: IIpcProxy,
   sessionService: ISessionService,
-  viewmodelFactoryService: IViewmodelFactoryService): Promise<LoginViewmodel> {
+  authenticationViewmodelFactory: IAuthenticationViewmodelFactory
+): Promise<LoginViewmodel> {
   const savedUserNames = await sessionService
     .getSavedUserNames(ipcProxy)
     .then(
@@ -52,7 +53,7 @@ async function getLoginViewmodelImpl(
       );
   }
 
-  return viewmodelFactoryService.authenticationViewmodelFactory
+  return authenticationViewmodelFactory
     .getLoginViewmodel(showRegisterButton, savedUserNames, passwordOfSingleUser);
 }
 

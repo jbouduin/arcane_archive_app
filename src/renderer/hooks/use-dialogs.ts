@@ -8,10 +8,12 @@ import {
   PreferencesDialogPropsFactory,
   ProfileDialogProps,
   profileDialogPropsFactory,
+  RegisterDialogProps,
   ResetPasswordDialogPropsFactory
 } from "../shared/components/dialogs";
 import { ExportSetDialogProps, exportSetDialogPropsFactory } from "../shared/components/dialogs/export-set-dialog";
 import { ChangePasswordDialogPropsFactory, RecoverPasswordDialogPropsFactory } from "../shared/components/dialogs/factories";
+import { RegisterDialogPropsFactory } from "../shared/components/dialogs/register-dialog/register-dialog-factory";
 import { CollectionDto } from "../shared/dto";
 import { CollectionType } from "../shared/types";
 import { usePreferences } from "./use-preferences";
@@ -73,7 +75,7 @@ export function useDialogs() {
         showRegisterButton,
         services.ipcProxy,
         services.sessionService,
-        services.viewmodelFactoryService
+        services.viewmodelFactoryService.authenticationViewmodelFactory
       ).then(
         (props: LoginDialogProps) => services.overlayService.openDialog(props),
         noop
@@ -146,6 +148,21 @@ export function useDialogs() {
     );
   }
 
+  function showRegisterDialog(showLoginButton: boolean, preferences: PreferencesDto): void {
+    RegisterDialogPropsFactory
+      .getRegisterDialogProps(
+        showLoginButton,
+        preferences,
+        services.viewmodelFactoryService.authenticationViewmodelFactory,
+        services.arcaneArchiveProxy,
+        services.sessionService
+      )
+      .then(
+        (props: RegisterDialogProps) => services.overlayService.openDialog(props),
+        noop
+      );
+  }
+
   function showResetPasswordDialog(): void {
     services.overlayService.openDialog(
       ResetPasswordDialogPropsFactory.getResetPasswordDialogProps(
@@ -167,6 +184,7 @@ export function useDialogs() {
     showPreferencesDialog,
     showProfileDialog,
     showRecoverPasswordDialog,
+    showRegisterDialog,
     showResetPasswordDialog
   };
   //#endregion

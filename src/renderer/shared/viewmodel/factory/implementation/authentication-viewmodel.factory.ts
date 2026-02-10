@@ -1,5 +1,5 @@
 import { PreferencesDto } from "../../../../../common/dto";
-import { IServiceContainer } from "../../../context";
+import { IArcaneArchiveProxy, ISessionService } from "../../../context";
 import { RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto } from "../../../dto";
 import {
   ChangePasswordViewmodel, LoginViewmodel, ProfileViewmodel,
@@ -62,12 +62,13 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
     return new RecoverPasswordViewmodel(dto);
   }
 
-  public async getRegisterViewmodel(
+  public getRegisterViewmodel(
     showLoginButton: boolean,
-    serviceContainer: IServiceContainer,
-    preferences: PreferencesDto
-  ): Promise<RegisterViewmodel> {
-    const newUserName = await serviceContainer.sessionService.getNewUserName(serviceContainer.arcaneArchiveProxy);
+    newUserName: string,
+    preferences: PreferencesDto,
+    arcaneArchiveProxy: IArcaneArchiveProxy,
+    sessionService: ISessionService
+  ): RegisterViewmodel {
     const registerDto: RegisterRequestDto = {
       userName: newUserName,
       password: "",
@@ -78,7 +79,7 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
       lastName: "",
       preferences: preferences
     };
-    return new RegisterViewmodel(registerDto, showLoginButton, serviceContainer);
+    return new RegisterViewmodel(registerDto, showLoginButton, arcaneArchiveProxy, sessionService);
   }
 
   public getResetPasswordViewmodel(dto: ResetPasswordRequestDto): ResetPasswordViewmodel {

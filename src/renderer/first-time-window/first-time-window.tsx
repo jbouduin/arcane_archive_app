@@ -2,12 +2,13 @@ import { BlueprintProvider, FocusStyleManager, OverlayToaster, Position, ToastPr
 import { createRoot } from "react-dom/client";
 import { IpcPaths } from "../../common/ipc";
 import { DialogRenderer } from "../shared/components/base/base-dialog/dialog-renderer";
+import { loginDialogPropsFactory } from "../shared/components/dialogs";
+import { RegisterDialogPropsFactory } from "../shared/components/dialogs/register-dialog/register-dialog-factory";
 import { ServerNotAvailable } from "../shared/components/server-not-available/server-not-available";
 import { PreferencesProvider, ServiceContainerContext, SessionProvider } from "../shared/context";
 import { ServiceContainer } from "../shared/context/implementation/service.container";
 import { ShowToastFn } from "../shared/types";
 import { FirstTimeView } from "./first-time-view/first-time-view";
-import { loginDialogPropsFactory } from "../shared/components/dialogs";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -78,10 +79,15 @@ void (async () => {
       false,
       serviceContainer.ipcProxy,
       serviceContainer.sessionService,
-      serviceContainer.viewmodelFactoryService
+      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
     ),
-    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
-      .getRegisterViewmodel(false, serviceContainer, initialization.settings!.preferences)
+    RegisterDialogPropsFactory.getRegisterViewmodel(
+      false,
+      initialization.settings!.preferences,
+      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory,
+      serviceContainer.arcaneArchiveProxy,
+      serviceContainer.sessionService
+    )
   ]);
 
   root.render(

@@ -3,7 +3,7 @@ import { BaseInput, PasswordInput } from "../../input";
 import { PasswordSecurityBar } from "../shared";
 import { RegisterDialogBodyProps } from "./register-dialog.props";
 
-export function RegisterDialogBody(props: RegisterDialogBodyProps) {
+export function RegisterDialogBody(props: RegisterDialogBodyProps): JSX.Element {
   // #region Rendering --------------------------------------------------------
   return (
     <SectionCard padded={false}>

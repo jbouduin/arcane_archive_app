@@ -4,14 +4,13 @@ import { ReactNode } from "react";
 import { LoginRequestDto, SessionDto } from "../../../../../common/dto";
 import { useDialogs, usePreferences, useServices } from "../../../../hooks";
 import { DefaultDialogFooter } from "../../base/base-dialog";
-import { showRegisterDialog } from "../factory";
 import { LoginDialogFooterProps } from "./login-dialog.props";
 
 export function LoginDialogFooter(props: LoginDialogFooterProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   const { preferences } = usePreferences();
-  const { showRecoverPasswordDialog } = useDialogs();
+  const { showRecoverPasswordDialog, showRegisterDialog } = useDialogs();
   // #endregion
 
   // #region Event handling ---------------------------------------------------
@@ -33,7 +32,7 @@ export function LoginDialogFooter(props: LoginDialogFooterProps): JSX.Element {
   }
 
   function registerClick(): void {
-    showRegisterDialog(serviceContainer, false, preferences);
+    showRegisterDialog(false, preferences);
   }
 
   function saveUser(dto: LoginRequestDto): void {
