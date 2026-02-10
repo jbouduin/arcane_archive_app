@@ -14,7 +14,8 @@ function mtgSetSetDialogPropsImpl(
   return mtgSetService
     .getSetDetails(cardSetId)
     .then((set: MtgSetDto) => {
-      const viewmodel: MtgSetDetailViewmodel = viewmodelFactoryService.mtgSetViewmodelFactory.getMtgSetDetailViewmodel(set);
+      const viewmodel: MtgSetDetailViewmodel =
+        viewmodelFactoryService.mtgSetViewmodelFactory.getMtgSetDetailViewmodel(set);
       const dialogProps: DialogProps.MtgSetDialogProps = {
         viewmodel: viewmodel,
         bodyRenderer: (bodyProps: DialogProps.MtgSetDialogBodyProps) => {

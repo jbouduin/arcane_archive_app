@@ -4,7 +4,7 @@ import { createAuditableLabelValueItems, LabelValuePanel } from "../../base/labe
 import { handleStringChange } from "../../util";
 import { CollectionDialogBodyProps } from "./collection-dialog.props";
 
-export function CollectionDialogBody(props: CollectionDialogBodyProps) {
+export function CollectionDialogBody(props: CollectionDialogBodyProps): JSX.Element {
   // #region Memo -------------------------------------------------------------
   const breadcrumbProps = useMemo(
     () => {

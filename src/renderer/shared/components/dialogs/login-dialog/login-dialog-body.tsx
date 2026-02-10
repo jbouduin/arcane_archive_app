@@ -26,7 +26,7 @@ export function LoginDialogBody(props: LoginDialogBodyProps): JSX.Element {
       .finally(() => props.viewmodelChanged());
   }
 
-  function onRemoveUser(username: string) {
+  function onRemoveUser(username: string): void {
     // LATER ask confirmation
     void serviceContainer.sessionService
       .deleteSavedUser(serviceContainer.ipcProxy, username)

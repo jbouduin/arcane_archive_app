@@ -1,15 +1,15 @@
 import { Button } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { ReactNode } from "react";
-import { useServices } from "../../../../hooks";
+import { useDialogs, useServices } from "../../../../hooks";
 import { RecoverPasswordRequestDto } from "../../../dto";
 import { DefaultDialogFooter } from "../../base/base-dialog";
-import { showResetPasswordDialog } from "../factory";
 import { RecoverPasswordDialogFooterProps } from "./recover-password-dialog.props";
 
 export function RecoverPasswordDialogFooter(props: RecoverPasswordDialogFooterProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
+  const { showResetPasswordDialog } = useDialogs();
   // #endregion
 
   // #region Event Handling ---------------------------------------------------
@@ -20,10 +20,7 @@ export function RecoverPasswordDialogFooter(props: RecoverPasswordDialogFooterPr
     ).then(
       () => {
         props.onClose?.(event);
-        showResetPasswordDialog(
-          serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory,
-          serviceContainer.overlayService
-        );
+        showResetPasswordDialog();
       },
       noop
     );
@@ -31,10 +28,7 @@ export function RecoverPasswordDialogFooter(props: RecoverPasswordDialogFooterPr
 
   function haveCodeClick(event: React.SyntheticEvent<HTMLElement, Event>): void {
     props.onClose?.(event);
-    showResetPasswordDialog(
-      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory,
-      serviceContainer.overlayService
-    );
+    showResetPasswordDialog();
   }
   // #endregion
 

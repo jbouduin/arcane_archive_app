@@ -1,28 +1,30 @@
-import * as LoginDialog from ".";
 import { IIpcProxy, ISessionService, IViewmodelFactoryService } from "../../../context";
 import { LoginViewmodel } from "../../../viewmodel";
+import { LoginDialogBody } from "./login-dialog-body";
+import { LoginDialogFooter } from "./login-dialog-footer";
+import * as DialogProps from "./login-dialog.props";
 
 async function getLoginDialogPropsImpl(
   showRegisterButton: boolean,
   ipcProxy: IIpcProxy,
   sessionService: ISessionService,
   viewmodelFactoryService: IViewmodelFactoryService
-): Promise<LoginDialog.LoginDialogProps> {
+): Promise<DialogProps.LoginDialogProps> {
   return getLoginViewmodelImpl(showRegisterButton, ipcProxy, sessionService, viewmodelFactoryService)
     .then(
       (viewmodel: LoginViewmodel) => {
-        const dialogProps: LoginDialog.LoginDialogProps = {
+        const dialogProps: DialogProps.LoginDialogProps = {
           isOpen: true,
           isCloseButtonShown: true,
           canEscapeKeyClose: true,
           canOutsideClickClose: false,
           title: "Login",
           viewmodel: viewmodel,
-          bodyRenderer: (bodyProps: LoginDialog.LoginDialogBodyProps) => {
-            return (<LoginDialog.LoginDialogBody {...bodyProps} />);
+          bodyRenderer: (bodyProps: DialogProps.LoginDialogBodyProps) => {
+            return (<LoginDialogBody {...bodyProps} />);
           },
-          footerRenderer: (footerProps: LoginDialog.LoginDialogFooterProps) => {
-            return (<LoginDialog.LoginDialogFooter {...footerProps} />);
+          footerRenderer: (footerProps: DialogProps.LoginDialogFooterProps) => {
+            return (<LoginDialogFooter {...footerProps} />);
           }
         };
         return dialogProps;

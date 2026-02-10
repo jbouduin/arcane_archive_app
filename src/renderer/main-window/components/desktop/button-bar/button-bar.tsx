@@ -1,8 +1,7 @@
 import { ButtonGroup, Menu, MenuItem, ToastProps } from "@blueprintjs/core";
 import { useApiStatus, useDialogs, usePreferences, useServices, useSession } from "../../../../hooks";
 import {
-  showChangePasswordDialog, showPreferencesDialog,
-  showProfileDialog, showSystemInfoDialog, showSystemSettingsDialog
+  showPreferencesDialog, showProfileDialog, showSystemInfoDialog, showSystemSettingsDialog
 } from "../../../../shared/components/dialogs/factory";
 import { EDesktopView } from "../desktop-view.enum";
 import { ButtonBarButton } from "./button-bar-button";
@@ -15,7 +14,7 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
   const { loggedIn, userName, email, isSysAdmin } = useSession();
   const serviceContainer = useServices();
   const { preferences } = usePreferences();
-  const { showLoginDialog } = useDialogs();
+  const { showLoginDialog, showChangePasswordDialog } = useDialogs();
   // #endregion
 
   //#region Event handling ----------------------------------------------------
@@ -133,12 +132,7 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
         <MenuItem onClick={() => showProfileDialog(serviceContainer)} text="User Profile" />
         <MenuItem
           onClick={
-            () => showChangePasswordDialog(
-              serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory,
-              serviceContainer.overlayService,
-              userName!,
-              email!
-            )
+            () => showChangePasswordDialog(userName!, email!)
           }
           text="Change Password"
         />

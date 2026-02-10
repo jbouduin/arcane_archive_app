@@ -4,12 +4,11 @@ import { ReactNode } from "react";
 import { useDialogs, useServices } from "../../../../hooks";
 import { ResetPasswordRequestDto } from "../../../dto";
 import { DefaultDialogFooter } from "../../base/base-dialog";
-import { showRecoverPasswordDialog } from "../factory";
 import { ResetPasswordDialogFooterProps } from "./reset-password-dialog.props";
 
 export function ResetPasswordDialogFooter(props: ResetPasswordDialogFooterProps): JSX.Element {
   //#region Hooks -------------------------------------------------------------
-  const { showLoginDialog } = useDialogs();
+  const { showLoginDialog, showRecoverPasswordDialog } = useDialogs();
   const serviceContainer = useServices();
   //#endregion
 
@@ -31,10 +30,7 @@ export function ResetPasswordDialogFooter(props: ResetPasswordDialogFooterProps)
 
   function newCodeClick(event: React.SyntheticEvent<HTMLElement, Event>): void {
     props.onClose?.(event);
-    showRecoverPasswordDialog(
-      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory,
-      serviceContainer.overlayService
-    );
+    showRecoverPasswordDialog();
   }
   //#endregion
 

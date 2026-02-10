@@ -3,9 +3,11 @@ import {
   CollectionCardsDialogProps, collectionCardsDialogPropsFactory
 } from "../main-window/components/library-view/library-view-center/collection-cards-dialog";
 import {
-  collectionDialogPropsFactory, LoginDialogProps, loginDialogPropsFactory, MtgSetDialogProps, mtgSetDialogPropsFactory
+  collectionDialogPropsFactory, LoginDialogProps, loginDialogPropsFactory, MtgSetDialogProps, mtgSetDialogPropsFactory,
+  ResetPasswordDialogPropsFactory
 } from "../shared/components/dialogs";
 import { ExportSetDialogProps, exportSetDialogPropsFactory } from "../shared/components/dialogs/export-set-dialog";
+import { ChangePasswordDialogPropsFactory, RecoverPasswordDialogPropsFactory } from "../shared/components/dialogs/factories";
 import { CollectionDto } from "../shared/dto";
 import { CollectionType } from "../shared/types";
 import { usePreferences } from "./use-preferences";
@@ -21,6 +23,14 @@ export function useDialogs() {
   //#endregion
 
   //#region Dialog methods ----------------------------------------------------
+  function showChangePasswordDialog(userName: string, email: string): void {
+    services.overlayService.openDialog(
+      ChangePasswordDialogPropsFactory.getChangePasswordDialogProps(
+        userName, email, services.viewmodelFactoryService.authenticationViewmodelFactory
+      )
+    );
+  }
+
   function showCollectionCardsDialog(
     collection: CollectionDto,
     cardsAndLanguages: Map<string, Array<string>>
@@ -108,16 +118,35 @@ export function useDialogs() {
       .getSetDialogProps(cardSetId, services.mtgSetService, services.viewmodelFactoryService)
       .then((props: MtgSetDialogProps) => services.overlayService.openDialog(props), noop);
   }
+
+  function showRecoverPasswordDialog(): void {
+    services.overlayService.openDialog(
+      RecoverPasswordDialogPropsFactory.getRecoverPasswordDialogProps(
+        services.viewmodelFactoryService.authenticationViewmodelFactory
+      )
+    );
+  }
+
+  function showResetPasswordDialog(): void {
+    services.overlayService.openDialog(
+      ResetPasswordDialogPropsFactory.getResetPasswordDialogProps(
+        services.viewmodelFactoryService.authenticationViewmodelFactory
+      )
+    );
+  }
   //#endregion
 
   //#region Return ------------------------------------------------------------
   return {
+    showChangePasswordDialog,
     showCollectionCardsDialog,
     showEditCollectionDialog,
     showLoginDialog,
     showNewCollectionDialog,
     showExportSetDialog,
-    showMtgSetDialog: showMtgSetDialog
+    showMtgSetDialog,
+    showRecoverPasswordDialog,
+    showResetPasswordDialog
   };
   //#endregion
 }

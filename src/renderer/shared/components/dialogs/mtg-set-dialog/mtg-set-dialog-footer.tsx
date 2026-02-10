@@ -3,7 +3,7 @@ import { MtgSetDetailViewmodel } from "../../../viewmodel";
 import { DefaultDialogFooter } from "../../base/base-dialog";
 import { MtgSetDialogFooterProps } from "./mtg-set-dialog.props";
 
-export function MtgSetDialogFooter(props: MtgSetDialogFooterProps) {
+export function MtgSetDialogFooter(props: MtgSetDialogFooterProps): JSX.Element {
   //#region Rendering ---------------------------------------------------------
   return (
     <DefaultDialogFooter<MtgSetDto, MtgSetDetailViewmodel>

@@ -3,7 +3,7 @@ import { BaseInput, PasswordInput } from "../../input";
 import { PasswordSecurityBar } from "../shared";
 import { ResetPasswordDialogBodyProps } from "./reset-password-dialog.props";
 
-export function ResetPasswordDialogBody(props: ResetPasswordDialogBodyProps) {
+export function ResetPasswordDialogBody(props: ResetPasswordDialogBodyProps): JSX.Element {
   // #region Rendering --------------------------------------------------------
   return (
     <SectionCard padded={false}>
