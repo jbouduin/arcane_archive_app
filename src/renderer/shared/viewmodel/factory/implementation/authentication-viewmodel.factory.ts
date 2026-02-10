@@ -1,5 +1,5 @@
 import { PreferencesDto } from "../../../../../common/dto";
-import { IArcaneArchiveProxy, IServiceContainer } from "../../../context";
+import { IServiceContainer } from "../../../context";
 import { RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto } from "../../../dto";
 import {
   ChangePasswordViewmodel, LoginViewmodel, ProfileViewmodel,
@@ -85,10 +85,8 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
     return new ResetPasswordViewmodel(dto);
   }
 
-  public getUserViewmodel(arcaneArchiveProxy: IArcaneArchiveProxy): Promise<ProfileViewmodel> {
-    return arcaneArchiveProxy
-      .getData<UserDto>("authentication", "/auth/user")
-      .then((userDto: UserDto) => new ProfileViewmodel(userDto));
+  public getUserViewmodel(userDto: UserDto): ProfileViewmodel {
+    return new ProfileViewmodel(userDto);
   }
   // #endregion
 }

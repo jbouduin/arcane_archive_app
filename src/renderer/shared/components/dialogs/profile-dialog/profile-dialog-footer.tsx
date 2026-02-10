@@ -4,13 +4,13 @@ import { ProfileDto, UserDto } from "../../../dto";
 import { DefaultDialogFooter } from "../../base/base-dialog";
 import { ProfileDialogFooterProps } from "./profile-dialog.props";
 
-export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
-  // #region Hooks ------------------------------------------------------------
+export function ProfileDialogFooter(props: ProfileDialogFooterProps): JSX.Element {
+  //#region Hooks -------------------------------------------------------------
   const { arcaneArchiveProxy, sessionService } = useServices();
   const { userName, isSysAdmin } = useSession();
-  // #endregion
+  //#endregion
 
-  // #region Event handling ---------------------------------------------------
+  //#region Event handling ----------------------------------------------------
   function onSaveClick(event: React.SyntheticEvent<HTMLElement, Event>): Promise<void> {
     let result: Promise<UserDto>;
     const userDto: UserDto = {
@@ -31,9 +31,9 @@ export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
       noop
     );
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <DefaultDialogFooter
       {...props}
@@ -43,5 +43,5 @@ export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
       }
     />
   );
-  // #endregion
+  //#endregion
 }

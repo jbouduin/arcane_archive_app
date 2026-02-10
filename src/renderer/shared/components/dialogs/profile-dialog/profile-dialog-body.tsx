@@ -5,12 +5,12 @@ import { createAuditableLabelValueItems, LabelValueItem, LabelValuePanel } from 
 import { BaseCheckbox, BaseInput, BaseMultiSelect } from "../../input";
 import { ProfileDialogBodyProps } from "./profile-dialog.props";
 
-export function ProfileDialogBody(props: ProfileDialogBodyProps) {
-  // #region Hooks ------------------------------------------------------------
+export function ProfileDialogBody(props: ProfileDialogBodyProps): JSX.Element {
+  //#region Hooks -------------------------------------------------------------
   const { isSysAdmin } = useSession();
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <Tabs animate={true} defaultSelectedTabId="basic" renderActiveTabPanelOnly={true}>
       <Tab
@@ -177,5 +177,5 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
       </>
     );
   }
-  // #endregion
+  //#endregion
 }

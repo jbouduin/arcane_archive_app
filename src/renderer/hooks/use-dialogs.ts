@@ -6,6 +6,8 @@ import {
 import {
   collectionDialogPropsFactory, LoginDialogProps, loginDialogPropsFactory, MtgSetDialogProps, mtgSetDialogPropsFactory,
   PreferencesDialogPropsFactory,
+  ProfileDialogProps,
+  profileDialogPropsFactory,
   ResetPasswordDialogPropsFactory
 } from "../shared/components/dialogs";
 import { ExportSetDialogProps, exportSetDialogPropsFactory } from "../shared/components/dialogs/export-set-dialog";
@@ -128,6 +130,14 @@ export function useDialogs() {
     );
   }
 
+  function showProfileDialog(): void {
+    profileDialogPropsFactory
+      .getProfileDialogProps(services.arcaneArchiveProxy, services.viewmodelFactoryService.authenticationViewmodelFactory)
+      .then(
+        (props: ProfileDialogProps) => services.overlayService.openDialog(props),
+        noop
+      );
+  }
   function showRecoverPasswordDialog(): void {
     services.overlayService.openDialog(
       RecoverPasswordDialogPropsFactory.getRecoverPasswordDialogProps(
@@ -155,6 +165,7 @@ export function useDialogs() {
     showExportSetDialog,
     showMtgSetDialog,
     showPreferencesDialog,
+    showProfileDialog,
     showRecoverPasswordDialog,
     showResetPasswordDialog
   };
