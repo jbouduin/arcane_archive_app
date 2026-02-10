@@ -1,7 +1,6 @@
 /**
  * # TODO move all factories to hook
  */
-export * from "./preferences-dialog-factory";
 export * from "./profile-dialog-factory";
 export * from "./register-dialog-factory";
 export * from "./system-info-dialog-factory";

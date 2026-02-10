@@ -1,9 +1,11 @@
 import { noop } from "lodash";
+import { PreferencesDto } from "../../common/dto";
 import {
   CollectionCardsDialogProps, collectionCardsDialogPropsFactory
 } from "../main-window/components/library-view/library-view-center/collection-cards-dialog";
 import {
   collectionDialogPropsFactory, LoginDialogProps, loginDialogPropsFactory, MtgSetDialogProps, mtgSetDialogPropsFactory,
+  PreferencesDialogPropsFactory,
   ResetPasswordDialogPropsFactory
 } from "../shared/components/dialogs";
 import { ExportSetDialogProps, exportSetDialogPropsFactory } from "../shared/components/dialogs/export-set-dialog";
@@ -119,6 +121,13 @@ export function useDialogs() {
       .then((props: MtgSetDialogProps) => services.overlayService.openDialog(props), noop);
   }
 
+  function showPreferencesDialog(preferences: PreferencesDto): void {
+    services.overlayService.openDialog(
+      PreferencesDialogPropsFactory.getPreferencesDialogProps(
+        preferences, services.viewmodelFactoryService.settingsViewmodelFactory)
+    );
+  }
+
   function showRecoverPasswordDialog(): void {
     services.overlayService.openDialog(
       RecoverPasswordDialogPropsFactory.getRecoverPasswordDialogProps(
@@ -145,6 +154,7 @@ export function useDialogs() {
     showNewCollectionDialog,
     showExportSetDialog,
     showMtgSetDialog,
+    showPreferencesDialog,
     showRecoverPasswordDialog,
     showResetPasswordDialog
   };
