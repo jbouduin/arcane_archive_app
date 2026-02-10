@@ -1,10 +1,10 @@
 import { H3, H5 } from "@blueprintjs/core";
 import classNames from "classnames";
-import * as React from "react";
 import { compareClassNameProp } from "../../util";
 import { CardHeaderViewProps } from "./card-header-view.props";
+import { memo } from "react";
 
-export const CardHeaderView = React.memo(
+export const CardHeaderView = memo(
   (props: CardHeaderViewProps) => {
     // #region Rendering ------------------------------------------------------
     return (
@@ -18,8 +18,8 @@ export const CardHeaderView = React.memo(
           </i>
           <H3>{props.cardName}</H3>
         </div>
-        <div className="card-header-line-2" style={{ width: "100%" }}>
-          <H5>{props.type}</H5>
+        <div style={{ width: "100%" }}>
+          <H5>{props.subTitle}</H5>
         </div>
       </>
 
@@ -28,6 +28,6 @@ export const CardHeaderView = React.memo(
   },
   (prev: CardHeaderViewProps, next: CardHeaderViewProps) => {
     return prev.code == next.code &&
-      compareClassNameProp(prev.className || "", next.className || "");
+      compareClassNameProp(prev.className, next.className);
   }
 );

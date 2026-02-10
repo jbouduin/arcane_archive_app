@@ -1,0 +1,19 @@
+.aa-label-value-column-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.aa-label-value-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 16px;
+  width: 100%;
+}
+
+.aa-label-value-panel>div {
+  display: flex;
+  justify-content: space-between;
+}

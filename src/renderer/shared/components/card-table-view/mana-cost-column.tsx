@@ -1,13 +1,14 @@
+import "./card-table-view.css";
+
 import { Menu, MenuItem } from "@blueprintjs/core";
 import { Cell, CellRenderer } from "@blueprintjs/table";
-import * as React from "react";
 import { BaseColumn, CellLookup, ClientSortCallback, ServerSortCallback } from "../base/base-table";
 import { CardSymbolRenderer } from "../card-symbol-renderer";
 import { ManaCostLookupResult } from "./mana-cost-lookup-result";
 
 export class ManaCostColumn<T> extends BaseColumn<T, ManaCostLookupResult> {
   // #region SortableColumn abstract methods implementationm -------------------
-  protected renderMenu(clientSortColumn?: ClientSortCallback<T>, serverSortColumn?: ServerSortCallback): React.JSX.Element {
+  protected renderMenu(clientSortColumn?: ClientSortCallback<T>, serverSortColumn?: ServerSortCallback): JSX.Element {
     let sortAsc: (() => void) | undefined = undefined;
     let sortDesc: (() => void) | undefined = undefined;
     if (clientSortColumn) {

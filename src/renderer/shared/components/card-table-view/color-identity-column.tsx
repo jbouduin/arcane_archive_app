@@ -1,12 +1,13 @@
+import "./card-table-view.css";
+
 import { Menu, MenuItem } from "@blueprintjs/core";
 import { Cell, CellRenderer } from "@blueprintjs/table";
-import * as React from "react";
 import { BaseColumn, CellLookup, ClientSortCallback, ServerSortCallback } from "../base/base-table";
 import { CardSymbolRenderer } from "../card-symbol-renderer";
 import { ColorIdentityLookupResult } from "./color-identity-lookup-result";
 
 export class ColorIdentityColumn<T> extends BaseColumn<T, ColorIdentityLookupResult> {
-  // #region SortableColumn abstract methods implementationm ------------------
+  //#region SortableColumn abstract methods implementationm -------------------
   protected renderMenu(clientSortColumn?: ClientSortCallback<T>, serverSortColumn?: ServerSortCallback): React.JSX.Element {
     let sortAsc: (() => void) | undefined = undefined;
     let sortDesc: (() => void) | undefined = undefined;
@@ -30,9 +31,9 @@ export class ColorIdentityColumn<T> extends BaseColumn<T, ColorIdentityLookupRes
       return (<></>);
     }
   }
-  // #endregion
+  //#endregion
 
-  // #region Auxiliary methods ------------------------------------------------
+  //#region Auxiliary methods -------------------------------------------------
   protected getCellRenderer(getCellData: CellLookup<T, ColorIdentityLookupResult>): CellRenderer {
     return (rowIdx: number, _colIdx: number) => {
       return (
@@ -56,5 +57,5 @@ export class ColorIdentityColumn<T> extends BaseColumn<T, ColorIdentityLookupRes
       return valueCompare;
     }
   }
-  // #endregion
+  //#endregion
 }

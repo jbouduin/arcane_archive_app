@@ -1,7 +1,7 @@
 import { SectionCard } from "@blueprintjs/core";
-import classNames from "classnames";
 import { CollectionDto, LanguageDto } from "../../../dto";
 import { CardConditionDto } from "../../../dto/card-condition.dto";
+import { BaseDivider } from "../../base/base-divider/base-divider";
 import { BaseCheckbox, BaseMultiSelect, CheckBoxTable } from "../../input";
 import { ExportSetDialogBodyProps } from "./export-set-dialog.props";
 
@@ -30,7 +30,7 @@ export function ExportSetDialogBody(props: ExportSetDialogBodyProps): JSX.Elemen
         tableHeader="Languages"
         validation="synchronous"
       />
-      <p className={classNames("bp6-divider", "ruling-divider")} />
+      <BaseDivider />
       <CheckBoxTable
         key="card-conditions-2"
         viewmodel={props.viewmodel}
@@ -42,10 +42,7 @@ export function ExportSetDialogBody(props: ExportSetDialogBodyProps): JSX.Elemen
         tableHeader="Card Conditions"
         disabled={true}
       />
-      <p
-        className={classNames("bp6-divider", "ruling-divider")}
-        style={{ marginBottom: "12px" }}
-      />
+      <BaseDivider style={{ marginBottom: "12px" }} />
       <BaseCheckbox
         viewmodel={props.viewmodel}
         viewmodelChanged={props.viewmodelChanged}

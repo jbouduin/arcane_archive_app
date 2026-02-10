@@ -1,0 +1,40 @@
+img.rotate-90 {
+  transform: rotate(90deg);
+}
+
+img.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.aa-card-image-section-card {
+  padding-top: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.aa-card-image-small .aa-card-image-section-card {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.aa-card-image-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 5px;
+}
+
+.aa-card-image {
+  display: block;
+  margin: auto;
+}
+
+.aa-card-image-small .aa-card-image {
+  max-height: 250px;
+}
+
+.aa-card-image-large .aa-card-image {
+  max-height: 400px;
+}

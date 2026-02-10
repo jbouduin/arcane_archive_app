@@ -14,7 +14,7 @@ import { CardImageView } from "./card-image-view/card-image-view";
 import { LegalitiesView } from "./legalities-view/legalities-view";
 import { RulingsView } from "./rulings-view/rulings-view";
 
-export function CardDetailView(props: CardDetailViewProps) {
+export function CardDetailView(props: CardDetailViewProps): JSX.Element {
   //#region State -------------------------------------------------------------
   const [cardViewmodel, setCardviewmodel] = React.useState<LibraryCardViewmodel | null>(null);
   const [currentLanguage, setCurrentLanguage] = React.useState<LanguageDto>({
@@ -75,8 +75,25 @@ export function CardDetailView(props: CardDetailViewProps) {
       <Section
         collapsible={true}
         compact={true}
-        rightElement={<CardSymbolRenderer cardSymbols={card.manaCost} className="mana-cost-image-in-title" />}
-        title={<CardHeaderView code={card.code} cardName={card.cardName} rarity={card.rarity} keyruneCode={card.setKeyruneCode} type={card.typeline} />}
+        rightElement={
+          (
+            <CardSymbolRenderer
+              cardSymbols={card.manaCost}
+              className="mana-cost-image-in-title"
+            />
+          )
+        }
+        title={
+          (
+            <CardHeaderView
+              code={card.code}
+              cardName={card.cardName}
+              rarity={card.rarity}
+              keyruneCode={card.setKeyruneCode}
+              subTitle={card.typeline}
+            />
+          )
+        }
       >
         {
           props.showOtherLanguages && card.languages.length > 1 &&
@@ -97,6 +114,7 @@ export function CardDetailView(props: CardDetailViewProps) {
           setCode={card.layout != "TOKEN" ? card.setCode : card.tokenSetCode}
           collectorNumber={card.collectorNumber}
           scryfallLanguage={ScryfallLanguageMap.get(currentLanguage.language) || "en"}
+          size="large"
           imageStatus={card.cardLanguages.get(currentLanguage.language)?.imageStatus || ScryFallImageStatus.UNKNOWN}
         />
       </Section>

@@ -1,24 +1,27 @@
-import * as React from "react";
+import { memo } from "react";
 import { useServices } from "../../../../hooks/use-services";
 import { SvgRenderer } from "../../svg-renderer";
 import { compareClassNameProp } from "../../util";
 import { CardTextViewProps } from "./card-text-view.props";
 
-export const CardTextView = React.memo(
+export const CardTextView = memo(
   (props: CardTextViewProps) => {
-    const serviceContainer = useServices();
+    //#region Hooks -------------------------------------------------------------
+    const { cardSymbolService } = useServices();
+    //#endregion
+
     // #region Rendering --------------------------------------------------------
     return (
       <>
         {
-          render(serviceContainer.cardSymbolService.getAllCardSymbols())
+          render(cardSymbolService.getAllCardSymbols())
         }
       </>
     );
     // #endregion
 
     // #region Auxiliary methods ------------------------------------------------
-    function render(symbols: Map<string, string>): Array<React.JSX.Element | string> {
+    function render(symbols: Map<string, string>): Array<JSX.Element | string> {
       if (props.cardText?.length > 0) {
         return props.cardText
           .replace(/\r\n/g, "\r")
@@ -30,7 +33,7 @@ export const CardTextView = React.memo(
       }
     }
 
-    function splitParagraph(symbols: Map<string, string>, paragraph: string): Array<React.JSX.Element | string> {
+    function splitParagraph(symbols: Map<string, string>, paragraph: string): Array<JSX.Element | string> {
       const matches = paragraph.match(/{[^}]*}|[^{}]+/gmi);
 
       return matches!.map((match: string, idx: number) => {

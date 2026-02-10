@@ -1,27 +1,27 @@
 import { Classes, SectionCard } from "@blueprintjs/core";
-import classNames from "classnames";
 import { noop } from "lodash";
-import * as React from "react";
 import { useServices } from "../../../../hooks/use-services";
 import { LibraryRulingViewmodel } from "../../../viewmodel";
+import { BaseDivider } from "../../base/base-divider/base-divider";
 import { compareClassNameProp } from "../../util";
 import { RulingsViewProps } from "./rulings-view.props";
+import { memo, useEffect, useState } from "react";
 
-export const RulingsView = React.memo(
+export const RulingsView = memo(
   (props: RulingsViewProps) => {
     // #region State ----------------------------------------------------------
-    const [rulings, setRulings] = React.useState<Array<LibraryRulingViewmodel>>(new Array<LibraryRulingViewmodel>());
+    const [rulings, setRulings] = useState<Array<LibraryRulingViewmodel>>(new Array<LibraryRulingViewmodel>());
     // #endregion
 
     // #region Context --------------------------------------------------------
-    const serviceContainer = useServices();
+    const { arcaneArchiveProxy, viewmodelFactoryService } = useServices();
     // #endregion
 
     // #region Effects --------------------------------------------------------
-    React.useEffect(
+    useEffect(
       () => {
-        void serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory
-          .getRulingsViewmodel(serviceContainer.arcaneArchiveProxy, props.oracleId)
+        void viewmodelFactoryService.mtgCardViewmodelFactory
+          .getRulingsViewmodel(arcaneArchiveProxy, props.oracleId)
           .then(
             (data: Array<LibraryRulingViewmodel>) => setRulings(data),
             noop
@@ -35,7 +35,10 @@ export const RulingsView = React.memo(
     return (
       <SectionCard padded={false}>
         {
-          rulings.length > 0 && rulings.map((ruling: LibraryRulingViewmodel, idx: number) => renderSingleRulingLine(idx, ruling, idx == rulings.length - 1))
+          rulings.length > 0 &&
+          rulings.map((ruling: LibraryRulingViewmodel, idx: number) =>
+            renderSingleRulingLine(idx, ruling, idx == rulings.length - 1)
+          )
         }
       </SectionCard>
     );
@@ -49,7 +52,7 @@ export const RulingsView = React.memo(
           <p className={Classes.RUNNING_TEXT}>{ruling.rulingText}</p>
           {
             !isLast &&
-            <p className={classNames("bp6-divider", "ruling-divider")} />
+            <BaseDivider />
           }
         </div>
       );
@@ -57,6 +60,6 @@ export const RulingsView = React.memo(
     // #endregion
   },
   (prev: RulingsViewProps, next: RulingsViewProps) => {
-    return prev.oracleId == next.oracleId && compareClassNameProp(prev.className || "", next.className || "");
+    return prev.oracleId == next.oracleId && compareClassNameProp(prev.className, next.className);
   }
 );

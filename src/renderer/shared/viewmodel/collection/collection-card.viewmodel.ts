@@ -1,3 +1,4 @@
+import { ScryFallImageStatus } from "../../../../common/enums";
 import { CollectionCardDto, CollectionCardQuantityDto } from "../../dto";
 import { CardConditionDto } from "../../dto/card-condition.dto";
 import { SelectOption } from "../../types";
@@ -6,6 +7,7 @@ import { CollectionCardQuantityViewmodel } from "./collection-card-quantity.view
 
 export class CollectionCardViewmodel extends BaseViewmodel<CollectionCardDto> {
   //#region Private fields ----------------------------------------------------
+  private _imageStatus: ScryFallImageStatus;
   private _allQuantitiesViewmodels: Array<CollectionCardQuantityViewmodel>;
   private foilQuantitiesViewmodels: Map<string, CollectionCardQuantityViewmodel>;
   private nonFoilQuantitiesViewmodels: Map<string, CollectionCardQuantityViewmodel>;
@@ -27,6 +29,10 @@ export class CollectionCardViewmodel extends BaseViewmodel<CollectionCardDto> {
   public set cardCode(value: string) {
     this._dto.cardCode = value;
   }
+
+  public get imageStatus(): ScryFallImageStatus {
+    return this._imageStatus;
+  }
   //#endregion
 
   //#region BaseViewmodel Members ---------------------------------------------
@@ -44,10 +50,12 @@ export class CollectionCardViewmodel extends BaseViewmodel<CollectionCardDto> {
   //#region Constructor & C° --------------------------------------------------
   public constructor(
     dto: CollectionCardDto,
+    imageStatus: ScryFallImageStatus,
     mode: ViewmodelMode,
     cardConditions: Array<SelectOption<CardConditionDto>>
   ) {
     super(dto, mode);
+    this._imageStatus = imageStatus;
     this.foilQuantitiesViewmodels = new Map<string, CollectionCardQuantityViewmodel>();
     this.nonFoilQuantitiesViewmodels = new Map<string, CollectionCardQuantityViewmodel>();
     this._allQuantitiesViewmodels = new Array<CollectionCardQuantityViewmodel>();

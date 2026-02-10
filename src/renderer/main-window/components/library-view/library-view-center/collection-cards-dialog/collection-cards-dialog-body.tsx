@@ -1,51 +1,85 @@
-import { HTMLTable, Tab, Tabs } from "@blueprintjs/core";
-import classNames from "classnames";
+import "./collection-cards-dialog.css";
+
+import { HTMLTable, Tab, TabId, Tabs } from "@blueprintjs/core";
+import { useState } from "react";
+import { usePreferences } from "../../../../../hooks";
+import { BaseDivider } from "../../../../../shared/components/base/base-divider/base-divider";
+import { CardHeaderView } from "../../../../../shared/components/card-detail-view/card-header-view/card-header-view";
+import { CardImageView } from "../../../../../shared/components/card-detail-view/card-image-view/card-image-view";
 import { BaseInput } from "../../../../../shared/components/input";
 import { LanguageDto } from "../../../../../shared/dto";
 import { CardConditionDto } from "../../../../../shared/dto/card-condition.dto";
-import { SelectOption } from "../../../../../shared/types";
+import { ScryfallLanguageMap, SelectOption } from "../../../../../shared/types";
 import { CollectionCardQuantityViewmodel, CollectionCardViewmodel } from "../../../../../shared/viewmodel";
 import { CollectionCardsDialogBodyProps } from "./collection-cards-dialog.props";
 
 export function CollectionCardsDialogBody(props: CollectionCardsDialogBodyProps): JSX.Element {
-  //#region Rendering ---------------------------------------------------------
+  //#region Pre-Rendering -----------------------------------------------------
   const viewmodel = props.viewmodel.currentCollectionCardViewmodel;
+  //#endregion
+
+  //#region State -------------------------------------------------------------
+  const [currentLanguage, setCurrentLanguage] = useState<string>(viewmodel.languages[0].language);
+  //#endregion
+
+  //#region Hooks -------------------------------------------------------------
+  const { preferences } = usePreferences();
+  //#endregion
+
+  //#region Rendering ---------------------------------------------------------
   return (
     <>
       {
         viewmodel && (
           <>
-            <i
-              key={`icon-${viewmodel.keyruneCode}`}
-              className={classNames("ss", "ss-" + viewmodel.keyruneCode.toLowerCase(), viewmodel.rarity != "COMMON" ? "ss-" + viewmodel.rarity.toLowerCase() : "")}
-              style={{ paddingRight: "5px" }}
-            >
-            </i>
-            {/* eslint-disable-next-line @stylistic/jsx-one-expression-per-line */}
-            {viewmodel.cardName} ({viewmodel.setName})
-            {
-              viewmodel.languages.length == 1 &&
-              (
-                renderTable(viewmodel.getCollectionCardViewmodelForLanguage(viewmodel.languages[0].language))
-              )
-            }
-            {
-              viewmodel.languages.length > 1 && renderTabs()
-            }
+            <CardHeaderView
+              code={viewmodel.cardCode}
+              cardName={viewmodel.cardName}
+              rarity={viewmodel.rarity}
+              keyruneCode={viewmodel.keyruneCode}
+              subTitle={viewmodel.setName}
+            />
+            <BaseDivider />
+            <div className="aa-collection-cards-content">
+              <div className="aa-collection-cards-image-wrapper">
+                <CardImageView
+                  cardLayout={viewmodel.layout}
+                  cachedImageSize={preferences.cachedImageSize}
+                  setCode={viewmodel.setCode}
+                  cardBackId={viewmodel.cardBackId}
+                  collectorNumber={viewmodel.collectorNumber}
+                  scryfallLanguage={ScryfallLanguageMap.get(currentLanguage)!}
+                  size="small"
+                  imageStatus={viewmodel.getCollectionCardViewmodelForLanguage(currentLanguage).imageStatus}
+                />
+              </div>
+              <div className="aa-ownership-table-wrapper">
+                {
+                  viewmodel.languages.length == 1 &&
+                  (
+                    renderTable(viewmodel.getCollectionCardViewmodelForLanguage(viewmodel.languages[0].language))
+                  )
+                }
+                {
+                  viewmodel.languages.length > 1 && renderTabs()
+                }
+              </div>
+            </div>
           </>
+
         )
       }
     </>
   );
 
   function renderTabs(): JSX.Element {
-    const tabs = viewmodel.languages.map((lng: LanguageDto, idx: number) => {
+    const tabs = viewmodel.languages.map((lng: LanguageDto) => {
       const viewmodelForLanguage = viewmodel.getCollectionCardViewmodelForLanguage(lng.language);
       const titleText = lng.buttonText + (viewmodelForLanguage.hasChanges ? "*" : "");
       return (
         <Tab
           key={lng.language}
-          id={"t" + idx.toString()}
+          id={lng.language}
           title={titleText}
           panel={renderTable(viewmodelForLanguage)}
         />
@@ -53,23 +87,31 @@ export function CollectionCardsDialogBody(props: CollectionCardsDialogBodyProps)
     });
     return (
       <Tabs
-        fill={true}
-        defaultSelectedTabId="t0"
+        animate={true}
         children={tabs}
+        defaultSelectedTabId={currentLanguage}
+        renderActiveTabPanelOnly={true}
+        onChange={(newTabId: TabId) => setCurrentLanguage(newTabId.toString())}
       />
     );
   }
 
+  // TODO create component ownershiptable
   function renderTable(collectionCardViewmodel: CollectionCardViewmodel): JSX.Element {
+    // we have to do it this way, as className does not work, try to solve it by using higher specificity in css
+    const tdStyle = {
+      paddingLeft: "0px",
+      paddingBottom: "0px"
+    };
     const rows = props.viewmodel.cardConditions
       .map((condition: SelectOption<CardConditionDto>) => {
         return (
           <tr key={condition.value.condition}>
-            <td key="col1" style={{ paddingLeft: "0px" }}>{condition.label}</td>
-            <td key="col2" style={{ paddingLeft: "0px" }}>
+            <td key="col1" style={tdStyle}>{condition.label}</td>
+            <td key="col2" style={tdStyle}>
               {renderQuantityInput(collectionCardViewmodel.getQuantityViewmodel(condition.value.condition, false))}
             </td>
-            <td key="col3" style={{ paddingLeft: "0px" }}>
+            <td key="col3" style={tdStyle}>
               {renderQuantityInput(collectionCardViewmodel.getQuantityViewmodel(condition.value.condition, true))}
             </td>
           </tr>
@@ -84,9 +126,9 @@ export function CollectionCardsDialogBody(props: CollectionCardsDialogBodyProps)
       >
         <thead>
           <tr>
-            <td key="col1" style={{ paddingLeft: "0px" }}>Condition</td>
-            <td key="col2" style={{ paddingLeft: "0px" }}>Non-Foil</td>
-            <td key="col3" style={{ paddingLeft: "0px" }}>Foil</td>
+            <td key="col1" style={tdStyle}>Condition</td>
+            <td key="col2" style={tdStyle}>Non-Foil</td>
+            <td key="col3" style={tdStyle}>Foil</td>
           </tr>
         </thead>
         <tbody>
@@ -107,11 +149,15 @@ export function CollectionCardsDialogBody(props: CollectionCardsDialogBodyProps)
           allowNumericCharactersOnly: true,
           buttonPosition: "none",
           selectAllOnFocus: true,
-          style: { maxWidth: "50px", textAlign: "right" },
+          style: { maxWidth: "70px", textAlign: "right" },
           min: 0
         }}
       />
     );
   }
+  //#endregion
+
+  //#region Auxiliary Methods -------------------------------------------------
+
   //#endregion
 }

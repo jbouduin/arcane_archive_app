@@ -1,0 +1,16 @@
+.existing-users-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.existing-users-div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.existing-user-name-tag {
+  margin-left: 5px;
+  margin-right: 5px;
+}

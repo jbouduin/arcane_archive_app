@@ -10,5 +10,6 @@
     "LATER",
     "NOW",
     "NEXT"
-  ]
+  ],
+  "todo-tree.tree.scanMode": "workspace only"
 }

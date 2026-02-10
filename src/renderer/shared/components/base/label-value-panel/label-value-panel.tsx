@@ -1,3 +1,5 @@
+import "./label-value-panel.css";
+
 import { Classes } from "@blueprintjs/core";
 import { LabelValuePanelProps } from "./label-value-panel.props";
 
@@ -40,7 +42,7 @@ export function LabelValuePanel(props: LabelValuePanelProps): JSX.Element {
       idx++;
     });
     return (
-      <div className="label-value-panel" style={props.style}>
+      <div className="aa-label-value-panel" style={props.style}>
         {result}
       </div>
     );
@@ -85,10 +87,10 @@ export function LabelValuePanel(props: LabelValuePanelProps): JSX.Element {
     const columns = new Array<Array<JSX.Element>>();
     columnMap.forEach((c: Array<JSX.Element>, _n: number) => columns.push(c));
     return (
-      <div className="label-value-column-wrapper">
+      <div className="aa-label-value-column-wrapper">
         {
           columns.map((c: Array<JSX.Element>, idx: number) => (
-            <div key={"col_" + idx.toString()} className="label-value-panel" style={props.style}>
+            <div key={"col_" + idx.toString()} className="aa-label-value-panel" style={props.style}>
               {columns[idx]}
             </div>
           ))

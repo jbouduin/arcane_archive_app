@@ -1,9 +1,11 @@
+import { ScryFallImageStatus } from "../../../../../../common/enums";
 import {
-  CollectionCardDto, CollectionCardQuantityDto, CollectionDto, LanguageDto, MtgSetTreeDto
+  CollectionCardDto, CollectionCardQuantityDto, CollectionDto,
+  LanguageDto, LibraryCollectionCardImageStatusDto, MtgSetTreeDto
 } from "../../../../../shared/dto";
 import { CardConditionDto } from "../../../../../shared/dto/card-condition.dto";
 import { LibraryCollectionCardDto } from "../../../../../shared/dto/library-collection-card.dto";
-import { SelectOption } from "../../../../../shared/types";
+import { CardLayout, SelectOption } from "../../../../../shared/types";
 import { BaseViewmodel, CollectionCardViewmodel } from "../../../../../shared/viewmodel";
 import { SingleCollectionCardDto } from "./single-collection-card.dto";
 
@@ -20,6 +22,14 @@ export class SingleCollectionCardViewmodel extends BaseViewmodel<SingleCollectio
   //#endregion
 
   //#region Getters/Setters ---------------------------------------------------
+  public get cardBackId(): string {
+    return this.libraryCard.cardBackId;
+  }
+
+  public get cardCode(): string {
+    return this.libraryCard.code;
+  }
+
   public get cardName(): string {
     return this.libraryCard.cardName;
   }
@@ -34,6 +44,18 @@ export class SingleCollectionCardViewmodel extends BaseViewmodel<SingleCollectio
 
   public get keyruneCode(): string {
     return this.set.keyruneCode;
+  }
+
+  public get layout(): CardLayout {
+    return this.libraryCard.layout;
+  }
+
+  public get setCode(): string {
+    return this.set.code;
+  }
+
+  public get collectorNumber(): string {
+    return this.libraryCard.collectorNumber;
   }
   //#endregion
 
@@ -64,6 +86,10 @@ export class SingleCollectionCardViewmodel extends BaseViewmodel<SingleCollectio
     this.languages = languages;
     const collectionCardMap = new Map<string, CollectionCardDto>();
     dto.collectionCards.forEach((cc: CollectionCardDto) => collectionCardMap.set(cc.language, cc));
+    const imageStatusMap = new Map<string, ScryFallImageStatus>();
+    dto.libraryCard.imageStatuses.forEach(
+      (s: LibraryCollectionCardImageStatusDto) => imageStatusMap.set(s.language, s.imageStatus)
+    );
     languages.forEach(
       (l: LanguageDto) => this.registerLanguage(
         l,
@@ -75,15 +101,20 @@ export class SingleCollectionCardViewmodel extends BaseViewmodel<SingleCollectio
           quantities: new Array<CollectionCardQuantityDto>(),
           setCode: set.code
         },
+        imageStatusMap.get(l.language)!,
         cardConditions)
     );
   }
 
   private registerLanguage(
-    language: LanguageDto, dto: CollectionCardDto, cardConditions: Array<SelectOption<CardConditionDto>>
+    language: LanguageDto,
+    dto: CollectionCardDto,
+    imageStatus: ScryFallImageStatus,
+    cardConditions: Array<SelectOption<CardConditionDto>>
   ): void {
     const collectionCardViewmodel = new CollectionCardViewmodel(
       dto,
+      imageStatus,
       "update",
       cardConditions
     );

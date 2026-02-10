@@ -5,5 +5,5 @@ export interface CardHeaderViewProps extends Props {
   cardName: string;
   rarity: string;
   keyruneCode: string;
-  type: string;
+  subTitle: string;
 }

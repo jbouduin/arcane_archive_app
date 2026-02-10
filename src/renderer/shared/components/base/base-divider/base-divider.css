@@ -1,0 +1,5 @@
+/* Define as p.aa-divider to to increase specificity and beat .bp6-divider */
+p.aa-divider {
+  margin-left: 0px;
+  margin-right: 0px;
+}
