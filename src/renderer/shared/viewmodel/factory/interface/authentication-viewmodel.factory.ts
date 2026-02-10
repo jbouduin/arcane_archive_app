@@ -8,7 +8,10 @@ import { RegisterViewmodel } from "../../authentication";
 export interface IAuthenticationViewmodelFactory {
   getChangePasswordViewmodel(userName: string, email: string): ChangePasswordViewmodel;
   getInitialLoginViewmodel(showRegisterButton: boolean): LoginViewmodel;
-  getLoginViewmodel(showRegisterButton: boolean, serviceContainer: IServiceContainer): Promise<LoginViewmodel>;
+  getLoginViewmodel(
+    showRegisterButton: boolean,
+    savedUserNames: Array<string>,
+    passwordOfSingleUser: string | null): LoginViewmodel;
   getRecoverPasswordViewmodel(dto: RecoverPasswordRequestDto): RecoverPasswordViewmodel;
   getRegisterViewmodel(
     showLoginButton: boolean,

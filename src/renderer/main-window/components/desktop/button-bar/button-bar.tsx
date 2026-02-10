@@ -1,7 +1,7 @@
 import { ButtonGroup, Menu, MenuItem, ToastProps } from "@blueprintjs/core";
-import { useApiStatus, usePreferences, useServices, useSession } from "../../../../hooks";
+import { useApiStatus, useDialogs, usePreferences, useServices, useSession } from "../../../../hooks";
 import {
-  showChangePasswordDialog, showLoginDialog, showPreferencesDialog,
+  showChangePasswordDialog, showPreferencesDialog,
   showProfileDialog, showSystemInfoDialog, showSystemSettingsDialog
 } from "../../../../shared/components/dialogs/factory";
 import { EDesktopView } from "../desktop-view.enum";
@@ -10,17 +10,17 @@ import { EButtonBarButtonType } from "./button-bar-button-type.enum";
 import { ButtonBarProps } from "./button-bar.props";
 
 export function ButtonBar(props: ButtonBarProps): JSX.Element {
-  // #region Hooks ------------------------------------------------------------
-  const { loggedIn, userName, email, isSysAdmin } = useSession();
+  //#region Hooks -------------------------------------------------------------
   const apiInfo = useApiStatus();
-  const { authenticationServiceAvailable } = useApiStatus();
+  const { loggedIn, userName, email, isSysAdmin } = useSession();
   const serviceContainer = useServices();
   const { preferences } = usePreferences();
+  const { showLoginDialog } = useDialogs();
   // #endregion
 
-  // #region Event handling -------------------------------------------------------------
+  //#region Event handling ----------------------------------------------------
   function loginClick(): void {
-    showLoginDialog(serviceContainer, true);
+    showLoginDialog(true);
   }
 
   function logoutClick(): void {
@@ -34,9 +34,9 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
     };
     serviceContainer.overlayService.showToast(props, "admin not implemented");
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <>
       <div className="button-bar">
@@ -151,12 +151,12 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
     return (
       <Menu size="small">
         <MenuItem
-          disabled={!authenticationServiceAvailable}
+          disabled={!apiInfo.authenticationServiceAvailable}
           onClick={loginClick}
-          text={authenticationServiceAvailable ? "Log in" : "Log in (service not available)"}
+          text={apiInfo.authenticationServiceAvailable ? "Log in" : "Log in (service not available)"}
         />
       </Menu>
     );
   }
-  // #endregion
+  //#endregion
 }

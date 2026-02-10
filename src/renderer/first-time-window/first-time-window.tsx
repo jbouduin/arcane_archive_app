@@ -7,6 +7,7 @@ import { PreferencesProvider, ServiceContainerContext, SessionProvider } from ".
 import { ServiceContainer } from "../shared/context/implementation/service.container";
 import { ShowToastFn } from "../shared/types";
 import { FirstTimeView } from "./first-time-view/first-time-view";
+import { loginDialogPropsFactory } from "../shared/components/dialogs";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -73,8 +74,12 @@ void (async () => {
   }
 
   const [loginViewmodel, registerViewmodel] = await Promise.all([
-    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
-      .getLoginViewmodel(false, serviceContainer),
+    loginDialogPropsFactory.getLoginViewmodel(
+      false,
+      serviceContainer.ipcProxy,
+      serviceContainer.sessionService,
+      serviceContainer.viewmodelFactoryService
+    ),
     serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
       .getRegisterViewmodel(false, serviceContainer, initialization.settings!.preferences)
   ]);

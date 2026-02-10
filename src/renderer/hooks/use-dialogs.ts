@@ -3,7 +3,7 @@ import {
   CollectionCardsDialogProps, collectionCardsDialogPropsFactory
 } from "../main-window/components/library-view/library-view-center/collection-cards-dialog";
 import {
-  collectionDialogPropsFactory, MtgSetDialogProps, mtgSetDialogPropsFactory
+  collectionDialogPropsFactory, LoginDialogProps, loginDialogPropsFactory, MtgSetDialogProps, mtgSetDialogPropsFactory
 } from "../shared/components/dialogs";
 import { ExportSetDialogProps, exportSetDialogPropsFactory } from "../shared/components/dialogs/export-set-dialog";
 import { CollectionDto } from "../shared/dto";
@@ -25,18 +25,20 @@ export function useDialogs() {
     collection: CollectionDto,
     cardsAndLanguages: Map<string, Array<string>>
   ): void {
-    collectionCardsDialogPropsFactory.getCollectionCardsDialogProps(
-      collection,
-      cardsAndLanguages,
-      preferences.cardConditions,
-      services.basicDataService,
-      services.collectionService,
-      services.mtgCardService,
-      services.mtgSetService
-    ).then(
-      (props: CollectionCardsDialogProps) => services.overlayService.openDialog(props),
-      noop
-    );
+    collectionCardsDialogPropsFactory
+      .getCollectionCardsDialogProps(
+        collection,
+        cardsAndLanguages,
+        preferences.cardConditions,
+        services.basicDataService,
+        services.collectionService,
+        services.mtgCardService,
+        services.mtgSetService
+      )
+      .then(
+        (props: CollectionCardsDialogProps) => services.overlayService.openDialog(props),
+        noop
+      );
   }
 
   function showEditCollectionDialog(
@@ -49,6 +51,19 @@ export function useDialogs() {
         collection, parent, services.viewmodelFactoryService, onCollectionModified
       )
     );
+  }
+
+  function showLoginDialog(showRegisterButton: boolean): void {
+    loginDialogPropsFactory
+      .getLoginDialogProps(
+        showRegisterButton,
+        services.ipcProxy,
+        services.sessionService,
+        services.viewmodelFactoryService
+      ).then(
+        (props: LoginDialogProps) => services.overlayService.openDialog(props),
+        noop
+      );
   }
 
   function showNewCollectionDialog(
@@ -99,6 +114,7 @@ export function useDialogs() {
   return {
     showCollectionCardsDialog,
     showEditCollectionDialog,
+    showLoginDialog,
     showNewCollectionDialog,
     showExportSetDialog,
     showMtgSetDialog: showMtgSetDialog

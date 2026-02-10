@@ -3,7 +3,7 @@ import "./base-divider.css";
 import classNames from "classnames";
 import { BaseDividerProps } from "./base-divider.props";
 
-export function BaseDivider(props: BaseDividerProps) {
+export function BaseDivider(props: BaseDividerProps): JSX.Element {
   //#region Rendering ---------------------------------------------------------
   return (
     <p

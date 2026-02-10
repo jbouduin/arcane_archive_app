@@ -1,19 +1,19 @@
 import { Button } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { ReactNode } from "react";
-import { useServices } from "../../../../hooks";
+import { useDialogs, useServices } from "../../../../hooks";
 import { RegisterRequestDto } from "../../../dto";
 import { DefaultDialogFooter } from "../../base/base-dialog/default-dialog-footer";
-import { showLoginDialog } from "../factory";
 import { RegisterDialogFooterProp } from "./register-dialog.props";
 
-export function RegisterDialogFooter(props: RegisterDialogFooterProp) {
-  // #region Hooks ------------------------------------------------------------
+export function RegisterDialogFooter(props: RegisterDialogFooterProp): JSX.Element {
+  //#region Hooks -------------------------------------------------------------
   const serviceContainer = useServices();
-  // #endregion
+  const { showLoginDialog } = useDialogs();
+  //#endregion
 
-  // #region Event handling ---------------------------------------------------
-  function registerClick(e: React.SyntheticEvent<HTMLElement, Event>, dto: RegisterRequestDto) {
+  //#region Event handling ----------------------------------------------------
+  function registerClick(e: React.SyntheticEvent<HTMLElement, Event>, dto: RegisterRequestDto): Promise<void> {
     return serviceContainer.sessionService
       .register(serviceContainer.arcaneArchiveProxy, dto)
       .then(
@@ -30,11 +30,11 @@ export function RegisterDialogFooter(props: RegisterDialogFooterProp) {
     if (props.onClose) {
       props.onClose(e);
     }
-    showLoginDialog(serviceContainer, false);
+    showLoginDialog(false);
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <DefaultDialogFooter
       additionalLeftButtons={additionalLeftButtons()}
@@ -60,5 +60,5 @@ export function RegisterDialogFooter(props: RegisterDialogFooterProp) {
       )
     );
   }
-  // #endregion
+  //#endregion
 }
