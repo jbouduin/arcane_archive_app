@@ -2,9 +2,9 @@ import { H5, Section, SectionCard, Tab, Tabs } from "@blueprintjs/core";
 import React from "react";
 import { ScryFallImageStatus } from "../../../../common/enums";
 import { usePreferences, useServices } from "../../../hooks";
-import { LanguageDto } from "../../dto";
+import { CardDetailDto, LanguageDto } from "../../dto";
 import { ScryfallLanguageMap } from "../../types";
-import { LibraryCardfaceViewmodel, LibraryCardViewmodel } from "../../viewmodel";
+import { CardDetailViewmodel, LibraryCardfaceViewmodel } from "../../viewmodel";
 import { CardSymbolRenderer } from "../card-symbol-renderer";
 import { LanguageButtonBar } from "../language-button-bar";
 import { CardDetailViewProps } from "./card-detail-view.props";
@@ -16,7 +16,7 @@ import { RulingsView } from "./rulings-view/rulings-view";
 
 export function CardDetailView(props: CardDetailViewProps): JSX.Element {
   //#region State -------------------------------------------------------------
-  const [cardViewmodel, setCardviewmodel] = React.useState<LibraryCardViewmodel | null>(null);
+  const [cardViewmodel, setCardviewmodel] = React.useState<CardDetailViewmodel | null>(null);
   const [currentLanguage, setCurrentLanguage] = React.useState<LanguageDto>({
     language: "",
     sequence: -1,
@@ -27,7 +27,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
   //#endregion
 
   //#region Hooks -------------------------------------------------------------
-  const serviceContainer = useServices();
+  const { mtgCardService, viewmodelFactoryService } = useServices();
   const { preferences } = usePreferences();
   //#endregion
 
@@ -35,20 +35,33 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
   React.useEffect(
     () => {
       if (props.cardId) {
-        void serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory
-          .getLibraryCardDetailViewmodel(serviceContainer.arcaneArchiveProxy, props.cardId)
+        void mtgCardService
+          .getCardDetailByCardId(props.cardId)
           .then(
-            (viewmodel: LibraryCardViewmodel) => {
+            (cardDetail: CardDetailDto) => {
+              const viewmodel = viewmodelFactoryService.mtgCardViewmodelFactory.getCardDetailViewmodel(cardDetail);
               setCardviewmodel(viewmodel);
               setCurrentLanguage(viewmodel.languages[0]);
             },
             () => setCardviewmodel(null)
           );
+      } else if (props.cardLanguageId) {
+        void mtgCardService
+          .getCardDetailByCardLanguageId(props.cardLanguageId)
+          .then(
+            (cardDetail: CardDetailDto) => {
+              const viewmodel = viewmodelFactoryService.mtgCardViewmodelFactory.getCardDetailViewmodel(cardDetail);
+              setCardviewmodel(viewmodel);
+              setCurrentLanguage(viewmodel.languages[0]);
+            },
+            () => setCardviewmodel(null)
+          );
+        setCardviewmodel(null);
       } else {
         setCardviewmodel(null);
       }
     },
-    [props.cardId]
+    [props.cardId, props.cardLanguageId]
   );
   //#endregion
 
@@ -70,7 +83,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
     </div>
   );
 
-  function renderTopSection(card: LibraryCardViewmodel): React.JSX.Element {
+  function renderTopSection(card: CardDetailViewmodel): React.JSX.Element {
     return (
       <Section
         collapsible={true}
@@ -96,7 +109,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
         }
       >
         {
-          props.showOtherLanguages && card.languages.length > 1 &&
+          props.cardId && card.languages.length > 1 &&
           (
             <SectionCard padded={false}>
               <LanguageButtonBar
@@ -121,7 +134,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
     );
   }
 
-  function renderFacesSection(card: LibraryCardViewmodel): Array<React.JSX.Element> {
+  function renderFacesSection(card: CardDetailViewmodel): Array<React.JSX.Element> {
     let result: Array<React.JSX.Element>;
     const languageViewModel = card.cardLanguages.get(currentLanguage.language);
 
@@ -140,7 +153,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
     return result;
   }
 
-  function renderMoreSection(card: LibraryCardViewmodel): React.JSX.Element {
+  function renderMoreSection(card: CardDetailViewmodel): React.JSX.Element {
     return (
       <Section
         collapsible={true}

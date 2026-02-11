@@ -31,14 +31,14 @@ export function CardfaceView(props: CardfaceViewProps): JSX.Element {
       }
     >
       <SectionCard className="card-view-section-card" padded={false}>
-        <CardTextView cardText={props.cardface.printedText} />
+        <CardTextView key="card-text" cardText={props.cardface.printedText} />
         {
           props.cardface.flavorText &&
           (
-            <div>
-              <BaseDivider />
-              <p><i>{props.cardface.flavorText}</i></p>
-            </div>
+            <>
+              <BaseDivider key="divider" />
+              <p key="flavor-text"><i>{props.cardface.flavorText}</i></p>
+            </>
           )
         }
       </SectionCard>

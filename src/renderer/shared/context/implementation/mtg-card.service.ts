@@ -1,3 +1,4 @@
+import { CardDetailDto } from "../../dto";
 import { LibraryCollectionCardDto } from "../../dto/library-collection-card.dto";
 import { IArcaneArchiveProxy } from "../interface";
 import { IMtgCardService } from "../interface/mtg-card.service";
@@ -8,6 +9,16 @@ export class MtgCardService implements IMtgCardService {
   //#endregion
 
   //#region IMtgCardService Members -------------------------------------------
+  public getCardDetailByCardId(cardId: number): Promise<CardDetailDto> {
+    return this.arcaneArchiveProxy
+      .getData<CardDetailDto>("library", "/public/card/" + cardId);
+  }
+
+  public getCardDetailByCardLanguageId(cardLanguageId: number): Promise<CardDetailDto> {
+    return this.arcaneArchiveProxy
+      .getData<CardDetailDto>("library", "/public/card/language/" + cardLanguageId);
+  }
+
   public getLibraryCollectionCardByCode(cardCode: string): Promise<LibraryCollectionCardDto> {
     return this.arcaneArchiveProxy.getData<LibraryCollectionCardDto>(
       "library",

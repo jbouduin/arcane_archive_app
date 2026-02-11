@@ -1,3 +1,5 @@
 import { Props } from "@blueprintjs/core";
 
-export type CollectionViewRightProps = Props;
+export interface CollectionViewRightProps extends Props {
+  cardLanguageId: number | null;
+}

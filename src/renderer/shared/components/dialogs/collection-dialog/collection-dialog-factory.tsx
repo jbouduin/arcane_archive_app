@@ -1,6 +1,5 @@
 import { Icon } from "@blueprintjs/core";
 import { noop } from "lodash";
-import { IViewmodelFactoryService } from "../../../context";
 import { CollectionDto } from "../../../dto";
 import { CollectionType } from "../../../types";
 import { CollectionViewmodel, ICollectionViewmodelFactory } from "../../../viewmodel";

@@ -1,14 +1,12 @@
 import { IArcaneArchiveProxy, IServiceContainer } from "../../../context";
-import { AdvancedCardSearchDto, CollectionCardListDto, LibraryCardListDto } from "../../../dto";
+import { AdvancedCardSearchDto, CardDetailDto, CollectionCardListDto, LibraryCardListDto } from "../../../dto";
 import { CollectionCardListViewmodel } from "../../collection";
-import { AdvancedCardSearchViewmodel, LibraryCardListViewmodel, LibraryCardViewmodel, LibraryRulingViewmodel } from "../../mtg-card";
+import { AdvancedCardSearchViewmodel, CardDetailViewmodel, LibraryCardListViewmodel, LibraryRulingViewmodel } from "../../mtg-card";
 
 export interface IMtgCardViewmodelFactory {
+  getCardDetailViewmodel(cardDetail: CardDetailDto): CardDetailViewmodel;
   getLibraryCardListViewmodel(dto: LibraryCardListDto): LibraryCardListViewmodel;
-  getLibraryCardDetailViewmodel(
-    arcaneArchiveProxy: IArcaneArchiveProxy,
-    cardId: number
-  ): Promise<LibraryCardViewmodel>;
+  // NOW viewmodel factory should not return a promise
   getRulingsViewmodel(
     arcaneArchiveProxy: IArcaneArchiveProxy,
     oracleId: string

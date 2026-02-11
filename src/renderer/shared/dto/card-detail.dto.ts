@@ -1,10 +1,10 @@
 import { AuditableDto, MasterDataDto } from "../../../common/dto";
 import { CardLayout } from "../types/card-layout";
-import { LibraryCardLanguageDto } from "./library-card-language.dto";
-import { LibraryCardfaceDto } from "./library-cardface.dto";
+import { CardLanguageDetailDto } from "./card-language-detail.dto";
+import { CardfaceDetailDto } from "./cardface-detail.dto";
 import { LibraryLegality } from "./library-legality";
 
-export type LibraryCardDto = MasterDataDto<string> & AuditableDto & {
+export type CardDetailDto = MasterDataDto<string> & AuditableDto & {
   //#region card fields -------------------------------------------------------
   cardName: string;
   cardBackId: string | null;
@@ -22,7 +22,7 @@ export type LibraryCardDto = MasterDataDto<string> & AuditableDto & {
   //#region Child entities ----------------------------------------------------
   colorIdentities: Array<string>;
   legalities: Array<LibraryLegality>;
-  cardfaces: Array<LibraryCardfaceDto>;
-  cardLanguages: Array<LibraryCardLanguageDto>;
+  cardfaces: Array<CardfaceDetailDto>;
+  cardLanguages: Array<CardLanguageDetailDto>;
   //#endregion
 };

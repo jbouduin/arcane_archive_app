@@ -1,10 +1,16 @@
 import { IArcaneArchiveProxy, IBasicDataService, ICollectionService, IMtgSetService, IServiceContainer } from "../../../context";
 import {
-  AdvancedCardSearchDto, CollectionCardListDto, LibraryCardDto, LibraryCardListDto, LibraryRulingDto
+  AdvancedCardSearchDto,
+  CardDetailDto,
+  CollectionCardListDto,
+  LibraryCardListDto, LibraryRulingDto
 } from "../../../dto";
 import { CollectionCardListViewmodel } from "../../collection";
 import {
-  AdvancedCardSearchViewmodel, LibraryCardListViewmodel, LibraryCardViewmodel, LibraryRulingViewmodel
+  AdvancedCardSearchViewmodel,
+  CardDetailViewmodel,
+  LibraryCardListViewmodel,
+  LibraryRulingViewmodel
 } from "../../mtg-card";
 import { IMtgCardViewmodelFactory } from "../interface";
 
@@ -26,13 +32,8 @@ export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
   // #endregion
 
   // #region IMtgCardViewmodelFactory Members ---------------------------------
-  public getLibraryCardDetailViewmodel(
-    arcaneArchiveProxy: IArcaneArchiveProxy,
-    cardId: number
-  ): Promise<LibraryCardViewmodel> {
-    return arcaneArchiveProxy
-      .getData<LibraryCardDto>("library", "/public/card/" + cardId)
-      .then((dto: LibraryCardDto) => new LibraryCardViewmodel(this.basicDataService, this.mtgSetService, dto));
+  public getCardDetailViewmodel(cardDetail: CardDetailDto): CardDetailViewmodel {
+    return new CardDetailViewmodel(this.basicDataService, this.mtgSetService, cardDetail);
   }
 
   public getLibraryCardListViewmodel(dto: LibraryCardListDto): LibraryCardListViewmodel {

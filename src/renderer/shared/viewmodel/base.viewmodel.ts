@@ -18,7 +18,7 @@ export abstract class BaseViewmodel<Dto extends object> {
    * - `getValidation(fieldName: keyof Dto): ValidationResult`
    * - `startValidation()` -> should get fieldName as input parameter
    * - `endValidation()` -> should get fieldName as input parameter
-  */
+   */
   private pendingValidations: number;
   private validationResults: Map<keyof Dto, ValidationResult>;
   private _childViewmodels: Array<BaseViewmodel<object>>;

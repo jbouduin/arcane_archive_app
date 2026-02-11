@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { IMtgSetService, IViewmodelFactoryService } from "../../../context";
+import { IMtgSetService } from "../../../context";
 import { MtgSetDto } from "../../../dto";
 import { IMtgSetViewmodelFactory, MtgSetDetailViewmodel } from "../../../viewmodel";
 import { MtgSetDialogBody } from "./mtg-set-dialog-body";

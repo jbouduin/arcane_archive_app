@@ -1,6 +1,6 @@
 import { ExternalReferenceSource } from "../types/external-reference-source";
 
-export type LibraryExternalReferenceDto = {
+export type ExternalReferenceDetailDto = {
   source: ExternalReferenceSource;
   detail: string;
   value: string;

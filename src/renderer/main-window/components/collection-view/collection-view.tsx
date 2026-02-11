@@ -157,7 +157,7 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
       />
     ),
     right: (
-      <CollectionViewRight />
+      <CollectionViewRight cardLanguageId={state.selectedCard} />
     )
   };
   return (

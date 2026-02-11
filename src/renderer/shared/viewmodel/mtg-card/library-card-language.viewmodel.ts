@@ -1,7 +1,7 @@
 import { ScryFallImageStatus } from "../../../../common/enums";
-import { LibraryCardDto } from "../../dto";
-import { LibraryCardLanguageDto } from "../../dto/library-card-language.dto";
-import { LibraryCardfaceDto } from "../../dto/library-cardface.dto";
+import { CardDetailDto } from "../../dto";
+import { CardLanguageDetailDto } from "../../dto/card-language-detail.dto";
+import { CardfaceDetailDto } from "../../dto/cardface-detail.dto";
 import { LibraryCardfaceViewmodel } from "./library-cardface.viewmodel";
 
 export class LibraryCardLanguageViewmodel {
@@ -12,9 +12,9 @@ export class LibraryCardLanguageViewmodel {
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: LibraryCardDto, language: string) {
+  public constructor(dto: CardDetailDto, language: string) {
     const cardLanguage = dto.cardLanguages.find(
-      (cardLanguageDto: LibraryCardLanguageDto) => cardLanguageDto.language == language
+      (cardLanguageDto: CardLanguageDetailDto) => cardLanguageDto.language == language
     )!;
     this.cardLanguageId = cardLanguage.id;
     this.imageStatus = cardLanguage.imageStatus;
@@ -23,10 +23,10 @@ export class LibraryCardLanguageViewmodel {
   // #endregion
 
   // #region Auxiliary Methods ------------------------------------------------
-  private createCardFaceviewmodels(dto: LibraryCardDto, language: string): Map<number, LibraryCardfaceViewmodel> {
+  private createCardFaceviewmodels(dto: CardDetailDto, language: string): Map<number, LibraryCardfaceViewmodel> {
     const result = new Map<number, LibraryCardfaceViewmodel>();
     dto.cardfaces
-      .forEach((faceDto: LibraryCardfaceDto) => {
+      .forEach((faceDto: CardfaceDetailDto) => {
         const cardFaceViewmodel = new LibraryCardfaceViewmodel(faceDto, language);
         result.set(faceDto.sequence, cardFaceViewmodel);
       });

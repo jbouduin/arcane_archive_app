@@ -1,11 +1,11 @@
-import { H1 } from "@blueprintjs/core";
+import { CardDetailView } from "../../../../shared/components/card-detail-view/card-detail-view";
 import { CollectionViewRightProps } from "./collection-view-right.props";
 
-export function CollectionViewRight(_props: CollectionViewRightProps): JSX.Element {
+export function CollectionViewRight(props: CollectionViewRightProps): JSX.Element {
   // #region Rendering --------------------------------------------------------
   return (
     <div className="mosaic-tile-content-wrapper">
-      <H1>Right</H1>
+      <CardDetailView cardLanguageId={props.cardLanguageId} cardId={null} />
     </div>
   );
   // #endregion

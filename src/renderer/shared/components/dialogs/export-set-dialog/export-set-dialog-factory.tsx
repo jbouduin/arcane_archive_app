@@ -1,11 +1,11 @@
 import classNames from "classnames";
-import { ICollectionService, IMtgSetService, IViewmodelFactoryService } from "../../../context";
+import { ICollectionService, IMtgSetService } from "../../../context";
 import { CollectionDto, MtgSetDto } from "../../../dto";
 import { SelectOption } from "../../../types";
+import { IMtgSetViewmodelFactory } from "../../../viewmodel";
 import { ExportSetDialogBody } from "./export-set-dialog-body";
 import { ExportSetDialogFooter } from "./export-set-dialog-footer";
 import * as DialogProps from "./export-set-dialog.props";
-import { IMtgSetViewmodelFactory } from "../../../viewmodel";
 
 function getExportSetDialogPropsImpl(
   cardSetId: number,
