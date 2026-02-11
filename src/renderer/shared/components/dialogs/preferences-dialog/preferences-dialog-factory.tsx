@@ -26,6 +26,6 @@ function getPreferencesDialogPropsImpl(
   return dialogProps;
 }
 
-export const PreferencesDialogPropsFactory = {
+export const preferencesDialogPropsFactory = {
   getPreferencesDialogProps: getPreferencesDialogPropsImpl
 };

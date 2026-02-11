@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { IpcPaths } from "../../common/ipc";
 import { DialogRenderer } from "../shared/components/base/base-dialog/dialog-renderer";
 import { loginDialogPropsFactory } from "../shared/components/dialogs";
-import { RegisterDialogPropsFactory } from "../shared/components/dialogs/register-dialog/register-dialog-factory";
+import { registerDialogPropsFactory } from "../shared/components/dialogs/register-dialog/register-dialog-factory";
 import { ServerNotAvailable } from "../shared/components/server-not-available/server-not-available";
 import { PreferencesProvider, ServiceContainerContext, SessionProvider } from "../shared/context";
 import { ServiceContainer } from "../shared/context/implementation/service.container";
@@ -81,7 +81,7 @@ void (async () => {
       serviceContainer.sessionService,
       serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
     ),
-    RegisterDialogPropsFactory.getRegisterViewmodel(
+    registerDialogPropsFactory.getRegisterViewmodel(
       false,
       initialization.settings!.preferences,
       serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory,

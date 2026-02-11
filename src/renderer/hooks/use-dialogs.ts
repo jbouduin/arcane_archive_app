@@ -4,18 +4,20 @@ import {
   CollectionCardsDialogProps, collectionCardsDialogPropsFactory
 } from "../main-window/components/library-view/library-view-center/collection-cards-dialog";
 import {
-  collectionDialogPropsFactory, LoginDialogProps, loginDialogPropsFactory, MtgSetDialogProps,
-  mtgSetDialogPropsFactory,
-  PreferencesDialogPropsFactory,
-  ProfileDialogProps,
-  profileDialogPropsFactory,
-  RegisterDialogProps,
-  ResetPasswordDialogPropsFactory,
-  SystemInfoDialogPropsFacotry
+  changePasswordDialogPropsFactory,
+  collectionDialogPropsFactory,
+  LoginDialogProps, loginDialogPropsFactory,
+  MtgSetDialogProps, mtgSetDialogPropsFactory,
+  preferencesDialogPropsFactory,
+  ProfileDialogProps, profileDialogPropsFactory,
+  recoverPasswordDialogPropsFactory,
+  RegisterDialogProps, registerDialogPropsFactory,
+  resetPasswordDialogPropsFactory,
+  systemInfoDialogPropsFacotry,
+  SystemSettingsDialogProps, systemSettingsDialogPropsFactory
 } from "../shared/components/dialogs";
 import { ExportSetDialogProps, exportSetDialogPropsFactory } from "../shared/components/dialogs/export-set-dialog";
-import { ChangePasswordDialogPropsFactory, RecoverPasswordDialogPropsFactory } from "../shared/components/dialogs/factories";
-import { RegisterDialogPropsFactory } from "../shared/components/dialogs/register-dialog/register-dialog-factory";
+import { } from "../shared/components/dialogs/register-dialog/register-dialog-factory";
 import { ApiInfoContextType } from "../shared/context";
 import { CollectionDto } from "../shared/dto";
 import { CollectionType } from "../shared/types";
@@ -34,7 +36,7 @@ export function useDialogs() {
   //#region Dialog methods ----------------------------------------------------
   function showChangePasswordDialog(userName: string, email: string): void {
     services.overlayService.openDialog(
-      ChangePasswordDialogPropsFactory.getChangePasswordDialogProps(
+      changePasswordDialogPropsFactory.getChangePasswordDialogProps(
         userName, email, services.viewmodelFactoryService.authenticationViewmodelFactory
       )
     );
@@ -67,7 +69,7 @@ export function useDialogs() {
   ): void {
     services.overlayService.openDialog(
       collectionDialogPropsFactory.getEditCollectionDialogProps(
-        collection, parent, services.viewmodelFactoryService, onCollectionModified
+        collection, parent, services.viewmodelFactoryService.collectionViewmodelFactory, onCollectionModified
       )
     );
   }
@@ -92,7 +94,7 @@ export function useDialogs() {
   ): void {
     services.overlayService.openDialog(
       collectionDialogPropsFactory.getNewCollectionDialogProps(
-        type, parent, services.viewmodelFactoryService, onCollectionAdded
+        type, parent, services.viewmodelFactoryService.collectionViewmodelFactory, onCollectionAdded
       )
     );
   }
@@ -105,7 +107,7 @@ export function useDialogs() {
           preferences.cardConditions,
           services.collectionService,
           services.mtgSetService,
-          services.viewmodelFactoryService
+          services.viewmodelFactoryService.mtgSetViewmodelFactory
         )
         .then(
           (props: ExportSetDialogProps) => services.overlayService.openDialog(props),
@@ -124,35 +126,39 @@ export function useDialogs() {
 
   function showMtgSetDialog(cardSetId: number): void {
     mtgSetDialogPropsFactory
-      .getSetDialogProps(cardSetId, services.mtgSetService, services.viewmodelFactoryService)
+      .getSetDialogProps(cardSetId, services.mtgSetService, services.viewmodelFactoryService.mtgSetViewmodelFactory)
       .then((props: MtgSetDialogProps) => services.overlayService.openDialog(props), noop);
   }
 
   function showPreferencesDialog(preferences: PreferencesDto): void {
     services.overlayService.openDialog(
-      PreferencesDialogPropsFactory.getPreferencesDialogProps(
+      preferencesDialogPropsFactory.getPreferencesDialogProps(
         preferences, services.viewmodelFactoryService.settingsViewmodelFactory)
     );
   }
 
   function showProfileDialog(): void {
     profileDialogPropsFactory
-      .getProfileDialogProps(services.arcaneArchiveProxy, services.viewmodelFactoryService.authenticationViewmodelFactory)
+      .getProfileDialogProps(
+        services.arcaneArchiveProxy,
+        services.viewmodelFactoryService.authenticationViewmodelFactory
+      )
       .then(
         (props: ProfileDialogProps) => services.overlayService.openDialog(props),
         noop
       );
   }
+
   function showRecoverPasswordDialog(): void {
     services.overlayService.openDialog(
-      RecoverPasswordDialogPropsFactory.getRecoverPasswordDialogProps(
+      recoverPasswordDialogPropsFactory.getRecoverPasswordDialogProps(
         services.viewmodelFactoryService.authenticationViewmodelFactory
       )
     );
   }
 
   function showRegisterDialog(showLoginButton: boolean, preferences: PreferencesDto): void {
-    RegisterDialogPropsFactory
+    registerDialogPropsFactory
       .getRegisterDialogProps(
         showLoginButton,
         preferences,
@@ -168,7 +174,7 @@ export function useDialogs() {
 
   function showResetPasswordDialog(): void {
     services.overlayService.openDialog(
-      ResetPasswordDialogPropsFactory.getResetPasswordDialogProps(
+      resetPasswordDialogPropsFactory.getResetPasswordDialogProps(
         services.viewmodelFactoryService.authenticationViewmodelFactory
       )
     );
@@ -176,10 +182,21 @@ export function useDialogs() {
 
   function showSystemInfoDialog(apiInfo: ApiInfoContextType): void {
     services.overlayService.openDialog(
-      SystemInfoDialogPropsFacotry.getSystemInfoDialogProps(
+      systemInfoDialogPropsFacotry.getSystemInfoDialogProps(
         apiInfo, services.viewmodelFactoryService.settingsViewmodelFactory
       )
     );
+  }
+
+  function showSystemSettingsDialog(firstTime: boolean): void {
+    systemSettingsDialogPropsFactory
+      .getSystemSettingsDialogProps(
+        firstTime, services.ipcProxy, services.viewmodelFactoryService.settingsViewmodelFactory
+      )
+      .then(
+        (props: SystemSettingsDialogProps) => services.overlayService.openDialog(props),
+        noop
+      );
   }
   //#endregion
 
@@ -197,7 +214,8 @@ export function useDialogs() {
     showRecoverPasswordDialog,
     showRegisterDialog,
     showResetPasswordDialog,
-    showSystemInfoDialog
+    showSystemInfoDialog,
+    showSystemSettingsDialog
   };
   //#endregion
 }

@@ -23,6 +23,6 @@ function getChangePasswordDialogPropsImpl(
   return dialogProps;
 }
 
-export const ChangePasswordDialogPropsFactory = {
+export const changePasswordDialogPropsFactory = {
   getChangePasswordDialogProps: getChangePasswordDialogPropsImpl
 };

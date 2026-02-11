@@ -27,6 +27,6 @@ function getSystemInfoDialogPropsImpl(
   return statusProps;
 }
 
-export const SystemInfoDialogPropsFacotry = {
+export const systemInfoDialogPropsFacotry = {
   getSystemInfoDialogProps: getSystemInfoDialogPropsImpl
 };

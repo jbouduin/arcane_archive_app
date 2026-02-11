@@ -5,20 +5,21 @@ import { SelectOption } from "../../../types";
 import { ExportSetDialogBody } from "./export-set-dialog-body";
 import { ExportSetDialogFooter } from "./export-set-dialog-footer";
 import * as DialogProps from "./export-set-dialog.props";
+import { IMtgSetViewmodelFactory } from "../../../viewmodel";
 
 function getExportSetDialogPropsImpl(
   cardSetId: number,
   cardConditions: Array<string>,
   collectionService: ICollectionService,
   mtgSetService: IMtgSetService,
-  viewmodelFactoryService: IViewmodelFactoryService
+  mtgSetViewmodelFactory: IMtgSetViewmodelFactory
 ): Promise<DialogProps.ExportSetDialogProps> {
   return mtgSetService
     .getSetDetails(cardSetId)
     .then(
       (set: MtgSetDto) => {
         const dialogProps: DialogProps.ExportSetDialogProps = {
-          viewmodel: viewmodelFactoryService.mtgSetViewmodelFactory.getExportSetViewmodel(
+          viewmodel: mtgSetViewmodelFactory.getExportSetViewmodel(
             set,
             cardConditions,
             collectionService

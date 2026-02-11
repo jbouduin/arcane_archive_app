@@ -23,6 +23,6 @@ function getResetPasswordDialogPropsImpl(
   return dialogProps;
 }
 
-export const ResetPasswordDialogPropsFactory = {
+export const resetPasswordDialogPropsFactory = {
   getResetPasswordDialogProps: getResetPasswordDialogPropsImpl
 };

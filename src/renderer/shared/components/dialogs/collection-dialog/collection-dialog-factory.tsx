@@ -3,7 +3,7 @@ import { noop } from "lodash";
 import { IViewmodelFactoryService } from "../../../context";
 import { CollectionDto } from "../../../dto";
 import { CollectionType } from "../../../types";
-import { CollectionViewmodel } from "../../../viewmodel";
+import { CollectionViewmodel, ICollectionViewmodelFactory } from "../../../viewmodel";
 import { DefaultDialogFooterProps } from "../../base/base-dialog";
 import { CollectionDialogBody } from "./collection-dialog-body";
 import { CollectionDialogFooter } from "./collection-dialog-footer";
@@ -12,10 +12,10 @@ import { CollectionDialogBodyProps, CollectionDialogProps } from "./collection-d
 function getEditCollectionDialogPropsImpl(
   collection: CollectionDto,
   parent: CollectionDto,
-  viewmodelFactoryService: IViewmodelFactoryService,
+  collectionViewmodelFactory: ICollectionViewmodelFactory,
   onCollectionModified: (dto: CollectionDto) => void
 ): CollectionDialogProps {
-  const viewmodel = viewmodelFactoryService.collectionViewmodelFactory
+  const viewmodel = collectionViewmodelFactory
     .getCollectionViewmodel(collection, parent);
   const dialogProps: CollectionDialogProps = {
     isOpen: true,
@@ -50,11 +50,11 @@ function getEditCollectionDialogPropsImpl(
 function getNewCollectionDialogPropsImpl(
   type: CollectionType,
   parent: CollectionDto,
-  viewmodelFactoryService: IViewmodelFactoryService,
+  collectionViewmodelFactory: ICollectionViewmodelFactory,
   onCollectionAdded: (dto: CollectionDto) => void
 ): CollectionDialogProps {
   const titleText = type == "FOLDER" ? "New Folder" : "New Collection";
-  const viewmodel = viewmodelFactoryService.collectionViewmodelFactory
+  const viewmodel = collectionViewmodelFactory
     .getNewCollectionViewmodel(type, parent);
   const dialogProps: CollectionDialogProps = {
     isOpen: true,

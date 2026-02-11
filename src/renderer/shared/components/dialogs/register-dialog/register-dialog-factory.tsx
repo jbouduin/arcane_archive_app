@@ -52,7 +52,7 @@ function getRegisterViewmodelImpl(
     );
 }
 
-export const RegisterDialogPropsFactory = {
+export const registerDialogPropsFactory = {
   getRegisterDialogProps: getRegisterDialogPropsImpl,
   getRegisterViewmodel: getRegisterViewmodelImpl
 };

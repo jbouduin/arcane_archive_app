@@ -21,6 +21,6 @@ function getRecoverPasswordDialogPropsImpl(
   return dialogProps;
 }
 
-export const RecoverPasswordDialogPropsFactory = {
+export const recoverPasswordDialogPropsFactory = {
   getRecoverPasswordDialogProps: getRecoverPasswordDialogPropsImpl
 };

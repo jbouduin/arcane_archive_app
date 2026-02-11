@@ -1,6 +1,5 @@
 import { ButtonGroup, Menu, MenuItem, ToastProps } from "@blueprintjs/core";
 import { useApiStatus, useDialogs, usePreferences, useServices, useSession } from "../../../../hooks";
-import { showSystemSettingsDialog } from "../../../../shared/components/dialogs/factory";
 import { EDesktopView } from "../desktop-view.enum";
 import { ButtonBarButton } from "./button-bar-button";
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
@@ -13,7 +12,8 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
   const serviceContainer = useServices();
   const { preferences } = usePreferences();
   const {
-    showChangePasswordDialog, showLoginDialog, showPreferencesDialog, showProfileDialog, showSystemInfoDialog
+    showChangePasswordDialog, showLoginDialog, showPreferencesDialog,
+    showProfileDialog, showSystemInfoDialog, showSystemSettingsDialog
   } = useDialogs();
   // #endregion
 
@@ -116,7 +116,7 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
           />
         </MenuItem>
         <MenuItem text="System">
-          <MenuItem onClick={() => showSystemSettingsDialog(serviceContainer, false)} text="Settings" />
+          <MenuItem onClick={() => showSystemSettingsDialog(false)} text="Settings" />
           <MenuItem onClick={() => showSystemInfoDialog(apiInfo)} text="Info" />
           {
             isSysAdmin && <MenuItem onClick={adminClick} text="Admin" />
