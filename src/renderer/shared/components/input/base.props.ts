@@ -12,7 +12,7 @@ export interface BaseProps<Dto extends object> extends Props {
   fill?: boolean;
   /**
    * The label attribute of the FormGroup that contains the InputGroup or Select.
-   * If label is undefined, the margin of the formgroup is set to 0px (Standard is 16px)
+   * If label is undefined, the margin of the formgroup is set to `0px` (Standard is `16px`)
    */
   label?: string;
   /**
@@ -20,7 +20,7 @@ export interface BaseProps<Dto extends object> extends Props {
    */
   viewmodel: BaseViewmodel<Dto>;
   /**
-   * The labelInfo attribute of the FormGroup that contains the InputGroup or Select
+   * The labelInfo attribute of the FormGroup that contains the InputGroup or Select.
    */
   labelInfo?: string;
   /**

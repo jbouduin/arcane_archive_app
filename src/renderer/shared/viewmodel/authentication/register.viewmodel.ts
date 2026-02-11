@@ -43,7 +43,6 @@ export class RegisterViewmodel extends PasswordViewmodel<RegisterRequestDto> {
         { helperText: "Username may not be an email address", intent: "danger" }
       );
     } else {
-      // LATER this should be a callback, VM should not have services as props
       const userExists = await this.sessionService
         .userExists(this.arcaneArchiveProxy, this._dto.userName, signal);
       if (userExists) {

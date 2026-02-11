@@ -23,7 +23,7 @@ export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>): JSX.E
             if (controller) {
               controller.abort();
             }
-            props.viewmodel.startValidation();
+            props.viewmodel.startAsyncValidation();
             const newController = new AbortController();
             setController(newController);
             setLoading(true);
@@ -31,7 +31,7 @@ export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>): JSX.E
               .validateAsync(props.fieldName, newController.signal)
               .finally(() => {
                 setLoading(false);
-                props.viewmodel.endValidation();
+                props.viewmodel.endAsyncValidation();
                 props.viewmodelChanged();
               });
           },
@@ -45,6 +45,10 @@ export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>): JSX.E
   //#endregion
 
   //#region Rendering ---------------------------------------------------------
+  /**
+   * Remark: props.viewmodel.getValidation does not return and "Invalid" if the field has not
+   * been marked as touched before.
+   */
   const validationResult = props.viewmodel.getValidation(props.fieldName);
   const keyName = props.fieldName.toString();
   const style: CSSProperties = props.label ? {} : { margin: "0px" };

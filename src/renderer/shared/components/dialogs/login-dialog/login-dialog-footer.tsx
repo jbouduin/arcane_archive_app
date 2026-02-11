@@ -31,10 +31,6 @@ export function LoginDialogFooter(props: LoginDialogFooterProps): JSX.Element {
       );
   }
 
-  function registerClick(): void {
-    showRegisterDialog(false, preferences);
-  }
-
   function saveUser(dto: LoginRequestDto): void {
     void serviceContainer.sessionService.saveCredentials(serviceContainer.ipcProxy, dto);
   }
@@ -65,7 +61,7 @@ export function LoginDialogFooter(props: LoginDialogFooterProps): JSX.Element {
             <Button
               key="register"
               icon="new-person"
-              onClick={registerClick}
+              onClick={() => showRegisterDialog(false, preferences)}
             >
               Register
             </Button>
