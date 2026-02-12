@@ -47,6 +47,7 @@ export const LibraryViewCenter = memo(
             />
           )}
           data={tableData}
+          version={0}
           onServerColumnSort={(columName: CardSortField, sortDirection: SortDirection) =>
             props.sortChanged(columName, sortDirection)}
           onDataSelected={

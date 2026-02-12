@@ -5,7 +5,12 @@ export function CollectionViewRight(props: CollectionViewRightProps): JSX.Elemen
   // #region Rendering --------------------------------------------------------
   return (
     <div className="mosaic-tile-content-wrapper">
-      <CardDetailView cardLanguageId={props.cardLanguageId} cardId={null} />
+      <CardDetailView
+        cardId={null}
+        cardLanguageId={props.cardLanguageId}
+        collectionId={props.collectionId}
+        onQuantityChanged={props.onQuantityChanged}
+      />
     </div>
   );
   // #endregion

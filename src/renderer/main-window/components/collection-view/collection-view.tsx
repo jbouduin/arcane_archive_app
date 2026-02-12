@@ -42,7 +42,9 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
     queryResult: searchService.queryResult,
     selectedSearchTab: searchService.selectedSearchTab,
     selectedCard: null,
-    setFilter: new Array<MtgSetTreeDto>()
+    selectedCollection: null,
+    setFilter: new Array<MtgSetTreeDto>(),
+    version: 0
   };
   const [mosaicLayout, setMosaicLayout] = useState<MosaicNode<string>>(initialLayout);
   const [state, setState] = useState<CollectionViewState>(initialCollectionViewState);
@@ -110,7 +112,12 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
       <CollectionViewCenter
         cardQueryParams={state.queryParams}
         queryResult={state.queryResult}
-        cardSelected={(cardId: number | null) => setState(prev => ({ ...prev, selectedCard: cardId }))}
+        version={state.version}
+        cardSelected={
+          (cardId: number | null, collectionId: number | null) => setState(prev => (
+            { ...prev, selectedCard: cardId, selectedCollection: collectionId }
+          ))
+        }
         pageNumberChanged={(newPage: number) => {
           const newCardQueryParams: QueryParamsDto = { ...state.queryParams, pageNumber: newPage };
           searchService.queryParams = newCardQueryParams;
@@ -157,7 +164,22 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
       />
     ),
     right: (
-      <CollectionViewRight cardLanguageId={state.selectedCard} />
+      <CollectionViewRight
+        cardLanguageId={state.selectedCard}
+        collectionId={state.selectedCollection}
+        onQuantityChanged={
+          (qty: number) => {
+            const changedOne: CollectionCardListDto | undefined =
+              state.queryResult.resultList
+                .find((ccl: CollectionCardListDto) =>
+                  ccl.id == state.selectedCard && ccl.collectionId == state.selectedCollection);
+            if (changedOne != null) {
+              changedOne.quantity = qty;
+            }
+            setState(prev => ({ ...prev, version: prev.version + 1 }));
+          }
+        }
+      />
     )
   };
   return (

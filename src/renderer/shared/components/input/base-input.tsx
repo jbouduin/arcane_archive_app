@@ -1,6 +1,6 @@
 import { Colors, FormGroup, Icon, InputGroup, NumericInput, Spinner } from "@blueprintjs/core";
 import { CSSProperties, useEffect, useState } from "react";
-import { handleStringChange, handleValueChange, stringNotNullOrEmpty } from "../util";
+import { handleIntChange, handleStringChange, stringNotNullOrEmpty } from "../util";
 import { BaseInputProps } from "./base-input.props";
 
 export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>): JSX.Element {
@@ -96,7 +96,7 @@ export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>): JSX.E
           <NumericInput
             {...props.numericInputProps}
             onChange={
-              handleValueChange<number>((newValue: number) => {
+              handleIntChange((newValue: number) => {
                 (props.viewmodel.dto[props.fieldName] as unknown as number) = newValue;
                 props.viewmodel.validate(props.fieldName, props.debounceMs);
                 props.viewmodelChanged();

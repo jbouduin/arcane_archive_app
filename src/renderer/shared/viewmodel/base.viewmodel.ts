@@ -60,8 +60,8 @@ export abstract class BaseViewmodel<Dto extends object> {
 
   public get hasChanges(): boolean {
     let result = !isEqual(this._dto, this._org);
-    if (this._childViewmodels.length > 0) {
-      result = result || this._childViewmodels.some((vm: BaseViewmodel<object>) => vm.hasChanges);
+    if (!result && this._childViewmodels.length > 0) {
+      result = this._childViewmodels.some((vm: BaseViewmodel<object>) => vm.hasChanges);
     }
     return result;
   }

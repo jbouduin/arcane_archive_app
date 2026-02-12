@@ -1,19 +1,20 @@
 import { Region, SelectionModes, Table2, Utils } from "@blueprintjs/table";
 import { CardSortField } from "../../types";
 import {
-  BaseLookupResult, BaseTableViewProps, IBaseColumn, onDataSelected,
+  BaseLookupResult, IBaseColumn, onDataSelected,
   selectedRegionTransformToRowSelection, SortDirection, SortType
 } from "../base/base-table";
+import { CardTableViewProps } from "./card-table-view.props";
 
 // LATER if props.data changes clear the selected region -> be carefull: that makes the selected region stuff controlled
-export function CardTableView<T>(props: BaseTableViewProps<T>): JSX.Element {
+export function CardTableView<T>(props: CardTableViewProps<T>): JSX.Element {
   // #region Rendering --------------------------------------------------------
   return (
     <div className="cards-table-wrapper">
       <Table2
         bodyContextMenuRenderer={props.bodyContextMenuRenderer}
         // BUG it looks like not all cells are re-rendered when required. e.g. Mana Cost, Rarity (all non standard text columns ???)
-        cellRendererDependencies={[props.data, props.sortedIndexMap]}
+        cellRendererDependencies={[props.data, props.sortedIndexMap, props.version]}
         children={getTableChildren(props.sortableColumnDefinitions, props.sortType)}
         numRows={props.data?.length ?? 0}
         onSelection={

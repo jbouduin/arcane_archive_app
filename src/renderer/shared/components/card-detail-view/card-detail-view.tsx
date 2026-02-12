@@ -11,6 +11,7 @@ import { CardDetailViewProps } from "./card-detail-view.props";
 import { CardfaceView } from "./card-face-view/cardface-view";
 import { CardHeaderView } from "./card-header-view/card-header-view";
 import { CardImageView } from "./card-image-view/card-image-view";
+import { CardOwnership } from "./card-ownership";
 import { LegalitiesView } from "./legalities-view/legalities-view";
 import { RulingsView } from "./rulings-view/rulings-view";
 
@@ -74,6 +75,14 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
           <>
             <div style={{ minWidth: "410px" }}>
               {renderTopSection(cardViewmodel)}
+              {props.cardLanguageId && props.collectionId && (
+                <CardOwnership
+                  cardCode={cardViewmodel.code}
+                  collectionId={props.collectionId}
+                  language={currentLanguage.language}
+                  onQuantityChanged={props.onQuantityChanged!}
+                />
+              )}
               {renderFacesSection(cardViewmodel)}
               {renderMoreSection(cardViewmodel)}
             </div>
@@ -187,12 +196,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
               panel={<RulingsView oracleId={card.oracleId} />}
               title="Rulings"
             />
-            {/* <Tab
-              id="Owned"
-              key="owned"
-              // panel={<CardOwnerShipView cardId={cardViewState.card.cardId} className={props.className} collectionId={props.collectionId} />}
-              title="Ownership"
-            />
+            {/*
             <Tab
               id="All prints"
               key="all-prints"

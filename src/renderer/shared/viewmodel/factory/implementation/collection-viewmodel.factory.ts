@@ -1,10 +1,22 @@
-import { CollectionDto } from "../../../dto";
-import { CollectionType } from "../../../types";
-import { CollectionTreeViewmodel, CollectionViewmodel } from "../../collection";
+import { ScryFallImageStatus } from "../../../../../common/enums";
+import { CollectionCardDto, CollectionDto } from "../../../dto";
+import { CardConditionDto } from "../../../dto/card-condition.dto";
+import { CollectionType, SelectOption } from "../../../types";
+import { ViewmodelMode } from "../../base.viewmodel";
+import { CollectionCardViewmodel, CollectionTreeViewmodel, CollectionViewmodel } from "../../collection";
 import { ICollectionViewmodelFactory } from "../interface";
 
 export class CollectionViewmodelFactory implements ICollectionViewmodelFactory {
   // #region ICollectionViewmodelFactory Members ------------------------------
+  public getCollectionCardViewmodel(
+    dto: CollectionCardDto,
+    imageStatus: ScryFallImageStatus,
+    mode: ViewmodelMode,
+    cardConditions: Array<SelectOption<CardConditionDto>>
+  ): CollectionCardViewmodel {
+    return new CollectionCardViewmodel(dto, imageStatus, mode, cardConditions);
+  }
+
   public getCollectionTreeViewmodel(dto: CollectionDto): CollectionTreeViewmodel {
     return new CollectionTreeViewmodel(dto);
   }

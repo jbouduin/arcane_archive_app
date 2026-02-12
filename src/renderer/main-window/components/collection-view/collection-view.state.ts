@@ -9,6 +9,8 @@ export interface CollectionViewState {
   queryParams: QueryParamsDto;
   queryResult: QueryResultDto<CollectionCardListDto>;
   selectedCard: number | null;
+  selectedCollection: number | null;
   selectedSearchTab: string | number;
   setFilter: Array<MtgSetTreeDto>;
+  version: number;
 }

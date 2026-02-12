@@ -5,7 +5,12 @@ export function LibraryViewRight(props: LibraryViewRightProps): JSX.Element {
   // #region Rendering --------------------------------------------------------
   return (
     <div className="mosaic-tile-content-wrapper">
-      <CardDetailView cardId={props.cardId} cardLanguageId={null} />
+      <CardDetailView
+        cardId={props.cardId}
+        cardLanguageId={null}
+        collectionId={null}
+        onQuantityChanged={null}
+      />
     </div>
   );
   // #endregion

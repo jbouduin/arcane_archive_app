@@ -6,7 +6,7 @@ import { AdvancedCardSearchViewmodel, CardDetailViewmodel, LibraryCardListViewmo
 export interface IMtgCardViewmodelFactory {
   getCardDetailViewmodel(cardDetail: CardDetailDto): CardDetailViewmodel;
   getLibraryCardListViewmodel(dto: LibraryCardListDto): LibraryCardListViewmodel;
-  // NOW viewmodel factory should not return a promise
+  // TODO viewmodel factory should not return a promise
   getRulingsViewmodel(
     arcaneArchiveProxy: IArcaneArchiveProxy,
     oracleId: string

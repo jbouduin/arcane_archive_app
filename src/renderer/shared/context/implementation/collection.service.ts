@@ -163,10 +163,13 @@ export class CollectionService implements ICollectionService {
     );
   }
 
-  public getCollectionCards(collectionId: number, cardCode: string): Promise<Array<CollectionCardDto>> {
+  public getCollectionCards(
+    collectionId: number,
+    cardCode: string,
+    ...languages: Array<string>): Promise<Array<CollectionCardDto>> {
     return this.arcaneArchiveProxy.getData<Array<CollectionCardDto>>(
       "collection",
-      `/auth/collection/card?collectionId=${collectionId}&cardCode=${cardCode}`
+      `/auth/collection/card?collectionId=${collectionId}&cardCode=${cardCode}&languages=${languages}`
     );
   }
 

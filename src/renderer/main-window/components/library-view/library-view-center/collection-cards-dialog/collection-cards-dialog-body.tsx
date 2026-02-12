@@ -1,16 +1,15 @@
 import "./collection-cards-dialog.css";
 
-import { HTMLTable, Tab, TabId, Tabs } from "@blueprintjs/core";
+import { Tab, TabId, Tabs } from "@blueprintjs/core";
 import { useState } from "react";
 import { usePreferences } from "../../../../../hooks";
 import { BaseDivider } from "../../../../../shared/components/base/base-divider/base-divider";
 import { CardHeaderView } from "../../../../../shared/components/card-detail-view/card-header-view/card-header-view";
 import { CardImageView } from "../../../../../shared/components/card-detail-view/card-image-view/card-image-view";
-import { BaseInput } from "../../../../../shared/components/input";
+import { OwnershipTable } from "../../../../../shared/components/ownership-table";
 import { LanguageDto } from "../../../../../shared/dto";
-import { CardConditionDto } from "../../../../../shared/dto/card-condition.dto";
-import { ScryfallLanguageMap, SelectOption } from "../../../../../shared/types";
-import { CollectionCardQuantityViewmodel, CollectionCardViewmodel } from "../../../../../shared/viewmodel";
+import { ScryfallLanguageMap } from "../../../../../shared/types";
+import { CollectionCardViewmodel } from "../../../../../shared/viewmodel";
 import { CollectionCardsDialogBodyProps } from "./collection-cards-dialog.props";
 
 export function CollectionCardsDialogBody(props: CollectionCardsDialogBodyProps): JSX.Element {
@@ -96,68 +95,14 @@ export function CollectionCardsDialogBody(props: CollectionCardsDialogBodyProps)
     );
   }
 
-  // TODO create component ownershiptable
   function renderTable(collectionCardViewmodel: CollectionCardViewmodel): JSX.Element {
-    // we have to do it this way, as className does not work, try to solve it by using higher specificity in css
-    const tdStyle = {
-      paddingLeft: "0px",
-      paddingBottom: "0px"
-    };
-    const rows = props.viewmodel.cardConditions
-      .map((condition: SelectOption<CardConditionDto>) => {
-        return (
-          <tr key={condition.value.condition}>
-            <td key="col1" style={tdStyle}>{condition.label}</td>
-            <td key="col2" style={tdStyle}>
-              {renderQuantityInput(collectionCardViewmodel.getQuantityViewmodel(condition.value.condition, false))}
-            </td>
-            <td key="col3" style={tdStyle}>
-              {renderQuantityInput(collectionCardViewmodel.getQuantityViewmodel(condition.value.condition, true))}
-            </td>
-          </tr>
-        );
-      });
     return (
-      <HTMLTable
-        bordered={false}
-        compact={true}
-        key="the_table"
-        width="100%"
-      >
-        <thead>
-          <tr>
-            <td key="col1" style={tdStyle}>Condition</td>
-            <td key="col2" style={tdStyle}>Non-Foil</td>
-            <td key="col3" style={tdStyle}>Foil</td>
-          </tr>
-        </thead>
-        <tbody>
-          {rows}
-        </tbody>
-      </HTMLTable>
-    );
-  }
-
-  function renderQuantityInput(viewmodel: CollectionCardQuantityViewmodel): JSX.Element {
-    return (
-      <BaseInput
-        viewmodel={viewmodel}
-        fieldName="quantity"
+      <OwnershipTable
+        cardConditions={props.viewmodel.cardConditions}
+        collectionCardViewmodel={collectionCardViewmodel}
         viewmodelChanged={props.viewmodelChanged}
-        validation="synchronous"
-        numericInputProps={{
-          allowNumericCharactersOnly: true,
-          buttonPosition: "none",
-          selectAllOnFocus: true,
-          style: { maxWidth: "70px", textAlign: "right" },
-          min: 0
-        }}
       />
     );
   }
-  //#endregion
-
-  //#region Auxiliary Methods -------------------------------------------------
-
   //#endregion
 }

@@ -33,6 +33,11 @@ export class CollectionCardViewmodel extends BaseViewmodel<CollectionCardDto> {
   public get imageStatus(): ScryFallImageStatus {
     return this._imageStatus;
   }
+
+  public get totalQuantity(): number {
+    return this._allQuantitiesViewmodels
+      .reduce((sum: number, qvm: CollectionCardQuantityViewmodel) => sum + qvm.quantity, 0);
+  }
   //#endregion
 
   //#region BaseViewmodel Members ---------------------------------------------

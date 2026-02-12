@@ -7,6 +7,7 @@ export class CollectionCardListViewmodel extends AbstractCardListViewmodel {
   public readonly language: string;
   public readonly quantity: number;
   public readonly collection: string;
+  public readonly collectionId: number;
   //#endregion
 
   //#region Constructor & C° --------------------------------------------------
@@ -20,6 +21,7 @@ export class CollectionCardListViewmodel extends AbstractCardListViewmodel {
     this.language = basicDataService.getLanguage(dto.language)?.buttonText || "?";
     this.quantity = dto.quantity;
     this.collection = collectionService.getCollectionById(dto.collectionId)?.code || "unknown";
+    this.collectionId = dto.collectionId;
   }
   //#endregion
 }

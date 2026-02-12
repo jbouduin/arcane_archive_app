@@ -6,7 +6,7 @@ export function DefaultDialogFooter<Dto extends object, Vm extends BaseViewmodel
   props: DefaultDialogFooterProps<Dto, Vm>
 ): JSX.Element {
   // #region Set defaults -----------------------------------------------------
-  const { showCommitButton = true } = props;
+  const { showCommitButton = true, showCancelButton = true, showResetButton = true } = props;
   // #endregion
 
   // #region Rendering --------------------------------------------------------
@@ -14,7 +14,7 @@ export function DefaultDialogFooter<Dto extends object, Vm extends BaseViewmodel
     <div className="dialog-footer-button-bar">
       <ButtonGroup variant="minimal" vertical={false}>
         {
-          props.showResetButton &&
+          showResetButton &&
           (
             <Button
               key="resetButton"
@@ -35,13 +35,17 @@ export function DefaultDialogFooter<Dto extends object, Vm extends BaseViewmodel
         }
       </ButtonGroup>
       <ButtonGroup variant="minimal" vertical={false}>
-        <Button
-          key="cancelButton"
-          icon={props.cancelButtonIcon ?? "cross"}
-          onClick={props.onClose}
-        >
-          {props.cancelButtonLabel ?? "Cancel"}
-        </Button>
+        {
+          showCancelButton && (
+            <Button
+              key="cancelButton"
+              icon={props.cancelButtonIcon ?? "cross"}
+              onClick={props.onClose}
+            >
+              {props.cancelButtonLabel ?? "Cancel"}
+            </Button>
+          )
+        }
         {
           showCommitButton &&
           (
