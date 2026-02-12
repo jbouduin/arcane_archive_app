@@ -1,16 +1,10 @@
-import { IArcaneArchiveProxy, IBasicDataService, ICollectionService, IMtgSetService, IServiceContainer } from "../../../context";
+import { IBasicDataService, ICollectionService, IMtgSetService, IServiceContainer } from "../../../context";
 import {
-  AdvancedCardSearchDto,
-  CardDetailDto,
-  CollectionCardListDto,
-  LibraryCardListDto, LibraryRulingDto
+  AdvancedCardSearchDto, CardDetailDto, CollectionCardListDto, LibraryCardListDto, LibraryRulingDto
 } from "../../../dto";
 import { CollectionCardListViewmodel } from "../../collection";
 import {
-  AdvancedCardSearchViewmodel,
-  CardDetailViewmodel,
-  LibraryCardListViewmodel,
-  LibraryRulingViewmodel
+  AdvancedCardSearchViewmodel, CardDetailViewmodel, LibraryCardListViewmodel, LibraryRulingViewmodel
 } from "../../mtg-card";
 import { IMtgCardViewmodelFactory } from "../interface";
 
@@ -40,17 +34,11 @@ export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
     return new LibraryCardListViewmodel(this.basicDataService, this.mtgSetService, dto);
   }
 
-  public getRulingsViewmodel(
-    arcaneArchiveProxy: IArcaneArchiveProxy,
-    oracleId: string
-  ): Promise<Array<LibraryRulingViewmodel>> {
-    return arcaneArchiveProxy
-      .getData<Array<LibraryRulingDto>>("library", "/public/ruling/" + oracleId)
-      .then((dtos: Array<LibraryRulingDto>) => dtos
-        .map((dto: LibraryRulingDto) => new LibraryRulingViewmodel(dto))
-        .sort((a: LibraryRulingViewmodel, b: LibraryRulingViewmodel) =>
-          b.publishedAtDate.getTime() - a.publishedAtDate.getTime()
-        )
+  public getRulingsViewmodel(rulings: Array<LibraryRulingDto>): Array<LibraryRulingViewmodel> {
+    return rulings
+      .map((dto: LibraryRulingDto) => new LibraryRulingViewmodel(dto))
+      .sort((a: LibraryRulingViewmodel, b: LibraryRulingViewmodel) =>
+        b.publishedAtDate.getTime() - a.publishedAtDate.getTime()
       );
   }
 

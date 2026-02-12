@@ -6,6 +6,7 @@ import { BaseDivider } from "../../base/base-divider/base-divider";
 import { compareClassNameProp } from "../../util";
 import { RulingsViewProps } from "./rulings-view.props";
 import { memo, useEffect, useState } from "react";
+import { LibraryRulingDto } from "../../../dto";
 
 export const RulingsView = memo(
   (props: RulingsViewProps) => {
@@ -20,10 +21,11 @@ export const RulingsView = memo(
     // #region Effects --------------------------------------------------------
     useEffect(
       () => {
-        void viewmodelFactoryService.mtgCardViewmodelFactory
-          .getRulingsViewmodel(arcaneArchiveProxy, props.oracleId)
+        void arcaneArchiveProxy
+          .getData<Array<LibraryRulingDto>>("library", "/public/ruling/" + props.oracleId)
           .then(
-            (data: Array<LibraryRulingViewmodel>) => setRulings(data),
+            (data: Array<LibraryRulingDto>) =>
+              setRulings(viewmodelFactoryService.mtgCardViewmodelFactory.getRulingsViewmodel(data)),
             noop
           );
       },
