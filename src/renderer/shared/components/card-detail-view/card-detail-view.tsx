@@ -35,7 +35,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
   //#region Effects -----------------------------------------------------------
   React.useEffect(
     () => {
-      if (props.cardId) {
+      if (props.mode == "library") {
         void mtgCardService
           .getCardDetailByCardId(props.cardId)
           .then(
@@ -46,7 +46,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
             },
             () => setCardviewmodel(null)
           );
-      } else if (props.cardLanguageId) {
+      } else if (props.mode == "collection") {
         void mtgCardService
           .getCardDetailByCardLanguageId(props.cardLanguageId)
           .then(
@@ -62,7 +62,15 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
         setCardviewmodel(null);
       }
     },
-    [props.cardId, props.cardLanguageId]
+    [
+      props.mode,
+      props.mode === "library"
+        ? props.cardId
+        : undefined,
+      props.mode === "collection"
+        ? props.cardLanguageId
+        : undefined
+    ]
   );
   //#endregion
 
@@ -75,7 +83,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
           <>
             <div style={{ minWidth: "410px" }}>
               {renderTopSection(cardViewmodel)}
-              {props.cardLanguageId && props.collectionId && (
+              {props.mode == "collection" && (
                 <CardOwnership
                   cardCode={cardViewmodel.code}
                   collectionId={props.collectionId}
@@ -118,7 +126,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
         }
       >
         {
-          props.cardId && card.languages.length > 1 &&
+          props.mode == "library" && card.languages.length > 1 &&
           (
             <SectionCard padded={false}>
               <LanguageButtonBar

@@ -1,10 +1,15 @@
 import { Props } from "@blueprintjs/core";
 
-export interface CardDetailViewProps extends Props {
-  // TODO if possible: find a better solution than defining number | null
-  cardId: number | null;
-  cardLanguageId: number | null;
-  collectionId: number | null;
-
-  onQuantityChanged: ((qty: number) => void) | null;
+interface LibraryModeProps extends Props {
+  mode: "library";
+  cardId: number;
 }
+
+interface CollectionModeProps extends Props {
+  mode: "collection";
+  cardLanguageId: number;
+  collectionId: number;
+  onQuantityChanged?: (qty: number) => void;
+}
+
+export type CardDetailViewProps = LibraryModeProps | CollectionModeProps;
