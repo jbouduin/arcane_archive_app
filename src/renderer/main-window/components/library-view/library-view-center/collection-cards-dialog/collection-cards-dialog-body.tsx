@@ -64,6 +64,7 @@ export function CollectionCardsDialogBody(props: CollectionCardsDialogBodyProps)
                 }
               </div>
             </div>
+
           </>
 
         )

@@ -1,15 +1,16 @@
-import { H5, Section, SectionCard } from "@blueprintjs/core";
+import { SectionCard } from "@blueprintjs/core";
+import { noop } from "lodash";
 import { useEffect, useReducer, useRef } from "react";
 import { ScryFallImageStatus } from "../../../../../common/enums";
 import { usePreferences, useServices } from "../../../../hooks";
+import { CollectionCardDto } from "../../../dto";
 import { CardConditionDto } from "../../../dto/card-condition.dto";
 import { SelectOption } from "../../../types";
 import { CollectionCardViewmodel } from "../../../viewmodel";
-import { OwnershipTable } from "../../ownership-table";
-import { CardownershipProps } from "./card-ownership.props";
-import { CollectionCardDto } from "../../../dto";
 import { DefaultDialogFooter } from "../../base/base-dialog";
-import { noop } from "lodash";
+import { OwnershipTable } from "../../ownership-table";
+import { CardDetailSection } from "../card-detail-section";
+import { CardownershipProps } from "./card-ownership.props";
 
 export function CardOwnership(props: CardownershipProps): JSX.Element {
   //#region Hooks -------------------------------------------------------------
@@ -69,7 +70,7 @@ export function CardOwnership(props: CardownershipProps): JSX.Element {
   );
 
   //#region Event Handling ----------------------------------------------------
-  function onCommitButtonClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: CollectionCardDto): Promise<void> {
+  function onCommitButtonClick(_e: React.SyntheticEvent<HTMLElement, Event>, dto: CollectionCardDto): Promise<void> {
     return collectionService
       .upsertCollectionCards([dto])
       .then(
@@ -90,21 +91,22 @@ export function CardOwnership(props: CardownershipProps): JSX.Element {
 
   //#region Rendering ---------------------------------------------------------
   return (
-    <Section
-      collapsible={true}
-      compact={true}
+    <CardDetailSection
+      size="small"
       title={
         (
-          <div>
-            <H5 style={{ marginBottom: "0px" }}>
-              {/* eslint-disable-next-line @stylistic/jsx-one-expression-per-line */}
-              Collection: {collection?.collectionName || "-"}
-            </H5>
-          </div>
+          <>
+            {/* eslint-disable-next-line @stylistic/jsx-one-expression-per-line */}
+            Collection: {collection?.collectionName || "-"}
+          </>
         )
       }
     >
-      <SectionCard className="card-view-section-card" padded={false} style={{ marginTop: "14px", marginBottom: "6px" }}>
+      <SectionCard
+        className="card-view-section-card"
+        padded={false}
+        style={{ marginTop: "14px", marginBottom: "6px" }}
+      >
         <OwnershipTable
           collectionCardViewmodel={collectionCardViewmodel.current}
           cardConditions={cardConditions}
@@ -118,7 +120,7 @@ export function CardOwnership(props: CardownershipProps): JSX.Element {
           showCancelButton={false}
         />
       </SectionCard>
-    </Section>
+    </CardDetailSection>
 
   );
   //#endregion

@@ -1,15 +1,15 @@
-import { H5, Section, SectionCard, Tab, Tabs } from "@blueprintjs/core";
+import { SectionCard, Tab, Tabs } from "@blueprintjs/core";
+import classNames from "classnames";
 import React from "react";
 import { ScryFallImageStatus } from "../../../../common/enums";
 import { usePreferences, useServices } from "../../../hooks";
 import { CardDetailDto, LanguageDto } from "../../dto";
 import { ScryfallLanguageMap } from "../../types";
 import { CardDetailViewmodel, LibraryCardfaceViewmodel } from "../../viewmodel";
-import { CardSymbolRenderer } from "../card-symbol-renderer";
 import { LanguageButtonBar } from "../language-button-bar";
+import { CardDetailSection } from "./card-detail-section";
 import { CardDetailViewProps } from "./card-detail-view.props";
 import { CardfaceView } from "./card-face-view/cardface-view";
-import { CardHeaderView } from "./card-header-view/card-header-view";
 import { CardImageView } from "./card-image-view/card-image-view";
 import { CardOwnership } from "./card-ownership";
 import { LegalitiesView } from "./legalities-view/legalities-view";
@@ -102,28 +102,23 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
 
   function renderTopSection(card: CardDetailViewmodel): React.JSX.Element {
     return (
-      <Section
-        collapsible={true}
-        compact={true}
-        rightElement={
-          (
-            <CardSymbolRenderer
-              cardSymbols={card.manaCost}
-              className="mana-cost-image-in-title"
-            />
-          )
-        }
-        title={
-          (
-            <CardHeaderView
-              code={card.code}
-              cardName={card.cardName}
-              rarity={card.rarity}
-              keyruneCode={card.setKeyruneCode}
-              subTitle={card.typeline}
-            />
-          )
-        }
+      <CardDetailSection
+        size="large"
+        cardSymbols={card.manaCost}
+        beforeTitle={(
+          <i
+            key={`icon-${card.setKeyruneCode}`}
+            className={classNames(
+              "ss",
+              "ss-" + card.setKeyruneCode.toLowerCase(),
+              card.rarity != "COMMON" ? "ss-" + card.rarity.toLowerCase() : "",
+              "ss-2x")}
+            style={{ paddingRight: "5px" }}
+          >
+          </i>
+        )}
+        title={card.cardName}
+        subtitle={card.typeline}
       >
         {
           props.mode == "library" && card.languages.length > 1 &&
@@ -147,7 +142,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
           size="large"
           imageStatus={card.cardLanguages.get(currentLanguage.language)?.imageStatus || ScryFallImageStatus.UNKNOWN}
         />
-      </Section>
+      </CardDetailSection>
     );
   }
 
@@ -172,10 +167,10 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
 
   function renderMoreSection(card: CardDetailViewmodel): React.JSX.Element {
     return (
-      <Section
-        collapsible={true}
-        compact={true}
-        title={<div><H5 style={{ marginBottom: "0px" }}>More</H5></div>}
+      <CardDetailSection
+        // title={<div><H5 style={{ marginBottom: "0px" }}>More</H5></div>}
+        size="small"
+        title="More"
       >
         <SectionCard className="card-view-section-card">
           <Tabs
@@ -213,7 +208,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
             /> */}
           </Tabs>
         </SectionCard>
-      </Section>
+      </CardDetailSection>
     );
   }
   //#endregion

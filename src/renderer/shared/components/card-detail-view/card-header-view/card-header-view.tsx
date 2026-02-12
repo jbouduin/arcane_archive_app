@@ -12,13 +12,18 @@ export const CardHeaderView = memo(
         <div className="card-header-line-1">
           <i
             key={`icon-${props.keyruneCode}`}
-            className={classNames("ss", "ss-" + props.keyruneCode.toLowerCase(), props.rarity != "COMMON" ? "ss-" + props.rarity.toLowerCase() : "", "ss-2x")}
+            className={classNames(
+              "ss",
+              "ss-" + props.keyruneCode.toLowerCase(),
+              props.rarity != "COMMON" ? "ss-" + props.rarity.toLowerCase() : "",
+              "ss-2x"
+            )}
             style={{ paddingRight: "5px" }}
           >
           </i>
           <H3>{props.cardName}</H3>
         </div>
-        <div style={{ width: "100%" }}>
+        <div>
           <H5>{props.subTitle}</H5>
         </div>
       </>
