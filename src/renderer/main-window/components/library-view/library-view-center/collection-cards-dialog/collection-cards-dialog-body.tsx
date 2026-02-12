@@ -1,10 +1,10 @@
 import "./collection-cards-dialog.css";
 
-import { Tab, TabId, Tabs } from "@blueprintjs/core";
+import { H3, H5, Tab, TabId, Tabs } from "@blueprintjs/core";
+import classNames from "classnames";
 import { useState } from "react";
 import { usePreferences } from "../../../../../hooks";
 import { BaseDivider } from "../../../../../shared/components/base/base-divider/base-divider";
-import { CardHeaderView } from "../../../../../shared/components/card-detail-view/card-header-view/card-header-view";
 import { CardImageView } from "../../../../../shared/components/card-detail-view/card-image-view/card-image-view";
 import { OwnershipTable } from "../../../../../shared/components/ownership-table";
 import { LanguageDto } from "../../../../../shared/dto";
@@ -31,13 +31,23 @@ export function CollectionCardsDialogBody(props: CollectionCardsDialogBodyProps)
       {
         viewmodel && (
           <>
-            <CardHeaderView
-              code={viewmodel.cardCode}
-              cardName={viewmodel.cardName}
-              rarity={viewmodel.rarity}
-              keyruneCode={viewmodel.keyruneCode}
-              subTitle={viewmodel.setName}
-            />
+            <div className="aa-collection-cards-dialog-header">
+              <i
+                key={`icon-${viewmodel.keyruneCode}`}
+                className={classNames(
+                  "ss",
+                  "ss-" + viewmodel.keyruneCode.toLowerCase(),
+                  viewmodel.rarity != "COMMON" ? "ss-" + viewmodel.rarity.toLowerCase() : "",
+                  "ss-2x"
+                )}
+                style={{ paddingRight: "5px" }}
+              >
+              </i>
+              <H3>{viewmodel.cardName}</H3>
+            </div>
+            <div>
+              <H5>{viewmodel.setName}</H5>
+            </div>
             <BaseDivider />
             <div className="aa-collection-cards-content">
               <div className="aa-collection-cards-image-wrapper">

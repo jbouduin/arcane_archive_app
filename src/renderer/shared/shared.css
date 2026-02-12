@@ -19,16 +19,6 @@ body {
   margin-left: 3px
 }
 
-.card-view-wrapper {
-  height: 100vh;
-  overflow: auto;
-}
-
-.card-header-line-1 {
-  display: flex;
-  flex-direction: row;
-}
-
 .rarity-rare {
   color: gold;
 }

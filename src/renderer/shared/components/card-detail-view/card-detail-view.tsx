@@ -1,3 +1,5 @@
+import "./card-detail-view.css";
+
 import { SectionCard, Tab, Tabs } from "@blueprintjs/core";
 import classNames from "classnames";
 import React from "react";
@@ -76,7 +78,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
 
   //#region Rendering ---------------------------------------------------------
   return (
-    <div className="card-view-wrapper">
+    <div className="aa-card-view-wrapper">
       {
         cardViewmodel &&
         (

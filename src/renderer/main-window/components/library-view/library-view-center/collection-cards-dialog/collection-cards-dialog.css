@@ -1,3 +1,8 @@
+.aa-collection-cards-dialog-header {
+  display: flex;
+  flex-direction: row;
+}
+
 .aa-collection-cards-content {
   display: flex;
   flex-direction: row;
