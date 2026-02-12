@@ -1,4 +1,3 @@
-import { SectionCard } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { useEffect, useReducer, useRef } from "react";
 import { ScryFallImageStatus } from "../../../../../common/enums";
@@ -10,6 +9,7 @@ import { CollectionCardViewmodel } from "../../../viewmodel";
 import { DefaultDialogFooter } from "../../base/base-dialog";
 import { OwnershipTable } from "../../ownership-table";
 import { CardDetailSection } from "../card-detail-section";
+import { CardDetailSectionCard } from "../card-detail-section-card/card-detail-section-card";
 import { CardownershipProps } from "./card-ownership.props";
 
 export function CardOwnership(props: CardownershipProps): JSX.Element {
@@ -102,10 +102,8 @@ export function CardOwnership(props: CardownershipProps): JSX.Element {
         )
       }
     >
-      <SectionCard
-        className="card-view-section-card"
-        padded={false}
-        style={{ marginTop: "14px", marginBottom: "6px" }}
+      <CardDetailSectionCard
+        // style={{ marginTop: "14px", marginBottom: "6px" }}
       >
         <OwnershipTable
           collectionCardViewmodel={collectionCardViewmodel.current}
@@ -119,7 +117,7 @@ export function CardOwnership(props: CardownershipProps): JSX.Element {
           onCommitButtonClick={onCommitButtonClick}
           showCancelButton={false}
         />
-      </SectionCard>
+      </CardDetailSectionCard>
     </CardDetailSection>
 
   );

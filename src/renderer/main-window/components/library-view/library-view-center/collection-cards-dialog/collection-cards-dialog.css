@@ -24,3 +24,7 @@
   min-width: 230px;
   width: 100%;
 }
+
+.bp6-tab-panel.aa-collection-cards-tab-panel {
+  margin-top: 8px;
+}

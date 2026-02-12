@@ -16,6 +16,7 @@ import { CardImageView } from "./card-image-view/card-image-view";
 import { CardOwnership } from "./card-ownership";
 import { LegalitiesView } from "./legalities-view/legalities-view";
 import { RulingsView } from "./rulings-view/rulings-view";
+import { CardDetailSectionCard } from "./card-detail-section-card/card-detail-section-card";
 
 export function CardDetailView(props: CardDetailViewProps): JSX.Element {
   //#region State -------------------------------------------------------------
@@ -174,7 +175,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
         size="small"
         title="More"
       >
-        <SectionCard className="card-view-section-card">
+        <CardDetailSectionCard>
           <Tabs
             animate={true}
             defaultSelectedTabId="Legality"
@@ -209,7 +210,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
               title="All prints"
             /> */}
           </Tabs>
-        </SectionCard>
+        </CardDetailSectionCard>
       </CardDetailSection>
     );
   }

@@ -19,26 +19,6 @@ body {
   margin-left: 3px
 }
 
-.rarity-rare {
-  color: gold;
-}
-
-.rarity-uncommon {
-  color: silver
-}
-
-.rarity-mythic {
-  color: darkorange;
-}
-
-.card-view-section-card {
-  padding-top: 10px;
-  padding-left: 15px;
-  padding-right: 15px;
-  display: flex;
-  flex-direction: column;
-}
-
 .left-panel-button-group {
   flex: 0 1 auto;
 }

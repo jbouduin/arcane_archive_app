@@ -13,16 +13,16 @@ import { CollectionCardViewmodel } from "../../../../../shared/viewmodel";
 import { CollectionCardsDialogBodyProps } from "./collection-cards-dialog.props";
 
 export function CollectionCardsDialogBody(props: CollectionCardsDialogBodyProps): JSX.Element {
-  //#region Pre-Rendering -----------------------------------------------------
+  //#region Initialize --------------------------------------------------------
   const viewmodel = props.viewmodel.currentCollectionCardViewmodel;
-  //#endregion
-
-  //#region State -------------------------------------------------------------
-  const [currentLanguage, setCurrentLanguage] = useState<string>(viewmodel.languages[0].language);
   //#endregion
 
   //#region Hooks -------------------------------------------------------------
   const { preferences } = usePreferences();
+  //#endregion
+
+  //#region State -------------------------------------------------------------
+  const [currentLanguage, setCurrentLanguage] = useState<string>(viewmodel.languages[0].language);
   //#endregion
 
   //#region Rendering ---------------------------------------------------------
@@ -88,6 +88,7 @@ export function CollectionCardsDialogBody(props: CollectionCardsDialogBodyProps)
       const titleText = lng.buttonText + (viewmodelForLanguage.hasChanges ? "*" : "");
       return (
         <Tab
+          className="aa-collection-cards-tab-panel"
           key={lng.language}
           id={lng.language}
           title={titleText}

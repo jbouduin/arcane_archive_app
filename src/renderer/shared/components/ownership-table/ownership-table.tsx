@@ -39,7 +39,7 @@ export function OwnershipTable(props: OwnershipTableProps): JSX.Element {
       width="100%"
       className="aa-ownership"
     >
-      <thead>
+      <thead className="aa-ownership">
         <tr>
           <td key="col1" className="aa-ownership">Condition</td>
           <td key="col2" className="aa-ownership">Non-Foil</td>

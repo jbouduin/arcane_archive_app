@@ -1,0 +1,7 @@
+.aa-card-detail-section-card {
+  padding-top: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  display: flex;
+  flex-direction: column;
+}
