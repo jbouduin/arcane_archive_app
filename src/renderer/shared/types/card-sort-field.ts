@@ -1,3 +1,4 @@
+// LATER: sort collection card list on collection, quantity
 export type CardSortField = "collectorNumberSortValue" |
   "rarity" |
   "cardName" |

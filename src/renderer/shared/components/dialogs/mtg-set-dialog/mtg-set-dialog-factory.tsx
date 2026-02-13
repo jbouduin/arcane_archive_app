@@ -1,11 +1,12 @@
-import classNames from "classnames";
 import { IMtgSetService } from "../../../context";
 import { MtgSetDto } from "../../../dto";
 import { IMtgSetViewmodelFactory, MtgSetDetailViewmodel } from "../../../viewmodel";
+import { CardSetIcon } from "../../card-set-icon";
 import { MtgSetDialogBody } from "./mtg-set-dialog-body";
 import { MtgSetDialogFooter } from "./mtg-set-dialog-footer";
 import * as DialogProps from "./mtg-set-dialog.props";
 
+//#region Implementation ------------------------------------------------------
 function mtgSetSetDialogPropsImpl(
   cardSetId: number,
   mtgSetService: IMtgSetService,
@@ -26,19 +27,18 @@ function mtgSetSetDialogPropsImpl(
         isOpen: true,
         title: (
           <>
-            <i
-              key={`icon-${viewmodel.dto.id}`}
-              className={classNames("ss", "ss-" + viewmodel.dto["keyruneCode"].toLowerCase(), "ss-2x")}
-              style={{ paddingRight: "10px" }}
-            >
-            </i>
-            {viewmodel.dto["setName"]}
+            <CardSetIcon
+              keyruneCode={viewmodel.dto.keyruneCode}
+              size="large"
+            />
+            {viewmodel.dto.setName}
           </>
         )
       };
       return dialogProps;
     });
 }
+//#endregion
 
 export const mtgSetDialogPropsFactory = {
   getSetDialogProps: mtgSetSetDialogPropsImpl

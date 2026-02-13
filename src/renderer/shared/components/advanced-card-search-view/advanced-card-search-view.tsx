@@ -1,5 +1,4 @@
 import { Button } from "@blueprintjs/core";
-import classNames from "classnames";
 import { useCallback, useEffect, useState } from "react";
 import { useServices } from "../../../hooks";
 import { AppColorDto, CollectionDto, MtgSetTreeDto } from "../../dto";
@@ -7,6 +6,7 @@ import { SelectOption } from "../../types";
 import { AdvancedCardSearchViewmodel } from "../../viewmodel";
 import { BaseMultiSelect } from "../base/base-multi-select/base-multi-select";
 import { BaseServerSelect } from "../base/base-server-select/base-server-select";
+import { CardSetIcon } from "../card-set-icon";
 import { CardSymbolRenderer } from "../card-symbol-renderer";
 import { AdvancedCardSearchViewProps } from "./advanced-card-search-view.props";
 
@@ -56,12 +56,7 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps): JSX.
   //#region Memo --------------------------------------------------------------
   const setImageRenderer = useCallback(
     (option: SelectOption<MtgSetTreeDto>) => (
-      <i
-        key={`icon-${option.value.keyruneCode}`}
-        className={classNames("ss", "ss-" + option.value.keyruneCode.toLowerCase())}
-        style={{ paddingRight: "5px" }}
-      >
-      </i>
+      <CardSetIcon keyruneCode={option.value.keyruneCode} />
     ),
     []
   );
@@ -285,7 +280,9 @@ export function AdvancedCardSearchView(props: AdvancedCardSearchViewProps): JSX.
           onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.addAction(item))}
         onOptionsRemoved={(item: SelectOption<string>) =>
           onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.removeAction(item))}
-        onClearSelectedOptions={() => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearActionSelection())}
+        onClearSelectedOptions={
+          () => onSelectOptionEvent((v: AdvancedCardSearchViewmodel) => v.clearActionSelection())
+        }
       />
       <Button
         icon="search"

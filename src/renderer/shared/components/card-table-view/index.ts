@@ -6,5 +6,7 @@ export * from "./collector-number-column";
 export * from "./collector-number-lookup-result";
 export * from "./color-identity-column";
 export * from "./color-identity-lookup-result";
+export * from "./get-generic-table-data";
 export * from "./mana-cost-column";
 export * from "./mana-cost-lookup-result";
+export * from "./sortable-columns-factory";

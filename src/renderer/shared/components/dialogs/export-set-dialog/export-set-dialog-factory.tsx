@@ -1,12 +1,13 @@
-import classNames from "classnames";
 import { ICollectionService, IMtgSetService } from "../../../context";
 import { CollectionDto, MtgSetDto } from "../../../dto";
 import { SelectOption } from "../../../types";
 import { IMtgSetViewmodelFactory } from "../../../viewmodel";
+import { CardSetIcon } from "../../card-set-icon";
 import { ExportSetDialogBody } from "./export-set-dialog-body";
 import { ExportSetDialogFooter } from "./export-set-dialog-footer";
 import * as DialogProps from "./export-set-dialog.props";
 
+//#region Implementation ------------------------------------------------------
 function getExportSetDialogPropsImpl(
   cardSetId: number,
   cardConditions: Array<string>,
@@ -34,12 +35,10 @@ function getExportSetDialogPropsImpl(
           isOpen: true,
           title: (
             <>
-              <i
-                key={`icon-${cardSetId}`}
-                className={classNames("ss", "ss-" + set.keyruneCode.toLowerCase(), "ss-2x")}
-                style={{ paddingRight: "10px" }}
-              >
-              </i>
+              <CardSetIcon
+                keyruneCode={set.keyruneCode}
+                size="large"
+              />
               {/* eslint-disable-next-line @stylistic/jsx-one-expression-per-line */}
               Export {set.setName}
             </>
@@ -49,6 +48,7 @@ function getExportSetDialogPropsImpl(
       }
     );
 }
+//#endregion
 
 export const exportSetDialogPropsFactory = {
   getExportSetDialogProps: getExportSetDialogPropsImpl

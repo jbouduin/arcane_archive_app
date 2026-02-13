@@ -1,13 +1,12 @@
 import { Menu, MenuItem } from "@blueprintjs/core";
 import { Cell, CellRenderer } from "@blueprintjs/table";
-import * as React from "react";
 import { BaseColumn } from "./base-column";
 import { GenericNumericLookupResult } from "./generic-numeric-lookup-result";
 import { CellLookup, ClientSortCallback, ServerSortCallback } from "./types";
 
 export class GenericNumericColumn<T> extends BaseColumn<T, GenericNumericLookupResult> {
-  // #region SortableColumn abstract methods implementationm ------------------
-  protected renderMenu(clientSortColumn?: ClientSortCallback<T>, serverSortColumn?: ServerSortCallback): React.JSX.Element {
+  //#region SortableColumn abstract methods implementationm -------------------
+  protected renderMenu(clientSortColumn?: ClientSortCallback<T>, serverSortColumn?: ServerSortCallback): JSX.Element {
     let sortAsc: (() => void) | undefined = undefined;
     let sortDesc: (() => void) | undefined = undefined;
     if (clientSortColumn) {
@@ -38,9 +37,9 @@ export class GenericNumericColumn<T> extends BaseColumn<T, GenericNumericLookupR
       </Cell>
     );
   }
-  // #endregion
+  //#endregion
 
-  // #region Auxiliary methods -------------------------------------------------
+  //#region Auxiliary methods --------------------------------------------------
   private compare(a: T, b: T): number {
     const valueA = this.valueCallBack(a);
     const valueB = this.valueCallBack(b);
@@ -51,5 +50,5 @@ export class GenericNumericColumn<T> extends BaseColumn<T, GenericNumericLookupR
       return valueCompare;
     }
   }
-  // #endregion
+  //#endregion
 }

@@ -2,14 +2,16 @@ import { MenuContext } from "@blueprintjs/table";
 import { isEqual } from "lodash";
 import { memo, useMemo } from "react";
 import { useServices } from "../../../../hooks/use-services";
-import { PagingView, SortDirection } from "../../../../shared/components/base/base-table";
-import { CardTableView } from "../../../../shared/components/card-table-view";
+import {
+  BaseLookupResult, GenericTextColumn, IBaseColumn, PagingView, SortDirection
+} from "../../../../shared/components/base/base-table";
+import { CardTableView, getGenericTableData } from "../../../../shared/components/card-table-view";
+import { SortableColumnsFactory } from "../../../../shared/components/card-table-view/";
+import { LibraryCardListDto } from "../../../../shared/dto";
 import { CardSortField } from "../../../../shared/types";
 import { LibraryCardListViewmodel } from "../../../../shared/viewmodel/mtg-card";
 import { ContextMenu } from "./context-menu";
-import { getTableData } from "./get-table-data";
 import { LibraryViewCenterProps } from "./library-view-center.props";
-import { getSortableColumns } from "./sortable-columns";
 
 const MemoCardTableView = memo(
   CardTableView<LibraryCardListViewmodel>,
@@ -25,11 +27,40 @@ export const LibraryViewCenter = memo(
 
     // #region Memo --------------------------------------------------------------
     const sortableColumnDefinitions = useMemo(
-      () => getSortableColumns(),
+      () => {
+        const result = new Array<IBaseColumn<LibraryCardListViewmodel, BaseLookupResult>>();
+        let columNumber = 0;
+        const factory = new SortableColumnsFactory();
+        result.push(
+          factory.getCollectorNumberColumn(columNumber++),
+          factory.getRarityColumn(columNumber++),
+          factory.getNameColumn(columNumber++),
+          factory.getTypeColumn(columNumber++),
+          factory.getManaCostColumn(columNumber++),
+          factory.getCardSetColumn(columNumber++),
+          factory.getPowerColumn(columNumber++),
+          factory.getToughnessColumn(columNumber++),
+          factory.getColorIdentityColumn(columNumber++),
+          new GenericTextColumn<LibraryCardListViewmodel>(
+            columNumber++,
+            "Languages",
+            null,
+            (card: LibraryCardListViewmodel) => {
+              return { defaultSortColumn: card.collectorNumberSortValue, textValue: card.languages };
+            }
+          )
+        );
+        return result;
+      },
       []
     );
     const tableData = useMemo(
-      () => getTableData(props.queryResult, props.cardQueryParams, viewmodelFactoryService),
+      () => getGenericTableData(
+        props.queryResult.resultList
+          .map((dto: LibraryCardListDto) =>
+            viewmodelFactoryService.mtgCardViewmodelFactory.getLibraryCardListViewmodel(dto)
+          ),
+        props.cardQueryParams),
       [props.cardQueryParams, props.queryResult]
     );
     // #endregion
