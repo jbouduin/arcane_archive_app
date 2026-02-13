@@ -1,5 +1,5 @@
 import { Props } from "@blueprintjs/core";
 
-export interface ServiceNotAvailableViewProps extends Props {
+export interface ServiceNotAvailableProps extends Props {
   serviceName: string;
 }

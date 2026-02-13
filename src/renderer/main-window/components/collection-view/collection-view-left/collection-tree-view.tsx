@@ -29,8 +29,6 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
   //#region State -------------------------------------------------------------
   const [collections, setCollections] = useState<Array<CollectionTreeViewmodel>>(new Array<CollectionTreeViewmodel>());
   const [rootCollection, setRootCollection] = useState<CollectionDto | null>(null);
-  // LATER store expanded nodes and selected node and check if we solve the bug in basetreeeview with that
-
   //#endregion
 
   //#region Event Handling ----------------------------------------------------
@@ -151,8 +149,11 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
           filterProps={{ filter: {}, applyFilterProps: (data: Array<CollectionTreeViewmodel>) => data }}
           buildTree={buildTree}
           onDataSelected={
-            (collections: Array<CollectionTreeViewmodel>) =>
-              props.collectionSelected(collections.map((c: CollectionTreeViewmodel) => c.dto), true)
+            (collections: Array<CollectionTreeViewmodel>) => {
+              props.viewmodel.dto.collectionIds = collections.map((value: CollectionTreeViewmodel) => value.id);
+              props.viewmodelChanged();
+              props.search(props.viewmodel.dtoToSave);
+            }
           }
         />
       </ContextMenu>
@@ -264,7 +265,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
         </CollectionTreeContextMenu>
       ),
       isExpanded: collection.isExpanded,
-      isSelected: collection.isSelected,
+      isSelected: props.viewmodel.dto.collectionIds.includes(collection.id),
       nodeData: collection
     };
     return node;

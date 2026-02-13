@@ -1,23 +1,25 @@
 import { Tree, TreeNodeInfo } from "@blueprintjs/core";
-import * as React from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import { IBaseTreeNodeViewmodel } from "./base-tree-node.viewmodel";
 import { BaseTreeViewProps } from "./base-tree-view.props";
 import { BaseTreeViewReducer, getTreeNodeItemsRecursive } from "./base-tree-view.reducer";
 import { BaseTreeViewAction, NodePath } from "./types";
 
-// BUG after adding or modifying everything collapses and nothing is selected anymore
-export function BaseTreeView<TData extends IBaseTreeNodeViewmodel, TFilter>(props: BaseTreeViewProps<TData, TFilter>
+// TODO store expanded nodes and selected node and check if we solve the bug in basetreeeview with that
 
+// BUG after adding or modifying everything collapses and nothing is selected anymore
+export function BaseTreeView<TData extends IBaseTreeNodeViewmodel, TFilter>(
+  props: BaseTreeViewProps<TData, TFilter>
 ): JSX.Element {
-  // #region State ------------------------------------------------------------
-  const [nodes, dispatch] = React.useReducer(
+  //#region State -------------------------------------------------------------
+  const [nodes, dispatch] = useReducer(
     BaseTreeViewReducer as React.Reducer<Array<TreeNodeInfo<TData>>, BaseTreeViewAction>,
     undefined,
     () => []);
-  // #endregion
+  //#endregion
 
-  // #region Effects ----------------------------------------------------------
-  React.useEffect(
+  //#region Effects -----------------------------------------------------------
+  useEffect(
     () => {
       const nodes = props.filterProps
         ? props.buildTree(
@@ -31,10 +33,10 @@ export function BaseTreeView<TData extends IBaseTreeNodeViewmodel, TFilter>(prop
     },
     [props.filterProps, props.data]
   );
-  // #endregion
+  //#endregion
 
-  // #region event handlers ---------------------------------------------------
-  const handleNodeClick = React.useCallback(
+  //#region event handlers ----------------------------------------------------
+  const handleNodeClick = useCallback(
     (node: TreeNodeInfo<TData>, nodePath: NodePath) => {
       const originallySelected = node.isSelected;
       dispatch({ type: "DESELECT_ALL" });
@@ -47,7 +49,7 @@ export function BaseTreeView<TData extends IBaseTreeNodeViewmodel, TFilter>(prop
     []
   );
 
-  const handleNodeCollapse = React.useCallback(
+  const handleNodeCollapse = useCallback(
     (_node: TreeNodeInfo<TData>, nodePath: NodePath) => {
       dispatch({
         payload: { path: nodePath, isExpanded: false },
@@ -57,7 +59,7 @@ export function BaseTreeView<TData extends IBaseTreeNodeViewmodel, TFilter>(prop
     []
   );
 
-  const handleNodeExpand = React.useCallback(
+  const handleNodeExpand = useCallback(
     (_node: TreeNodeInfo<TData>, nodePath: NodePath) => {
       dispatch({
         payload: { path: nodePath, isExpanded: true },
@@ -66,9 +68,9 @@ export function BaseTreeView<TData extends IBaseTreeNodeViewmodel, TFilter>(prop
     },
     []
   );
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <Tree
       className="base-tree"
@@ -79,5 +81,5 @@ export function BaseTreeView<TData extends IBaseTreeNodeViewmodel, TFilter>(prop
       onNodeExpand={handleNodeExpand}
     />
   );
-  // #endregion
+  //#endregion
 }

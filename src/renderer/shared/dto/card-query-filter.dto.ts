@@ -1,17 +1,17 @@
-import { AppColorDto } from "./app-color.dto";
-
-export type CardFilterParamsDto = {
+export type CardQueryFilterDto = {
   abilities: Array<string>;
   actions: Array<string>;
-  cardColors: Array<AppColorDto>;
+  cardColors: Array<string>;
   cardNames: Array<string>;
-  identityColors: Array<AppColorDto>;
+  identityColors: Array<string>;
   gameFormats: Array<string>;
-  producedManaColors: Array<AppColorDto>;
+  producedManaColors: Array<string>;
   powers: Array<string>;
   rarities: Array<string>;
   subTypes: Array<string>;
   superTypes: Array<string>;
   toughnesses: Array<string>;
   types: Array<string>;
+  cardSetIds: Array<number>;
+  collectionIds: Array<number>;
 };

@@ -1,10 +1,11 @@
-import { IBasicDataService, ICollectionService, IMtgSetService, IServiceContainer } from "../../../context";
+import { IBasicDataService, ICollectionService, IMtgSetService } from "../../../context";
 import {
-  AdvancedCardSearchDto, CardDetailDto, CollectionCardListDto, LibraryCardListDto, LibraryRulingDto
+  CardDetailDto, CardQueryFilterDto, CollectionCardListDto, LibraryCardListDto, LibraryRulingDto
 } from "../../../dto";
 import { CollectionCardListViewmodel } from "../../collection";
 import {
-  AdvancedCardSearchViewmodel, CardDetailViewmodel, LibraryCardListViewmodel, LibraryRulingViewmodel
+  AdvancedCardSearchViewmodel,
+  CardDetailViewmodel, LibraryCardListViewmodel, LibraryRulingViewmodel
 } from "../../mtg-card";
 import { IMtgCardViewmodelFactory } from "../interface";
 
@@ -43,10 +44,11 @@ export class MtgCardViewmodelFactory implements IMtgCardViewmodelFactory {
   }
 
   public getAdvancedCardSearchViewmodel(
-    advancedCardSearch: AdvancedCardSearchDto,
-    serviceContainer: IServiceContainer
+    queryFilter: CardQueryFilterDto, useCollections: boolean
   ): AdvancedCardSearchViewmodel {
-    return new AdvancedCardSearchViewmodel(advancedCardSearch, serviceContainer);
+    return new AdvancedCardSearchViewmodel(
+      queryFilter, useCollections, this.basicDataService, this.collectionService, this.mtgSetService
+    );
   }
 
   public getCollectionCardlistViewmodel(dto: CollectionCardListDto): CollectionCardListViewmodel {

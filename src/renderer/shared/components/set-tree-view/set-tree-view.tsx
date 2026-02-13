@@ -3,6 +3,8 @@ import { cloneDeep, isEqual, upperFirst } from "lodash";
 import { memo, useState } from "react";
 import { CardSetGroupBy, CardSetSort } from "../../../../common/types";
 import { useServices } from "../../../hooks";
+import { MtgSetTreeDto } from "../../dto";
+import { SelectOption } from "../../types";
 import { MtgSetTreeConfigurationViewmodel, MtgSetTreeViewmodel } from "../../viewmodel";
 import { BaseTreeView, BaseTreeViewProps } from "../base/base-tree-view";
 import { CardSetIcon } from "../card-set-icon";
@@ -20,13 +22,21 @@ const Treeview = memo(
   }
 );
 
-export function SetTreeView(props: SetTreeViewProps) {
-  //#region State -------------------------------------------------------------
-  const [state, setState] = useState<MtgSetTreeConfigurationViewmodel>(props.configuration);
+export function SetTreeView(props: SetTreeViewProps): JSX.Element {
+  //#region Hooks -------------------------------------------------------------
+  const { viewmodelFactoryService } = useServices();
   //#endregion
 
-  //#region Hooks -------------------------------------------------------------
-  const serviceContainer = useServices();
+  //#region initialization ----------------------------------------------------
+  const sets = props.viewmodel
+    .getSelectOptions<MtgSetTreeDto>("cardSetIds")
+    .map((value: SelectOption<MtgSetTreeDto>) =>
+      viewmodelFactoryService.mtgSetViewmodelFactory.getMtgSetTreeViewmodel(value.value)
+    );
+  //#endregion
+
+  //#region State -------------------------------------------------------------
+  const [state, setState] = useState<MtgSetTreeConfigurationViewmodel>(props.configuration);
   //#endregion
 
   //#region Event Handling ----------------------------------------------------
@@ -112,10 +122,14 @@ export function SetTreeView(props: SetTreeViewProps) {
       />
       <Treeview
         buildTree={buildTree}
-        data={props.cardSets}
+        data={sets}
         filterProps={{ filter: state, applyFilterProps: applyFilterProps }}
         onDataSelected={
-          (sets: Array<MtgSetTreeViewmodel>) => props.onSetsSelected(sets.map((set: MtgSetTreeViewmodel) => set.dto))
+          (sets: Array<MtgSetTreeViewmodel>) => {
+            props.viewmodel.dto.cardSetIds = sets.map((value: MtgSetTreeViewmodel) => value.id);
+            props.viewmodelChanged();
+            props.search(props.viewmodel.dtoToSave);
+          }
         }
       />
     </>
@@ -177,7 +191,7 @@ export function SetTreeView(props: SetTreeViewProps) {
         label: upperFirst(group).replace("_", " "),
         isExpanded: false,
         isSelected: false,
-        nodeData: serviceContainer.viewmodelFactoryService.mtgSetViewmodelFactory.getGroupMtgSetTreeViewmodel(group),
+        nodeData: viewmodelFactoryService.mtgSetViewmodelFactory.getGroupMtgSetTreeViewmodel(group),
         childNodes: childNodes.sort(sortViewmodelfunction).map(mapViewModelToTreeItem)
       };
       return groupNode;
@@ -219,7 +233,7 @@ export function SetTreeView(props: SetTreeViewProps) {
         </SetTreeContextMenu>
       ),
       isExpanded: cardSet.isExpanded,
-      isSelected: cardSet.isSelected,
+      isSelected: props.viewmodel.dto.cardSetIds.includes(cardSet.id),
       nodeData: cardSet
     };
     return node;

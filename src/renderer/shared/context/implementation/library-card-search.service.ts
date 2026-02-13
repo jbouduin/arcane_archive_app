@@ -1,8 +1,4 @@
-import {
-  CardFilterParamsDto,
-  LibraryCardListDto, MtgSetTreeDto,
-  QueryParamsDto, QueryResultDto
-} from "../../dto";
+import { LibraryCardListDto, CardQueryFilterDto, QueryParamsDto, QueryResultDto } from "../../dto";
 import { ILibraryCardSearchService } from "../interface";
 import { BaseCardSearchService } from "./base-card-search.service";
 
@@ -14,19 +10,16 @@ export class LibraryCardSearchService extends BaseCardSearchService<LibraryCardL
   }
   //#endregion
 
-  // #region ICardSearchParamService Members ----------------------------------
+  //#region ICardSearchParamService Members -----------------------------------
   public getLibraryCards(
-    cardFilterParams: CardFilterParamsDto | null,
-    queryParams: QueryParamsDto,
-    setFilter: Array<MtgSetTreeDto>
+    filterParams: CardQueryFilterDto, setsOnly: boolean, queryParams: QueryParamsDto
   ): Promise<QueryResultDto<LibraryCardListDto>> {
     return this.getCards(
       "/public/card/library",
-      cardFilterParams,
-      queryParams,
-      null,
-      setFilter
+      setsOnly ? "set" : "advanced",
+      filterParams,
+      queryParams
     );
   }
-  // #endregion
+  //#endregion
 }

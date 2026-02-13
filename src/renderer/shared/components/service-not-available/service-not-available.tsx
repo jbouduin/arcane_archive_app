@@ -1,10 +1,12 @@
-import { Callout } from "@blueprintjs/core";
-import { ServiceNotAvailableViewProps } from "./service-not-available-view.props";
+import "./service-not-available.css";
 
-export function ServiceNotAvailableView(props: ServiceNotAvailableViewProps): JSX.Element {
+import { Callout } from "@blueprintjs/core";
+import { ServiceNotAvailableProps } from "./service-not-available.props";
+
+export function ServiceNotAvailable(props: ServiceNotAvailableProps): JSX.Element {
   //#region Rendering ---------------------------------------------------------
   return (
-    <div className="not-logged-in-wrapper">
+    <div className="aa-service-not-available-wrapper">
       <Callout intent="warning">
         {/* eslint-disable-next-line @stylistic/jsx-one-expression-per-line*/}
         {props.serviceName} is currently not available

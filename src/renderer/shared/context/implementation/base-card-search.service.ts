@@ -1,9 +1,8 @@
 import { PreferencesDto } from "../../../../common/dto";
-import {
-  AppColorDto, CardFilterParamsDto, CollectionDto,
-  MtgSetTreeDto, QueryParamsDto, QueryResultDto
-} from "../../dto";
+import { CardQueryFilterDto, QueryParamsDto, QueryResultDto } from "../../dto";
 import { IArcaneArchiveProxy } from "../interface";
+
+export type SearchMode = "set" | "collection" | "advanced";
 
 export abstract class BaseCardSearchService<T> {
   //#region Protected fields --------------------------------------------------
@@ -11,20 +10,19 @@ export abstract class BaseCardSearchService<T> {
   //#endregion
 
   //#region Private fields: Library Search criteria ---------------------------
-  private _cardFilterParams: CardFilterParamsDto;
+  private _queryFilter: CardQueryFilterDto;
   private _queryParams: QueryParamsDto;
   private _queryResult: QueryResultDto<T>;
   private _selectedSearchTab: string | number;
-  private _setFilter: Array<MtgSetTreeDto>;
   //#endregion
 
   //#region ICardSearchParamService Library Search Getters/Setters ------------
-  public get cardFilterParams(): CardFilterParamsDto {
-    return this._cardFilterParams;
+  public get queryFilter(): CardQueryFilterDto {
+    return this._queryFilter;
   }
 
-  public set cardFilterParams(value: CardFilterParamsDto) {
-    this._cardFilterParams = value;
+  public set queryFilter(value: CardQueryFilterDto) {
+    this._queryFilter = value;
   }
 
   public get queryParams(): QueryParamsDto {
@@ -50,19 +48,10 @@ export abstract class BaseCardSearchService<T> {
   public set selectedSearchTab(value: string | number) {
     this._selectedSearchTab = value;
   }
-
-  public get setFilter(): Array<MtgSetTreeDto> {
-    return this._setFilter;
-  }
-
-  public set setFilter(value: Array<MtgSetTreeDto>) {
-    this._setFilter = value;
-  }
   //#endregion
 
   //#region Constructor & C° --------------------------------------------------
   protected constructor() {
-    this._cardFilterParams = this.createEmptyCardFilterParams();
     this._queryParams = {
       pageNumber: 0,
       pageSize: 100,
@@ -76,7 +65,7 @@ export abstract class BaseCardSearchService<T> {
       resultList: new Array<T>()
     };
     this._selectedSearchTab = 0;
-    this._setFilter = new Array<MtgSetTreeDto>();
+    this._queryFilter = this.createEmptyQueryFilter();
   }
   //#endregion
 
@@ -92,16 +81,21 @@ export abstract class BaseCardSearchService<T> {
   //#region Auxiliary Methods -------------------------------------------------
   protected getCards(
     path: string,
-    cardFilterParams: CardFilterParamsDto | null,
-    queryParams: QueryParamsDto,
-    collectionFilter: Array<CollectionDto> | null,
-    setFilter: Array<MtgSetTreeDto>
+    searchMode: SearchMode,
+    queryFilter: CardQueryFilterDto,
+    queryParams: QueryParamsDto
   ): Promise<QueryResultDto<T>> {
-    const params = this.buildSearchParams(cardFilterParams, collectionFilter, setFilter);
+    /**
+     * # TODO consider caching search criteria only when searching
+     * this.queryfilter = cardSearchDto;
+     * this.queryParams = queryParams;
+     */
+    const params = this.buildSearchParams(searchMode, queryFilter);
     if (params.size > 0) {
       params.append("pn", queryParams.pageNumber.toString());
       params.append("ps", queryParams.pageSize.toString());
       params.append("sort", `${queryParams.sortField}:${queryParams.sortDirection}`);
+      // TODO consider setting the result here, instead of in the caller
       return this.arcaneArchiveProxy.getData<QueryResultDto<T>>("library", path + "?" + params.toString());
     } else {
       return Promise.resolve({
@@ -114,42 +108,45 @@ export abstract class BaseCardSearchService<T> {
   }
 
   private buildSearchParams(
-    cardFilterParams: CardFilterParamsDto | null,
-    collectionFilter: Array<CollectionDto> | null,
-    setFilter: Array<MtgSetTreeDto>
+    searchMode: SearchMode,
+    cardSearchDto: CardQueryFilterDto
   ): URLSearchParams {
     const result = new URLSearchParams();
-    if (cardFilterParams) {
-      cardFilterParams.abilities.forEach((ability: string) => result.append("kw", ability));
-      cardFilterParams.actions.forEach((action: string) => result.append("kw", action));
-      cardFilterParams.cardColors.forEach((color: AppColorDto) => result.append("cc", color.code));
-      cardFilterParams.cardNames.forEach((cardName: string) => result.append("cn", cardName));
-      cardFilterParams.gameFormats.forEach((gameFormat: string) => result.append("gf", gameFormat));
-      cardFilterParams.identityColors.forEach((color: AppColorDto) => result.append("ic", color.code));
-      cardFilterParams.powers.forEach((power: string) => result.append("pw", power));
-      cardFilterParams.producedManaColors.forEach((color: AppColorDto) => result.append("pm", color.code));
-      cardFilterParams.rarities.forEach((rarity: string) => result.append("rar", rarity));
-      cardFilterParams.subTypes.forEach((type: string) => result.append("sub", type));
-      cardFilterParams.superTypes.forEach((type: string) => result.append("sup", type));
-      cardFilterParams.types.forEach((type: string) => result.append("ty", type));
-      cardFilterParams.toughnesses.forEach((toughness: string) => result.append("tn", toughness));
+    if (searchMode == "advanced") {
+      cardSearchDto.abilities.forEach((ability: string) => result.append("kw", ability));
+      cardSearchDto.actions.forEach((action: string) => result.append("kw", action));
+      cardSearchDto.cardColors.forEach((color: string) => result.append("cc", color));
+      cardSearchDto.cardNames.forEach((cardName: string) => result.append("cn", cardName));
+      cardSearchDto.gameFormats.forEach((gameFormat: string) => result.append("gf", gameFormat));
+      cardSearchDto.identityColors.forEach((color: string) => result.append("ic", color));
+      cardSearchDto.powers.forEach((power: string) => result.append("pw", power));
+      cardSearchDto.producedManaColors.forEach((color: string) => result.append("pm", color));
+      cardSearchDto.rarities.forEach((rarity: string) => result.append("rar", rarity));
+      cardSearchDto.subTypes.forEach((type: string) => result.append("sub", type));
+      cardSearchDto.superTypes.forEach((type: string) => result.append("sup", type));
+      cardSearchDto.types.forEach((type: string) => result.append("ty", type));
+      cardSearchDto.toughnesses.forEach((toughness: string) => result.append("tn", toughness));
     }
-    setFilter.forEach((set: MtgSetTreeDto) => result.append("set", set.id.toString()));
-    if (collectionFilter != null) {
-      collectionFilter.forEach((col: CollectionDto) => result.append("co", col.id!.toString()));
+    if (searchMode == "set" || searchMode == "advanced") {
+      cardSearchDto.cardSetIds.forEach((id: number) => result.append("set", id.toString()));
+    }
+    if (searchMode == "collection" || searchMode == "advanced") {
+      cardSearchDto.collectionIds.forEach((id: number) => result.append("co", id.toString()));
     }
     return result;
   }
 
-  private createEmptyCardFilterParams(): CardFilterParamsDto {
+  private createEmptyQueryFilter(): CardQueryFilterDto {
     return {
       abilities: new Array<string>(),
       actions: new Array<string>(),
-      cardColors: new Array<AppColorDto>(),
+      cardColors: new Array<string>(),
       cardNames: new Array<string>(),
+      cardSetIds: new Array<number>(),
+      collectionIds: new Array<number>(),
       gameFormats: new Array<string>(),
-      identityColors: new Array<AppColorDto>(),
-      producedManaColors: new Array<AppColorDto>(),
+      identityColors: new Array<string>(),
+      producedManaColors: new Array<string>(),
       powers: new Array<string>(),
       rarities: new Array<string>(),
       subTypes: new Array<string>(),

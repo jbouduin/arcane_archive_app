@@ -9,8 +9,18 @@ import { BaseMultiSelectProps } from "./base-multi-select.props";
  * A multi select component that uses a static (cached) list of items
  */
 export function BaseMultiSelect<T, U, Dto extends object>(props: BaseMultiSelectProps<T, U, Dto>): JSX.Element {
-  //#region Set Defaults -------------------------------------------------------
+  //#region Initialization -------------------------------------------------------
   const validation = props.validation || "none";
+  const allItems = props.allItems || props.viewmodel.getSelectOptions(props.fieldName);
+  const keyName = props.fieldName.toString();
+  const dtoValue = props.viewmodel.dto[props.fieldName] as unknown as Array<U>;
+  const selectedOptions = allItems
+    .filter((so: SelectOption<T>) => dtoValue.includes(props.idExtractor(so.value)))
+    .sort((a: SelectOption<T>, b: SelectOption<T>) => props.itemSort
+      ? props.itemSort(a.value, b.value)
+      : a.label.toLowerCase().localeCompare(b.label.toLowerCase(), undefined, { caseFirst: "false" })
+    );
+  const validationResult = props.viewmodel.getValidation(props.fieldName);
   //#endregion
 
   //#region Memo ---------------------------------------------------------------
@@ -38,25 +48,16 @@ export function BaseMultiSelect<T, U, Dto extends object>(props: BaseMultiSelect
   //#endregion
 
   //#region Rendering ---------------------------------------------------------
-  const keyName = props.fieldName.toString();
-  const dtoValue = props.viewmodel.dto[props.fieldName] as unknown as Array<U>;
-  const selectedOptions = props.allItems
-    .filter((so: SelectOption<T>) => dtoValue.includes(props.idExtractor(so.value)))
-    .sort((a: SelectOption<T>, b: SelectOption<T>) => props.itemSort
-      ? props.itemSort(a.value, b.value)
-      : a.label.toLowerCase().localeCompare(b.label.toLowerCase(), undefined, { caseFirst: "false" })
-    );
-
-  const validationResult = props.viewmodel.getValidation(props.fieldName);
   return (
     <div className="layout-isolation">
       <FormGroup
-        label={props.label}
-        // labelFor={keyName + "-select"}
-        labelInfo={props.labelInfo}
-        fill={props.fill}
+        fill={props.fill || true}
         helperText={validationResult.helperText}
         intent={validationResult.intent}
+        key={"form-group" + keyName}
+        label={props.label}
+        labelFor={keyName + "-select"}
+        labelInfo={props.labelInfo}
       >
         {
           !props.disabled &&
@@ -67,7 +68,7 @@ export function BaseMultiSelect<T, U, Dto extends object>(props: BaseMultiSelect
               disabled={props.disabled}
               itemListPredicate={filterOptionList}
               itemRenderer={(item: SelectOption<T>, itemProps: ItemRendererProps) => itemRenderer(item, itemProps)}
-              items={props.allItems}
+              items={allItems}
               itemsEqual={
                 (a: SelectOption<T>, b: SelectOption<T>) => {
                   return itemComparer(a.value, b.value);

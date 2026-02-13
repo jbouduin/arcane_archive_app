@@ -1,7 +1,9 @@
+import "./not-logged-in.css";
+
 import { Button, Callout, H4, Props } from "@blueprintjs/core";
 import { useApiStatus, useDialogs, usePreferences } from "../../../hooks";
 
-export function NotLoggedInView(_props: Props): JSX.Element {
+export function NotLoggedIn(_props: Props): JSX.Element {
   //#region Hooks -------------------------------------------------------------
   const { showLoginDialog, showRegisterDialog } = useDialogs();
   const { preferences } = usePreferences();
@@ -10,7 +12,7 @@ export function NotLoggedInView(_props: Props): JSX.Element {
 
   //#region Rendering ---------------------------------------------------------
   return (
-    <div className="not-logged-in-wrapper">
+    <div className="aa-not-logged-in-wrapper">
       <>
         <H4>You are not logged in</H4>
         {
