@@ -1,4 +1,5 @@
 export * from "./compare-class-name-prop";
+export * from "./handle-number-change";
 export * from "./handle-string-change";
 export * from "./handle-value-change";
 export * from "./select-option-util";

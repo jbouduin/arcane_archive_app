@@ -10,7 +10,7 @@ export function addSelectOption<T>(
   if (sort) {
     viewmodelArray.sort(sort);
   } else {
-    viewmodelArray.sort((a: SelectOption<T>, b: SelectOption<T>) => a.label.localeCompare(b.label));
+    viewmodelArray.sort((a: SelectOption<T>, b: SelectOption<T>) => a.label.localeCompare(b.label, undefined, { caseFirst: "false" }));
   }
 }
 

@@ -1,42 +1,40 @@
 import { Button } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { ReactNode } from "react";
-import { useServices } from "../../../../hooks";
+import { useDialogs, useServices } from "../../../../hooks";
 import { ResetPasswordRequestDto } from "../../../dto";
 import { DefaultDialogFooter } from "../../base/base-dialog";
-import { showLoginDialog, showRecoverPasswordDialog } from "../factory";
 import { ResetPasswordDialogFooterProps } from "./reset-password-dialog.props";
 
-export function ResetPasswordDialogFooter(props: ResetPasswordDialogFooterProps) {
-  // #region Hooks ------------------------------------------------------------
+export function ResetPasswordDialogFooter(props: ResetPasswordDialogFooterProps): JSX.Element {
+  //#region Hooks -------------------------------------------------------------
+  const { showLoginDialog, showRecoverPasswordDialog } = useDialogs();
   const serviceContainer = useServices();
-  // #endregion
+  //#endregion
 
-  // #region Event Handling ---------------------------------------------------
+  //#region Event Handling ----------------------------------------------------
   function sendClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: ResetPasswordRequestDto): Promise<void> {
     // return Promise.resolve();
-    return serviceContainer.sessionService.resetPassword(
-      serviceContainer.arcaneArchiveProxy,
-      dto
-    ).then(
-      () => {
-        props.onClose?.(event);
-        showLoginDialog(serviceContainer, false);
-      },
-      noop
-    );
+    return serviceContainer.sessionService
+      .resetPassword(
+        serviceContainer.arcaneArchiveProxy,
+        dto
+      ).then(
+        () => {
+          props.onClose?.(event);
+          showLoginDialog(false);
+        },
+        noop
+      );
   }
 
   function newCodeClick(event: React.SyntheticEvent<HTMLElement, Event>): void {
     props.onClose?.(event);
-    showRecoverPasswordDialog(
-      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory,
-      serviceContainer.overlayService
-    );
+    showRecoverPasswordDialog();
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <DefaultDialogFooter
       additionalLeftButtons={additionalLeftButtons()}

@@ -7,11 +7,11 @@ import { DefaultDialogFooter } from "../../base/base-dialog";
 import { SystemSettingsDialogFooterProps } from "./system-settings-dialog.props";
 
 export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProps): JSX.Element {
-  // #region Hooks ------------------------------------------------------------
+  //#region Hooks -------------------------------------------------------------
   const serviceContainer = useServices();
-  // #endregion
+  //#endregion
 
-  // #region Event handling ---------------------------------------------------
+  //#region Event handling ----------------------------------------------------
   function saveClick(event: React.SyntheticEvent<HTMLElement, Event>, dto: SystemConfigurationDto): Promise<void> {
     return serviceContainer.configurationService.saveSystemSettings(dto)
       .then(
@@ -37,9 +37,9 @@ export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProp
         noop
       );
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <DefaultDialogFooter
       {...props}
@@ -61,5 +61,5 @@ export function SystemSettingsDialogFooter(props: SystemSettingsDialogFooterProp
       </Button>
     );
   }
-  // #endregion
+  //#endregion
 }

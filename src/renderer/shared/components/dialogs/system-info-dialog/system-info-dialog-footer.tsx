@@ -1,7 +1,7 @@
 import { Button } from "@blueprintjs/core";
 import { SystemInfoDialogFooterProps } from "./system-info-dialog.props";
 
-export function SystemInfoDialogFooter(props: SystemInfoDialogFooterProps) {
+export function SystemInfoDialogFooter(props: SystemInfoDialogFooterProps): JSX.Element {
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
       <Button

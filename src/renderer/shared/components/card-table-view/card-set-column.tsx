@@ -1,13 +1,13 @@
 import { Menu, MenuItem } from "@blueprintjs/core";
 import { Cell, CellRenderer } from "@blueprintjs/table";
-import classNames from "classnames";
 import { BaseColumn, CellLookup, ClientSortCallback, ServerSortCallback } from "../base/base-table";
+import { CardSetIcon } from "../card-set-icon";
 import { CardSetLookupResult } from "./card-set-lookup-result";
 
 // LATER: sort by set release date also
 export class CardSetColumn<T> extends BaseColumn<T, CardSetLookupResult> {
-  // #region SortableColumn abstract methods implementationm -------------------
-  protected renderMenu(clientSortColumn?: ClientSortCallback<T>, serverSortColumn?: ServerSortCallback): React.JSX.Element {
+  //#region SortableColumn abstract methods implementationm --------------------
+  protected renderMenu(clientSortColumn?: ClientSortCallback<T>, serverSortColumn?: ServerSortCallback): JSX.Element {
     let sortAsc: (() => void) | undefined = undefined;
     let sortDesc: (() => void) | undefined = undefined;
     if (clientSortColumn) {
@@ -36,20 +36,18 @@ export class CardSetColumn<T> extends BaseColumn<T, CardSetLookupResult> {
       const cellValue = getCellData(rowIdx, this.valueCallBack);
       return (
         <Cell>
-          <i
-            key={`icon-${cellValue.cardSetName}`}
-            className={classNames("ss", "ss-" + cellValue.keyruneCode.toLowerCase(), "ss-" + cellValue.rarity.toLowerCase())}
-            style={{ paddingRight: "5px" }}
-          >
-          </i>
+          <CardSetIcon
+            keyruneCode={cellValue.keyruneCode}
+            rarity={cellValue.rarity}
+          />
           {cellValue.cardSetName}
         </Cell>
       );
     };
   }
-  // #endregion
+  //#endregion
 
-  // #region Auxiliary methods ------------------------------------------------
+  //#region Auxiliary methods -------------------------------------------------
   private compare(a: T, b: T): number {
     const valueA = this.valueCallBack(a);
     const valueB = this.valueCallBack(b);
@@ -60,5 +58,5 @@ export class CardSetColumn<T> extends BaseColumn<T, CardSetLookupResult> {
       return valueCompare;
     }
   }
-  // #endregion
+  //#endregion
 }

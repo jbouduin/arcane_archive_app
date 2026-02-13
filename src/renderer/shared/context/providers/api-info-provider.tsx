@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArcanArchiveServer } from "../../../../common/types";
+import { ArcaneArchiveServer } from "../../../../common/types";
 import { useServices } from "../../../hooks";
 import { ApiStatusContext } from "../shared.context";
 import { ApiStatus } from "../types";
@@ -28,7 +28,7 @@ export function ApiInfoProvider(props: ApiInfoProviderProps): JSX.Element {
   return (
     <ApiStatusContext.Provider
       value={{
-        apiRoots: new Map<ArcanArchiveServer, string>([
+        apiRoots: new Map<ArcaneArchiveServer, string>([
           ["authentication", props.apiConfiguration.authenticationApiRoot],
           ["library", props.apiConfiguration.libraryApiRoot],
           ["collection", props.apiConfiguration.collectionApiRoot],

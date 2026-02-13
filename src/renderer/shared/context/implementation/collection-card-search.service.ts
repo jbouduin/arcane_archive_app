@@ -35,7 +35,7 @@ export class CollectionCardSearchService extends BaseCardSearchService<Collectio
     setFilter: Array<MtgSetTreeDto>
   ): Promise<QueryResultDto<CollectionCardListDto>> {
     return this.getCards(
-      "/public/card/collection",
+      "/auth/card/collection",
       cardFilterParams,
       queryParams,
       collectionFilter,

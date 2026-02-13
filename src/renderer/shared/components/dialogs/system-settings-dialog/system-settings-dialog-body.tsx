@@ -6,13 +6,13 @@ import { BaseHtmlSelect, BaseInput } from "../../input";
 import { SystemSettingsDialogBodyProps } from "./system-settings-dialog.props";
 
 export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps): JSX.Element {
-  // #region Hooks ------------------------------------------------------------
+  //#region Hooks -------------------------------------------------------------
   const serviceContainer = useServices();
-  // #endregion
+  //#endregion
 
-  // #region Event Handling ---------------------------------------------------
+  //#region Event Handling ----------------------------------------------------
   function onSearchDirectory(target: DirectoryTarget): void {
-    void serviceContainer.sessionService
+    void serviceContainer.overlayService
       .selectDirectory(
         serviceContainer.ipcProxy, props.viewmodel.dataConfigurationViewmodel.getCurrentDirectoryValue(target)
       )
@@ -26,9 +26,9 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps): 
         noop
       );
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <>
       {
@@ -235,5 +235,5 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps): 
       />
     );
   }
-  // #endregion
+  //#endregion
 }

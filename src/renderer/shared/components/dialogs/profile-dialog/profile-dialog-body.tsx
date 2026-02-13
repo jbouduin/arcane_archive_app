@@ -1,25 +1,16 @@
 import { ControlGroup, HTMLTable, Tab, Tabs } from "@blueprintjs/core";
-import { useMemo } from "react";
-import { useServices } from "../../../../hooks";
-import { ApplicationRole, ROLES_SELECT_OPTIONS, SelectOption } from "../../../types";
-import { BaseMultiSelect } from "../../base/base-multi-select/base-multi-select";
+import { useSession } from "../../../../hooks";
+import { ApplicationRole } from "../../../types";
 import { createAuditableLabelValueItems, LabelValueItem, LabelValuePanel } from "../../base/label-value-panel";
-import { BaseCheckbox, BaseInput } from "../../input";
+import { BaseCheckbox, BaseInput, BaseMultiSelect } from "../../input";
 import { ProfileDialogBodyProps } from "./profile-dialog.props";
 
-export function ProfileDialogBody(props: ProfileDialogBodyProps) {
-  // #region Hooks ------------------------------------------------------------
-  const serviceContainer = useServices();
-  // #endregion
+export function ProfileDialogBody(props: ProfileDialogBodyProps): JSX.Element {
+  //#region Hooks -------------------------------------------------------------
+  const { isSysAdmin } = useSession();
+  //#endregion
 
-  // #region Memo -------------------------------------------------------------
-  const isSysAdmin = useMemo(
-    () => serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN"),
-    [serviceContainer.sessionService]
-  );
-  // #endregion
-
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <Tabs animate={true} defaultSelectedTabId="basic" renderActiveTabPanelOnly={true}>
       <Tab
@@ -94,30 +85,17 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
             }}
           />
         </ControlGroup>
-        <BaseMultiSelect<ApplicationRole>
+        <BaseMultiSelect
           key="roles"
+          viewmodel={props.viewmodel.accountViewmodel}
+          viewmodelChanged={props.viewmodelChanged}
           disabled={!isSysAdmin}
-          allItems={ROLES_SELECT_OPTIONS}
-          formGroupLabel="Roles"
-          onClearSelectedOptions={
-            () => {
-              props.viewmodel.accountViewmodel.clearSelectedRoles();
-              props.viewmodelChanged();
-            }
-          }
-          onOptionAdded={
-            (role: SelectOption<ApplicationRole>) => {
-              props.viewmodel.accountViewmodel.addRole(role);
-              props.viewmodelChanged();
-            }
-          }
-          onOptionRemoved={
-            (role: SelectOption<ApplicationRole>) => {
-              props.viewmodel.accountViewmodel.removeRole(role);
-              props.viewmodelChanged();
-            }
-          }
-          selectedOptions={props.viewmodel.accountViewmodel.selectedRoles}
+          allItems={props.viewmodel.accountViewmodel.allRoles}
+          fieldName="roles"
+          label="Roles"
+          labelInfo="*"
+          validation="synchronous"
+          idExtractor={(role: ApplicationRole) => role}
         />
       </>
     );
@@ -199,5 +177,5 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps) {
       </>
     );
   }
-  // #endregion
+  //#endregion
 }

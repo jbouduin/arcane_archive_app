@@ -4,11 +4,11 @@
   "todo-tree.general.statusBar": "tags",
   "todo-tree.general.tags": [
     "BUG",
-    "HACK",
-    "FIXME",
     "TODO",
     "LATER",
     "NOW",
     "NEXT"
-  ]
+  ],
+  "todo-tree.tree.scanMode": "workspace only",
+  "editor.rulers": [      120    ]
 }

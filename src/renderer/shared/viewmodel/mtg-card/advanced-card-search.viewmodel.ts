@@ -1,6 +1,6 @@
 import { addSelectOption, clearSelection, removeSelectOption } from "../../components/util";
 import { IServiceContainer } from "../../context";
-import { AdvancedCardSearchDto, CollectionDto, ColorDto, MtgSetTreeDto } from "../../dto";
+import { AdvancedCardSearchDto, CollectionDto, AppColorDto, MtgSetTreeDto } from "../../dto";
 import { ColorType, SelectOption } from "../../types";
 
 export class AdvancedCardSearchViewmodel {
@@ -8,7 +8,7 @@ export class AdvancedCardSearchViewmodel {
   private _dto: AdvancedCardSearchDto;
   private _allCardSets: Array<SelectOption<MtgSetTreeDto>>;
   private _allCollections: Array<SelectOption<CollectionDto>>;
-  private _allColors: Array<SelectOption<ColorDto>>;
+  private _allColors: Array<SelectOption<AppColorDto>>;
   private _allRarities: Array<SelectOption<string>>;
   private _allGameFormats: Array<SelectOption<string>>;
   private _allSuperTypes: Array<SelectOption<string>>;
@@ -17,13 +17,13 @@ export class AdvancedCardSearchViewmodel {
   private _allToughnesses: Array<SelectOption<string>>;
   private _selectedAbilities: Array<SelectOption<string>>;
   private _selectedActions: Array<SelectOption<string>>;
-  private _selectedCardColors: Array<SelectOption<ColorDto>>;
+  private _selectedCardColors: Array<SelectOption<AppColorDto>>;
   private _selectedCardNames: Array<SelectOption<string>>;
   private _selectedCollections: Array<SelectOption<CollectionDto>>;
-  private _selectedIdentityColors: Array<SelectOption<ColorDto>>;
+  private _selectedIdentityColors: Array<SelectOption<AppColorDto>>;
   private _selectedGameFormats: Array<SelectOption<string>>;
   private _selectedPowers: Array<SelectOption<string>>;
-  private _selectedProducedManaColors: Array<SelectOption<ColorDto>>;
+  private _selectedProducedManaColors: Array<SelectOption<AppColorDto>>;
   private _selectedRarities: Array<SelectOption<string>>;
   private _selectedSets: Array<SelectOption<MtgSetTreeDto>>;
   private _selectedSubTypes: Array<SelectOption<string>>;
@@ -41,7 +41,7 @@ export class AdvancedCardSearchViewmodel {
     return this._selectedActions;
   }
 
-  public get selectedCardColors(): Array<SelectOption<ColorDto>> {
+  public get selectedCardColors(): Array<SelectOption<AppColorDto>> {
     return this._selectedCardColors;
   }
 
@@ -53,11 +53,11 @@ export class AdvancedCardSearchViewmodel {
     return this._selectedCollections;
   }
 
-  public get selectedIdentityColors(): Array<SelectOption<ColorDto>> {
+  public get selectedIdentityColors(): Array<SelectOption<AppColorDto>> {
     return this._selectedIdentityColors;
   }
 
-  public get selectedProducedManaColors(): Array<SelectOption<ColorDto>> {
+  public get selectedProducedManaColors(): Array<SelectOption<AppColorDto>> {
     return this._selectedProducedManaColors;
   }
 
@@ -97,7 +97,7 @@ export class AdvancedCardSearchViewmodel {
     return this._allCardSets;
   }
 
-  public get allColors(): Array<SelectOption<ColorDto>> {
+  public get allColors(): Array<SelectOption<AppColorDto>> {
     return this._allColors;
   }
 
@@ -139,14 +139,14 @@ export class AdvancedCardSearchViewmodel {
     this._dto = dto;
     // --- set all select options ---
     this._allCardSets = serviceContainer.mtgSetService.getSelectOptions();
-    this._allColors = serviceContainer.colorService.getSelectOptions();
+    this._allColors = serviceContainer.basicDataService.getColorSelectOptions();
     this._allCollections = serviceContainer.collectionService.getSelectOptions();
-    this._allRarities = serviceContainer.displayValueService.getSelectOptions("rarity");
-    this._allGameFormats = serviceContainer.displayValueService.getSelectOptions("gameFormat");
-    this._allSuperTypes = serviceContainer.displayValueService.getSelectOptions("superType");
-    this._allCardTypes = serviceContainer.displayValueService.getSelectOptions("cardType");
-    this._allPowers = serviceContainer.displayValueService.getSelectOptions("powerValues");
-    this._allToughnesses = serviceContainer.displayValueService.getSelectOptions("thoughnessValues");
+    this._allRarities = serviceContainer.basicDataService.getSelectOptions("rarity");
+    this._allGameFormats = serviceContainer.basicDataService.getSelectOptions("gameFormat");
+    this._allSuperTypes = serviceContainer.basicDataService.getSelectOptions("superType");
+    this._allCardTypes = serviceContainer.basicDataService.getSelectOptions("cardType");
+    this._allPowers = serviceContainer.basicDataService.getSelectOptions("powerValues");
+    this._allToughnesses = serviceContainer.basicDataService.getSelectOptions("thoughnessValues");
     // --- set selected values ---
     this._selectedAbilities = dto.cardFilterParams.abilities.map((value: string) => ({ value: value, label: value }));
     this._selectedActions = dto.cardFilterParams.actions.map((value: string) => ({ value: value, label: value }));
@@ -176,14 +176,14 @@ export class AdvancedCardSearchViewmodel {
   //#endregion
 
   //#region CardColors --------------------------------------------------------
-  public addColor(type: ColorType, color: SelectOption<ColorDto>): void {
+  public addColor(type: ColorType, color: SelectOption<AppColorDto>): void {
     switch (type) {
       case "card":
         addSelectOption(
           this._dto.cardFilterParams.cardColors,
           this._selectedCardColors,
           color,
-          (a: SelectOption<ColorDto>, b: SelectOption<ColorDto>) => a.value.sequence - b.value.sequence
+          (a: SelectOption<AppColorDto>, b: SelectOption<AppColorDto>) => a.value.sequence - b.value.sequence
         );
         break;
       case "identity":
@@ -191,7 +191,7 @@ export class AdvancedCardSearchViewmodel {
           this._dto.cardFilterParams.identityColors,
           this._selectedIdentityColors,
           color,
-          (a: SelectOption<ColorDto>, b: SelectOption<ColorDto>) => a.value.sequence - b.value.sequence
+          (a: SelectOption<AppColorDto>, b: SelectOption<AppColorDto>) => a.value.sequence - b.value.sequence
         );
         break;
       case "produced_mana":
@@ -199,13 +199,13 @@ export class AdvancedCardSearchViewmodel {
           this._dto.cardFilterParams.producedManaColors,
           this._selectedProducedManaColors,
           color,
-          (a: SelectOption<ColorDto>, b: SelectOption<ColorDto>) => a.value.sequence - b.value.sequence
+          (a: SelectOption<AppColorDto>, b: SelectOption<AppColorDto>) => a.value.sequence - b.value.sequence
         );
         break;
     }
   }
 
-  public removeColor(type: ColorType, color: SelectOption<ColorDto>): void {
+  public removeColor(type: ColorType, color: SelectOption<AppColorDto>): void {
     switch (type) {
       case "card": {
         removeSelectOption(

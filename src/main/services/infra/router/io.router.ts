@@ -24,6 +24,7 @@ export class IoRouter extends BaseRouter implements IRouter {
   // #region IRouteDestinationService methods ---------------------------------
   public setRoutes(router: IRouterService): void {
     router.registerGetRoute(IpcPaths.IO_ASSET, this.asset.bind(this) as RouteCallback);
+    // LATER move to dialog router and service and pass current as query parameter
     router.registerGetRoute(IpcPaths.IO_SELECT_DIRECTORY, this.selectDirectory.bind(this) as RouteCallback);
     router.registerGetRoute(`${IpcPaths.IO_SELECT_DIRECTORY}/:current`, this.selectDirectory.bind(this) as RouteCallback);
   }

@@ -12,7 +12,7 @@ export interface BaseTableViewProps<T> extends Props {
   sortType: SortType;
 
   bodyContextMenuRenderer?: ContextMenuRenderer;
-  onDataSelected: (cards?: Array<T>) => void;
+  onDataSelected: (selectedData?: Array<T>) => void;
   onClientColumnSort?: (changedSortedIndexMap: Array<number>) => void;
   onServerColumnSort?: (columnName: CardSortField, sortDirection: SortDirection) => void;
 }

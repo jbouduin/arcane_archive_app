@@ -1,10 +1,12 @@
+import "./password-security-bar.css";
+
 import { Callout } from "@blueprintjs/core";
 import classNames from "classnames";
 import { useCallback } from "react";
 import { ZXCVBNScore } from "zxcvbn";
 import { PasswordSecurityBarProps } from "./password-security-bar.props";
 
-export function PasswordSecurityBar(props: PasswordSecurityBarProps) {
+export function PasswordSecurityBar(props: PasswordSecurityBarProps): JSX.Element {
   const normalized = Math.min(props.guessesLog10 || 0, 14); // cap at 14
   const percentage = Math.floor((normalized / 14) * 100);
   const fillerRelativePercentage = (100 / percentage) * 100;
@@ -31,8 +33,8 @@ export function PasswordSecurityBar(props: PasswordSecurityBarProps) {
   );
 
   return (
-    <>
-      <div key="textvalue" className="textValue">{passwordLevel(props.score)}</div>
+    <div className="pwd-security">
+      <div key="textvalue" className="text-value">{passwordLevel(props.score)}</div>
       <div
         key="progressbar"
         className={classNames("wrapper", "bp6-progress-bar")}
@@ -41,9 +43,9 @@ export function PasswordSecurityBar(props: PasswordSecurityBarProps) {
         aria-valuemax={100}
         aria-valuenow={percentage}
       >
-        <div className="barContainer" style={{ flex: fillerFlex }}>
+        <div className="container" style={{ flex: fillerFlex }}>
           <div
-            className="fillerBackground"
+            className="filler-bg"
             style={{ width: `${fillerRelativePercentage}%` }}
           />
         </div>
@@ -51,7 +53,7 @@ export function PasswordSecurityBar(props: PasswordSecurityBarProps) {
       {
         callout()
       }
-    </>
+    </div>
   );
 
   function callout(): JSX.Element | null {

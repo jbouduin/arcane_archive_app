@@ -10,5 +10,6 @@ export interface CardImageViewProps extends Props {
   cardBackId: string | null;
   collectorNumber: string;
   scryfallLanguage: string;
+  size: "small" | "large";
   imageStatus: ScryFallImageStatus;
 }

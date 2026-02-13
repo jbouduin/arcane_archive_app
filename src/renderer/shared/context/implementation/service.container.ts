@@ -2,44 +2,39 @@ import { ToastProps } from "@blueprintjs/core";
 import { SettingsDto } from "../../../../common/dto";
 import { InitializeServiceContainerOptions, ShowToastFn } from "../../types";
 import {
-  IArcaneArchiveProxy,
-  ILibraryCardSearchService, ICardSymbolService,
-  ICollectionService,
-  IColorService, IConfigurationService,
-  IDisplayValueService, IIpcProxy, ILanguageService, ILogService, IMtgSetService,
-  IOverlayService, IServiceContainer, ISessionService, IViewmodelFactoryService,
-  ICollectionCardSearchService
+  IArcaneArchiveProxy, IBasicDataService, ICardSymbolService, ICollectionCardSearchService,
+  ICollectionService, IConfigurationService, IIpcProxy, ILibraryCardSearchService, ILogService,
+  IMtgSetService, IOverlayService, IServiceContainer, ISessionService, IViewmodelFactoryService
 } from "../interface";
 import { InitializationResult } from "../types";
 import { ArcaneArchiveProxy } from "./arcane-archive.proxy";
-import { LibraryCardSearchService } from "./library-card-search.service";
+import { BasicDataService } from "./basic-data.service";
 import { CardSymbolService } from "./card-symbol.service";
+import { CollectionCardSearchService } from "./collection-card-search.service";
 import { CollectionService } from "./collection.service";
-import { ColorService } from "./color.service";
 import { ConfigurationService } from "./configuration.service";
-import { DisplayValueService } from "./display-value.service";
 import { IpcProxy } from "./ipc.proxy";
-import { LanguageService } from "./language.service";
+import { LibraryCardSearchService } from "./library-card-search.service";
 import { LogService } from "./log.service";
 import { MtgSetService } from "./mtg-set.service";
 import { OverlayService } from "./overlay.service";
 import { SessionService } from "./session.service";
 import { ViewmodelFactoryService } from "./viewmodel-factory.service";
-import { CollectionCardSearchService } from "./collection-card-search.service";
+import { IMtgCardService } from "../interface/mtg-card.service";
+import { MtgCardService } from "./mtg-card.service";
 
 export class ServiceContainer implements IServiceContainer {
   //#region Private fields ----------------------------------------------------
   private _arcaneArchiveProxy: IArcaneArchiveProxy;
+  private _basicDataService: IBasicDataService;
   private _cardSymbolService: ICardSymbolService;
-  private _collectionSerivce: ICollectionService;
+  private _collectionService: ICollectionService;
   private _collectionCardSearchService: ICollectionCardSearchService;
-  private _colorService: IColorService;
   private _configurationService: IConfigurationService;
-  private _displayValueService: IDisplayValueService;
   private _ipcProxy: IIpcProxy;
-  private _languageService: ILanguageService;
   private _libraryCardSearchService: ILibraryCardSearchService;
   private _logService: ILogService;
+  private _mtgCardService: IMtgCardService;
   private _mtgSetService: IMtgSetService;
   private _overlayService: IOverlayService;
   private _sessionService: ISessionService;
@@ -51,36 +46,28 @@ export class ServiceContainer implements IServiceContainer {
     return this._arcaneArchiveProxy;
   }
 
+  public get basicDataService(): IBasicDataService {
+    return this._basicDataService;
+  }
+
   public get cardSymbolService(): ICardSymbolService {
     return this._cardSymbolService;
   }
 
   public get collectionService(): ICollectionService {
-    return this._collectionSerivce;
+    return this._collectionService;
   }
 
   public get collectionCardSearchService(): ICollectionCardSearchService {
     return this._collectionCardSearchService;
   }
 
-  public get colorService(): IColorService {
-    return this._colorService;
-  }
-
   public get configurationService(): IConfigurationService {
     return this._configurationService;
   }
 
-  public get displayValueService(): IDisplayValueService {
-    return this._displayValueService;
-  }
-
   public get ipcProxy(): IIpcProxy {
     return this._ipcProxy;
-  }
-
-  public get languageService(): ILanguageService {
-    return this._languageService;
   }
 
   public get libraryCardSearchService(): ILibraryCardSearchService {
@@ -89,6 +76,10 @@ export class ServiceContainer implements IServiceContainer {
 
   public get logService(): ILogService {
     return this._logService;
+  }
+
+  public get mtgCardService(): IMtgCardService {
+    return this._mtgCardService;
   }
 
   public get mtgSetService(): IMtgSetService {
@@ -110,19 +101,18 @@ export class ServiceContainer implements IServiceContainer {
 
   //#region Constructor & C° --------------------------------------------------
   public constructor() {
-    this._libraryCardSearchService = new LibraryCardSearchService();
-    this._cardSymbolService = new CardSymbolService();
     this._arcaneArchiveProxy = new ArcaneArchiveProxy();
-    this._collectionSerivce = new CollectionService();
+    this._basicDataService = new BasicDataService();
+    this._cardSymbolService = new CardSymbolService();
+    this._collectionService = new CollectionService();
     this._collectionCardSearchService = new CollectionCardSearchService();
-    this._colorService = new ColorService();
     this._configurationService = new ConfigurationService();
-    this._displayValueService = new DisplayValueService();
-    this._overlayService = new OverlayService();
     this._ipcProxy = new IpcProxy();
-    this._languageService = new LanguageService();
+    this._libraryCardSearchService = new LibraryCardSearchService();
     this._logService = new LogService();
+    this._mtgCardService = new MtgCardService();
     this._mtgSetService = new MtgSetService();
+    this._overlayService = new OverlayService();
     this._sessionService = new SessionService();
     this._viewmodelFactoryService = new ViewmodelFactoryService();
   }
@@ -138,11 +128,12 @@ export class ServiceContainer implements IServiceContainer {
       errors: new Array<ToastProps>()
     };
 
-    // --- pre-initialize: setup listeners ---
+    // --- pre-initialize: setup listeners, unfortunately the order is important ---
     this._arcaneArchiveProxy.initializeSubscriptions(this._sessionService, this._configurationService);
     this._ipcProxy.initializeSubscriptions(this._configurationService);
     this._sessionService.initializeSubscriptions(this._arcaneArchiveProxy, this._ipcProxy);
-    this._collectionSerivce.initializeSubscriptions(this._sessionService);
+
+    this._collectionService.initializeSubscriptions(this._sessionService);
 
     // --- show toast "interceptor" to be used during initialization ---
     const initializationShowToast: ShowToastFn = (props: ToastProps, _key?: string) => {
@@ -165,8 +156,11 @@ export class ServiceContainer implements IServiceContainer {
         async (configuration: SettingsDto) => {
           result.settings = configuration;
           this._arcaneArchiveProxy.initialize(configuration.apiConfiguration);
+          // LATER next four services could be skippable (although their initialize doesn't do anything)
           this._libraryCardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
+          this._mtgCardService.initialize(this._arcaneArchiveProxy);
           this._collectionCardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
+          this._collectionService.initialize(this._ipcProxy, this._arcaneArchiveProxy);
           // --- get api status once, automatic refresh is started by the  ---
           const apiStatus = await this._arcaneArchiveProxy.forceRefresh();
           if (apiStatus.get("library") != null) {
@@ -175,14 +169,8 @@ export class ServiceContainer implements IServiceContainer {
             if (!options.skipCardSymbolService) {
               skippableServices.push(this._cardSymbolService.initialize(this._ipcProxy));
             }
-            if (!options.skipColorService) {
-              skippableServices.push(this._colorService.initialize(this._arcaneArchiveProxy));
-            }
             if (!options.skipDisplayValueService) {
-              skippableServices.push(this._displayValueService.initialize(this._arcaneArchiveProxy));
-            }
-            if (!options.skipLanguageService) {
-              skippableServices.push(this._languageService.initialize(this._arcaneArchiveProxy));
+              skippableServices.push(this._basicDataService.initialize(this._arcaneArchiveProxy));
             }
             if (!options.skipMtgSetService) {
               skippableServices.push(this._mtgSetService.initialize(this._arcaneArchiveProxy));
@@ -194,11 +182,9 @@ export class ServiceContainer implements IServiceContainer {
             await Promise.all(skippableServices)
               .then(
                 () => {
-                  this._collectionSerivce.initialize(this._arcaneArchiveProxy);
                   this._viewmodelFactoryService.initialize(
-                    this._colorService,
-                    this._displayValueService,
-                    this._languageService,
+                    this._basicDataService,
+                    this._collectionService,
                     this._mtgSetService
                   );
                 },

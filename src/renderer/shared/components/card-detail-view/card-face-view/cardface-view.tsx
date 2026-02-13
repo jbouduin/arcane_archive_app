@@ -1,42 +1,31 @@
-import { H5, Section, SectionCard } from "@blueprintjs/core";
-import classNames from "classnames";
-import { CardSymbolRenderer } from "../../card-symbol-renderer";
+import { BaseDivider } from "../../base/base-divider/base-divider";
+import { CardDetailSection } from "../card-detail-section";
+import { CardDetailSectionCard } from "../card-detail-section-card/card-detail-section-card";
 import { CardTextView } from "../card-text-view/card-text.view";
 import { CardfaceViewProps } from "./cardface-view.props";
 
-export function CardfaceView(props: CardfaceViewProps) {
+export function CardfaceView(props: CardfaceViewProps): JSX.Element {
   // #region Rendering --------------------------------------------------------
   return (
-    <Section
-      collapsible={true}
-      compact={true}
-      rightElement={<CardSymbolRenderer cardSymbols={props.cardface.manaCost} className="mana-cost-image-in-title" />}
-      title={
-        (
-          <>
-            <div className="card-header-line-1">
-              <H5>{props.cardface.printedName}</H5>
-            </div>
-            <div>
-              {props.cardface.printedTypeLine}
-            </div>
-          </>
-        )
-      }
+    <CardDetailSection
+      cardSymbols={props.cardface.manaCost}
+      size="small"
+      title={props.cardface.printedName}
+      subtitle={props.cardface.printedTypeLine}
     >
-      <SectionCard className="card-view-section-card" padded={false}>
-        <CardTextView cardText={props.cardface.printedText} />
+      <CardDetailSectionCard>
+        <CardTextView key="card-text" cardText={props.cardface.printedText} />
         {
           props.cardface.flavorText &&
           (
-            <div>
-              <p className={classNames("bp6-divider", "ruling-divider")} />
-              <p><i>{props.cardface.flavorText}</i></p>
-            </div>
+            <>
+              <BaseDivider key="divider" />
+              <p key="flavor-text"><i>{props.cardface.flavorText}</i></p>
+            </>
           )
         }
-      </SectionCard>
-    </Section>
+      </CardDetailSectionCard>
+    </CardDetailSection>
   );
   // #endregion
 }

@@ -43,6 +43,10 @@ export class SessionService extends BaseService implements ISessionService {
       .then(() => this.resultFactory.createSuccessResultPromise(this.session));
   }
 
+  public getJwt(): string | null {
+    return this.session != null ? this.session.token : null;
+  }
+
   public setSessionData(data: SessionDto): Promise<IResult<void>> {
     return this.applicationService
       .saveSessionCookie()

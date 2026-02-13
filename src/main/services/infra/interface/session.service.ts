@@ -4,6 +4,7 @@ import { IResult } from "../../base";
 export interface ISessionService {
   deleteSessionData(): Promise<IResult<number>>;
   getSessionData(): Promise<IResult<SessionDto | null>>;
+  getJwt(): string | null;
   setSessionData(data: SessionDto): Promise<IResult<void>>;
   getStoredUserNames(): Promise<IResult<Array<string>>>;
   getPassword(userName: string): Promise<IResult<string | null>>;

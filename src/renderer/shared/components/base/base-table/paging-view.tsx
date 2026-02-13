@@ -1,7 +1,7 @@
 import { Button, ButtonGroup } from "@blueprintjs/core";
 import { PagingViewProps } from "./paging-view.props";
 
-export function PagingView(props: PagingViewProps) {
+export function PagingView(props: PagingViewProps): JSX.Element {
   // #region Rendering --------------------------------------------------------
   return (
     <ButtonGroup className="paging-view">
@@ -37,7 +37,7 @@ export function PagingView(props: PagingViewProps) {
     </ButtonGroup>
   );
 
-  function renderPageSizeButton(currentPageSize: number, pageSize: number) {
+  function renderPageSizeButton(currentPageSize: number, pageSize: number): JSX.Element {
     return (
       <Button
         intent={currentPageSize == pageSize ? "primary" : "none"}

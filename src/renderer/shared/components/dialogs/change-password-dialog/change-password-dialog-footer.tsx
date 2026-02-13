@@ -1,13 +1,13 @@
 import { noop } from "lodash";
-import { useServices } from "../../../../hooks";
+import { useDialogs, useServices } from "../../../../hooks";
 import { ChangePasswordRequestDto } from "../../../dto";
 import { DefaultDialogFooter } from "../../base/base-dialog";
-import { showLoginDialog } from "../factory";
 import { ChangePasswordDialogFooterProps } from "./change-password-dialog.props";
 
-export function ChangePasswordDialogFooter(props: ChangePasswordDialogFooterProps) {
+export function ChangePasswordDialogFooter(props: ChangePasswordDialogFooterProps): JSX.Element {
   //#region Hooks -------------------------------------------------------------
   const serviceContainer = useServices();
+  const { showLoginDialog } = useDialogs();
   //#endregion
 
   //#region Event Handling ----------------------------------------------------
@@ -19,7 +19,7 @@ export function ChangePasswordDialogFooter(props: ChangePasswordDialogFooterProp
           if (props.onClose) {
             props.onClose(event);
           }
-          showLoginDialog(serviceContainer, false);
+          showLoginDialog(false);
         },
         noop
       );

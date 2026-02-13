@@ -1,6 +1,6 @@
 import { ControlGroup, HTMLTable, Tab, Tabs, Text, TextAlignment } from "@blueprintjs/core";
 import { useState } from "react";
-import { useServices } from "../../../../hooks";
+import { useSession } from "../../../../hooks";
 import { LanguageDto, MtgSetDto } from "../../../dto";
 import { createAuditableLabelValueItems, LabelValueItem, LabelValuePanel } from "../../base/label-value-panel";
 import { BaseCheckbox, BaseInput } from "../../input";
@@ -13,7 +13,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
   //#endregion
 
   //#region Hooks -------------------------------------------------------------
-  const serviceContainer = useServices();
+  const { isSysAdmin } = useSession();
   //#endregion
 
   //#region Rendering ---------------------------------------------------------
@@ -25,13 +25,13 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
           id="basic"
           key="basic"
           title="Set Details"
-          panel={renderSetDetailsPanel(!serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN"))}
+          panel={renderSetDetailsPanel(!isSysAdmin)}
         />
         <Tab
           id="additional"
           key="additional"
           title="Additional Info"
-          panel={renderAdditionalInfoPanel(!serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN"))}
+          panel={renderAdditionalInfoPanel(!isSysAdmin)}
         />
       </Tabs>
     </>

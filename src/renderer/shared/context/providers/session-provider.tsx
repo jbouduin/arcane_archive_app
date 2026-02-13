@@ -1,19 +1,26 @@
 import { useCallback, useEffect, useState } from "react";
-import { SessionDto } from "../../../../common/dto";
 import { useServices } from "../../../hooks";
 import { SessionContext } from "../shared.context";
-import { SessionContextType } from "../types";
+import { SessionChangeEvent, SessionContextType } from "../types";
 import { SessionProviderProps } from "./session-provider.props";
 
 export function SessionProvider(props: SessionProviderProps): JSX.Element {
   //#region Memoization -------------------------------------------------------
   const loginResponseToSessionContext = useCallback(
-    (loginResponse: SessionDto | null) => {
-      if (loginResponse != null) {
-        return { loggedIn: true, email: loginResponse.profile.email, userName: loginResponse.userName };
+    (event: SessionChangeEvent | null) => {
+      let context: SessionContextType;
+      if (event != null) {
+        context = {
+          email: event.profile.email,
+          isAppAdmin: event.roles.has("ROLE_APP_ADMIN"),
+          isSysAdmin: event.roles.has("ROLE_SYS_ADMIN"),
+          loggedIn: true,
+          userName: event.userName
+        };
       } else {
-        return { loggedIn: false };
+        context = { isAppAdmin: false, isSysAdmin: false, loggedIn: false };
       }
+      return context;
     },
     []
   );
@@ -28,7 +35,7 @@ export function SessionProvider(props: SessionProviderProps): JSX.Element {
   useEffect(
     () => {
       const unsubscribe = sessionService.subscribeSessionChangeListener(
-        (data: SessionDto | null) => setSession(
+        (data: SessionChangeEvent | null) => setSession(
           loginResponseToSessionContext(data)
         )
       );

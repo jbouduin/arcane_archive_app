@@ -1,29 +1,33 @@
 import { AlertProps, ToastProps } from "@blueprintjs/core";
 import { Dispatch } from "react";
-import { ProgressCallbackValue } from "../../../../common/ipc";
+import { IpcPaths, ProgressCallbackValue } from "../../../../common/ipc";
 import { BaseDialogProps } from "../../components/base/base-dialog";
 import { ShowToastFn } from "../../types";
 import { BaseViewmodel } from "../../viewmodel";
-import { IOverlayService } from "../interface";
+import { IIpcProxy, IOverlayService } from "../interface";
 
 export class OverlayService implements IOverlayService {
-  // #region Private fields ---------------------------------------------------
+  //#region Private fields ----------------------------------------------------
   private setAlert!: Dispatch<React.SetStateAction<AlertProps | null>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private setDialogs!: Dispatch<React.SetStateAction<Map<number, BaseDialogProps<any, any>>>>;
-  // TODO check if line above it works with unknown
+  // LATER check if line above it works with unknown
   private setSplashScreen!: Dispatch<React.SetStateAction<ProgressCallbackValue | null>>;
   private _showToast!: ShowToastFn;
   private dialogSequence: number;
-  // #endregion
+  //#endregion
 
-  // #region Constructor ------------------------------------------------------
+  //#region Constructor & C° --------------------------------------------------
   public constructor() {
     this.dialogSequence = 0;
   }
-  // #endregion
+  //#endregion
 
-  // #region IOverlayService Members ------------------------------------------
+  //#region IOverlayService Members: Service methods  -------------------------
+  public setAlertDispatcher(setAlert: React.Dispatch<React.SetStateAction<AlertProps | null>>): void {
+    this.setAlert = setAlert;
+  }
+
   public setDialogDispatcher(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setDialogsNew: React.Dispatch<React.SetStateAction<Map<number, BaseDialogProps<any, any>>>>
@@ -31,8 +35,8 @@ export class OverlayService implements IOverlayService {
     this.setDialogs = setDialogsNew;
   }
 
-  public setAlertDispatcher(setAlert: React.Dispatch<React.SetStateAction<AlertProps | null>>): void {
-    this.setAlert = setAlert;
+  public setShowToast(showToast: ShowToastFn): void {
+    this._showToast = showToast;
   }
 
   public setSplashScreenDispatcher(
@@ -40,9 +44,11 @@ export class OverlayService implements IOverlayService {
   ): void {
     this.setSplashScreen = setSplashScreen;
   }
+  //#endregion
 
-  public setShowToast(showToast: ShowToastFn): void {
-    this._showToast = showToast;
+  //#region IOverlayService Members: blueprint overlays  ----------------------
+  public hideSplashSceen(): void {
+    this.setSplashScreen(null);
   }
 
   public openDialog<Dto extends object, Vm extends BaseViewmodel<Dto>>(
@@ -66,18 +72,6 @@ export class OverlayService implements IOverlayService {
     });
   }
 
-  public showToast(toastProps: ToastProps, key?: string): void {
-    this._showToast(toastProps, key);
-  }
-
-  public showSplashScreen(value: ProgressCallbackValue): void {
-    this.setSplashScreen(value);
-  }
-
-  public hideSplashSceen(): void {
-    this.setSplashScreen(null);
-  }
-
   public showAlert(alertProps: AlertProps): void {
     if (!alertProps.onClose) {
       const newAlertProps: AlertProps = {
@@ -89,9 +83,31 @@ export class OverlayService implements IOverlayService {
       this.setAlert(alertProps);
     }
   }
-  // #endregion
 
-  // #region Auxiliary Methods ------------------------------------------------
+  public showSplashScreen(value: ProgressCallbackValue): void {
+    this.setSplashScreen(value);
+  }
+
+  public showToast(toastProps: ToastProps, key?: string): void {
+    this._showToast(toastProps, key);
+  }
+  //#endregion
+
+  //#region IOverlayService Members: OS Native Dialogs  -----------------------
+  public saveAs(ipcProxy: IIpcProxy, purpose?: string): Promise<string | undefined> {
+    return ipcProxy.getData<string>(IpcPaths.getSaveAsPath(purpose));
+  }
+
+  public selectDirectory(ipcProxy: IIpcProxy, currentValue: string): Promise<string | undefined> {
+    return ipcProxy.getData<string>(`${IpcPaths.IO_SELECT_DIRECTORY}/${encodeURIComponent(currentValue)}`);
+  }
+
+  public selectFile(ipcProxy: IIpcProxy, purpose?: string): Promise<string | undefined> {
+    return ipcProxy.getData<string>(IpcPaths.getSelectFilePath(purpose));
+  }
+  //#endregion
+
+  //#region Auxiliary Methods -------------------------------------------------
   private closeDialog<Dto extends object, Vm extends BaseViewmodel<Dto>>(
     dialogNumber: number
   ): void {
@@ -105,5 +121,5 @@ export class OverlayService implements IOverlayService {
       return newMap;
     });
   }
-  // #endregion
+  //#endregion
 }

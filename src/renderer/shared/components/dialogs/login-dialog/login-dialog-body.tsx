@@ -1,10 +1,12 @@
+import "./login-dialog.css";
+
 import { SectionCard, Tag } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { useServices } from "../../../../hooks";
 import { BaseInput, PasswordInput } from "../../input";
 import { LoginDialogBodyProps } from "./login-dialog.props";
 
-export function LoginDialogBody(props: LoginDialogBodyProps) {
+export function LoginDialogBody(props: LoginDialogBodyProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   // #endregion
@@ -24,7 +26,8 @@ export function LoginDialogBody(props: LoginDialogBodyProps) {
       .finally(() => props.viewmodelChanged());
   }
 
-  function onRemoveUser(username: string) {
+  function onRemoveUser(username: string): void {
+    // LATER ask confirmation
     void serviceContainer.sessionService
       .deleteSavedUser(serviceContainer.ipcProxy, username)
       .then(
@@ -90,7 +93,7 @@ export function LoginDialogBody(props: LoginDialogBodyProps) {
             Array.of(...props.viewmodel.savedUserNames).map((userName: string) => {
               return (
                 <Tag
-                  className="user-name-tag"
+                  className="existing-user-name-tag"
                   interactive={true}
                   key={userName}
                   onClick={() => onSelectUser(userName)}

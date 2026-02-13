@@ -1,10 +1,15 @@
 import { noop } from "lodash";
 import { useState } from "react";
 import { Mosaic, MosaicNode } from "react-mosaic-component";
-import { useServices, useSession } from "../../../hooks";
+import { useApiStatus, useServices, useSession } from "../../../hooks";
 import { SortDirection } from "../../../shared/components/base/base-table";
 import { NotLoggedInView } from "../../../shared/components/not-logged-view/not-logged-in-view";
-import { CardFilterParamsDto, QueryParamsDto, CollectionCardListDto, CollectionDto, MtgSetTreeDto, QueryResultDto } from "../../../shared/dto";
+import {
+  ServiceNotAvailableView
+} from "../../../shared/components/service-not-available-view/service-not-available-view";
+import {
+  CardFilterParamsDto, CollectionCardListDto, CollectionDto, MtgSetTreeDto, QueryParamsDto, QueryResultDto
+} from "../../../shared/dto";
 import { CardSortField } from "../../../shared/types";
 import { CollectionViewCenter } from "./collection-view-center/collection-view-center";
 import { CollectionViewLeft } from "./collection-view-left/collection-view-left";
@@ -16,6 +21,7 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const { loggedIn } = useSession();
   const { collectionCardSearchService: searchService } = useServices();
+  const { collectionServiceAvailable } = useApiStatus();
   // #endregion
 
   // #region State ------------------------------------------------------------
@@ -36,7 +42,9 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
     queryResult: searchService.queryResult,
     selectedSearchTab: searchService.selectedSearchTab,
     selectedCard: null,
-    setFilter: new Array<MtgSetTreeDto>()
+    selectedCollection: null,
+    setFilter: new Array<MtgSetTreeDto>(),
+    version: 0
   };
   const [mosaicLayout, setMosaicLayout] = useState<MosaicNode<string>>(initialLayout);
   const [state, setState] = useState<CollectionViewState>(initialCollectionViewState);
@@ -104,7 +112,12 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
       <CollectionViewCenter
         cardQueryParams={state.queryParams}
         queryResult={state.queryResult}
-        cardSelected={(cardId: number | null) => setState(prev => ({ ...prev, selectedCard: cardId }))}
+        version={state.version}
+        cardSelected={
+          (cardId: number | null, collectionId: number | null) => setState(prev => (
+            { ...prev, selectedCard: cardId, selectedCollection: collectionId }
+          ))
+        }
         pageNumberChanged={(newPage: number) => {
           const newCardQueryParams: QueryParamsDto = { ...state.queryParams, pageNumber: newPage };
           searchService.queryParams = newCardQueryParams;
@@ -151,13 +164,31 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
       />
     ),
     right: (
-      <CollectionViewRight />
+      <CollectionViewRight
+        cardLanguageId={state.selectedCard}
+        collectionId={state.selectedCollection}
+        onQuantityChanged={
+          (qty: number) => {
+            const changedOne: CollectionCardListDto | undefined =
+              state.queryResult.resultList
+                .find((ccl: CollectionCardListDto) =>
+                  ccl.id == state.selectedCard && ccl.collectionId == state.selectedCollection);
+            if (changedOne != null) {
+              changedOne.quantity = qty;
+            }
+            setState(prev => ({ ...prev, version: prev.version + 1 }));
+          }
+        }
+      />
     )
   };
   return (
     <>
       {
-        loggedIn && (
+        !collectionServiceAvailable && <ServiceNotAvailableView serviceName="Collection service" />
+      }
+      {
+        collectionServiceAvailable && loggedIn && (
           <Mosaic
             renderTile={(id: string) => elementMap[id]}
             value={mosaicLayout}
@@ -167,8 +198,8 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
         )
       }
       {
-        !loggedIn && (
-          <NotLoggedInView {...props} server="collection" />
+        collectionServiceAvailable && !loggedIn && (
+          <NotLoggedInView {...props} />
         )
       }
     </>

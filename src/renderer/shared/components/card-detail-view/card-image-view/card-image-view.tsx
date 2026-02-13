@@ -1,20 +1,25 @@
+import "./card-image-view.css";
+
 import { Button, SectionCard } from "@blueprintjs/core";
 import classNames from "classnames";
-import * as React from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { IpcPaths } from "../../../../../common/ipc";
 import { CARD_IMAGE_BACK, CARD_IMAGE_FACE } from "../../../../../common/types";
 import { compareClassNameProp } from "../../util";
 import { CardImageViewProps } from "./card-image-view.props";
 import { CardImageViewState } from "./card-image-view.state";
 
-export const CardImageView = React.memo(
+export const CardImageView = memo(
   (props: CardImageViewProps) => {
+    const sizeClassName = props.size == "small" ? "aa-card-image-small" : "aa-card-image-large";
     // #region State ----------------------------------------------------------
-    const [cardImageState, setCardImageState] = React.useState<CardImageViewState>({ currentDisplayedSide: "front", rotationClass: "" });
+    const [cardImageState, setCardImageState] = useState<CardImageViewState>(
+      { currentDisplayedSide: "front", rotationClass: "" }
+    );
     // #endregion
 
     // #region Event handling -------------------------------------------------
-    const onFlipClicked = React.useCallback(
+    const onFlipClicked = useCallback(
       () => {
         const newState: CardImageViewState = {
           currentDisplayedSide: cardImageState.currentDisplayedSide,
@@ -25,7 +30,7 @@ export const CardImageView = React.memo(
       [cardImageState, props]
     );
 
-    const onRotateClicked = React.useCallback(
+    const onRotateClicked = useCallback(
       () => {
         const newState: CardImageViewState = {
           currentDisplayedSide: cardImageState.currentDisplayedSide,
@@ -36,7 +41,7 @@ export const CardImageView = React.memo(
       [cardImageState, props]
     );
 
-    const onReverseClicked = React.useCallback(
+    const onReverseClicked = useCallback(
       () => {
         const newState: CardImageViewState = {
           currentDisplayedSide: cardImageState.currentDisplayedSide == "front" ? "back" : "front",
@@ -49,7 +54,7 @@ export const CardImageView = React.memo(
     // #endregion
 
     // #region effect ---------------------------------------------------------
-    React.useEffect(
+    useEffect(
       () => {
         setCardImageState({
           currentDisplayedSide: "front",
@@ -62,28 +67,30 @@ export const CardImageView = React.memo(
 
     // #region Rendering ------------------------------------------------------
     return (
-      <SectionCard
-        className="card-view-section-card"
-        padded={false}
-        style={{ display: "flex", flexFlow: "column" }}
-      >
-        <img
-          className={classNames(cardImageState.rotationClass == "rotate-90" ? "card-image-landscape" : "card-image-portrait", "card-image", cardImageState.rotationClass)}
-          src={calculateImageUrl()}
-        />
-        <div style={{ display: "flex", flexFlow: "row", justifyContent: "center", margin: "5px" }}>
-          {
-            renderButtons()
-          }
-        </div>
-      </SectionCard>
+      <div className={sizeClassName}>
+
+        <SectionCard
+          className="aa-card-image-section-card"
+          padded={false}
+        >
+          <img
+            className={classNames("aa-card-image", cardImageState.rotationClass)}
+            src={calculateImageUrl()}
+          />
+          <div className="aa-card-image-buttons">
+            {
+              renderButtons()
+            }
+          </div>
+        </SectionCard>
+      </div>
 
     );
 
     function renderButtons(): Array<React.JSX.Element> {
       const result = new Array<React.JSX.Element>();
       result.push((
-        <Button key="reverse" onClick={onReverseClicked}>Reverse</Button>
+        <Button disabled={props.cardBackId == null} key="reverse" onClick={onReverseClicked}>Reverse</Button>
       ));
       if (props.cardLayout == "FLIP") {
         result.push((
@@ -120,9 +127,12 @@ export const CardImageView = React.memo(
     // #endregion
   },
   (prev: CardImageViewProps, next: CardImageViewProps) => {
-    return prev.collectorNumber == next.collectorNumber &&
-      prev.setCode == next.setCode &&
-      prev.scryfallLanguage == next.scryfallLanguage &&
-      compareClassNameProp(prev.className || "", next.className || "");
+    // fast path
+    if (prev === next) return true;
+
+    return prev.collectorNumber === next.collectorNumber &&
+      prev.setCode === next.setCode &&
+      prev.scryfallLanguage === next.scryfallLanguage &&
+      compareClassNameProp(prev.className, next.className);
   }
 );

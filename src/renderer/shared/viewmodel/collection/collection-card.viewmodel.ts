@@ -1,21 +1,19 @@
+import { ScryFallImageStatus } from "../../../../common/enums";
 import { CollectionCardDto, CollectionCardQuantityDto } from "../../dto";
+import { CardConditionDto } from "../../dto/card-condition.dto";
 import { SelectOption } from "../../types";
 import { BaseViewmodel, ViewmodelMode } from "../base.viewmodel";
 import { CollectionCardQuantityViewmodel } from "./collection-card-quantity.viewmodel";
 
 export class CollectionCardViewmodel extends BaseViewmodel<CollectionCardDto> {
   //#region Private fields ----------------------------------------------------
+  private _imageStatus: ScryFallImageStatus;
   private _allQuantitiesViewmodels: Array<CollectionCardQuantityViewmodel>;
   private foilQuantitiesViewmodels: Map<string, CollectionCardQuantityViewmodel>;
   private nonFoilQuantitiesViewmodels: Map<string, CollectionCardQuantityViewmodel>;
   //#endregion
 
   //#region Getters/Setters ---------------------------------------------------
-  public get isValid(): boolean {
-    return super.isValid &&
-      this._allQuantitiesViewmodels.some((vm: CollectionCardQuantityViewmodel) => vm.quantity > 0);
-  }
-
   public get setCode(): string {
     return this._dto.setCode;
   }
@@ -24,12 +22,21 @@ export class CollectionCardViewmodel extends BaseViewmodel<CollectionCardDto> {
     this._dto.setCode = value;
   }
 
-  public get collectorNumber(): string {
-    return this._dto.collectorNumber;
+  public get cardCode(): string {
+    return this._dto.cardCode;
   }
 
-  public set collectorNumber(value: string) {
-    this._dto.collectorNumber = value;
+  public set cardCode(value: string) {
+    this._dto.cardCode = value;
+  }
+
+  public get imageStatus(): ScryFallImageStatus {
+    return this._imageStatus;
+  }
+
+  public get totalQuantity(): number {
+    return this._allQuantitiesViewmodels
+      .reduce((sum: number, qvm: CollectionCardQuantityViewmodel) => sum + qvm.quantity, 0);
   }
   //#endregion
 
@@ -37,20 +44,29 @@ export class CollectionCardViewmodel extends BaseViewmodel<CollectionCardDto> {
   override get dtoToSave(): CollectionCardDto {
     return {
       ...this._dto,
-      quantities: this.getChangedQuantityViewmodels().map((vm: CollectionCardQuantityViewmodel) => vm.dto)
+      // quantities: this.getChangedQuantityViewmodels().map((vm: CollectionCardQuantityViewmodel) => vm.dto)
+      quantities: this._allQuantitiesViewmodels
+        .filter((vm: CollectionCardQuantityViewmodel) => vm.hasChanges || vm.quantity > 0)
+        .map((vm: CollectionCardQuantityViewmodel) => vm.dtoToSave)
     };
   }
   //#endregion
 
   //#region Constructor & C° --------------------------------------------------
-  public constructor(dto: CollectionCardDto, mode: ViewmodelMode, cardConditions: Array<SelectOption<string>>) {
+  public constructor(
+    dto: CollectionCardDto,
+    imageStatus: ScryFallImageStatus,
+    mode: ViewmodelMode,
+    cardConditions: Array<SelectOption<CardConditionDto>>
+  ) {
     super(dto, mode);
+    this._imageStatus = imageStatus;
     this.foilQuantitiesViewmodels = new Map<string, CollectionCardQuantityViewmodel>();
     this.nonFoilQuantitiesViewmodels = new Map<string, CollectionCardQuantityViewmodel>();
     this._allQuantitiesViewmodels = new Array<CollectionCardQuantityViewmodel>();
-    cardConditions.forEach((cc: SelectOption<string>) => {
-      this.registerQuantityViewmodel(cc.value, true);
-      this.registerQuantityViewmodel(cc.value, false);
+    cardConditions.forEach((cc: SelectOption<CardConditionDto>) => {
+      this.registerQuantityViewmodel(cc.value.condition, true);
+      this.registerQuantityViewmodel(cc.value.condition, false);
     });
   }
 

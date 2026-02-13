@@ -6,7 +6,7 @@ export interface BaseInputProps<Dto extends object> extends BaseProps<Dto> {
   /**
    * Set which validations have to be executed. If the validation has not been registered
    * an exception will be thrown, resp. the promise will be rejected.
-   * Defaults to "none"
+   * Defaults to `"none"`
    */
   validation?: ValidationType;
   /**

@@ -10,7 +10,7 @@ export interface DefaultDialogFooterProps<Dto extends object, Vm extends BaseVie
    */
   additionalLeftButtons?: ReactNode;
   /**
-   * Show the reset button
+   * Show the reset button. Defaults to `true`
    */
   showResetButton?: boolean;
   /**
@@ -22,7 +22,7 @@ export interface DefaultDialogFooterProps<Dto extends object, Vm extends BaseVie
    */
   resetButtonIcon?: IconName | MaybeElement;
   /**
-   * Default: true
+   * Default: `true`
    */
   showCommitButton?: boolean;
   /**
@@ -33,6 +33,10 @@ export interface DefaultDialogFooterProps<Dto extends object, Vm extends BaseVie
    * Default floppy-disk
    */
   commitButtonIcon?: IconName | MaybeElement;
+  /**
+   * Show the cancel button. Default `true`
+   */
+  showCancelButton?: boolean;
   /**
    * Default: Cancel
    */

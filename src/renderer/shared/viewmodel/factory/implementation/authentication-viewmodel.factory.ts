@@ -1,7 +1,10 @@
 import { PreferencesDto } from "../../../../../common/dto";
-import { IArcaneArchiveProxy, IServiceContainer } from "../../../context";
+import { IArcaneArchiveProxy, ISessionService } from "../../../context";
 import { RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto } from "../../../dto";
-import { ChangePasswordViewmodel, LoginViewmodel, ProfileViewmodel, RecoverPasswordViewmodel, RegisterViewmodel, ResetPasswordViewmodel } from "../../authentication";
+import {
+  ChangePasswordViewmodel, LoginViewmodel, ProfileViewmodel,
+  RecoverPasswordViewmodel, RegisterViewmodel, ResetPasswordViewmodel
+} from "../../authentication";
 import { IAuthenticationViewmodelFactory } from "../interface";
 
 export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelFactory {
@@ -30,25 +33,18 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
     );
   }
 
-  public async getLoginViewmodel(
+  public getLoginViewmodel(
     showRegisterButton: boolean,
-    serviceContainer: IServiceContainer
-  ): Promise<LoginViewmodel> {
+    savedUserNames: Array<string>,
+    passwordOfSingleUser: string | null
+  ): LoginViewmodel {
     let result: LoginViewmodel;
-    const savedUserNames = await serviceContainer.sessionService
-      .getSavedUserNames(serviceContainer.ipcProxy)
-      .then(
-        (userNames: Array<string>) => userNames,
-        () => new Array<string>()
-      );
     if (savedUserNames.length == 1) {
       // create an initial view model and set the properties, so that the modified flag is true
-      const existingPwd = await serviceContainer.sessionService
-        .getPassword(serviceContainer.ipcProxy, savedUserNames[0]);
       result = this.getInitialLoginViewmodel(showRegisterButton, savedUserNames);
       result.dto["user"] = savedUserNames[0];
-      result.dto["password"] = existingPwd;
-      result.selectedExistingPassword = existingPwd;
+      result.dto["password"] = passwordOfSingleUser!;
+      result.selectedExistingPassword = passwordOfSingleUser!;
     } else {
       result = new LoginViewmodel(
         {
@@ -66,12 +62,13 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
     return new RecoverPasswordViewmodel(dto);
   }
 
-  public async getRegisterViewmodel(
+  public getRegisterViewmodel(
     showLoginButton: boolean,
-    serviceContainer: IServiceContainer,
-    preferences: PreferencesDto
-  ): Promise<RegisterViewmodel> {
-    const newUserName = await serviceContainer.sessionService.getNewUserName(serviceContainer.arcaneArchiveProxy);
+    newUserName: string,
+    preferences: PreferencesDto,
+    arcaneArchiveProxy: IArcaneArchiveProxy,
+    sessionService: ISessionService
+  ): RegisterViewmodel {
     const registerDto: RegisterRequestDto = {
       userName: newUserName,
       password: "",
@@ -82,17 +79,15 @@ export class AuthenticationViewmodelFactory implements IAuthenticationViewmodelF
       lastName: "",
       preferences: preferences
     };
-    return new RegisterViewmodel(registerDto, showLoginButton, serviceContainer);
+    return new RegisterViewmodel(registerDto, showLoginButton, arcaneArchiveProxy, sessionService);
   }
 
   public getResetPasswordViewmodel(dto: ResetPasswordRequestDto): ResetPasswordViewmodel {
     return new ResetPasswordViewmodel(dto);
   }
 
-  public getUserViewmodel(arcaneArchiveProxy: IArcaneArchiveProxy): Promise<ProfileViewmodel> {
-    return arcaneArchiveProxy
-      .getData<UserDto>("authentication", "/app/account")
-      .then((userDto: UserDto) => new ProfileViewmodel(userDto));
+  public getUserViewmodel(userDto: UserDto): ProfileViewmodel {
+    return new ProfileViewmodel(userDto);
   }
   // #endregion
 }

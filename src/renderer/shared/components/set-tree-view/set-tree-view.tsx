@@ -1,72 +1,82 @@
 import { TreeNodeInfo } from "@blueprintjs/core";
-import classNames from "classnames";
 import { cloneDeep, isEqual, upperFirst } from "lodash";
-import React from "react";
+import { memo, useState } from "react";
 import { CardSetGroupBy, CardSetSort } from "../../../../common/types";
 import { useServices } from "../../../hooks";
 import { MtgSetTreeConfigurationViewmodel, MtgSetTreeViewmodel } from "../../viewmodel";
 import { BaseTreeView, BaseTreeViewProps } from "../base/base-tree-view";
+import { CardSetIcon } from "../card-set-icon";
 import { HeaderView } from "./header-view";
 import { SetTreeContextMenu } from "./set-tree-context-menu";
 import { SetTreeViewProps } from "./set-tree-view.props";
 
-const Treeview = React.memo(
+const Treeview = memo(
   BaseTreeView<MtgSetTreeViewmodel, MtgSetTreeConfigurationViewmodel>,
-  (prev: BaseTreeViewProps<MtgSetTreeViewmodel, MtgSetTreeConfigurationViewmodel>, next: BaseTreeViewProps<MtgSetTreeViewmodel, MtgSetTreeConfigurationViewmodel>) => {
+  (
+    prev: BaseTreeViewProps<MtgSetTreeViewmodel, MtgSetTreeConfigurationViewmodel>,
+    next: BaseTreeViewProps<MtgSetTreeViewmodel, MtgSetTreeConfigurationViewmodel>
+  ) => {
     return isEqual(prev.data?.length, next.data?.length) && isEqual(prev.filterProps.filter, next.filterProps.filter);
   }
 );
 
 export function SetTreeView(props: SetTreeViewProps) {
-  // #region State ------------------------------------------------------------
-  const [state, setState] = React.useState<MtgSetTreeConfigurationViewmodel>(props.configuration);
-  // #endregion
+  //#region State -------------------------------------------------------------
+  const [state, setState] = useState<MtgSetTreeConfigurationViewmodel>(props.configuration);
+  //#endregion
 
-  // #region Hooks ------------------------------------------------------------
+  //#region Hooks -------------------------------------------------------------
   const serviceContainer = useServices();
-  // #endregion
+  //#endregion
 
-  // #region Event Handling ---------------------------------------------------
-  const onTextFilterChanged = (textFilterValue: string) => {
+  //#region Event Handling ----------------------------------------------------
+  function onTextFilterChanged(textFilterValue: string): void {
     const newState = cloneDeep(state);
     newState.cardSetFilterValue = textFilterValue;
     setState(newState);
   };
 
-  const onCardSetSortChanged = (cardSetSort: CardSetSort) => {
+  function onCardSetSortChanged(cardSetSort: CardSetSort): void {
     const newState = cloneDeep(state);
     newState.cardSetFilterValue = state.cardSetFilterValue;
     newState.cardSetSort = cardSetSort;
     setState(newState);
   };
 
-  const onCardSetGroupByChanged = (cardSetGroupBy: CardSetGroupBy) => {
+  function onCardSetGroupByChanged(cardSetGroupBy: CardSetGroupBy): void {
     const newState = cloneDeep(state);
     newState.cardSetFilterValue = state.cardSetFilterValue;
     newState.cardSetGroupBy = cardSetGroupBy;
     setState(newState);
   };
 
-  const onCardSetTypeFilterChanged = (cardSetType: string) => {
+  function onCardSetTypeFilterChanged(cardSetType: string): void {
     const newState = cloneDeep(state);
     newState.cardSetFilterValue = state.cardSetFilterValue;
     newState.toggleCardSetFilterType(cardSetType);
     setState(newState);
   };
 
-  function applyFilterProps(data: Array<MtgSetTreeViewmodel>, filterProps: MtgSetTreeConfigurationViewmodel): Array<MtgSetTreeViewmodel> {
+  function applyFilterProps(
+    data: Array<MtgSetTreeViewmodel>,
+    filterProps: MtgSetTreeConfigurationViewmodel
+  ): Array<MtgSetTreeViewmodel> {
     // --- filter Sets by textfilter value and cardSetType ---
     const result = data.filter((cardSet: MtgSetTreeViewmodel) => {
-      return (filterProps.cardSetFilterValue ? cardSet.cardSetName.toUpperCase().indexOf(filterProps.cardSetFilterValue.toUpperCase()) >= 0 : true) &&
-        filterProps.cardSetTypeFilter.has(cardSet.cardSetType);
+      return (
+        filterProps.cardSetFilterValue
+          ? cardSet.cardSetName.toUpperCase().indexOf(filterProps.cardSetFilterValue.toUpperCase()) >= 0
+          : true) && filterProps.cardSetTypeFilter.has(cardSet.cardSetType);
     });
 
-    // --- if group by parent then filter out those items where parent is filtered out and add those whose parent was removed ---
+    // --- if group by parent: filter out items where parent is filtered out and add those whose parent was removed ---
     if (filterProps.cardSetGroupBy == "parent") {
       // --- find all Sets that are parent of another set ---
       let parents = result
         .filter((cardSet: MtgSetTreeViewmodel) => cardSet.parentId != null)
-        .map((cardSet: MtgSetTreeViewmodel) => data.find((parent: MtgSetTreeViewmodel) => parent.id == cardSet.parentId)!);
+        .map(
+          (cardSet: MtgSetTreeViewmodel) => data.find((parent: MtgSetTreeViewmodel) => parent.id == cardSet.parentId)!
+        );
       // --- create an aray of unique parents ---
       let uniqueParents = [...new Map(parents.map((parent: MtgSetTreeViewmodel) => [parent["id"], parent])).values()];
       // --- process that array
@@ -74,7 +84,9 @@ export function SetTreeView(props: SetTreeViewProps) {
         result.push(...uniqueParents);
         parents = parents
           .filter((cardSet: MtgSetTreeViewmodel) => cardSet.parentId != null)
-          .map((cardSet: MtgSetTreeViewmodel) => data.find((parent: MtgSetTreeViewmodel) => parent.id == cardSet.parentId)!);
+          .map((cardSet: MtgSetTreeViewmodel) =>
+            data.find((parent: MtgSetTreeViewmodel) => parent.id == cardSet.parentId)!
+          );
         uniqueParents = [...new Map(parents.map((parent: MtgSetTreeViewmodel) => [parent["id"], parent])).values()];
       }
       const uniqueResult = [...new Map(result.map((r: MtgSetTreeViewmodel) => [r["id"], r])).values()];
@@ -83,9 +95,9 @@ export function SetTreeView(props: SetTreeViewProps) {
       return result;
     }
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <>
       <HeaderView
@@ -102,14 +114,19 @@ export function SetTreeView(props: SetTreeViewProps) {
         buildTree={buildTree}
         data={props.cardSets}
         filterProps={{ filter: state, applyFilterProps: applyFilterProps }}
-        onDataSelected={(sets: Array<MtgSetTreeViewmodel>) => props.onSetsSelected(sets.map((set: MtgSetTreeViewmodel) => set.dto))}
+        onDataSelected={
+          (sets: Array<MtgSetTreeViewmodel>) => props.onSetsSelected(sets.map((set: MtgSetTreeViewmodel) => set.dto))
+        }
       />
     </>
   );
-  // #endregion
+  //#endregion
 
-  // #region Auxiliary Methods: build tree ------------------------------------
-  function buildTree(data: Array<MtgSetTreeViewmodel>, props?: MtgSetTreeConfigurationViewmodel): Array<TreeNodeInfo<MtgSetTreeViewmodel | string>> {
+  //#region Auxiliary Methods: build tree -------------------------------------
+  function buildTree(
+    data: Array<MtgSetTreeViewmodel>,
+    props?: MtgSetTreeConfigurationViewmodel
+  ): Array<TreeNodeInfo<MtgSetTreeViewmodel | string>> {
     let result: Array<TreeNodeInfo<MtgSetTreeViewmodel>>;
     switch (props?.cardSetGroupBy || "parent") {
       case "parent":
@@ -132,7 +149,9 @@ export function SetTreeView(props: SetTreeViewProps) {
     return buildTreeByParentRecursive(cardSets, null);
   }
 
-  function buildTreeByParentRecursive(cardSets: Array<MtgSetTreeViewmodel>, id: number | null): Array<TreeNodeInfo<MtgSetTreeViewmodel>> {
+  function buildTreeByParentRecursive(
+    cardSets: Array<MtgSetTreeViewmodel>, id: number | null
+  ): Array<TreeNodeInfo<MtgSetTreeViewmodel>> {
     return cardSets
       .filter((item: MtgSetTreeViewmodel) => item.parentId === id)
       .sort(sortViewmodelfunction)
@@ -144,7 +163,10 @@ export function SetTreeView(props: SetTreeViewProps) {
       });
   }
 
-  function buildTreeByBlockOrType(cardSets: Array<MtgSetTreeViewmodel>, groupFieldFunction: (cardSet: MtgSetTreeViewmodel) => string): Array<TreeNodeInfo<MtgSetTreeViewmodel>> {
+  function buildTreeByBlockOrType(
+    cardSets: Array<MtgSetTreeViewmodel>,
+    groupFieldFunction: (cardSet: MtgSetTreeViewmodel) => string
+  ): Array<TreeNodeInfo<MtgSetTreeViewmodel>> {
     const groups = [...new Set(cardSets.map((cardSet: MtgSetTreeViewmodel) => groupFieldFunction(cardSet)))];
     groups.sort((a: string, b: string) => (a ?? "zzz").toUpperCase().localeCompare((b ?? "zzz").toUpperCase()));
 
@@ -192,12 +214,7 @@ export function SetTreeView(props: SetTreeViewProps) {
           cardSetId={cardSet.id}
           cardSetCode={cardSet.code}
         >
-          <i
-            key={`icon-${cardSet.id}`}
-            className={classNames("ss", "ss-" + cardSet.keyRuneCode.toLowerCase())}
-            style={{ paddingRight: "5px" }}
-          >
-          </i>
+          <CardSetIcon keyruneCode={cardSet.keyRuneCode} />
           {cardSet.treeItemLabel}
         </SetTreeContextMenu>
       ),
@@ -207,5 +224,5 @@ export function SetTreeView(props: SetTreeViewProps) {
     };
     return node;
   }
-  // #endregion
+  //#endregion
 }

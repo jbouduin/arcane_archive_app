@@ -1,12 +1,15 @@
 import { join } from "path";
 import { inject, singleton } from "tsyringe";
-import { ApiConfigurationDto, PreferencesDto, ResultDto, SettingsDto, SystemConfigurationDto } from "../../../../common/dto";
+import {
+  ApiConfigurationDto, PreferencesDto, ResultDto,
+  SettingsDto, SystemConfigurationDto
+} from "../../../../common/dto";
 import { LogLevel, ScryfallImageSize } from "../../../../common/enums";
+import { mergeWithChangeDetails } from "../../../../common/util";
 import { DiscoveryDto } from "../../../dto";
 import { BaseService, IResult } from "../../base";
 import { INFRASTRUCTURE } from "../../service.tokens";
 import { IConfigurationService, IIoService, ILogService, IResultFactory } from "../interface";
-import { mergeWithChangeDetails } from "../../../../common/util";
 
 @singleton()
 export class ConfigurationService extends BaseService implements IConfigurationService {
@@ -141,6 +144,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   //#region Auxiliary methods - factory defaults ------------------------------
   private createSystemSettingsFactoryDefault(): SystemConfigurationDto {
     const result: SystemConfigurationDto = {
+      // LATER this should be an environment variable
       discovery: "http://localhost:5402/api/public/discover",
       dataConfiguration: {
         rootDataDirectory: this.ioService.defaultDataDirectory,
@@ -168,11 +172,18 @@ export class ConfigurationService extends BaseService implements IConfigurationS
 
   private createPreferencesFactoryDefault(useDarkTheme: boolean): PreferencesDto {
     const result: PreferencesDto = {
-      refreshCacheAtStartup: false,
       cachedImageSize: ScryfallImageSize.NORMAL,
-      useDarkTheme: useDarkTheme,
-      defaultCardSortField: "collectorNumberSortValue",
+      cardConditions: [
+        "MINT",
+        "NEAR_MINT",
+        "EXCELLENT",
+        "GOOD",
+        "LIGHT_PLAYED",
+        "PLAYED",
+        "POOR",
+      ],
       defaultCardSortDirection: "ASC",
+      defaultCardSortField: "collectorNumberSortValue",
       defaultPageSize: 50,
       librarySetTreeSettings: {
         cardSetSort: "releaseDateDescending",
@@ -185,7 +196,9 @@ export class ConfigurationService extends BaseService implements IConfigurationS
           "DUEL_DECK",
           "PROMO"
         ]
-      }
+      },
+      refreshCacheAtStartup: false,
+      useDarkTheme: useDarkTheme
     };
     return result;
   }

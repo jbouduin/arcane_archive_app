@@ -1,0 +1,13 @@
+.aa-card-section-title-1 {
+  display: flex;
+  flex-direction: row;
+}
+
+.aa-mana-cost-in-title {
+  margin-right: 3px;
+  margin-bottom: -3px
+}
+
+h5.bp6-heading.aa-card-section-no-subtitle {
+  margin-bottom: 0px;
+}

@@ -1,27 +1,27 @@
 import { Button, ButtonGroup, IconName, InputGroup, Menu, MenuDivider, MenuItem, Popover } from "@blueprintjs/core";
-import React from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useServices } from "../../../hooks";
-import { IDisplayValueService } from "../../context";
+import { IBasicDataService } from "../../context";
 import { compareClassNameProp } from "../util";
 import { HeaderViewProps } from "./header-view.props";
 
 type PopoverKey = "card-set-group-by-menu" | "card-set-sort-menu" | "card-set-type-filter-menu";
 
-function headerView(props: HeaderViewProps) {
+function headerView(props: HeaderViewProps): JSX.Element {
   // #region State ------------------------------------------------------------
   /**
    * The text filter component itself does not use state. Propagating the change
    * to the parent is delayed.
    */
-  const [textFilterValue, setTextFilterValue] = React.useState<string | null>(null);
+  const [textFilterValue, setTextFilterValue] = useState<string | null>(null);
   // #endregion
 
   // #region Hooks ------------------------------------------------------------
-  const displayValueService: IDisplayValueService = useServices().displayValueService;
+  const displayValueService: IBasicDataService = useServices().basicDataService;
   // #endregion
 
   // #region Event handling ---------------------------------------------------
-  const handleTextFilterChanged = React.useCallback(
+  const handleTextFilterChanged = useCallback(
     (event: React.FormEvent<HTMLElement>) => {
       setTextFilterValue((event.target as HTMLInputElement).value);
     },
@@ -30,7 +30,7 @@ function headerView(props: HeaderViewProps) {
   // #endregion
 
   // #region Effects ----------------------------------------------------------
-  React.useEffect(
+  useEffect(
     () => {
       // null is the initial value and should not trigger anything
       if (textFilterValue != null) {
@@ -65,7 +65,7 @@ function headerView(props: HeaderViewProps) {
   // #endregion
 
   // #region Auxiliary Methods ------------------------------------------------
-  function buildPopover(key: PopoverKey, icon: IconName): React.JSX.Element {
+  function buildPopover(key: PopoverKey, icon: IconName): JSX.Element {
     return (
       <Popover
         canEscapeKeyClose={true}
@@ -98,7 +98,7 @@ function headerView(props: HeaderViewProps) {
         return (<></>);
     }
   }
-  function buildGroupByMenu(): React.JSX.Element {
+  function buildGroupByMenu(): JSX.Element {
     return (
       <Menu size="small">
         <MenuItem
@@ -129,7 +129,7 @@ function headerView(props: HeaderViewProps) {
     );
   }
 
-  function buildSortMenu(): React.JSX.Element {
+  function buildSortMenu(): JSX.Element {
     return (
       <Menu size="small">
         <MenuItem
@@ -161,7 +161,7 @@ function headerView(props: HeaderViewProps) {
     );
   }
 
-  function buildTypeFilterMenu(): React.JSX.Element {
+  function buildTypeFilterMenu(): JSX.Element {
     return (
       <Menu size="small">
         {buildTypeFilterMenuItem("CORE")}
@@ -194,7 +194,7 @@ function headerView(props: HeaderViewProps) {
     );
   }
 
-  function buildTypeFilterMenuItem(setType: string): React.JSX.Element {
+  function buildTypeFilterMenuItem(setType: string): JSX.Element {
     return (
       <MenuItem
         onClick={() => props.onCardSetTypeFilterChanged(setType)}
@@ -211,10 +211,13 @@ function headerView(props: HeaderViewProps) {
  * This is just a test on memoization
  * probably not a big gain for the heaer view component
  */
-export const HeaderView = React.memo(headerView, (prev: HeaderViewProps, next: HeaderViewProps) => {
-  return prev.cardSetGroupBy == next.cardSetGroupBy &&
-    prev.cardSetSort == next.cardSetSort &&
-    prev.cardSetTypeFilter.size == next.cardSetTypeFilter.size &&
+export const HeaderView = memo(headerView, (prev: HeaderViewProps, next: HeaderViewProps) => {
+  // fast path
+  if (prev === next) return true;
+
+  return prev.cardSetGroupBy === next.cardSetGroupBy &&
+    prev.cardSetSort === next.cardSetSort &&
+    prev.cardSetTypeFilter.size === next.cardSetTypeFilter.size &&
     Array.from(prev.cardSetTypeFilter).every(item => next.cardSetTypeFilter.has(item)) &&
-    compareClassNameProp(prev.className || "", next.className || "");
+    compareClassNameProp(prev.className, next.className);
 });

@@ -6,10 +6,6 @@ export class CollectionCardQuantityViewmodel extends BaseViewmodel<CollectionCar
   public get quantity(): number {
     return this._dto.quantity;
   }
-
-  public set quantity(value: number) {
-    this._dto.quantity = value;
-  }
   //#endregion
 
   //#region Constructor & C° --------------------------------------------------

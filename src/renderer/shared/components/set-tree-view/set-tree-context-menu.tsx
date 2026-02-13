@@ -1,32 +1,13 @@
 import { ContextMenu, Menu, MenuItem } from "@blueprintjs/core";
-import { useServices, useSession } from "../../../hooks";
-import { SyncParamDto } from "../../dto";
-import { showSetDialog } from "../dialogs/factory";
+import { useApiStatus, useDialogs, useServices, useSession } from "../../../hooks";
 import { SetTreeContextMenuProps } from "./set-tree-context-menu.props";
 
-export function SetTreeContextMenu(props: SetTreeContextMenuProps) {
+export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
-  const serviceContainer = useServices();
-  const { loggedIn } = useSession();
-  // #endregion
-
-  // #region Event handling ---------------------------------------------------
-  function synchronizeSet(setCode: string) {
-    const postData: SyncParamDto = {
-      tasks: [
-        {
-          target: "CARDS_OF_CARD_SET",
-          subTarget: setCode,
-          mode: "NORMAL",
-          dumpData: true
-        }
-      ],
-      allScryfallCatalogs: "SKIP",
-      allCardSets: "SKIP"
-    };
-    void serviceContainer.arcaneArchiveProxy.postData("library", "/admin/synchronization/partial", postData);
-    // .then()
-  }
+  const { mtgSetService } = useServices();
+  const { loggedIn, isSysAdmin } = useSession();
+  const { collectionServiceAvailable } = useApiStatus();
+  const { showExportSetDialog, showMtgSetDialog } = useDialogs();
   // #endregion
 
   // #region Rendering --------------------------------------------------------
@@ -42,21 +23,36 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps) {
               onClick={
                 (e) => {
                   e.preventDefault();
-                  showSetDialog(serviceContainer, props.cardSetId);
+                  showMtgSetDialog(props.cardSetId);
                 }
               }
               text="Properties"
             />
             {
               loggedIn &&
-              serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") &&
+              (
+                <MenuItem
+                  key={`export-${props.cardSetId}`}
+                  disabled={!collectionServiceAvailable}
+                  text="Export to XL"
+                  onClick={
+                    (e) => {
+                      e.preventDefault();
+                      showExportSetDialog(props.cardSetId);
+                    }
+                  }
+                />
+              )
+            }
+            {
+              isSysAdmin &&
               (
                 <MenuItem
                   key={`sync-${props.cardSetId}`}
                   onClick={
                     (e) => {
                       e.preventDefault();
-                      synchronizeSet(props.cardSetCode);
+                      void mtgSetService.synchronizeSet(props.cardSetCode);
                     }
                   }
                   text="Synchronize cards"

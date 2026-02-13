@@ -5,6 +5,12 @@ export const API = Object.freeze(
   }
 );
 
+export const COLLECTION = Object.freeze(
+  {
+    CollectionService: "CollectionService"
+  }
+);
+
 export const DATABASE = Object.freeze(
   {
     CardfaceRepository: "CardfaceRepository",
@@ -19,6 +25,7 @@ export const INFRASTRUCTURE = Object.freeze(
   {
     ApplicationService: "ApplicationService",
     ConfigurationService: "ConfigurationService",
+    DialogService: "DialogService",
     IoService: "IoService",
     LogService: "LogService",
     ResultFactory: "ResultFactory",

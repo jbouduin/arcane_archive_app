@@ -1,11 +1,10 @@
 import { ContextMenu, Menu, MenuDivider, MenuItem, ToastProps } from "@blueprintjs/core";
 import { useServices } from "../../../../hooks";
-import { showNewCollectionCardDialog } from "./collection-card-dialog";
 import { CollectionTreeContextMenuProps } from "./collection-tree-context-menu.props";
 
 export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps): JSX.Element {
   //#region Hooks -------------------------------------------------------------
-  const { overlayService, displayValueService } = useServices();
+  const { overlayService } = useServices();
   //#endregion
 
   // #region Event handling ---------------------------------------------------
@@ -31,7 +30,7 @@ export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps)
               onClick={
                 (e) => {
                   e.preventDefault();
-                  props.onEditCollection(props.collection, props.parentCollection, props.parentPath);
+                  props.onEditCollection(props.collection, props.parentCollection);
                 }
               }
               text="Edit"
@@ -51,16 +50,6 @@ export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps)
                     }
                     text="Details"
                   />
-                  <MenuItem
-                    key="addCard"
-                    onClick={
-                      (e) => {
-                        e.preventDefault();
-                        showNewCollectionCardDialog(overlayService, displayValueService, props.collection.id!);
-                      }
-                    }
-                    text="Add card"
-                  />
                 </>
               )
             }
@@ -74,7 +63,7 @@ export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps)
                     onClick={
                       (e) => {
                         e.preventDefault();
-                        props.onAddFolder(props.collection, props.parentPath);
+                        props.onAddFolder(props.collection);
                       }
                     }
                     text="Add Folder"
@@ -84,7 +73,7 @@ export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps)
                     onClick={
                       (e) => {
                         e.preventDefault();
-                        props.onAddCollection(props.collection, props.parentPath);
+                        props.onAddCollection(props.collection);
                       }
                     }
                     text="Add Collection"

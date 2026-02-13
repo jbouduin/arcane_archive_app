@@ -2,6 +2,8 @@ import { BlueprintProvider, FocusStyleManager, OverlayToaster, Position, ToastPr
 import { createRoot } from "react-dom/client";
 import { IpcPaths } from "../../common/ipc";
 import { DialogRenderer } from "../shared/components/base/base-dialog/dialog-renderer";
+import { loginDialogPropsFactory } from "../shared/components/dialogs";
+import { registerDialogPropsFactory } from "../shared/components/dialogs/register-dialog/register-dialog-factory";
 import { ServerNotAvailable } from "../shared/components/server-not-available/server-not-available";
 import { PreferencesProvider, ServiceContainerContext, SessionProvider } from "../shared/context";
 import { ServiceContainer } from "../shared/context/implementation/service.container";
@@ -31,10 +33,7 @@ void (async () => {
   let initialization = await serviceContainer.initialize(
     toastCall,
     {
-      // skipCardSearchService: true,
-      skipColorService: true,
       skipCardSymbolService: true,
-      skipLanguageService: true,
       skipMtgSetService: true,
       skipSessionService: true
     }
@@ -76,10 +75,19 @@ void (async () => {
   }
 
   const [loginViewmodel, registerViewmodel] = await Promise.all([
-    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
-      .getLoginViewmodel(false, serviceContainer),
-    serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
-      .getRegisterViewmodel(false, serviceContainer, initialization.settings!.preferences)
+    loginDialogPropsFactory.getLoginViewmodel(
+      false,
+      serviceContainer.ipcProxy,
+      serviceContainer.sessionService,
+      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory
+    ),
+    registerDialogPropsFactory.getRegisterViewmodel(
+      false,
+      initialization.settings!.preferences,
+      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory,
+      serviceContainer.arcaneArchiveProxy,
+      serviceContainer.sessionService
+    )
   ]);
 
   root.render(

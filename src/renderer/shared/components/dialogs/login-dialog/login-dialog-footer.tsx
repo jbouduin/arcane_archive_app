@@ -2,15 +2,15 @@ import { AlertProps, Button, Callout } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { ReactNode } from "react";
 import { LoginRequestDto, SessionDto } from "../../../../../common/dto";
-import { usePreferences, useServices } from "../../../../hooks";
+import { useDialogs, usePreferences, useServices } from "../../../../hooks";
 import { DefaultDialogFooter } from "../../base/base-dialog";
-import { showRecoverPasswordDialog, showRegisterDialog } from "../factory";
 import { LoginDialogFooterProps } from "./login-dialog.props";
 
 export function LoginDialogFooter(props: LoginDialogFooterProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   const { preferences } = usePreferences();
+  const { showRecoverPasswordDialog, showRegisterDialog } = useDialogs();
   // #endregion
 
   // #region Event handling ---------------------------------------------------
@@ -31,20 +31,13 @@ export function LoginDialogFooter(props: LoginDialogFooterProps): JSX.Element {
       );
   }
 
-  function registerClick(): void {
-    showRegisterDialog(serviceContainer, false, preferences);
-  }
-
   function saveUser(dto: LoginRequestDto): void {
     void serviceContainer.sessionService.saveCredentials(serviceContainer.ipcProxy, dto);
   }
 
   function recoverPasswordClick(event: React.SyntheticEvent<HTMLElement, Event>): void {
     props.onClose?.(event);
-    showRecoverPasswordDialog(
-      serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory,
-      serviceContainer.overlayService
-    );
+    showRecoverPasswordDialog();
   }
   // #endregion
 
@@ -68,7 +61,7 @@ export function LoginDialogFooter(props: LoginDialogFooterProps): JSX.Element {
             <Button
               key="register"
               icon="new-person"
-              onClick={registerClick}
+              onClick={() => showRegisterDialog(false, preferences)}
             >
               Register
             </Button>

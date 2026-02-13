@@ -6,4 +6,6 @@ export interface ToggleCheckBoxProps<Dto extends object> extends Omit<BaseProps<
   checkBoxProps?: CheckboxProps;
   children: ReactNode;
   value: string;
+
+  onToggle?: (newValue: boolean) => void;
 }

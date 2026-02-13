@@ -4,13 +4,14 @@ import { CachedImageSize } from "../../types";
 import { SetTreeSettingsDto } from "./set-tree-settings.dto";
 
 export type PreferencesDto = {
+  cachedImageSize: CachedImageSize;
+  cardConditions: Array<string>;
+  defaultCardSortDirection: SortDirection;
+  defaultCardSortField: CardSortField;
+  defaultPageSize: number;
+  librarySetTreeSettings: SetTreeSettingsDto;
   refreshCacheAtStartup: boolean;
   useDarkTheme: boolean;
-  librarySetTreeSettings: SetTreeSettingsDto;
-  cachedImageSize: CachedImageSize;
-  defaultCardSortField: CardSortField;
-  defaultCardSortDirection: SortDirection;
-  defaultPageSize: number;
 
   /*
    * FEATURE settings for all center panels

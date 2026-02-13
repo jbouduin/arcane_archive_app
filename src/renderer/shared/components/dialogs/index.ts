@@ -1,6 +1,6 @@
 export * from "./change-password-dialog";
 export * from "./collection-dialog";
-export * from "./factory";
+export * from "./export-set-dialog";
 export * from "./login-dialog";
 export * from "./mtg-set-dialog";
 export * from "./preferences-dialog";

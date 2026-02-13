@@ -1,5 +1,5 @@
 import { ApiConfigurationDto } from "../../../../common/dto";
-import { ArcanArchiveServer } from "../../../../common/types";
+import { ArcaneArchiveServer } from "../../../../common/types";
 import { ApiInfoDto } from "../../dto";
 import { ShowToastFn } from "../../types";
 import { ApiStatusChangeListener, ArcaneArchiveRequestOptions, InvalidSessionListener } from "../types";
@@ -17,27 +17,28 @@ export interface IArcaneArchiveProxy {
   //#endregion
 
   //#region Data methods ------------------------------------------------------
-  delete(server: ArcanArchiveServer, path: string): Promise<number>;
+  delete(server: ArcaneArchiveServer, path: string): Promise<number>;
 
+  downloadFile(server: ArcaneArchiveServer, path: string): Promise<void>;
   /**
    * Fetch data from backend
    * @param path the path
    */
   getData<T extends object>(
-    server: ArcanArchiveServer,
+    server: ArcaneArchiveServer,
     path: string,
     options?: ArcaneArchiveRequestOptions
   ): Promise<T>;
 
   postData<Req extends object, Res extends object>(
-    server: ArcanArchiveServer,
+    server: ArcaneArchiveServer,
     path: string,
     data: Req | null,
     options?: ArcaneArchiveRequestOptions
   ): Promise<Res>;
 
   putData<Req extends object, Res extends object>(
-    server: ArcanArchiveServer,
+    server: ArcaneArchiveServer,
     path: string,
     data: Req | null,
     options?: ArcaneArchiveRequestOptions
@@ -48,8 +49,8 @@ export interface IArcaneArchiveProxy {
   /**
    * Refreshes the api status. If the service was not automatically refreshing, it will not start doing so.
    */
-  forceRefresh(): Promise<Map<ArcanArchiveServer, ApiInfoDto | null>>;
-  startRefreshing(): Promise<Map<ArcanArchiveServer, ApiInfoDto | null>>;
+  forceRefresh(): Promise<Map<ArcaneArchiveServer, ApiInfoDto | null>>;
+  startRefreshing(): Promise<Map<ArcaneArchiveServer, ApiInfoDto | null>>;
   stopRefreshing(): boolean;
   subscribeApiStatusChangeListener(listener: ApiStatusChangeListener): () => void;
   subscribeInvalidSessionListener(listener: InvalidSessionListener): () => void;

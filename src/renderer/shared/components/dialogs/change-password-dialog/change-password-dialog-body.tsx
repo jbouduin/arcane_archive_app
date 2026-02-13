@@ -3,7 +3,7 @@ import { PasswordInput } from "../../input";
 import { PasswordSecurityBar } from "../shared";
 import { ChangePasswordDialogBodyProps } from "./change-password-dialog.props";
 
-export function ChangePasswordDialogBody(props: ChangePasswordDialogBodyProps) {
+export function ChangePasswordDialogBody(props: ChangePasswordDialogBodyProps): JSX.Element {
   return (
     <SectionCard padded={false}>
       <PasswordInput

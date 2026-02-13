@@ -1,22 +1,26 @@
-import { H5, Section, SectionCard, Tab, Tabs } from "@blueprintjs/core";
+import "./card-detail-view.css";
+
+import { SectionCard, Tab, Tabs } from "@blueprintjs/core";
+import classNames from "classnames";
 import React from "react";
 import { ScryFallImageStatus } from "../../../../common/enums";
 import { usePreferences, useServices } from "../../../hooks";
-import { LanguageDto } from "../../dto";
+import { CardDetailDto, LanguageDto } from "../../dto";
 import { ScryfallLanguageMap } from "../../types";
-import { LibraryCardfaceViewmodel, LibraryCardViewmodel } from "../../viewmodel";
-import { CardSymbolRenderer } from "../card-symbol-renderer";
+import { CardDetailViewmodel, LibraryCardfaceViewmodel } from "../../viewmodel";
 import { LanguageButtonBar } from "../language-button-bar";
+import { CardDetailSection } from "./card-detail-section";
 import { CardDetailViewProps } from "./card-detail-view.props";
 import { CardfaceView } from "./card-face-view/cardface-view";
-import { CardHeaderView } from "./card-header-view/card-header-view";
 import { CardImageView } from "./card-image-view/card-image-view";
+import { CardOwnership } from "./card-ownership";
 import { LegalitiesView } from "./legalities-view/legalities-view";
 import { RulingsView } from "./rulings-view/rulings-view";
+import { CardDetailSectionCard } from "./card-detail-section-card/card-detail-section-card";
 
-export function CardDetailView(props: CardDetailViewProps) {
+export function CardDetailView(props: CardDetailViewProps): JSX.Element {
   //#region State -------------------------------------------------------------
-  const [cardViewmodel, setCardviewmodel] = React.useState<LibraryCardViewmodel | null>(null);
+  const [cardViewmodel, setCardviewmodel] = React.useState<CardDetailViewmodel | null>(null);
   const [currentLanguage, setCurrentLanguage] = React.useState<LanguageDto>({
     language: "",
     sequence: -1,
@@ -27,40 +31,69 @@ export function CardDetailView(props: CardDetailViewProps) {
   //#endregion
 
   //#region Hooks -------------------------------------------------------------
-  const serviceContainer = useServices();
+  const { mtgCardService, viewmodelFactoryService } = useServices();
   const { preferences } = usePreferences();
   //#endregion
 
   //#region Effects -----------------------------------------------------------
   React.useEffect(
     () => {
-      if (props.cardId) {
-        void serviceContainer.viewmodelFactoryService.mtgCardViewmodelFactory
-          .getLibraryCardDetailViewmodel(serviceContainer.arcaneArchiveProxy, props.cardId)
+      if (props.mode == "library") {
+        void mtgCardService
+          .getCardDetailByCardId(props.cardId)
           .then(
-            (viewmodel: LibraryCardViewmodel) => {
+            (cardDetail: CardDetailDto) => {
+              const viewmodel = viewmodelFactoryService.mtgCardViewmodelFactory.getCardDetailViewmodel(cardDetail);
               setCardviewmodel(viewmodel);
               setCurrentLanguage(viewmodel.languages[0]);
             },
             () => setCardviewmodel(null)
           );
+      } else if (props.mode == "collection") {
+        void mtgCardService
+          .getCardDetailByCardLanguageId(props.cardLanguageId)
+          .then(
+            (cardDetail: CardDetailDto) => {
+              const viewmodel = viewmodelFactoryService.mtgCardViewmodelFactory.getCardDetailViewmodel(cardDetail);
+              setCardviewmodel(viewmodel);
+              setCurrentLanguage(viewmodel.languages[0]);
+            },
+            () => setCardviewmodel(null)
+          );
+        setCardviewmodel(null);
       } else {
         setCardviewmodel(null);
       }
     },
-    [props.cardId]
+    [
+      props.mode,
+      props.mode === "library"
+        ? props.cardId
+        : undefined,
+      props.mode === "collection"
+        ? props.cardLanguageId
+        : undefined
+    ]
   );
   //#endregion
 
   //#region Rendering ---------------------------------------------------------
   return (
-    <div className="card-view-wrapper">
+    <div className="aa-card-view-wrapper">
       {
         cardViewmodel &&
         (
           <>
             <div style={{ minWidth: "410px" }}>
               {renderTopSection(cardViewmodel)}
+              {props.mode == "collection" && (
+                <CardOwnership
+                  cardCode={cardViewmodel.code}
+                  collectionId={props.collectionId}
+                  language={currentLanguage.language}
+                  onQuantityChanged={props.onQuantityChanged!}
+                />
+              )}
               {renderFacesSection(cardViewmodel)}
               {renderMoreSection(cardViewmodel)}
             </div>
@@ -70,16 +103,28 @@ export function CardDetailView(props: CardDetailViewProps) {
     </div>
   );
 
-  function renderTopSection(card: LibraryCardViewmodel): React.JSX.Element {
+  function renderTopSection(card: CardDetailViewmodel): React.JSX.Element {
     return (
-      <Section
-        collapsible={true}
-        compact={true}
-        rightElement={<CardSymbolRenderer cardSymbols={card.manaCost} className="mana-cost-image-in-title" />}
-        title={<CardHeaderView code={card.code} cardName={card.cardName} rarity={card.rarity} keyruneCode={card.setKeyruneCode} type={card.typeline} />}
+      <CardDetailSection
+        size="large"
+        cardSymbols={card.manaCost}
+        beforeTitle={(
+          <i
+            key={`icon-${card.setKeyruneCode}`}
+            className={classNames(
+              "ss",
+              "ss-" + card.setKeyruneCode.toLowerCase(),
+              card.rarity != "COMMON" ? "ss-" + card.rarity.toLowerCase() : "",
+              "ss-2x")}
+            style={{ paddingRight: "5px" }}
+          >
+          </i>
+        )}
+        title={card.cardName}
+        subtitle={card.typeline}
       >
         {
-          props.showOtherLanguages && card.languages.length > 1 &&
+          props.mode == "library" && card.languages.length > 1 &&
           (
             <SectionCard padded={false}>
               <LanguageButtonBar
@@ -97,13 +142,14 @@ export function CardDetailView(props: CardDetailViewProps) {
           setCode={card.layout != "TOKEN" ? card.setCode : card.tokenSetCode}
           collectorNumber={card.collectorNumber}
           scryfallLanguage={ScryfallLanguageMap.get(currentLanguage.language) || "en"}
+          size="large"
           imageStatus={card.cardLanguages.get(currentLanguage.language)?.imageStatus || ScryFallImageStatus.UNKNOWN}
         />
-      </Section>
+      </CardDetailSection>
     );
   }
 
-  function renderFacesSection(card: LibraryCardViewmodel): Array<React.JSX.Element> {
+  function renderFacesSection(card: CardDetailViewmodel): Array<React.JSX.Element> {
     let result: Array<React.JSX.Element>;
     const languageViewModel = card.cardLanguages.get(currentLanguage.language);
 
@@ -122,14 +168,14 @@ export function CardDetailView(props: CardDetailViewProps) {
     return result;
   }
 
-  function renderMoreSection(card: LibraryCardViewmodel): React.JSX.Element {
+  function renderMoreSection(card: CardDetailViewmodel): React.JSX.Element {
     return (
-      <Section
-        collapsible={true}
-        compact={true}
-        title={<div><H5 style={{ marginBottom: "0px" }}>More</H5></div>}
+      <CardDetailSection
+        // title={<div><H5 style={{ marginBottom: "0px" }}>More</H5></div>}
+        size="small"
+        title="More"
       >
-        <SectionCard className="card-view-section-card">
+        <CardDetailSectionCard>
           <Tabs
             animate={true}
             defaultSelectedTabId="Legality"
@@ -156,12 +202,7 @@ export function CardDetailView(props: CardDetailViewProps) {
               panel={<RulingsView oracleId={card.oracleId} />}
               title="Rulings"
             />
-            {/* <Tab
-              id="Owned"
-              key="owned"
-              // panel={<CardOwnerShipView cardId={cardViewState.card.cardId} className={props.className} collectionId={props.collectionId} />}
-              title="Ownership"
-            />
+            {/*
             <Tab
               id="All prints"
               key="all-prints"
@@ -169,8 +210,8 @@ export function CardDetailView(props: CardDetailViewProps) {
               title="All prints"
             /> */}
           </Tabs>
-        </SectionCard>
-      </Section>
+        </CardDetailSectionCard>
+      </CardDetailSection>
     );
   }
   //#endregion

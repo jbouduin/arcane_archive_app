@@ -11,9 +11,8 @@ export function selectedRegionTransformToRowSelection(region: Region): Region {
 export function onDataSelected<T>(
   selectedRegions: Array<Region>,
   data: Array<T>,
-  callback: (selected: Array<T>) => void,
   sortedIndexMap?: Array<number>,
-): void {
+): Array<T> {
   const selectedData = new Array<T>();
   selectedRegions
     .filter((region: Region) => region.rows)
@@ -33,5 +32,5 @@ export function onDataSelected<T>(
         }
       }
     });
-  callback(selectedData);
+  return selectedData;
 }

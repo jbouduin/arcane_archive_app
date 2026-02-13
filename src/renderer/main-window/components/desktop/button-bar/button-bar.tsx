@@ -1,26 +1,25 @@
 import { ButtonGroup, Menu, MenuItem, ToastProps } from "@blueprintjs/core";
-import { useApiStatus, usePreferences, useServices, useSession } from "../../../../hooks";
-import {
-  showChangePasswordDialog, showLoginDialog, showPreferencesDialog,
-  showProfileDialog, showSystemInfoDialog, showSystemSettingsDialog
-} from "../../../../shared/components/dialogs/factory";
+import { useApiStatus, useDialogs, usePreferences, useServices, useSession } from "../../../../hooks";
 import { EDesktopView } from "../desktop-view.enum";
 import { ButtonBarButton } from "./button-bar-button";
 import { EButtonBarButtonType } from "./button-bar-button-type.enum";
 import { ButtonBarProps } from "./button-bar.props";
 
 export function ButtonBar(props: ButtonBarProps): JSX.Element {
-  // #region Hooks ------------------------------------------------------------
-  const { loggedIn, userName, email } = useSession();
+  //#region Hooks -------------------------------------------------------------
   const apiInfo = useApiStatus();
-  const { authenticationServiceAvailable } = useApiStatus();
+  const { loggedIn, userName, email, isSysAdmin } = useSession();
   const serviceContainer = useServices();
   const { preferences } = usePreferences();
+  const {
+    showChangePasswordDialog, showLoginDialog, showPreferencesDialog,
+    showProfileDialog, showSystemInfoDialog, showSystemSettingsDialog
+  } = useDialogs();
   // #endregion
 
-  // #region Event handling -------------------------------------------------------------
+  //#region Event handling ----------------------------------------------------
   function loginClick(): void {
-    showLoginDialog(serviceContainer, true);
+    showLoginDialog(true);
   }
 
   function logoutClick(): void {
@@ -34,9 +33,9 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
     };
     serviceContainer.overlayService.showToast(props, "admin not implemented");
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <>
       <div className="button-bar">
@@ -100,7 +99,7 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
     return (
       <Menu size="small">
         <MenuItem
-          onClick={() => showPreferencesDialog(serviceContainer, preferences)}
+          onClick={() => showPreferencesDialog(preferences)}
           text="Preferences"
         />
         <MenuItem text="Cache">
@@ -109,16 +108,18 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
             text="Refresh Card Symbols"
           />
           <MenuItem
-            onClick={() => serviceContainer.overlayService.showToast({ intent: "warning", message: "Feature not Implemented" })}
+            onClick={() => {
+              serviceContainer.overlayService.showToast(
+                { intent: "warning", message: "Feature not Implemented" });
+            }}
             text="Refresh Card Images"
           />
         </MenuItem>
         <MenuItem text="System">
-          <MenuItem onClick={() => showSystemSettingsDialog(serviceContainer, false)} text="Settings" />
-          <MenuItem onClick={() => showSystemInfoDialog(apiInfo, serviceContainer)} text="Info" />
+          <MenuItem onClick={() => showSystemSettingsDialog(false)} text="Settings" />
+          <MenuItem onClick={() => showSystemInfoDialog(apiInfo)} text="Info" />
           {
-            serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") &&
-            <MenuItem onClick={adminClick} text="Admin" />
+            isSysAdmin && <MenuItem onClick={adminClick} text="Admin" />
           }
         </MenuItem>
       </Menu>
@@ -128,15 +129,10 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
   function renderLoggedInMenu(): React.JSX.Element {
     return (
       <Menu size="small">
-        <MenuItem onClick={() => showProfileDialog(serviceContainer)} text="User Profile" />
+        <MenuItem onClick={() => showProfileDialog()} text="User Profile" />
         <MenuItem
           onClick={
-            () => showChangePasswordDialog(
-              serviceContainer.viewmodelFactoryService.authenticationViewmodelFactory,
-              serviceContainer.overlayService,
-              userName!,
-              email!
-            )
+            () => showChangePasswordDialog(userName!, email!)
           }
           text="Change Password"
         />
@@ -149,12 +145,12 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
     return (
       <Menu size="small">
         <MenuItem
-          disabled={!authenticationServiceAvailable}
+          disabled={!apiInfo.authenticationServiceAvailable}
           onClick={loginClick}
-          text={authenticationServiceAvailable ? "Log in" : "Log in (service not available)"}
+          text={apiInfo.authenticationServiceAvailable ? "Log in" : "Log in (service not available)"}
         />
       </Menu>
     );
   }
-  // #endregion
+  //#endregion
 }

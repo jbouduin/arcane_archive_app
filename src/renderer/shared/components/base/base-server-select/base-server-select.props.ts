@@ -1,5 +1,5 @@
 import { Props } from "@blueprintjs/core";
-import { ArcanArchiveServer } from "../../../../../common/types";
+import { ArcaneArchiveServer } from "../../../../../common/types";
 import { SelectOption } from "../../../types";
 
 export interface BaseServerSelectProps<T> extends Props {
@@ -7,7 +7,7 @@ export interface BaseServerSelectProps<T> extends Props {
   formGroupLabel: string;
   disabled?: boolean;
   selectedOptions: Array<SelectOption<T>>;
-  server: ArcanArchiveServer;
+  server: ArcaneArchiveServer;
   serverBaseUrl: string;
   readOnly?: boolean;
 

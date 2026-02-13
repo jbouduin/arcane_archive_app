@@ -1,6 +1,15 @@
 import { Props } from "@blueprintjs/core";
 
-export interface CardDetailViewProps extends Props {
-  cardId: number | null;
-  showOtherLanguages: boolean;
+interface LibraryModeProps extends Props {
+  mode: "library";
+  cardId: number;
 }
+
+interface CollectionModeProps extends Props {
+  mode: "collection";
+  cardLanguageId: number;
+  collectionId: number;
+  onQuantityChanged?: (qty: number) => void;
+}
+
+export type CardDetailViewProps = LibraryModeProps | CollectionModeProps;

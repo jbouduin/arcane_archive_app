@@ -1,21 +1,21 @@
-import { Callout, ControlGroup, HTMLTable, Tab, Tabs } from "@blueprintjs/core";
+import { Callout, ControlGroup, Tab, Tabs } from "@blueprintjs/core";
 import { useServices, useSession } from "../../../../hooks";
-import { SelectOption } from "../../../types";
-import { SetTreeSettingsViewmodel } from "../../../viewmodel/settings";
-import { BaseCheckbox, BaseHtmlSelect, ToggleCheckbox } from "../../input";
+import { CardConditionDto } from "../../../dto/card-condition.dto";
+import { BaseCheckbox, BaseHtmlSelect, CheckBoxTable } from "../../input";
 import { PreferencesDialogBodyProps } from "./preferences-dialog.props";
 
 export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const { loggedIn } = useSession();
-  const serviceContainer = useServices();
+  const { basicDataService } = useServices();
   // #endregion
 
   // #region Rendering --------------------------------------------------------
   return (
     <>
       {
-        !loggedIn && (
+        !loggedIn &&
+        (
           <Callout compact={true} intent="warning">
             You are not logged in.
             Your preferences will be stored locally only.
@@ -35,12 +35,34 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
           title="Library Set Tree"
           panel={renderLibraryTreeviewmodel()}
         />
+        {
+          loggedIn &&
+          (
+            <Tab
+              id="card-conditions"
+              key="card-conditions"
+              title="Card Conditions"
+              panel={(
+                <CheckBoxTable
+                  key="cardconditions"
+                  columns={3}
+                  allOptions={basicDataService.getCardConditionSelectOptions()}
+                  value={(cardCondition: CardConditionDto) => cardCondition.condition}
+                  viewmodel={props.viewmodel}
+                  fieldName="cardConditions"
+                  viewmodelChanged={props.viewmodelChanged}
+                  validation="synchronous"
+                />
+              )}
+            />
+          )
+        }
       </Tabs>
 
     </>
   );
 
-  function renderBasicPreferences(): React.JSX.Element {
+  function renderBasicPreferences(): JSX.Element {
     return (
       <>
         <BaseCheckbox
@@ -119,58 +141,17 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
             label="Group sets in tree by"
           />
         </ControlGroup>
-        <HTMLTable
-          bordered={false}
-          compact={true}
+        <CheckBoxTable
           key="set-type-filter"
-          width="100%"
-        >
-          <thead>
-            <tr><td colSpan={3} style={{ paddingLeft: "0px" }}>Set types filter</td></tr>
-          </thead>
-          <tbody>
-            {
-              renderSetTypes(viewmodel)
-            }
-          </tbody>
-        </HTMLTable>
+          columns={3}
+          allOptions={basicDataService.getSelectOptions("setType")}
+          value={(setType: string) => setType}
+          viewmodel={viewmodel}
+          fieldName="cardSetTypeFilter"
+          viewmodelChanged={props.viewmodelChanged}
+        />
       </>
     );
-  }
-
-  function renderSetTypes(viewmodel: SetTreeSettingsViewmodel): Array<React.JSX.Element> {
-    const table = new Array<React.JSX.Element>();
-    let currentRow: Array<React.JSX.Element>;
-    let idx = 0;
-    serviceContainer
-      .displayValueService
-      .getSelectOptions("setType")
-      .forEach((opt: SelectOption<string>) => {
-        if (idx % 3 == 0) {
-          currentRow = new Array<React.JSX.Element>();
-        }
-        currentRow.push((
-          <td key={`cell-${opt.value}`} style={{ paddingLeft: "0px" }}>
-            <ToggleCheckbox
-              viewmodel={viewmodel}
-              viewmodelChanged={props.viewmodelChanged}
-              fieldName="cardSetTypeFilter"
-              value={opt.value}
-            >
-              {opt.label}
-            </ToggleCheckbox>
-          </td>
-        ));
-        if (idx % 3 == 1) {
-          table.push((
-            <tr key={`row-${idx}`}>
-              {currentRow}
-            </tr>
-          ));
-        }
-        idx = idx + 1;
-      });
-    return table;
   }
   // #endregion
 }

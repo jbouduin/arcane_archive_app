@@ -4,23 +4,23 @@ import { ProfileDto, UserDto } from "../../../dto";
 import { DefaultDialogFooter } from "../../base/base-dialog";
 import { ProfileDialogFooterProps } from "./profile-dialog.props";
 
-export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
-  // #region Hooks ------------------------------------------------------------
-  const serviceContainer = useServices();
-  const { userName } = useSession();
-  // #endregion
+export function ProfileDialogFooter(props: ProfileDialogFooterProps): JSX.Element {
+  //#region Hooks -------------------------------------------------------------
+  const { arcaneArchiveProxy, sessionService } = useServices();
+  const { userName, isSysAdmin } = useSession();
+  //#endregion
 
-  // #region Event handling ---------------------------------------------------
+  //#region Event handling ----------------------------------------------------
   function onSaveClick(event: React.SyntheticEvent<HTMLElement, Event>): Promise<void> {
     let result: Promise<UserDto>;
     const userDto: UserDto = {
       account: props.viewmodel.accountViewmodel.dto,
       profile: props.viewmodel.dto
     };
-    if (serviceContainer.sessionService.hasRole("ROLE_SYS_ADMIN") && userName == userDto.account.accountName) {
-      result = serviceContainer.sessionService.saveUser(serviceContainer.arcaneArchiveProxy, userDto);
+    if (isSysAdmin && userName == userDto.account.accountName) {
+      result = sessionService.saveUser(arcaneArchiveProxy, userDto);
     } else {
-      result = serviceContainer.sessionService.saveSelf(serviceContainer.arcaneArchiveProxy, userDto);
+      result = sessionService.saveSelf(arcaneArchiveProxy, userDto);
     }
     return result.then(
       (_r: object) => {
@@ -31,9 +31,9 @@ export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
       noop
     );
   }
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Rendering ---------------------------------------------------------
   return (
     <DefaultDialogFooter
       {...props}
@@ -43,5 +43,5 @@ export function ProfileDialogFooter(props: ProfileDialogFooterProps) {
       }
     />
   );
-  // #endregion
+  //#endregion
 }

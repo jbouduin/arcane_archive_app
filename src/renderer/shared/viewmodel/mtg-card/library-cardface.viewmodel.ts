@@ -1,6 +1,6 @@
-import { LibraryExternalReferenceDto } from "../../dto";
-import { LibraryCardfaceLanguageDto } from "../../dto/library-cardface-language.dto";
-import { LibraryCardfaceDto } from "../../dto/library-cardface.dto";
+import { ExternalReferenceDetailDto } from "../../dto";
+import { CardfaceLanguageDetailDto } from "../../dto/cardface-language-detail.dto";
+import { CardfaceDetailDto } from "../../dto/cardface-detail.dto";
 import { AbstractCardViewmodel } from "../abstract-card.viewmodel";
 
 export class LibraryCardfaceViewmodel extends AbstractCardViewmodel {
@@ -21,7 +21,7 @@ export class LibraryCardfaceViewmodel extends AbstractCardViewmodel {
   // #endregion
 
   // #region Constructor ------------------------------------------------------
-  public constructor(dto: LibraryCardfaceDto, language: string) {
+  public constructor(dto: CardfaceDetailDto, language: string) {
     super();
     this.id = dto.id;
     this.artist = dto.artist;
@@ -30,14 +30,18 @@ export class LibraryCardfaceViewmodel extends AbstractCardViewmodel {
     this.oracleId = dto.oracleId;
     this.power = dto.power;
     this.toughness = dto.toughness;
-    const faceLanguageDto = dto.cardfaceLanguages.find((fld: LibraryCardfaceLanguageDto) => fld.language == language)!;
+    const faceLanguageDto = dto.cardfaceLanguages.find((fld: CardfaceLanguageDetailDto) => fld.language == language)!;
     this.faceLanguageId = faceLanguageDto.id;
     this.flavorText = faceLanguageDto.flavorText;
     this.printedName = faceLanguageDto.name;
     this.printedTypeLine = faceLanguageDto.typeLine;
     this.printedText = faceLanguageDto.text;
+    /**
+     * # LATER: large is not correct! size should come from preferences. To be corrected once the problem with
+     * Aetherdrift emblems is solved. and we need to fall-back on another value if large is not there
+     */
     this.imageUri = faceLanguageDto.externalReferences
-      .find((extRef: LibraryExternalReferenceDto) => extRef.source == "SCRYFALL" && extRef.detail == "LARGE")
+      .find((extRef: ExternalReferenceDetailDto) => extRef.source == "SCRYFALL" && extRef.detail == "LARGE")
       ?.value;
   }
   // #endregion

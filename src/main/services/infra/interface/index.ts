@@ -1,5 +1,6 @@
 export * from "./application.service";
 export * from "./configuration.service";
+export * from "./dialog.service";
 export * from "./io.service";
 export * from "./log.service";
 export * from "./result.factory";

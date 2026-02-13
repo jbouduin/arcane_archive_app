@@ -1,14 +1,13 @@
 import { FocusStyleManager, OverlaysProvider, OverlayToaster, PortalProvider, Position, ToastProps } from "@blueprintjs/core";
 import { createRoot } from "react-dom/client";
-import { SessionDto } from "../../common/dto";
 import { IpcPaths } from "../../common/ipc";
 import { DialogRenderer } from "../shared/components/base/base-dialog/dialog-renderer";
 import { ServerNotAvailable } from "../shared/components/server-not-available/server-not-available";
-import { ApiStatus, PreferencesProvider, ServiceContainerContext, SessionProvider } from "../shared/context";
+import { ApiStatus, PreferencesProvider, ServiceContainerContext, SessionChangeEvent, SessionProvider } from "../shared/context";
 import { ServiceContainer } from "../shared/context/implementation/service.container";
 import { ApiInfoProvider } from "../shared/context/providers/api-info-provider";
-import { MainWindowDesktop } from "./components/desktop/main-window-desktop";
 import { ShowToastFn } from "../shared/types";
+import { MainWindowDesktop } from "./components/desktop/main-window-desktop";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -30,27 +29,26 @@ void (async () => {
   const container = document.getElementById("root")!;
   const root = createRoot(container);
   let apiStatus: ApiStatus;
-  let loginResponse!: SessionDto | null;
+  let sessionChangeEvent!: SessionChangeEvent | null;
   // --- subscribe to events ---
   const apiStatusChangeUnsubscibe = serviceContainer.arcaneArchiveProxy.subscribeApiStatusChangeListener(
     (data: ApiStatus) => apiStatus = data
   );
   const sessionChangeUnsubscribe = serviceContainer.sessionService.subscribeSessionChangeListener(
-    (data: SessionDto | null) => loginResponse = data
+    (event: SessionChangeEvent | null) => sessionChangeEvent = event
   );
 
   let initialization = await serviceContainer.initialize(toastCall);
 
   let mainWindowShown = false;
+  const preferences = sessionChangeEvent?.profile.preferences != null
+    ? sessionChangeEvent.profile.preferences
+    : initialization.settings!.preferences;
   while (initialization == null || !initialization.isOk) {
     let count = 30;
 
     root.render(
-      <PreferencesProvider
-        preferences={loginResponse != null
-          ? loginResponse.profile.preferences
-          : initialization.settings!.preferences}
-      >
+      <PreferencesProvider preferences={preferences}>
         <ServerNotAvailable initializationResult={initialization} nextTry={count} />
       </PreferencesProvider>
     );
@@ -66,11 +64,7 @@ void (async () => {
       const interval = setInterval(() => {
         count--;
         root.render(
-          <PreferencesProvider
-            preferences={loginResponse != null
-              ? loginResponse.profile.preferences
-              : initialization.settings!.preferences}
-          >
+          <PreferencesProvider preferences={preferences}>
             <ServerNotAvailable initializationResult={initialization} nextTry={count} />
           </PreferencesProvider>
         );
@@ -86,16 +80,12 @@ void (async () => {
   // --- unsubscribe from events ---
   apiStatusChangeUnsubscibe();
   sessionChangeUnsubscribe();
-
   root.render(
     <OverlaysProvider>
       <PortalProvider>
         <ServiceContainerContext.Provider value={serviceContainer}>
-          <SessionProvider sessionData={loginResponse || null}>
-            <PreferencesProvider preferences={loginResponse != null
-              ? loginResponse.profile.preferences
-              : initialization.settings!.preferences}
-            >
+          <SessionProvider sessionData={sessionChangeEvent || null}>
+            <PreferencesProvider preferences={preferences}>
               <ApiInfoProvider apiConfiguration={initialization.settings!.apiConfiguration!} apiStatus={apiStatus!}>
                 <MainWindowDesktop toastCall={toastCall} />
                 <DialogRenderer overlayService={serviceContainer.overlayService} />

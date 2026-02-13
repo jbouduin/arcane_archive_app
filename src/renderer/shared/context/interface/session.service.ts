@@ -1,6 +1,5 @@
 import { LoginRequestDto, SessionDto } from "../../../../common/dto";
 import { ChangePasswordRequestDto, RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto } from "../../dto";
-import { ApplicationRole } from "../../types";
 import { PreferencesLoadedListener, SessionChangeListener } from "../types";
 import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
 import { IIpcProxy } from "./ipc-proxy";
@@ -10,7 +9,6 @@ export interface ISessionService {
   //#region Service methods ---------------------------------------------------
   initialize(serviceContainer: IServiceContainer): Promise<void>;
   initializeSubscriptions(arcaneArchiveProxy: IArcaneArchiveProxy, ipcProxy: IIpcProxy): void;
-  selectDirectory(ipcProxy: IIpcProxy, currentValue: string): Promise<string | undefined>;
   subscribePreferencesLoadedListener(listener: PreferencesLoadedListener): () => void;
   subscribeSessionChangeListener(listener: SessionChangeListener): () => void;
   //#endregion
@@ -30,8 +28,6 @@ export interface ISessionService {
   //#endregion
 
   //#region Session -----------------------------------------------------------
-  hasAnyRole(...roles: Array<ApplicationRole>): boolean;
-  hasRole(role: ApplicationRole): boolean;
   login(serviceContainer: IServiceContainer, loginRequest: LoginRequestDto): Promise<SessionDto>;
   logout(serviceContainer: IServiceContainer): Promise<void>;
   //#endregion

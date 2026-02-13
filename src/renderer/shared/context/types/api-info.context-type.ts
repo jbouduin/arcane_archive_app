@@ -1,9 +1,9 @@
-import { ArcanArchiveServer } from "../../../../common/types";
+import { ArcaneArchiveServer } from "../../../../common/types";
 import { ApiStatus } from "./api-status";
 
 export type ApiInfoContextType = {
   apiStatus: ApiStatus;
-  apiRoots: Map<ArcanArchiveServer, string>;
+  apiRoots: Map<ArcaneArchiveServer, string>;
   authenticationServiceAvailable: boolean;
   libraryServiceAvailable: boolean;
   collectionServiceAvailable: boolean;

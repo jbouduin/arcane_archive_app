@@ -1,10 +1,12 @@
 import { noop } from "lodash";
-import { LoginRequestDto, SessionDto, PreferencesDto } from "../../../../common/dto";
+import { LoginRequestDto, PreferencesDto, SessionDto } from "../../../../common/dto";
 import { IpcPaths } from "../../../../common/ipc";
-import { ChangePasswordRequestDto, RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto } from "../../dto";
+import {
+  ChangePasswordRequestDto, RecoverPasswordRequestDto, RegisterRequestDto, ResetPasswordRequestDto, UserDto
+} from "../../dto";
 import { ApplicationRole } from "../../types";
 import { IArcaneArchiveProxy, IIpcProxy, IServiceContainer, ISessionService } from "../interface";
-import { PreferencesLoadedListener, SessionChangeListener } from "../types";
+import { PreferencesLoadedListener, SessionChangeEvent, SessionChangeListener } from "../types";
 
 export class SessionService implements ISessionService {
   //#region Private fields ----------------------------------------------------
@@ -53,10 +55,6 @@ export class SessionService implements ISessionService {
     }
   }
 
-  public selectDirectory(ipcProxy: IIpcProxy, currentValue: string): Promise<string | undefined> {
-    return ipcProxy.getData<string>(`${IpcPaths.IO_SELECT_DIRECTORY}/${encodeURIComponent(currentValue)}`);
-  }
-
   public subscribePreferencesLoadedListener(listener: PreferencesLoadedListener): () => void {
     this.preferencesLoadedListeners.push(listener);
     return () => {
@@ -81,7 +79,7 @@ export class SessionService implements ISessionService {
     return arcaneArchiveProxy
       .postData<ChangePasswordRequestDto, never>(
         "authentication",
-        "/app/account/password",
+        "/auth/account/password",
         changePasswordRequest,
         { suppressSuccessMessage: false }
       )
@@ -117,7 +115,7 @@ export class SessionService implements ISessionService {
 
   public saveSelf(arcaneArchiveProxy: IArcaneArchiveProxy, dto: UserDto): Promise<UserDto> {
     return arcaneArchiveProxy.putData<UserDto, UserDto>(
-      "authentication", "/app/account", dto
+      "authentication", "/auth/user", dto
     );
   }
 
@@ -127,7 +125,11 @@ export class SessionService implements ISessionService {
     );
   }
 
-  public userExists(arcaneArchiveProxy: IArcaneArchiveProxy, userName: string, signal: AbortSignal): Promise<boolean> {
+  public userExists(
+    arcaneArchiveProxy: IArcaneArchiveProxy,
+    userName: string,
+    signal: AbortSignal
+  ): Promise<boolean> {
     /* eslint-disable @typescript-eslint/no-wrapper-object-types */
     return arcaneArchiveProxy
       .getData<Boolean>("authentication", `/public/account/user-exist?user=${userName}`, { signal: signal })
@@ -137,24 +139,17 @@ export class SessionService implements ISessionService {
   //#endregion
 
   //#region ISessionService Members - Session ---------------------------------
-  public hasRole(role: ApplicationRole): boolean {
-    return this.roles.has(role);
-  }
-
-  public hasAnyRole(...roles: Array<ApplicationRole>): boolean {
-    return roles.some((role: ApplicationRole) => this.roles.has(role));
-  }
-
   public login(serviceContainer: IServiceContainer, loginRequest: LoginRequestDto): Promise<SessionDto> {
     return serviceContainer.arcaneArchiveProxy
       .postData<LoginRequestDto, SessionDto>(
-        "authentication", "/auth/login", loginRequest, { suppressSuccessMessage: true }
+        "authentication", "/public/login", loginRequest, { suppressSuccessMessage: true }
       ).then(
         (r: SessionDto) => {
           this.setSessionData(r, serviceContainer);
-          this.broadcastPreferencesLoaded(r.profile.preferences);
+          if (r.profile.preferences != null) {
+            this.broadcastPreferencesLoaded(r.profile.preferences);
+          }
           void serviceContainer.ipcProxy.postData<SessionDto, never>(IpcPaths.SESSION, r);
-
           return r;
         }
       );
@@ -170,7 +165,7 @@ export class SessionService implements ISessionService {
       )
       .then(
         () => this.clearSessionData(serviceContainer.ipcProxy),
-        () => this.clearSessionData(serviceContainer.ipcProxy) // swallow any reject
+        () => this.clearSessionData(serviceContainer.ipcProxy) // deliberately swallow any reject
       );
   }
 
@@ -248,7 +243,13 @@ export class SessionService implements ISessionService {
       );
     }
     document.title = `Arcane Archive - (logged in as ${data.userName}})`;
-    this.sessionChangeListeners.forEach((l: SessionChangeListener) => l(data));
+    const event: SessionChangeEvent = {
+      profile: data.profile,
+      roles: this.roles,
+      token: data.token,
+      userName: data.userName
+    };
+    this.sessionChangeListeners.forEach((l: SessionChangeListener) => l(event));
   }
   //#endregion
 }
