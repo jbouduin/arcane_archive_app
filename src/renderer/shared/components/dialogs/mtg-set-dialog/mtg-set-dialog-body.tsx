@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useSession } from "../../../../hooks";
 import { LanguageDto, MtgSetDto } from "../../../dto";
 import { createAuditableLabelValueItems, LabelValueItem, LabelValuePanel } from "../../base/label-value-panel";
-import { BaseCheckbox, BaseInput } from "../../input";
+import { AaCheckbox, AaInput } from "../../input";
 import { LanguageButtonBar } from "../../language-button-bar";
 import { MtgSetDialogBodyProps } from "./mtg-set-dialog.props";
 
@@ -96,7 +96,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
           fill={true}
           vertical={false}
         >
-          <BaseInput
+          <AaInput
             viewmodel={props.viewmodel}
             fieldName="code"
             viewmodelChanged={props.viewmodelChanged}
@@ -106,7 +106,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
               readOnly: true
             }}
           />
-          <BaseInput
+          <AaInput
             viewmodel={props.viewmodel}
             fieldName="tokenSetCode"
             viewmodelChanged={props.viewmodelChanged}
@@ -131,7 +131,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
     return (
       <tr>
         <td style={{ paddingLeft: "0px" }}>
-          <BaseCheckbox
+          <AaCheckbox
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName={fieldName1}
@@ -140,10 +140,10 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
             }}
           >
             {label1}
-          </BaseCheckbox>
+          </AaCheckbox>
         </td>
         <td>
-          <BaseCheckbox
+          <AaCheckbox
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName={fieldName2}
@@ -152,7 +152,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
             }}
           >
             {label2}
-          </BaseCheckbox>
+          </AaCheckbox>
         </td>
       </tr>
     );
@@ -184,7 +184,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
           fill={true}
           vertical={false}
         >
-          <BaseInput
+          <AaInput
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName="code"
@@ -194,7 +194,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
               readOnly: true
             }}
           />
-          <BaseInput
+          <AaInput
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName="releaseDate"
@@ -210,7 +210,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
           fill={true}
           vertical={false}
         >
-          <BaseInput
+          <AaInput
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName="type"
@@ -220,7 +220,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
               readOnly: true
             }}
           />
-          <BaseInput
+          <AaInput
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName="block"
@@ -236,7 +236,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
           fill={true}
           vertical={false}
         >
-          <BaseInput
+          <AaInput
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName="baseSetSize"
@@ -248,7 +248,7 @@ export function MtgSetDialogBody(props: MtgSetDialogBodyProps): JSX.Element {
               fill: true
             }}
           />
-          <BaseInput
+          <AaInput
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName="totalSetSize"

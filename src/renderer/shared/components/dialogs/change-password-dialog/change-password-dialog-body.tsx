@@ -1,12 +1,11 @@
 import { SectionCard } from "@blueprintjs/core";
-import { PasswordInput } from "../../input";
-import { PasswordSecurityBar } from "../shared";
+import { AaPasswordInput, AaPasswordSecurityBar } from "../../input";
 import { ChangePasswordDialogBodyProps } from "./change-password-dialog.props";
 
 export function ChangePasswordDialogBody(props: ChangePasswordDialogBodyProps): JSX.Element {
   return (
     <SectionCard padded={false}>
-      <PasswordInput
+      <AaPasswordInput
         viewmodel={props.viewmodel}
         fieldName="oldPassword"
         viewmodelChanged={props.viewmodelChanged}
@@ -18,7 +17,7 @@ export function ChangePasswordDialogBody(props: ChangePasswordDialogBodyProps): 
           placeholder: "Enter your old password...",
         }}
       />
-      <PasswordInput
+      <AaPasswordInput
         viewmodel={props.viewmodel}
         fieldName="password"
         viewmodelChanged={props.viewmodelChanged}
@@ -30,13 +29,13 @@ export function ChangePasswordDialogBody(props: ChangePasswordDialogBodyProps): 
           placeholder: "Enter your new password",
         }}
       />
-      <PasswordSecurityBar
+      <AaPasswordSecurityBar
         score={props.viewmodel.score}
         guessesLog10={props.viewmodel.guessesLog10}
         warning={props.viewmodel.warning}
         suggestions={props.viewmodel.suggestions}
       />
-      <PasswordInput
+      <AaPasswordInput
         viewmodel={props.viewmodel}
         fieldName="passwordRepeat"
         viewmodelChanged={props.viewmodelChanged}

@@ -1,7 +1,7 @@
 import { Callout, ControlGroup, Tab, Tabs } from "@blueprintjs/core";
 import { useServices, useSession } from "../../../../hooks";
 import { CardConditionDto } from "../../../dto/card-condition.dto";
-import { BaseCheckbox, BaseHtmlSelect, CheckBoxTable } from "../../input";
+import { AaCheckbox, AaHtmlSelect, AaToggleTable } from "../../input";
 import { PreferencesDialogBodyProps } from "./preferences-dialog.props";
 
 export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.Element {
@@ -43,7 +43,7 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
               key="card-conditions"
               title="Card Conditions"
               panel={(
-                <CheckBoxTable
+                <AaToggleTable
                   key="cardconditions"
                   columns={3}
                   allOptions={basicDataService.getCardConditionSelectOptions()}
@@ -65,32 +65,32 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
   function renderBasicPreferences(): JSX.Element {
     return (
       <>
-        <BaseCheckbox
+        <AaCheckbox
           viewmodel={props.viewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="useDarkTheme"
         >
           Dark Theme
-        </BaseCheckbox>
-        <BaseCheckbox
+        </AaCheckbox>
+        <AaCheckbox
           viewmodel={props.viewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="refreshCacheAtStartup"
         >
           Refresh cache at startup
-        </BaseCheckbox>
+        </AaCheckbox>
         <ControlGroup
           key="group-1"
           fill={true}
           vertical={false}
         >
-          <BaseHtmlSelect
+          <AaHtmlSelect
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName="cachedImageSize"
             label="Size of Cached Images"
           />
-          <BaseHtmlSelect
+          <AaHtmlSelect
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName="defaultPageSize"
@@ -102,13 +102,13 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
           fill={true}
           vertical={false}
         >
-          <BaseHtmlSelect
+          <AaHtmlSelect
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName="defaultCardSortField"
             label="Default Sort Field (Cards)"
           />
-          <BaseHtmlSelect
+          <AaHtmlSelect
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName="defaultCardSortField"
@@ -128,20 +128,20 @@ export function PreferencesDialogBody(props: PreferencesDialogBodyProps): JSX.El
           fill={true}
           vertical={false}
         >
-          <BaseHtmlSelect
+          <AaHtmlSelect
             viewmodel={viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName="cardSetSort"
             label="Sort sets in tree by"
           />
-          <BaseHtmlSelect
+          <AaHtmlSelect
             viewmodel={viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName="cardSetGroupBy"
             label="Group sets in tree by"
           />
         </ControlGroup>
-        <CheckBoxTable
+        <AaToggleTable
           key="set-type-filter"
           columns={3}
           allOptions={basicDataService.getSelectOptions("setType")}

@@ -1,10 +1,11 @@
-import { SelectOption } from "../../types";
-import { BaseProps } from "./base.props";
+import { SelectOption } from "../../../types";
+import { BaseProps } from "../base.props";
 
 /**
- * A Component with a table containing {@link ToggleCheckBox}
+ * A Component with a table containing {@link AaToggle}
  */
-export interface CheckBoxTableProps<T, Dto extends object> extends Omit<BaseProps<Dto>, "label" | "labelInfo" | "fill"> {
+export interface AaToggleTableProps<T, Dto extends object>
+  extends Omit<BaseProps<Dto>, "label" | "labelInfo" | "fill"> {
   key: string;
   /**
    * _Default_ `true`

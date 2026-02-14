@@ -1,10 +1,10 @@
 import { Button, Intent, Tooltip } from "@blueprintjs/core";
 import { useCallback, useState } from "react";
-import { BaseInput } from "./base-input";
-import { BaseInputProps } from "./base-input.props";
-import { PasswordInputProps } from "./password-input.props";
+import { AaInput } from "./aa-input";
+import { AaInputProps } from "./aa-input.props";
+import { AaPasswordInputProps } from "./aa-password-input.props";
 
-export function PasswordInput<Dto extends object>(props: PasswordInputProps<Dto>): JSX.Element {
+export function AaPasswordInput<Dto extends object>(props: AaPasswordInputProps<Dto>): JSX.Element {
   // #region State ------------------------------------------------------------
   const [showPassword, setShowPassword] = useState(false);
   // #endregion
@@ -15,15 +15,15 @@ export function PasswordInput<Dto extends object>(props: PasswordInputProps<Dto>
 
   // #region Rendering --------------------------------------------------------
   return (
-    <BaseInput
+    <AaInput
       {...buildValidatedInputProps()}
     />
   );
   // #endregion
 
   // #region Auxiliary Methods ------------------------------------------------
-  function buildValidatedInputProps(): BaseInputProps<Dto> {
-    const result: BaseInputProps<Dto> = {
+  function buildValidatedInputProps(): AaInputProps<Dto> {
+    const result: AaInputProps<Dto> = {
       ...props
     };
     result.inputProps!.rightElement = (

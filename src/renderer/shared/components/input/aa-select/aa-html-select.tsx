@@ -1,11 +1,11 @@
 import { FormGroup, HTMLSelect } from "@blueprintjs/core";
 import { useMemo } from "react";
-import { SelectOption } from "../../types";
-import { handleValueChange } from "../util";
-import { BaseHtmlSelectProps } from "./base-html-select.props";
+import { SelectOption } from "../../../types";
+import { AaHtmlSelectProps } from "./aa-html-select.props";
+import { handleValueChange } from "../value-change-handler";
 
-export function BaseHtmlSelect<Dto extends object, D extends string | number>(
-  props: BaseHtmlSelectProps<Dto>
+export function AaHtmlSelect<Dto extends object, D extends string | number>(
+  props: AaHtmlSelectProps<Dto>
 ): JSX.Element {
   // #region Memo -------------------------------------------------------------
   const options: Array<SelectOption<D>> = useMemo(

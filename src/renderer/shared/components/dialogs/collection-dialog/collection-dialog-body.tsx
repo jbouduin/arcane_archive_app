@@ -1,7 +1,7 @@
 import { Boundary, BreadcrumbProps, Breadcrumbs, FormGroup, InputGroup, Label, TextArea } from "@blueprintjs/core";
 import { useMemo } from "react";
 import { createAuditableLabelValueItems, LabelValuePanel } from "../../base/label-value-panel";
-import { handleStringChange } from "../../util";
+import { handleStringChange } from "../../input/value-change-handler";
 import { CollectionDialogBodyProps } from "./collection-dialog.props";
 
 export function CollectionDialogBody(props: CollectionDialogBodyProps): JSX.Element {

@@ -1,14 +1,14 @@
 import { FormGroup, MenuItem, Tag } from "@blueprintjs/core";
 import { ItemRendererProps, MultiSelect } from "@blueprintjs/select";
 import { ReactNode, useCallback } from "react";
-import { SelectOption } from "../../types";
-import { HighlightText } from "../base/highlight-text/highlight-text";
-import { BaseMultiSelectProps } from "./base-multi-select.props";
+import { SelectOption } from "../../../types";
+import { HighlightText } from "../../base/highlight-text/highlight-text";
+import { AaMultiSelectProps } from "./aa-multi-select.props";
 
 /**
  * A multi select component that uses a static (cached) list of items
  */
-export function BaseMultiSelect<T, U, Dto extends object>(props: BaseMultiSelectProps<T, U, Dto>): JSX.Element {
+export function AaMultiSelect<T, U, Dto extends object>(props: AaMultiSelectProps<T, U, Dto>): JSX.Element {
   //#region Initialization -------------------------------------------------------
   const validation = props.validation || "none";
   const allItems = props.allItems || props.viewmodel.getSelectOptions(props.fieldName);
@@ -60,12 +60,12 @@ export function BaseMultiSelect<T, U, Dto extends object>(props: BaseMultiSelect
         labelInfo={props.labelInfo}
       >
         {
-          !props.disabled &&
+          !props.readonly &&
           (
             <MultiSelect<SelectOption<T>>
               key={keyName + "-select"}
               initialContent={null}
-              disabled={props.disabled}
+              disabled={props.readonly}
               itemListPredicate={filterOptionList}
               itemRenderer={(item: SelectOption<T>, itemProps: ItemRendererProps) => itemRenderer(item, itemProps)}
               items={allItems}
@@ -110,7 +110,7 @@ export function BaseMultiSelect<T, U, Dto extends object>(props: BaseMultiSelect
           )
         }
         {
-          props.disabled && (
+          props.readonly && (
             <div className="disabled-tag-div">
               {renderReadOnlyTags()}
             </div>

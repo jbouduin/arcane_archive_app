@@ -1,13 +1,12 @@
 import { ControlGroup, SectionCard } from "@blueprintjs/core";
-import { BaseInput, PasswordInput } from "../../input";
-import { PasswordSecurityBar } from "../shared";
+import { AaInput, AaPasswordInput, AaPasswordSecurityBar } from "../../input";
 import { RegisterDialogBodyProps } from "./register-dialog.props";
 
 export function RegisterDialogBody(props: RegisterDialogBodyProps): JSX.Element {
   // #region Rendering --------------------------------------------------------
   return (
     <SectionCard padded={false}>
-      <BaseInput
+      <AaInput
         viewmodel={props.viewmodel}
         viewmodelChanged={props.viewmodelChanged}
         validation="asynchronous"
@@ -26,7 +25,7 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps): JSX.Element 
         fill={true}
         vertical={false}
       >
-        <BaseInput
+        <AaInput
           viewmodel={props.viewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="email"
@@ -40,7 +39,7 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps): JSX.Element 
             type: "email"
           }}
         />
-        <BaseInput
+        <AaInput
           viewmodel={props.viewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="emailRepeat"
@@ -60,7 +59,7 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps): JSX.Element 
         fill={true}
         vertical={false}
       >
-        <PasswordInput
+        <AaPasswordInput
           viewmodel={props.viewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="password"
@@ -72,7 +71,7 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps): JSX.Element 
             placeholder: "Enter your password..."
           }}
         />
-        <PasswordInput
+        <AaPasswordInput
           viewmodel={props.viewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="passwordRepeat"
@@ -85,7 +84,7 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps): JSX.Element 
           }}
         />
       </ControlGroup>
-      <PasswordSecurityBar
+      <AaPasswordSecurityBar
         score={props.viewmodel.score}
         guessesLog10={props.viewmodel.guessesLog10}
         warning={props.viewmodel.warning}
@@ -96,7 +95,7 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps): JSX.Element 
         fill={true}
         vertical={false}
       >
-        <BaseInput
+        <AaInput
           viewmodel={props.viewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="firstName"
@@ -105,7 +104,7 @@ export function RegisterDialogBody(props: RegisterDialogBodyProps): JSX.Element 
             placeholder: "Enter your first name..."
           }}
         />
-        <BaseInput
+        <AaInput
           viewmodel={props.viewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="lastName"

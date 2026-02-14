@@ -3,7 +3,7 @@ import "./login-dialog.css";
 import { SectionCard, Tag } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { useServices } from "../../../../hooks";
-import { BaseInput, PasswordInput } from "../../input";
+import { AaInput, AaPasswordInput } from "../../input";
 import { LoginDialogBodyProps } from "./login-dialog.props";
 
 export function LoginDialogBody(props: LoginDialogBodyProps): JSX.Element {
@@ -52,7 +52,7 @@ export function LoginDialogBody(props: LoginDialogBodyProps): JSX.Element {
   // #region Rendering --------------------------------------------------------
   return (
     <SectionCard padded={false}>
-      <BaseInput
+      <AaInput
         viewmodel={props.viewmodel}
         viewmodelChanged={props.viewmodelChanged}
         fieldName="user"
@@ -64,7 +64,7 @@ export function LoginDialogBody(props: LoginDialogBodyProps): JSX.Element {
           placeholder: "Enter your username or email address..."
         }}
       />
-      <PasswordInput
+      <AaPasswordInput
         viewmodel={props.viewmodel}
         viewmodelChanged={props.viewmodelChanged}
         fieldName="password"

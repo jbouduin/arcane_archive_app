@@ -2,7 +2,7 @@ import { Button, Callout, Tab, Tabs } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { useServices } from "../../../../hooks";
 import { DirectoryTarget } from "../../../viewmodel";
-import { BaseHtmlSelect, BaseInput } from "../../input";
+import { AaHtmlSelect, AaInput } from "../../input";
 import { SystemSettingsDialogBodyProps } from "./system-settings-dialog.props";
 
 export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps): JSX.Element {
@@ -87,25 +87,25 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps): 
   function renderMainLogging(): JSX.Element {
     return (
       <>
-        <BaseHtmlSelect
+        <AaHtmlSelect
           viewmodel={props.viewmodel.getMainLogSettingsViewmodel("Main")}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="level"
           label="Log level for main process"
         />
-        <BaseHtmlSelect
+        <AaHtmlSelect
           viewmodel={props.viewmodel.getMainLogSettingsViewmodel("DB")}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="level"
           label="Log level for database layer"
         />
-        <BaseHtmlSelect
+        <AaHtmlSelect
           viewmodel={props.viewmodel.getMainLogSettingsViewmodel("API")}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="level"
           label="Log level for API (3rd party)"
         />
-        <BaseHtmlSelect
+        <AaHtmlSelect
           viewmodel={props.viewmodel.getMainLogSettingsViewmodel("Renderer")}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="level"
@@ -118,37 +118,37 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps): 
   function renderRendererLogging(): JSX.Element {
     return (
       <>
-        <BaseHtmlSelect
+        <AaHtmlSelect
           viewmodel={props.viewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="rendererLogLevel"
           label="Desktop Log level"
         />
-        <BaseHtmlSelect
+        <AaHtmlSelect
           viewmodel={props.viewmodel.getResponseLogSettingsViewmodel("IPC")}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="level"
           label="Log level for IPC requests"
         />
-        <BaseHtmlSelect
+        <AaHtmlSelect
           viewmodel={props.viewmodel.getResponseLogSettingsViewmodel("authentication")}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="level"
           label="Log level for Authentication Service requests"
         />
-        <BaseHtmlSelect
+        <AaHtmlSelect
           viewmodel={props.viewmodel.getResponseLogSettingsViewmodel("library")}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="level"
           label="Log level for Library Service requests"
         />
-        <BaseHtmlSelect
+        <AaHtmlSelect
           viewmodel={props.viewmodel.getResponseLogSettingsViewmodel("collection")}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="level"
           label="Log level for Collection Service requests"
         />
-        <BaseHtmlSelect
+        <AaHtmlSelect
           viewmodel={props.viewmodel.getResponseLogSettingsViewmodel("deck")}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="level"
@@ -161,7 +161,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps): 
   function renderLocalStorage(): JSX.Element {
     return (
       <>
-        <BaseInput
+        <AaInput
           viewmodel={props.viewmodel.dataConfigurationViewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="rootDataDirectory"
@@ -175,7 +175,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps): 
             rightElement: (<Button icon="search" size="small" onClick={() => onSearchDirectory("data")} />),
           }}
         />
-        <BaseInput
+        <AaInput
           viewmodel={props.viewmodel.dataConfigurationViewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="cacheDirectory"
@@ -189,7 +189,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps): 
             rightElement: (<Button icon="search" size="small" onClick={() => onSearchDirectory("cache")} />),
           }}
         />
-        <BaseInput
+        <AaInput
           viewmodel={props.viewmodel.dataConfigurationViewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="logDirectory"
@@ -203,7 +203,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps): 
             rightElement: (<Button icon="search" size="small" onClick={() => onSearchDirectory("log")} />),
           }}
         />
-        <BaseInput
+        <AaInput
           viewmodel={props.viewmodel.dataConfigurationViewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="databaseName"
@@ -221,7 +221,7 @@ export function SystemSettingsDialogBody(props: SystemSettingsDialogBodyProps): 
 
   function renderApi(): JSX.Element {
     return (
-      <BaseInput
+      <AaInput
         viewmodel={props.viewmodel}
         viewmodelChanged={props.viewmodelChanged}
         fieldName="discovery"

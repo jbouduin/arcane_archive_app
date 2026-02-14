@@ -2,14 +2,14 @@ import { SectionCard } from "@blueprintjs/core";
 import { CollectionDto, LanguageDto } from "../../../dto";
 import { CardConditionDto } from "../../../dto/card-condition.dto";
 import { BaseDivider } from "../../base/base-divider/base-divider";
-import { BaseCheckbox, BaseMultiSelect, CheckBoxTable } from "../../input";
+import { AaCheckbox, AaMultiSelect, AaToggleTable } from "../../input";
 import { ExportSetDialogBodyProps } from "./export-set-dialog.props";
 
 export function ExportSetDialogBody(props: ExportSetDialogBodyProps): JSX.Element {
   //#region Rendering ---------------------------------------------------------
   return (
     <SectionCard padded={false}>
-      <BaseMultiSelect
+      <AaMultiSelect
         allItems={props.viewmodel.allCollections}
         fieldName="collectionIds"
         label="Collections"
@@ -19,7 +19,7 @@ export function ExportSetDialogBody(props: ExportSetDialogBodyProps): JSX.Elemen
         idExtractor={(value: CollectionDto) => value.id!}
         viewmodelChanged={props.viewmodelChanged}
       />
-      <CheckBoxTable
+      <AaToggleTable
         key="languages"
         viewmodel={props.viewmodel}
         viewmodelChanged={props.viewmodelChanged}
@@ -31,7 +31,7 @@ export function ExportSetDialogBody(props: ExportSetDialogBodyProps): JSX.Elemen
         validation="synchronous"
       />
       <BaseDivider />
-      <CheckBoxTable
+      <AaToggleTable
         key="card-conditions-2"
         viewmodel={props.viewmodel}
         viewmodelChanged={props.viewmodelChanged}
@@ -43,13 +43,13 @@ export function ExportSetDialogBody(props: ExportSetDialogBodyProps): JSX.Elemen
         disabled={true}
       />
       <BaseDivider style={{ marginBottom: "12px" }} />
-      <BaseCheckbox
+      <AaCheckbox
         viewmodel={props.viewmodel}
         viewmodelChanged={props.viewmodelChanged}
         fieldName="openFile"
       >
         Open file after export (not implemented)
-      </BaseCheckbox>
+      </AaCheckbox>
     </SectionCard>
   );
   //#endregion

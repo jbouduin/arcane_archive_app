@@ -2,7 +2,7 @@ import { ControlGroup, HTMLTable, Tab, Tabs } from "@blueprintjs/core";
 import { useSession } from "../../../../hooks";
 import { ApplicationRole } from "../../../types";
 import { createAuditableLabelValueItems, LabelValueItem, LabelValuePanel } from "../../base/label-value-panel";
-import { BaseCheckbox, BaseInput, BaseMultiSelect } from "../../input";
+import { AaCheckbox, AaInput, AaMultiSelect } from "../../input";
 import { ProfileDialogBodyProps } from "./profile-dialog.props";
 
 export function ProfileDialogBody(props: ProfileDialogBodyProps): JSX.Element {
@@ -31,7 +31,7 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps): JSX.Element {
   function renderUserDetailsPanel(): React.JSX.Element {
     return (
       <>
-        <BaseInput
+        <AaInput
           viewmodel={props.viewmodel.accountViewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="accountName"
@@ -44,7 +44,7 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps): JSX.Element {
             placeholder: "Enter a username..."
           }}
         />
-        <BaseInput
+        <AaInput
           viewmodel={props.viewmodel}
           viewmodelChanged={props.viewmodelChanged}
           fieldName="email"
@@ -63,7 +63,7 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps): JSX.Element {
           fill={true}
           vertical={false}
         >
-          <BaseInput
+          <AaInput
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName="firstname"
@@ -73,7 +73,7 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps): JSX.Element {
               placeholder: "Enter your first name..."
             }}
           />
-          <BaseInput
+          <AaInput
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName="lastName"
@@ -85,11 +85,11 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps): JSX.Element {
             }}
           />
         </ControlGroup>
-        <BaseMultiSelect
+        <AaMultiSelect
           key="roles"
           viewmodel={props.viewmodel.accountViewmodel}
           viewmodelChanged={props.viewmodelChanged}
-          disabled={!isSysAdmin}
+          readonly={!isSysAdmin}
           allItems={props.viewmodel.accountViewmodel.allRoles}
           fieldName="roles"
           label="Roles"
@@ -131,42 +131,42 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps): JSX.Element {
               <tbody>
                 <tr>
                   <td style={{ paddingLeft: "0px" }}>
-                    <BaseCheckbox
+                    <AaCheckbox
                       viewmodel={props.viewmodel.accountViewmodel}
                       viewmodelChanged={props.viewmodelChanged}
                       fieldName="accountLocked"
                     >
                       Account Locked
-                    </BaseCheckbox>
+                    </AaCheckbox>
                   </td>
                   <td>
-                    <BaseCheckbox
+                    <AaCheckbox
                       viewmodel={props.viewmodel.accountViewmodel}
                       viewmodelChanged={props.viewmodelChanged}
                       fieldName="accountActive"
                     >
                       Account Active
-                    </BaseCheckbox>
+                    </AaCheckbox>
                   </td>
                 </tr>
                 <tr>
                   <td style={{ paddingLeft: "0px" }}>
-                    <BaseCheckbox
+                    <AaCheckbox
                       viewmodel={props.viewmodel.accountViewmodel}
                       viewmodelChanged={props.viewmodelChanged}
                       fieldName="accountExpired"
                     >
                       Account Expired
-                    </BaseCheckbox>
+                    </AaCheckbox>
                   </td>
                   <td>
-                    <BaseCheckbox
+                    <AaCheckbox
                       viewmodel={props.viewmodel.accountViewmodel}
                       viewmodelChanged={props.viewmodelChanged}
                       fieldName="passwordExpired"
                     >
                       Password Expired
-                    </BaseCheckbox>
+                    </AaCheckbox>
                   </td>
                 </tr>
               </tbody>

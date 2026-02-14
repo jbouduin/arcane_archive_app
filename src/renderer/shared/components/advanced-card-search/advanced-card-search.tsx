@@ -4,7 +4,7 @@ import { AppColorDto, CollectionDto, MtgSetTreeDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { CardSetIcon } from "../card-set-icon";
 import { CardSymbolRenderer } from "../card-symbol-renderer";
-import { BaseMultiSelect } from "../input";
+import { AaMultiSelect } from "../input";
 import { AdvancedCardSearchProps } from "./advanced-card-search.props";
 
 export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element {
@@ -33,7 +33,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
       {/* --- Collections --- */}
       {
         searchViewmodel.useCollections && (
-          <BaseMultiSelect
+          <AaMultiSelect
             fieldName="collectionIds"
             label="Collection"
             viewmodel={searchViewmodel}
@@ -43,7 +43,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         )
       }
       {/* --- Card sets --- */}
-      <BaseMultiSelect
+      <AaMultiSelect
         fieldName="cardSetIds"
         label="Card Set"
         viewmodel={searchViewmodel}
@@ -53,7 +53,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
       />
       {/* TODO --- Card names --- */}
       {/* --- Card Colors --- */}
-      <BaseMultiSelect
+      <AaMultiSelect
         fieldName="cardColors"
         label="Card Color"
         viewmodel={searchViewmodel}
@@ -62,7 +62,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         preTextElement={colorSymbolRenderer}
       />
       {/* --- Produced Mana Colors --- */}
-      <BaseMultiSelect
+      <AaMultiSelect
         fieldName="producedManaColors"
         label="Produced Mana"
         viewmodel={searchViewmodel}
@@ -71,7 +71,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         preTextElement={colorSymbolRenderer}
       />
       {/* --- Identity colors */}
-      <BaseMultiSelect
+      <AaMultiSelect
         fieldName="identityColors"
         label="Identity Color"
         viewmodel={searchViewmodel}
@@ -80,7 +80,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         preTextElement={colorSymbolRenderer}
       />
       {/* --- rarity --- */}
-      <BaseMultiSelect
+      <AaMultiSelect
         fieldName="rarities"
         label="Rarity"
         viewmodel={searchViewmodel}
@@ -88,7 +88,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         idExtractor={(value: string) => value}
       />
       {/* --- game format --- */}
-      <BaseMultiSelect
+      <AaMultiSelect
         fieldName="gameFormats"
         label="Game Format"
         viewmodel={searchViewmodel}
@@ -96,7 +96,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         idExtractor={(value: string) => value}
       />
       {/* --- Types --- */}
-      <BaseMultiSelect
+      <AaMultiSelect
         fieldName="types"
         label="Card Type"
         viewmodel={searchViewmodel}
@@ -104,7 +104,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         idExtractor={(value: string) => value}
       />
       {/* --- Super-types --- */}
-      <BaseMultiSelect
+      <AaMultiSelect
         fieldName="superTypes"
         label="Super-type"
         viewmodel={searchViewmodel}
@@ -113,7 +113,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
       />
       {/* TODO --- sub-types --- */}
       {/* --- Power --- */}
-      <BaseMultiSelect
+      <AaMultiSelect
         fieldName="powers"
         label="Power"
         viewmodel={searchViewmodel}
@@ -121,7 +121,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         idExtractor={(value: string) => value}
       />
       {/* --- Thoughness --- */}
-      <BaseMultiSelect
+      <AaMultiSelect
         fieldName="toughnesses"
         label="Toughness"
         viewmodel={searchViewmodel}

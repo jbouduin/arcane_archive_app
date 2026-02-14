@@ -1,13 +1,13 @@
 import { Checkbox } from "@blueprintjs/core";
-import { handleBooleanChange } from "../util/handle-boolean-change";
-import { ToggleCheckBoxProps } from "./toggle-checkbox.props";
+import { AaToggleProps } from "./aa-toggle.props";
+import { handleBooleanChange } from "../value-change-handler";
 
 /**
  * A Checkbox component that adds / deletes string values from a string array
  *
- * @param props {@link ToggleCheckBoxProps }
+ * @param props {@link AaToggleProps }
  */
-export function ToggleCheckbox<Dto extends object>(props: ToggleCheckBoxProps<Dto>): JSX.Element {
+export function AaToggle<Dto extends object>(props: AaToggleProps<Dto>): JSX.Element {
   //#region Rendering ---------------------------------------------------------
   const dtoValue = props.viewmodel.dto[props.fieldName] as unknown as Array<string>;
   return (

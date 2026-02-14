@@ -1,8 +1,8 @@
 import { HTMLInputProps, InputGroupProps, NumericInputProps } from "@blueprintjs/core";
-import { BaseProps } from "./base.props";
-import { ValidationType } from "./validation-type";
+import { BaseProps } from "../base.props";
+import { ValidationType } from "../validation-type";
 
-export interface BaseInputProps<Dto extends object> extends BaseProps<Dto> {
+export interface AaInputProps<Dto extends object> extends BaseProps<Dto> {
   /**
    * Set which validations have to be executed. If the validation has not been registered
    * an exception will be thrown, resp. the promise will be rejected.

@@ -1,10 +1,10 @@
 import { Classes, HTMLTable } from "@blueprintjs/core";
 import classNames from "classnames";
-import { SelectOption } from "../../types";
-import { CheckBoxTableProps } from "./check-box-table.props";
-import { ToggleCheckbox } from "./toggle-checkbox";
+import { SelectOption } from "../../../types";
+import { AaToggleTableProps } from "./aa-toggle-table.props";
+import { AaToggle } from "./aa-toggle";
 
-export function CheckBoxTable<T, Dto extends object>(props: CheckBoxTableProps<T, Dto>): JSX.Element {
+export function AaToggleTable<T, Dto extends object>(props: AaToggleTableProps<T, Dto>): JSX.Element {
   //#region set defaults ------------------------------------------------------
   const bordered = props.bordered || false;
   const compact = props.compact || true;
@@ -30,7 +30,7 @@ export function CheckBoxTable<T, Dto extends object>(props: CheckBoxTableProps<T
       const theValue: string = props.value(opt.value);
       currentRow.push((
         <td key={`cell-${theValue}`} style={{ paddingLeft: "0px" }}>
-          <ToggleCheckbox
+          <AaToggle
             viewmodel={props.viewmodel}
             viewmodelChanged={props.viewmodelChanged}
             fieldName={props.fieldName}
@@ -46,7 +46,7 @@ export function CheckBoxTable<T, Dto extends object>(props: CheckBoxTableProps<T
             }}
           >
             {opt.label}
-          </ToggleCheckbox>
+          </AaToggle>
         </td>
       ));
       idx = idx + 1;

@@ -1,9 +1,10 @@
 import { Colors, FormGroup, Icon, InputGroup, NumericInput, Spinner } from "@blueprintjs/core";
 import { CSSProperties, useEffect, useState } from "react";
-import { handleIntChange, handleStringChange, stringNotNullOrEmpty } from "../util";
-import { BaseInputProps } from "./base-input.props";
+import { stringNotNullOrEmpty } from "../../util";
+import { handleIntChange, handleStringChange } from "../value-change-handler";
+import { AaInputProps } from "./aa-input.props";
 
-export function BaseInput<Dto extends object>(props: BaseInputProps<Dto>): JSX.Element {
+export function AaInput<Dto extends object>(props: AaInputProps<Dto>): JSX.Element {
   //#region State -------------------------------------------------------------
   const [loading, setLoading] = useState<boolean>(false);
   const [controller, setController] = useState<AbortController | null>(null);

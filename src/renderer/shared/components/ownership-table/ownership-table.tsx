@@ -5,7 +5,7 @@ import { CardConditionDto } from "../../dto/card-condition.dto";
 import { SelectOption } from "../../types";
 import { OwnershipTableProps } from "./ownership-table.props";
 import { CollectionCardQuantityViewmodel } from "../../viewmodel";
-import { BaseInput } from "../input";
+import { AaInput } from "../input";
 
 export function OwnershipTable(props: OwnershipTableProps): JSX.Element {
   //#region Rendering ---------------------------------------------------------
@@ -54,7 +54,7 @@ export function OwnershipTable(props: OwnershipTableProps): JSX.Element {
 
   function renderQuantityInput(viewmodel: CollectionCardQuantityViewmodel): JSX.Element {
     return (
-      <BaseInput
+      <AaInput
         viewmodel={viewmodel}
         fieldName="quantity"
         viewmodelChanged={props.viewmodelChanged}

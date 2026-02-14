@@ -1,6 +1,5 @@
 import { Tab, Tabs } from "@blueprintjs/core";
 import { usePreferences } from "../../../../hooks";
-import { useServices } from "../../../../hooks/use-services";
 import { AdvancedCardSearch } from "../../../../shared/components/advanced-card-search";
 import { SetTreeView } from "../../../../shared/components/set-tree-view/set-tree-view";
 import { CardQueryFilterDto } from "../../../../shared/dto";

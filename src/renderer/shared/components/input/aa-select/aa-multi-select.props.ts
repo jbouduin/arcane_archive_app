@@ -1,10 +1,10 @@
-import { SelectOption } from "../../types";
-import { BaseProps } from "./base.props";
+import { SelectOption } from "../../../types";
+import { BaseProps } from "../base.props";
 
-export interface BaseMultiSelectProps<T, U, Dto extends object> extends BaseProps<Dto> {
+export interface AaMultiSelectProps<T, U, Dto extends object> extends BaseProps<Dto> {
   // TODO remove all items
   allItems?: Array<SelectOption<T>>;
-  disabled?: boolean;
+  readonly?: boolean;
   /**
    * Defaults to 'None'
    */

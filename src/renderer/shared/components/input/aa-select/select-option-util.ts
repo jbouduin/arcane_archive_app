@@ -1,5 +1,6 @@
-import { SelectOption } from "../../types";
+import { SelectOption } from "../../../types";
 
+// TODO remove this file once not required anymore
 export function addSelectOption<T>(
   dtoArray: Array<T>,
   viewmodelArray: Array<SelectOption<T>>,

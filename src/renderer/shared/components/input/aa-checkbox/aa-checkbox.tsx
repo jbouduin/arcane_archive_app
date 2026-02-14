@@ -1,13 +1,13 @@
 import { Checkbox } from "@blueprintjs/core";
-import { handleBooleanChange } from "../util/handle-boolean-change";
-import { BaseCheckBoxProps } from "./base-checkbox.props";
+import { AaCheckBoxProps } from "./aa-checkbox.props";
+import { handleBooleanChange } from "../value-change-handler";
 
 /**
  * A Checkbox component for boolean properties
  *
- * @param props {@link BaseCheckBoxProps }
+ * @param props {@link AaCheckBoxProps }
  */
-export function BaseCheckbox<Dto extends object>(props: BaseCheckBoxProps<Dto>): JSX.Element {
+export function AaCheckbox<Dto extends object>(props: AaCheckBoxProps<Dto>): JSX.Element {
   return (
     <Checkbox
       {...props.checkBoxProps}

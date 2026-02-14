@@ -1,12 +1,12 @@
-import "./password-security-bar.css";
+import "./aa-password-security-bar.css";
 
 import { Callout } from "@blueprintjs/core";
 import classNames from "classnames";
 import { useCallback } from "react";
 import { ZXCVBNScore } from "zxcvbn";
-import { PasswordSecurityBarProps } from "./password-security-bar.props";
+import { AaPasswordSecurityBarProps } from "./aa-password-security-bar.props";
 
-export function PasswordSecurityBar(props: PasswordSecurityBarProps): JSX.Element {
+export function AaPasswordSecurityBar(props: AaPasswordSecurityBarProps): JSX.Element {
   const normalized = Math.min(props.guessesLog10 || 0, 14); // cap at 14
   const percentage = Math.floor((normalized / 14) * 100);
   const fillerRelativePercentage = (100 / percentage) * 100;

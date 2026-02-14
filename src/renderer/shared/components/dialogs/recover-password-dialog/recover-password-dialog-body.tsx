@@ -1,10 +1,10 @@
-import { BaseInput } from "../../input";
+import { AaInput } from "../../input";
 import { RecoverPasswordDialogBodyProps } from "./recover-password-dialog.props";
 
 export function RecoverPasswordDialogBody(props: RecoverPasswordDialogBodyProps): JSX.Element {
   // #region Rendering --------------------------------------------------------
   return (
-    <BaseInput
+    <AaInput
       viewmodel={props.viewmodel}
       fieldName="userNameOrEmail"
       viewmodelChanged={props.viewmodelChanged}
