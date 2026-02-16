@@ -9,7 +9,7 @@ import { itemRenderer, onClear, onRemove, onItemSelect, optionIsSelected, render
  */
 export function AaClientSelect<T, U, Dto extends object>(props: AaClientSelectProps<T, U, Dto>): JSX.Element {
   //#region Initialization -------------------------------------------------------
-  const allItems = props.allItems || props.viewmodel.getSelectOptions(props.fieldName);
+  const allItems = props.viewmodel.getSelectOptions<T>(props.fieldName);
   const keyName = props.fieldName.toString();
   const dtoValue = props.viewmodel.dto[props.fieldName] as unknown as Array<U>;
   const selectedOptions = allItems

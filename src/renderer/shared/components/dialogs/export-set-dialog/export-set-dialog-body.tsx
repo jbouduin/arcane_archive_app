@@ -10,7 +10,6 @@ export function ExportSetDialogBody(props: ExportSetDialogBodyProps): JSX.Elemen
   return (
     <SectionCard padded={false}>
       <AaClientSelect
-        allItems={props.viewmodel.allCollections}
         fieldName="collectionIds"
         label="Collections"
         labelInfo="*"

@@ -90,7 +90,6 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps): JSX.Element {
           viewmodel={props.viewmodel.accountViewmodel}
           viewmodelChanged={props.viewmodelChanged}
           readonly={!isSysAdmin}
-          allItems={props.viewmodel.accountViewmodel.allRoles}
           fieldName="roles"
           label="Roles"
           labelInfo="*"
