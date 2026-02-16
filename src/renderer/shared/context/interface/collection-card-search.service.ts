@@ -5,9 +5,9 @@ import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
 
 export interface ICollectionCardSearchService {
   //#region Collection Search -------------------------------------------------
-  queryFilter: CardQueryFilterDto;
-  queryParams: QueryParamsDto;
-  queryResult: QueryResultDto<CollectionCardListDto>;
+  readonly queryFilter: CardQueryFilterDto;
+  readonly queryParams: QueryParamsDto;
+  readonly queryResult: QueryResultDto<CollectionCardListDto>;
   selectedSearchTab: string | number;
 
   getCollectionCards(

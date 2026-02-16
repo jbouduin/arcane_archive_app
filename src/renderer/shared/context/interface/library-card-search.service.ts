@@ -4,9 +4,9 @@ import { LibraryCardListDto, CardQueryFilterDto, QueryParamsDto, QueryResultDto 
 import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
 
 export interface ILibraryCardSearchService {
-  queryFilter: CardQueryFilterDto;
-  queryParams: QueryParamsDto;
-  queryResult: QueryResultDto<LibraryCardListDto>;
+  readonly queryFilter: CardQueryFilterDto;
+  readonly queryParams: QueryParamsDto;
+  readonly queryResult: QueryResultDto<LibraryCardListDto>;
   selectedSearchTab: string | number;
 
   /**

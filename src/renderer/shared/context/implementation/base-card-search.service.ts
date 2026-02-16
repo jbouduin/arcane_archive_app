@@ -21,24 +21,12 @@ export abstract class BaseCardSearchService<T> {
     return this._queryFilter;
   }
 
-  public set queryFilter(value: CardQueryFilterDto) {
-    this._queryFilter = value;
-  }
-
   public get queryParams(): QueryParamsDto {
     return this._queryParams;
   }
 
-  public set queryParams(value: QueryParamsDto) {
-    this._queryParams = value;
-  }
-
   public get queryResult(): QueryResultDto<T> {
     return this._queryResult;
-  }
-
-  public set queryResult(value: QueryResultDto<T>) {
-    this._queryResult = value;
   }
 
   public get selectedSearchTab(): string | number {
@@ -79,32 +67,33 @@ export abstract class BaseCardSearchService<T> {
   //#endregion
 
   //#region Auxiliary Methods -------------------------------------------------
-  protected getCards(
+  protected async getCards(
     path: string,
     searchMode: SearchMode,
     queryFilter: CardQueryFilterDto,
     queryParams: QueryParamsDto
   ): Promise<QueryResultDto<T>> {
-    /**
-     * # TODO consider caching search criteria only when searching
-     * this.queryfilter = cardSearchDto;
-     * this.queryParams = queryParams;
-     */
+    let result: QueryResultDto<T>;
+    this._queryFilter = queryFilter;
+    this._queryParams = queryParams;
+
     const params = this.buildSearchParams(searchMode, queryFilter);
     if (params.size > 0) {
       params.append("pn", queryParams.pageNumber.toString());
       params.append("ps", queryParams.pageSize.toString());
       params.append("sort", `${queryParams.sortField}:${queryParams.sortDirection}`);
-      // TODO consider setting the result here, instead of in the caller
-      return this.arcaneArchiveProxy.getData<QueryResultDto<T>>("library", path + "?" + params.toString());
+      this._queryResult = await this.arcaneArchiveProxy
+        .getData<QueryResultDto<T>>("library", path + "?" + params.toString());
+      result = this._queryResult;
     } else {
-      return Promise.resolve({
+      result = {
         currentPageNumber: 0,
         currentPageSize: queryParams.pageSize,
         hasMore: false,
         resultList: new Array<T>()
-      });
+      };
     }
+    return result;
   }
 
   private buildSearchParams(

@@ -61,7 +61,6 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
             .getCollectionCards(dto, collectionsOnly, state.queryParams)
             .then(
               (resp: QueryResultDto<CollectionCardListDto>) => {
-                collectionCardSearchService.queryResult = resp;
                 setState(prev => ({
                   ...prev,
                   queryFilter: dto,
@@ -73,11 +72,9 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
             );
         }}
         selectedSearchTabChanged={(newSelection: string | number) => {
-          // TODO search again ?
           collectionCardSearchService.selectedSearchTab = newSelection;
           setState(prev => ({ ...prev, selectedSearchTab: newSelection }));
         }}
-        // TODO we need better than this
         viewmodelChanged={() => setState(prev => ({ ...prev }))}
       />
     ),
@@ -93,12 +90,12 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
         }
         pageNumberChanged={(newPage: number) => {
           const newCardQueryParams: QueryParamsDto = { ...state.queryParams, pageNumber: newPage };
-          collectionCardSearchService.queryParams = newCardQueryParams;
+          // collectionCardSearchService.queryParams = newCardQueryParams;
           collectionCardSearchService
             .getCollectionCards(state.queryFilter, state.collectionsOnly, newCardQueryParams)
             .then(
               (resp: QueryResultDto<CollectionCardListDto>) => {
-                collectionCardSearchService.queryResult = resp;
+                // collectionCardSearchService.queryResult = resp;
                 setState(prev => ({ ...prev, queryParams: newCardQueryParams, queryResult: resp }));
               },
               noop
@@ -106,12 +103,12 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
         }}
         pageSizeChanged={(newPageSize: number) => {
           const newCardQueryParams: QueryParamsDto = { ...state.queryParams, pageSize: newPageSize };
-          collectionCardSearchService.queryParams = newCardQueryParams;
+          // collectionCardSearchService.queryParams = newCardQueryParams;
           collectionCardSearchService
             .getCollectionCards(state.queryFilter, state.collectionsOnly, newCardQueryParams)
             .then(
               (resp: QueryResultDto<CollectionCardListDto>) => {
-                collectionCardSearchService.queryResult = resp;
+                // collectionCardSearchService.queryResult = resp;
                 setState(prev => ({ ...prev, queryParams: newCardQueryParams, queryResult: resp }));
               },
               noop
@@ -123,12 +120,12 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
             sortDirection: direction,
             sortField: fieldName
           };
-          collectionCardSearchService.queryParams = newCardQueryParams;
+          // collectionCardSearchService.queryParams = newCardQueryParams;
           collectionCardSearchService
             .getCollectionCards(state.queryFilter, state.collectionsOnly, newCardQueryParams)
             .then(
               (resp: QueryResultDto<CollectionCardListDto>) => {
-                collectionCardSearchService.queryResult = resp;
+                // collectionCardSearchService.queryResult = resp;
                 setState(prev => ({ ...prev, queryParams: newCardQueryParams, queryResult: resp }));
               },
               noop

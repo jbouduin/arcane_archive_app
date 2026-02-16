@@ -55,7 +55,6 @@ export function LibraryView(props: LibraryViewProps): JSX.Element {
             .getLibraryCards(dto, setsOnly, state.queryParams)
             .then(
               (resp: QueryResultDto<LibraryCardListDto>) => {
-                libraryCardSearchService.queryResult = resp;
                 setState(prev => ({
                   ...prev,
                   queryFilter: dto,
@@ -69,11 +68,9 @@ export function LibraryView(props: LibraryViewProps): JSX.Element {
         selectedSearchTabChanged={
           (newSelection: string | number) => {
             libraryCardSearchService.selectedSearchTab = newSelection;
-            // TODO search again ?
             setState(prev => ({ ...prev, selectedSearchTab: newSelection }));
           }
         }
-        // TODO we need better than this
         viewmodelChanged={() => setState(prev => ({ ...prev }))}
       />
     ),
@@ -84,12 +81,10 @@ export function LibraryView(props: LibraryViewProps): JSX.Element {
         cardSelected={(cardId: number | null) => setState(prev => ({ ...prev, selectedCard: cardId }))}
         pageNumberChanged={(newPage: number) => {
           const newCardQueryParams: QueryParamsDto = { ...state.queryParams, pageNumber: newPage };
-          libraryCardSearchService.queryParams = newCardQueryParams;
           libraryCardSearchService
             .getLibraryCards(state.queryFilter, state.setsOnly, newCardQueryParams)
             .then(
               (resp: QueryResultDto<LibraryCardListDto>) => {
-                libraryCardSearchService.queryResult = resp;
                 setState(prev => ({ ...prev, queryParams: newCardQueryParams, queryResult: resp }));
               },
               noop
@@ -97,12 +92,10 @@ export function LibraryView(props: LibraryViewProps): JSX.Element {
         }}
         pageSizeChanged={(newPageSize: number) => {
           const newCardQueryParams: QueryParamsDto = { ...state.queryParams, pageSize: newPageSize };
-          libraryCardSearchService.queryParams = newCardQueryParams;
           libraryCardSearchService
             .getLibraryCards(state.queryFilter, state.setsOnly, newCardQueryParams)
             .then(
               (resp: QueryResultDto<LibraryCardListDto>) => {
-                libraryCardSearchService.queryResult = resp;
                 setState(prev => ({ ...prev, queryParams: newCardQueryParams, queryResult: resp }));
               },
               noop
@@ -114,12 +107,10 @@ export function LibraryView(props: LibraryViewProps): JSX.Element {
             sortDirection: direction,
             sortField: fieldName
           };
-          libraryCardSearchService.queryParams = newCardQueryParams;
           libraryCardSearchService
             .getLibraryCards(state.queryFilter, state.setsOnly, newCardQueryParams)
             .then(
               (resp: QueryResultDto<LibraryCardListDto>) => {
-                libraryCardSearchService.queryResult = resp;
                 setState(prev => ({ ...prev, queryParams: newCardQueryParams, queryResult: resp }));
               },
               noop
