@@ -4,8 +4,9 @@ import { AppColorDto, CollectionDto, MtgSetTreeDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { CardSetIcon } from "../card-set-icon";
 import { CardSymbolRenderer } from "../card-symbol-renderer";
-import { AaMultiSelect } from "../input";
+import { AaClientSelect } from "../input";
 import { AdvancedCardSearchProps } from "./advanced-card-search.props";
+import { AaServerSelect } from "../input/aa-select/aa-server-select";
 
 export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element {
   //#region Initialization ----------------------------------------------------
@@ -21,7 +22,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
   );
   const colorSymbolRenderer = useCallback(
     (option: SelectOption<AppColorDto>) => (
-      <CardSymbolRenderer cardSymbols={[option.value.manaSymbol]} className="mana-cost-image-in-text" />
+      <CardSymbolRenderer cardSymbols={[option.value.manaSymbol]} className="aa-mana-cost-in-tag" />
     ),
     []
   );
@@ -33,7 +34,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
       {/* --- Collections --- */}
       {
         searchViewmodel.useCollections && (
-          <AaMultiSelect
+          <AaClientSelect
             fieldName="collectionIds"
             label="Collection"
             viewmodel={searchViewmodel}
@@ -43,7 +44,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         )
       }
       {/* --- Card sets --- */}
-      <AaMultiSelect
+      <AaClientSelect
         fieldName="cardSetIds"
         label="Card Set"
         viewmodel={searchViewmodel}
@@ -51,9 +52,19 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         idExtractor={(value: MtgSetTreeDto) => value.id}
         preTextElement={setImageRenderer}
       />
-      {/* TODO --- Card names --- */}
+      {/* --- Card names --- */}
+      <AaServerSelect
+        fieldName="cardNames"
+        label="Card Name"
+        server="library"
+        serverBaseUrl="/public/catalog/CARD_NAMES/item"
+        viewmodel={props.viewmodel}
+        idExtractor={(value: string) => value}
+        itemLabel={(item: string) => item}
+        viewmodelChanged={props.viewmodelChanged}
+      />
       {/* --- Card Colors --- */}
-      <AaMultiSelect
+      <AaClientSelect
         fieldName="cardColors"
         label="Card Color"
         viewmodel={searchViewmodel}
@@ -62,7 +73,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         preTextElement={colorSymbolRenderer}
       />
       {/* --- Produced Mana Colors --- */}
-      <AaMultiSelect
+      <AaClientSelect
         fieldName="producedManaColors"
         label="Produced Mana"
         viewmodel={searchViewmodel}
@@ -71,7 +82,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         preTextElement={colorSymbolRenderer}
       />
       {/* --- Identity colors */}
-      <AaMultiSelect
+      <AaClientSelect
         fieldName="identityColors"
         label="Identity Color"
         viewmodel={searchViewmodel}
@@ -80,7 +91,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         preTextElement={colorSymbolRenderer}
       />
       {/* --- rarity --- */}
-      <AaMultiSelect
+      <AaClientSelect
         fieldName="rarities"
         label="Rarity"
         viewmodel={searchViewmodel}
@@ -88,7 +99,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         idExtractor={(value: string) => value}
       />
       {/* --- game format --- */}
-      <AaMultiSelect
+      <AaClientSelect
         fieldName="gameFormats"
         label="Game Format"
         viewmodel={searchViewmodel}
@@ -96,7 +107,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         idExtractor={(value: string) => value}
       />
       {/* --- Types --- */}
-      <AaMultiSelect
+      <AaClientSelect
         fieldName="types"
         label="Card Type"
         viewmodel={searchViewmodel}
@@ -104,16 +115,26 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         idExtractor={(value: string) => value}
       />
       {/* --- Super-types --- */}
-      <AaMultiSelect
+      <AaClientSelect
         fieldName="superTypes"
         label="Super-type"
         viewmodel={searchViewmodel}
         viewmodelChanged={props.viewmodelChanged}
         idExtractor={(value: string) => value}
       />
-      {/* TODO --- sub-types --- */}
+      {/* --- sub-types --- */}
+      <AaServerSelect
+        fieldName="subTypes"
+        label="Sub-type"
+        server="library"
+        serverBaseUrl="/public/card-sub-type"
+        viewmodel={props.viewmodel}
+        idExtractor={(value: string) => value}
+        itemLabel={(item: string) => item}
+        viewmodelChanged={props.viewmodelChanged}
+      />
       {/* --- Power --- */}
-      <AaMultiSelect
+      <AaClientSelect
         fieldName="powers"
         label="Power"
         viewmodel={searchViewmodel}
@@ -121,15 +142,35 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         idExtractor={(value: string) => value}
       />
       {/* --- Thoughness --- */}
-      <AaMultiSelect
+      <AaClientSelect
         fieldName="toughnesses"
         label="Toughness"
         viewmodel={searchViewmodel}
         viewmodelChanged={props.viewmodelChanged}
         idExtractor={(value: string) => value}
       />
-      {/* TODO --- Abilities --- */}
-      {/* TDDO --- Keywords --- */}
+      {/* --- Abilities --- */}
+      <AaServerSelect
+        fieldName="abilities"
+        label="Ability"
+        server="library"
+        serverBaseUrl="/public/catalog/KEYWORD_ABILITIES/item"
+        viewmodel={props.viewmodel}
+        idExtractor={(value: string) => value}
+        itemLabel={(item: string) => item}
+        viewmodelChanged={props.viewmodelChanged}
+      />
+      {/* --- Keywords --- */}
+      <AaServerSelect
+        fieldName="actions"
+        label="Action"
+        server="library"
+        serverBaseUrl="/public/catalog/KEYWORD_ACTIONS/item"
+        viewmodel={props.viewmodel}
+        idExtractor={(value: string) => value}
+        itemLabel={(item: string) => item}
+        viewmodelChanged={props.viewmodelChanged}
+      />
       <Button
         icon="search"
         onClick={() => props.search(searchViewmodel.dtoToSave)}

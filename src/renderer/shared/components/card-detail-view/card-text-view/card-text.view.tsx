@@ -42,7 +42,7 @@ export const CardTextView = memo(
           if (svg) {
             return (
               <SvgRenderer
-                className="mana-cost-image-in-text"
+                className="aa-card-symbol-in-text"
                 key={`s-${idx}`}
                 svg={svg}
               />

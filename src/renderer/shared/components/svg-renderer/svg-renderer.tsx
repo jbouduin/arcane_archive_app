@@ -1,3 +1,5 @@
+import "./svg-renderer.css";
+
 import { SvgProviderProps } from "./svg-renderer.props";
 
 export function SvgRenderer(props: SvgProviderProps): JSX.Element {

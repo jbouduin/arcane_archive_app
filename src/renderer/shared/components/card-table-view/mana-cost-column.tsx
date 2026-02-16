@@ -1,5 +1,3 @@
-import "./card-table-view.css";
-
 import { Menu, MenuItem } from "@blueprintjs/core";
 import { Cell, CellRenderer } from "@blueprintjs/table";
 import { BaseColumn, CellLookup, ClientSortCallback, ServerSortCallback } from "../base/base-table";
@@ -38,7 +36,7 @@ export class ManaCostColumn<T> extends BaseColumn<T, ManaCostLookupResult> {
         <Cell>
           <CardSymbolRenderer
             cardSymbols={getCellData(rowIdx, this.valueCallBack).symbols}
-            className="mana-cost-image-in-table"
+            className="aa-mana-cost-in-table"
           />
         </Cell>
       );

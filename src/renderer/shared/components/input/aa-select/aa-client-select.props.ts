@@ -1,7 +1,7 @@
 import { SelectOption } from "../../../types";
 import { BaseProps } from "../base.props";
 
-export interface AaMultiSelectProps<T, U, Dto extends object> extends BaseProps<Dto> {
+export interface AaClientSelectProps<T, U, Dto extends object> extends BaseProps<Dto> {
   // TODO remove all items
   allItems?: Array<SelectOption<T>>;
   readonly?: boolean;

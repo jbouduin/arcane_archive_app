@@ -10,14 +10,14 @@ body {
   overflow: hidden;
 }
 
-.mana-cost-image-in-text {
+/* .mana-cost-image-in-text {
   margin-right: 3px;
   margin-bottom: -3px
 }
 
 .mana-cost-image-in-text:first-child {
   margin-left: 3px
-}
+} */
 
 .left-panel-button-group {
   flex: 0 1 auto;

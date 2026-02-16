@@ -2,7 +2,7 @@ import { ControlGroup, HTMLTable, Tab, Tabs } from "@blueprintjs/core";
 import { useSession } from "../../../../hooks";
 import { ApplicationRole } from "../../../types";
 import { createAuditableLabelValueItems, LabelValueItem, LabelValuePanel } from "../../base/label-value-panel";
-import { AaCheckbox, AaInput, AaMultiSelect } from "../../input";
+import { AaCheckbox, AaInput, AaClientSelect } from "../../input";
 import { ProfileDialogBodyProps } from "./profile-dialog.props";
 
 export function ProfileDialogBody(props: ProfileDialogBodyProps): JSX.Element {
@@ -85,7 +85,7 @@ export function ProfileDialogBody(props: ProfileDialogBodyProps): JSX.Element {
             }}
           />
         </ControlGroup>
-        <AaMultiSelect
+        <AaClientSelect
           key="roles"
           viewmodel={props.viewmodel.accountViewmodel}
           viewmodelChanged={props.viewmodelChanged}
