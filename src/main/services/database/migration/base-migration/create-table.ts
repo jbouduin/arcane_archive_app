@@ -16,8 +16,15 @@ export function createTable<TB extends string>(db: Kysely<any>, options: CreateT
       break;
     case "custom":
       if (options.primaryKey && options.primaryKey.length > 0) {
-        options.primaryKey.forEach((pk: PrimaryKeyColumnDefinition) => result = result.addColumn(pk.columnName, pk.dataType, pk.callback));
-        result = result.addPrimaryKeyConstraint(options.tableName.toUpperCase() + "_PK", options.primaryKey.map((pk: PrimaryKeyColumnDefinition) => pk.columnName) as Array<never>);
+        options.primaryKey
+          .forEach(
+            (pk: PrimaryKeyColumnDefinition) => result = result.addColumn(pk.columnName, pk.dataType, pk.callback)
+          );
+        result = result
+          .addPrimaryKeyConstraint(
+            options.tableName.toUpperCase() + "_PK",
+            options.primaryKey.map((pk: PrimaryKeyColumnDefinition) => pk.columnName) as Array<never>
+          );
       }
   }
 

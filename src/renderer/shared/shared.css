@@ -10,14 +10,14 @@ body {
   overflow: hidden;
 }
 
-.mana-cost-image-in-text {
+/* .mana-cost-image-in-text {
   margin-right: 3px;
   margin-bottom: -3px
 }
 
 .mana-cost-image-in-text:first-child {
   margin-left: 3px
-}
+} */
 
 .left-panel-button-group {
   flex: 0 1 auto;
@@ -83,26 +83,3 @@ body {
   /* overflow: hidden; */
 }
 
-.not-logged-in-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
-.server-not-available {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-/* Used in read-only multi-selects */
-.disabled-tag-div {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 8px;
-}

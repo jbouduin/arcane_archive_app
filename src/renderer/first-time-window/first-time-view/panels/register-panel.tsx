@@ -5,14 +5,14 @@ import { useServices } from "../../../hooks";
 import { RegisterDialogBody } from "../../../shared/components/dialogs";
 import { RegisterPanelProps } from "./register-panel.props";
 
-export function RegisterPanel(props: RegisterPanelProps) {
+export function RegisterPanel(props: RegisterPanelProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
   const serviceContainer = useServices();
   const [_forceUpdate, forceUpdate] = useReducer(x => x + 1, 0);
   // #endregion
 
   // #region Event handling ---------------------------------------------------
-  function registerClick() {
+  function registerClick(): Promise<void> {
     return serviceContainer.sessionService
       .register(serviceContainer.arcaneArchiveProxy, props.viewmodel.dtoToSave)
       .then(

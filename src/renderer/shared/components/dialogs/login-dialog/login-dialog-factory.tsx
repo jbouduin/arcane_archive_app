@@ -38,7 +38,7 @@ async function getLoginViewmodelImpl(
   authenticationViewmodelFactory: IAuthenticationViewmodelFactory
 ): Promise<LoginViewmodel> {
   const savedUserNames = await sessionService
-    .getSavedUserNames(ipcProxy)
+    .getSavedCredentials(ipcProxy)
     .then(
       (userNames: Array<string>) => userNames,
       () => new Array<string>()

@@ -21,7 +21,7 @@ export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps)
   return (
     <ContextMenu
       key={`context-menu-${props.collection.id}`}
-      className="tree-view-item"
+      className="aa-tree-view-item"
       content={
         (
           <Menu key={`menu-${props.collection.id}`}>
@@ -40,7 +40,6 @@ export function CollectionTreeContextMenu(props: CollectionTreeContextMenuProps)
               (
                 <>
                   <MenuItem
-
                     key="details"
                     onClick={
                       (e) => {

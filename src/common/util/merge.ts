@@ -11,7 +11,10 @@ export type MergeResultWithNewKeys<T> = {
   merged: T;
   /** Indicates whether the merged object differs from the original overlay. */
   changed: boolean;
-  /** A list of keys (including nested keys in dot notation) that were missing in the overlay and added from the base. */
+  /**
+   * A list of keys (including nested keys in dot notation) that were missing
+   * in the overlay and added from the base.
+   */
   addedKeys: Array<string>;
 };
 
@@ -24,7 +27,8 @@ export type MergeResultWithNewKeys<T> = {
  * @returns {MergeResultWithNewKeys<T>} An object containing:
  *   - `merged`: The resulting object after merging `base` and `overlay`.
  *   - `changed`: A boolean indicating whether the merged object differs from the original overlay.
- *   - `addedKeys`: A list of keys (including nested keys in dot notation) that were missing in the overlay and added from the base.
+ *   - `addedKeys`: A list of keys (including nested keys in dot notation)
+ *      that were missing in the overlay and added from the base.
  *
  * @description
  * This function:

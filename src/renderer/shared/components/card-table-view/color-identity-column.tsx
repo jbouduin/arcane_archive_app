@@ -1,5 +1,3 @@
-import "./card-table-view.css";
-
 import { Menu, MenuItem } from "@blueprintjs/core";
 import { Cell, CellRenderer } from "@blueprintjs/table";
 import { BaseColumn, CellLookup, ClientSortCallback, ServerSortCallback } from "../base/base-table";
@@ -8,7 +6,9 @@ import { ColorIdentityLookupResult } from "./color-identity-lookup-result";
 
 export class ColorIdentityColumn<T> extends BaseColumn<T, ColorIdentityLookupResult> {
   //#region SortableColumn abstract methods implementationm -------------------
-  protected renderMenu(clientSortColumn?: ClientSortCallback<T>, serverSortColumn?: ServerSortCallback): React.JSX.Element {
+  protected renderMenu(
+    clientSortColumn?: ClientSortCallback<T>, serverSortColumn?: ServerSortCallback
+  ): JSX.Element {
     let sortAsc: (() => void) | undefined = undefined;
     let sortDesc: (() => void) | undefined = undefined;
     if (clientSortColumn) {
@@ -40,7 +40,7 @@ export class ColorIdentityColumn<T> extends BaseColumn<T, ColorIdentityLookupRes
         <Cell>
           <CardSymbolRenderer
             cardSymbols={getCellData(rowIdx, this.valueCallBack).symbols}
-            className="mana-cost-image-in-table"
+            className="aa-mana-cost-in-table"
           />
         </Cell>
       );

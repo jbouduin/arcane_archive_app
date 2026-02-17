@@ -1,6 +1,6 @@
 import { Tab, Tabs } from "@blueprintjs/core";
-import { AdvancedCardSearchView } from "../../../../shared/components/advanced-card-search-view/advanced-card-search-view";
-import { AdvancedCardSearchDto, CardFilterParamsDto, CollectionDto } from "../../../../shared/dto";
+import { AdvancedCardSearch } from "../../../../shared/components/advanced-card-search";
+import { CardQueryFilterDto } from "../../../../shared/dto";
 import { CollectionTreeView } from "./collection-tree-view";
 import { CollectionViewLeftProps } from "./collection-view-left.props";
 
@@ -21,10 +21,11 @@ export function CollectionViewLeft(props: CollectionViewLeftProps): JSX.Element 
           key="collection-tree-view"
           panel={(
             <CollectionTreeView
-              collectionSelected={
-                (selectedData: Array<CollectionDto>, execute: boolean) =>
-                  props.collectionSelectionChanged(selectedData, execute)
-              }
+              expandedNodes={props.expandedNodes}
+              viewmodel={props.viewmodel}
+              expandedNodesChanged={props.expandedNodesChanged}
+              viewmodelChanged={props.viewmodelChanged}
+              search={(dto: CardQueryFilterDto) => props.search(dto, true)}
             />
           )}
           title="Collections"
@@ -35,21 +36,10 @@ export function CollectionViewLeft(props: CollectionViewLeftProps): JSX.Element 
           key="advanced-search"
           panel={
             (
-              <AdvancedCardSearchView
-                advancedCardSearch={{
-                  cardFilterParams: props.cardFilterParams,
-                  cardSetFilter: props.cardSetFilter,
-                  collectionFilter: props.collectionFilter
-                }}
-                useCollections={true}
-                cardSetsChanged={props.setSelectionChanged}
-                cardFilterParamsChanged={(filter: CardFilterParamsDto) => props.cardFilterParamsChanged(filter)}
-                collectionsChanged={(selectedData: Array<CollectionDto>) =>
-                  props.collectionSelectionChanged(selectedData, false)}
-                search={
-                  (cardSearch: AdvancedCardSearchDto) =>
-                    props.search(cardSearch.collectionFilter, cardSearch.cardSetFilter, cardSearch.cardFilterParams)
-                }
+              <AdvancedCardSearch
+                viewmodel={props.viewmodel}
+                viewmodelChanged={props.viewmodelChanged}
+                search={(dto: CardQueryFilterDto) => props.search(dto, false)}
               />
             )
           }

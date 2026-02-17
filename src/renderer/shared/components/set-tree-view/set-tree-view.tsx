@@ -1,60 +1,48 @@
 import { TreeNodeInfo } from "@blueprintjs/core";
-import { cloneDeep, isEqual, upperFirst } from "lodash";
-import { memo, useState } from "react";
+import { upperFirst } from "lodash";
 import { CardSetGroupBy, CardSetSort } from "../../../../common/types";
 import { useServices } from "../../../hooks";
+import { MtgSetTreeDto } from "../../dto";
+import { SelectOption } from "../../types";
 import { MtgSetTreeConfigurationViewmodel, MtgSetTreeViewmodel } from "../../viewmodel";
-import { BaseTreeView, BaseTreeViewProps } from "../base/base-tree-view";
+import { AaTree } from "../base/aa-tree";
 import { CardSetIcon } from "../card-set-icon";
 import { HeaderView } from "./header-view";
 import { SetTreeContextMenu } from "./set-tree-context-menu";
 import { SetTreeViewProps } from "./set-tree-view.props";
 
-const Treeview = memo(
-  BaseTreeView<MtgSetTreeViewmodel, MtgSetTreeConfigurationViewmodel>,
-  (
-    prev: BaseTreeViewProps<MtgSetTreeViewmodel, MtgSetTreeConfigurationViewmodel>,
-    next: BaseTreeViewProps<MtgSetTreeViewmodel, MtgSetTreeConfigurationViewmodel>
-  ) => {
-    return isEqual(prev.data?.length, next.data?.length) && isEqual(prev.filterProps.filter, next.filterProps.filter);
-  }
-);
-
-export function SetTreeView(props: SetTreeViewProps) {
-  //#region State -------------------------------------------------------------
-  const [state, setState] = useState<MtgSetTreeConfigurationViewmodel>(props.configuration);
+export function SetTreeView(props: SetTreeViewProps): JSX.Element {
+  //#region Hooks -------------------------------------------------------------
+  const { viewmodelFactoryService } = useServices();
   //#endregion
 
-  //#region Hooks -------------------------------------------------------------
-  const serviceContainer = useServices();
+  //#region initialization ----------------------------------------------------
+  const sets = props.viewmodel
+    .getSelectOptions<MtgSetTreeDto>("cardSetIds")
+    .map((value: SelectOption<MtgSetTreeDto>) =>
+      viewmodelFactoryService.mtgSetViewmodelFactory.getMtgSetTreeViewmodel(value.value)
+    );
   //#endregion
 
   //#region Event Handling ----------------------------------------------------
   function onTextFilterChanged(textFilterValue: string): void {
-    const newState = cloneDeep(state);
-    newState.cardSetFilterValue = textFilterValue;
-    setState(newState);
+    props.configuration.cardSetFilterValue = textFilterValue;
+    props.treeConfigurationChanged(props.configuration);
   };
 
   function onCardSetSortChanged(cardSetSort: CardSetSort): void {
-    const newState = cloneDeep(state);
-    newState.cardSetFilterValue = state.cardSetFilterValue;
-    newState.cardSetSort = cardSetSort;
-    setState(newState);
+    props.configuration.cardSetSort = cardSetSort;
+    props.treeConfigurationChanged(props.configuration);
   };
 
   function onCardSetGroupByChanged(cardSetGroupBy: CardSetGroupBy): void {
-    const newState = cloneDeep(state);
-    newState.cardSetFilterValue = state.cardSetFilterValue;
-    newState.cardSetGroupBy = cardSetGroupBy;
-    setState(newState);
+    props.configuration.cardSetGroupBy = cardSetGroupBy;
+    props.treeConfigurationChanged(props.configuration);
   };
 
   function onCardSetTypeFilterChanged(cardSetType: string): void {
-    const newState = cloneDeep(state);
-    newState.cardSetFilterValue = state.cardSetFilterValue;
-    newState.toggleCardSetFilterType(cardSetType);
-    setState(newState);
+    props.configuration.toggleCardSetFilterType(cardSetType);
+    props.treeConfigurationChanged(props.configuration);
   };
 
   function applyFilterProps(
@@ -101,21 +89,46 @@ export function SetTreeView(props: SetTreeViewProps) {
   return (
     <>
       <HeaderView
-        cardSetSort={state.cardSetSort}
-        cardSetGroupBy={state.cardSetGroupBy}
-        cardSetTypeFilter={state.cardSetTypeFilter}
+        cardSetSort={props.configuration.cardSetSort}
+        cardSetGroupBy={props.configuration.cardSetGroupBy}
+        cardSetTypeFilter={props.configuration.cardSetTypeFilter}
         className={props.className}
         onCardSetGroupByChanged={onCardSetGroupByChanged}
         onCardSetSortChanged={onCardSetSortChanged}
         onCardSetTypeFilterChanged={onCardSetTypeFilterChanged}
         onTextFilterChanged={onTextFilterChanged}
       />
-      <Treeview
+      <AaTree<MtgSetTreeViewmodel, MtgSetTreeConfigurationViewmodel>
         buildTree={buildTree}
-        data={props.cardSets}
-        filterProps={{ filter: state, applyFilterProps: applyFilterProps }}
-        onDataSelected={
-          (sets: Array<MtgSetTreeViewmodel>) => props.onSetsSelected(sets.map((set: MtgSetTreeViewmodel) => set.dto))
+        data={sets}
+        filterProps={{ filter: props.configuration, applyFilterProps: applyFilterProps }}
+        dataSelectionChanged={
+          (set: MtgSetTreeViewmodel, selected: boolean, clearOthers: boolean) => {
+            if (clearOthers) {
+              props.viewmodel.dto.cardSetIds.splice(0);
+            }
+            if (selected) {
+              props.viewmodel.dto.cardSetIds.push(set.id);
+            } else {
+              props.viewmodel.dto.cardSetIds = props.viewmodel.dto.cardSetIds.filter((id: number) => id != set.id);
+            }
+            props.viewmodelChanged();
+            props.search(props.viewmodel.dtoToSave);
+          }
+        }
+        nodeExpandedChanged={
+          (node: TreeNodeInfo<MtgSetTreeViewmodel>, expanded: boolean) => {
+            let idToUse: number | string = node.nodeData!.id;
+            if (idToUse == 0) {
+              idToUse = node.nodeData!.code;
+            }
+            if (expanded) {
+              props.configuration.expandedNodeIds.add(idToUse);
+            } else {
+              props.configuration.expandedNodeIds.delete(idToUse);
+            }
+            props.treeConfigurationChanged(props.configuration);
+          }
         }
       />
     </>
@@ -126,7 +139,7 @@ export function SetTreeView(props: SetTreeViewProps) {
   function buildTree(
     data: Array<MtgSetTreeViewmodel>,
     props?: MtgSetTreeConfigurationViewmodel
-  ): Array<TreeNodeInfo<MtgSetTreeViewmodel | string>> {
+  ): Array<TreeNodeInfo<MtgSetTreeViewmodel>> {
     let result: Array<TreeNodeInfo<MtgSetTreeViewmodel>>;
     switch (props?.cardSetGroupBy || "parent") {
       case "parent":
@@ -175,10 +188,10 @@ export function SetTreeView(props: SetTreeViewProps) {
       const groupNode: TreeNodeInfo<MtgSetTreeViewmodel> = {
         id: group,
         label: upperFirst(group).replace("_", " "),
-        isExpanded: false,
         isSelected: false,
-        nodeData: serviceContainer.viewmodelFactoryService.mtgSetViewmodelFactory.getGroupMtgSetTreeViewmodel(group),
-        childNodes: childNodes.sort(sortViewmodelfunction).map(mapViewModelToTreeItem)
+        nodeData: viewmodelFactoryService.mtgSetViewmodelFactory.getGroupMtgSetTreeViewmodel(group),
+        childNodes: childNodes.sort(sortViewmodelfunction).map(mapViewModelToTreeItem),
+        isExpanded: props.configuration.expandedNodeIds.has(group)
       };
       return groupNode;
     });
@@ -191,7 +204,7 @@ export function SetTreeView(props: SetTreeViewProps) {
   }
 
   function sortViewmodelfunction(a: MtgSetTreeViewmodel, b: MtgSetTreeViewmodel): number {
-    switch (state.cardSetSort) {
+    switch (props.configuration.cardSetSort) {
       case "alphabeticallyAscending":
         return a.cardSetName.localeCompare(b.cardSetName);
       case "alphabeticallyDescending":
@@ -209,8 +222,24 @@ export function SetTreeView(props: SetTreeViewProps) {
   function mapViewModelToTreeItem(cardSet: MtgSetTreeViewmodel): TreeNodeInfo<MtgSetTreeViewmodel> {
     const node: TreeNodeInfo<MtgSetTreeViewmodel> = {
       id: cardSet.id,
+      /**
+       * # BUG this gives an error in the console when selecting any set for the first time after entering the view
+       * Reason: blueprint renders two spans without a key:
+       * <div class="bp6-tree-node-content bp6-tree-node-content-0">
+       *   <span class="bp6-tree-node-caret-none"></span>
+       *   <span class="bp6-tree-node-label">
+       *     <div class="tree-view-item bp6-context-menu">
+       *       <i class="ss ss-pmei ss-undefined aa-card-set-icon-small">
+       *         ::before
+       *       </i>
+       *       Year of the Snake 2025 (5)
+       *     </div>
+       *   </span>
+       * </div>
+       */
       label: (
         <SetTreeContextMenu
+          key={`cm-${cardSet.code}`}
           cardSetId={cardSet.id}
           cardSetCode={cardSet.code}
         >
@@ -218,8 +247,8 @@ export function SetTreeView(props: SetTreeViewProps) {
           {cardSet.treeItemLabel}
         </SetTreeContextMenu>
       ),
-      isExpanded: cardSet.isExpanded,
-      isSelected: cardSet.isSelected,
+      isExpanded: props.configuration.expandedNodeIds.has(cardSet.id ? cardSet.id : cardSet.code),
+      isSelected: props.viewmodel.dto.cardSetIds.includes(cardSet.id),
       nodeData: cardSet
     };
     return node;

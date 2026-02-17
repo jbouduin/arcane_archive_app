@@ -1,17 +1,14 @@
 import { Props } from "@blueprintjs/core";
-import { CardFilterParamsDto, CollectionDto, MtgSetTreeDto } from "../../../../shared/dto";
+import { CardQueryFilterDto } from "../../../../shared/dto";
+import { AdvancedCardSearchViewmodel } from "../../../../shared/viewmodel";
 
 export interface CollectionViewLeftProps extends Props {
-  cardFilterParams: CardFilterParamsDto;
-  cardSetFilter: Array<MtgSetTreeDto>;
-  collectionFilter: Array<CollectionDto>;
   currentSelectedSearchTab: string | number;
+  expandedNodes: Set<number>;
+  viewmodel: AdvancedCardSearchViewmodel;
 
-  cardFilterParamsChanged: (cardFilterParams: CardFilterParamsDto) => void;
-  collectionSelectionChanged: (selectedData: Array<CollectionDto>, execute: boolean) => void;
-  search: (
-    collections: Array<CollectionDto>, sets: Array<MtgSetTreeDto>, cardFilterParams: CardFilterParamsDto
-  ) => void;
+  expandedNodesChanged: (expandedNodes: Set<number>) => void;
+  search: (dto: CardQueryFilterDto, collectionsOnly: boolean) => void;
   selectedSearchTabChanged: (newSelectedSearchTab: string | number) => void;
-  setSelectionChanged: (sets: Array<MtgSetTreeDto>) => void;
+  viewmodelChanged: () => void;
 }

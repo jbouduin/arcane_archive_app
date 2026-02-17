@@ -1,21 +1,17 @@
 import { PreferencesDto } from "../../../../common/dto";
-import { CardFilterParamsDto, CollectionCardListDto, CollectionDto, MtgSetTreeDto, QueryParamsDto, QueryResultDto } from "../../dto";
+import { CollectionCardListDto, CardQueryFilterDto, QueryParamsDto, QueryResultDto } from "../../dto";
 
 import { IArcaneArchiveProxy } from "./arcane-archive.proxy";
 
 export interface ICollectionCardSearchService {
   //#region Collection Search -------------------------------------------------
-  cardFilterParams: CardFilterParamsDto;
-  collectionFilter: Array<CollectionDto>;
-  queryParams: QueryParamsDto;
-  queryResult: QueryResultDto<CollectionCardListDto>;
+  readonly queryFilter: CardQueryFilterDto;
+  readonly queryParams: QueryParamsDto;
+  readonly queryResult: QueryResultDto<CollectionCardListDto>;
   selectedSearchTab: string | number;
-  setFilter: Array<MtgSetTreeDto>;
+
   getCollectionCards(
-    cardFilterParams: CardFilterParamsDto | null,
-    queryParams: QueryParamsDto,
-    collectionFilter: Array<CollectionDto>,
-    setFilter: Array<MtgSetTreeDto>
+    filterParams: CardQueryFilterDto, collectionsOnly: boolean, queryParams: QueryParamsDto
   ): Promise<QueryResultDto<CollectionCardListDto>>;
   //#endregion
 

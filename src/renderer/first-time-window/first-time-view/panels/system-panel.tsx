@@ -4,7 +4,7 @@ import { useServices, useSession } from "../../../hooks";
 import { SystemSettingsDialogBody } from "../../../shared/components/dialogs";
 import { SystemPanelProps } from "./system-panel.props";
 
-export function SystemPanel(props: SystemPanelProps) {
+export function SystemPanel(props: SystemPanelProps): JSX.Element {
   // #region State ------------------------------------------------------------
   const [_forceUpdate, forceUpdate] = useReducer(x => x + 1, 0);
   // #endregion
@@ -15,7 +15,7 @@ export function SystemPanel(props: SystemPanelProps) {
   // #endregion
 
   // #region Rendering --------------------------------------------------------
-  async function backClick() {
+  async function backClick(): Promise<void> {
     if (loggedIn) {
       await serviceContainer.sessionService.logout(serviceContainer);
       props.navigateTo("intro");

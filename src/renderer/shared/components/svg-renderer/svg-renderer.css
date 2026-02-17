@@ -1,0 +1,23 @@
+.aa-card-symbol-in-text {
+  margin-right: 3px;
+  margin-bottom: -3px
+}
+
+.aa-card-symbol-in-text:first-child {
+  margin-left: 3px
+}
+
+.aa-mana-cost-in-tag {
+  margin-bottom: -3px;
+  margin-right: 6px;
+}
+
+.aa-mana-cost-image-in-table {
+  margin-right: 3px;
+  margin-bottom: -2px
+}
+
+.aa-mana-cost-in-title {
+  margin-right: 3px;
+  margin-bottom: -3px
+}

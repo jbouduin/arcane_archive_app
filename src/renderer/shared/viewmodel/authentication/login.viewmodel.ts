@@ -9,7 +9,7 @@ export class LoginViewmodel extends BaseViewmodel<LoginRequestDto> {
 
   // #region non Dto related properties ---------------------------------------
   public readonly showRegisterButton: boolean;
-  public readonly savedUserNames: Set<string>;
+  public readonly savedCredentials: Set<string>;
   // #endregion
 
   // #region Getters/Setters --------------------------------------------------
@@ -17,12 +17,12 @@ export class LoginViewmodel extends BaseViewmodel<LoginRequestDto> {
     this._selectedExistingPassword = value;
   }
 
-  public get modifiedPasswordOfExistingUser(): boolean {
-    return this.savedUserNames.has(this._dto.user) && this._dto.password != this._selectedExistingPassword;
+  public get modifiedPasswordOfExistingCrredential(): boolean {
+    return this.savedCredentials.has(this._dto.user) && this._dto.password != this._selectedExistingPassword;
   }
 
-  public get nonExistinguser(): boolean {
-    return !this.savedUserNames.has(this._dto.user);
+  public get nonExistingCredential(): boolean {
+    return !this.savedCredentials.has(this._dto.user);
   }
   // #endregion
 
@@ -30,7 +30,7 @@ export class LoginViewmodel extends BaseViewmodel<LoginRequestDto> {
   public constructor(dto: LoginRequestDto, showRegisterButton: boolean, savedUsernames: Array<string>) {
     super(dto);
     this.showRegisterButton = showRegisterButton;
-    this.savedUserNames = new Set<string>(savedUsernames);
+    this.savedCredentials = new Set<string>(savedUsernames);
     this._selectedExistingPassword = null;
     this.registerValidation("password", () => this.validatePassword());
     this.registerValidation("user", () => this.validateUser());

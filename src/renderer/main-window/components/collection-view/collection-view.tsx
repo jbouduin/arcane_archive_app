@@ -3,28 +3,24 @@ import { useState } from "react";
 import { Mosaic, MosaicNode } from "react-mosaic-component";
 import { useApiStatus, useServices, useSession } from "../../../hooks";
 import { SortDirection } from "../../../shared/components/base/base-table";
-import { NotLoggedInView } from "../../../shared/components/not-logged-view/not-logged-in-view";
-import {
-  ServiceNotAvailableView
-} from "../../../shared/components/service-not-available-view/service-not-available-view";
-import {
-  CardFilterParamsDto, CollectionCardListDto, CollectionDto, MtgSetTreeDto, QueryParamsDto, QueryResultDto
-} from "../../../shared/dto";
+import { NotLoggedIn } from "../../../shared/components/not-logged-in";
+import { ServiceNotAvailable } from "../../../shared/components/service-not-available";
+import { CardQueryFilterDto, CollectionCardListDto, QueryParamsDto, QueryResultDto } from "../../../shared/dto";
 import { CardSortField } from "../../../shared/types";
-import { CollectionViewCenter } from "./collection-view-center/collection-view-center";
-import { CollectionViewLeft } from "./collection-view-left/collection-view-left";
-import { CollectionViewRight } from "./collection-view-right/collection-view-right";
+import { CollectionViewCenter } from "./collection-view-center";
+import { CollectionViewLeft } from "./collection-view-left";
+import { CollectionViewRight } from "./collection-view-right";
 import { CollectionViewProps } from "./collection-view.props";
 import { CollectionViewState } from "./collection-view.state";
 
 export function CollectionView(props: CollectionViewProps): JSX.Element {
-  // #region Hooks ------------------------------------------------------------
+  //#region Hooks -------------------------------------------------------------
   const { loggedIn } = useSession();
-  const { collectionCardSearchService: searchService } = useServices();
+  const { collectionCardSearchService, viewmodelFactoryService } = useServices();
   const { collectionServiceAvailable } = useApiStatus();
-  // #endregion
+  //#endregion
 
-  // #region State ------------------------------------------------------------
+  //#region State -------------------------------------------------------------
   const initialLayout: MosaicNode<string> = {
     direction: "row",
     first: "left",
@@ -36,76 +32,54 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
     splitPercentage: 20,
   };
   const initialCollectionViewState: CollectionViewState = {
-    cardFilterParams: searchService.cardFilterParams,
-    collectionFilter: new Array<CollectionDto>(),
-    queryParams: searchService.queryParams,
-    queryResult: searchService.queryResult,
-    selectedSearchTab: searchService.selectedSearchTab,
+    collectionsOnly: true,
+    expandedNodes: new Set<number>(),
+    queryFilter: collectionCardSearchService.queryFilter,
+    queryParams: collectionCardSearchService.queryParams,
+    queryResult: collectionCardSearchService.queryResult,
+    selectedSearchTab: collectionCardSearchService.selectedSearchTab,
     selectedCard: null,
     selectedCollection: null,
-    setFilter: new Array<MtgSetTreeDto>(),
     version: 0
   };
   const [mosaicLayout, setMosaicLayout] = useState<MosaicNode<string>>(initialLayout);
   const [state, setState] = useState<CollectionViewState>(initialCollectionViewState);
-  // #endregion
+  //#endregion
 
-  // #region Rendering --------------------------------------------------------
+  //#region Initialize ---------------------------------------------------------
+  const cardSearchViewmodel = viewmodelFactoryService.mtgCardViewmodelFactory
+    .getAdvancedCardSearchViewmodel(state.queryFilter, true);
+  //#endregion
+
+  //#region Rendering ---------------------------------------------------------
   const elementMap: { [viewId: string]: React.JSX.Element; } = {
     left: (
       <CollectionViewLeft
-        cardFilterParams={state.cardFilterParams}
-        cardSetFilter={state.setFilter}
-        collectionFilter={state.collectionFilter}
         currentSelectedSearchTab={state.selectedSearchTab}
-        cardFilterParamsChanged={
-          (cardFilterParams: CardFilterParamsDto) => {
-            searchService.cardFilterParams = cardFilterParams;
-            setState(prev => ({ ...prev, cardFilterParams: cardFilterParams }));
-          }
-        }
-        collectionSelectionChanged={(collections: Array<CollectionDto>, execute: boolean) => {
-          searchService.collectionFilter = collections;
-          if (execute) {
-            searchService.getCollectionCards(null, state.queryParams, collections, state.setFilter)
-              .then(
-                (res: QueryResultDto<CollectionCardListDto>) => {
-                  searchService.queryResult = res;
-                  setState(prev => ({ ...prev, collectionFilter: collections, queryResult: res }));
-                },
-                noop
-              );
-          }
+        expandedNodes={state.expandedNodes}
+        viewmodel={cardSearchViewmodel}
+        expandedNodesChanged={(expandedNodes: Set<number>) =>
+          setState(prev => ({ ...prev, expandedNodes: expandedNodes }))}
+        search={(dto: CardQueryFilterDto, collectionsOnly: boolean) => {
+          void collectionCardSearchService
+            .getCollectionCards(dto, collectionsOnly, state.queryParams)
+            .then(
+              (resp: QueryResultDto<CollectionCardListDto>) => {
+                setState(prev => ({
+                  ...prev,
+                  queryFilter: dto,
+                  queryResult: resp,
+                  collectionsOnly: collectionsOnly
+                }));
+              },
+              noop
+            );
         }}
-        search={
-          (collections: Array<CollectionDto>, sets: Array<MtgSetTreeDto>, cardFilterParams: CardFilterParamsDto) => {
-            searchService.cardFilterParams = cardFilterParams;
-            searchService.collectionFilter = collections;
-            searchService.setFilter = sets;
-            searchService
-              .getCollectionCards(cardFilterParams, state.queryParams, collections, sets)
-              .then(
-                (resp: QueryResultDto<CollectionCardListDto>) => {
-                  searchService.queryResult = resp;
-                  setState(prev => ({
-                    ...prev,
-                    cardFilterParams: cardFilterParams,
-                    collectionFilter: collections,
-                    queryResult: resp
-                  }));
-                },
-                noop
-              );
-          }
-        }
         selectedSearchTabChanged={(newSelection: string | number) => {
-          searchService.selectedSearchTab = newSelection;
+          collectionCardSearchService.selectedSearchTab = newSelection;
           setState(prev => ({ ...prev, selectedSearchTab: newSelection }));
         }}
-        setSelectionChanged={(sets: Array<MtgSetTreeDto>) => {
-          searchService.setFilter = sets;
-          setState(prev => ({ ...prev, setFilter: sets }));
-        }}
+        viewmodelChanged={() => setState(prev => ({ ...prev }))}
       />
     ),
     center: (
@@ -120,12 +94,12 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
         }
         pageNumberChanged={(newPage: number) => {
           const newCardQueryParams: QueryParamsDto = { ...state.queryParams, pageNumber: newPage };
-          searchService.queryParams = newCardQueryParams;
-          searchService
-            .getCollectionCards(state.cardFilterParams, newCardQueryParams, state.collectionFilter, state.setFilter)
+          // collectionCardSearchService.queryParams = newCardQueryParams;
+          collectionCardSearchService
+            .getCollectionCards(state.queryFilter, state.collectionsOnly, newCardQueryParams)
             .then(
               (resp: QueryResultDto<CollectionCardListDto>) => {
-                searchService.queryResult = resp;
+                // collectionCardSearchService.queryResult = resp;
                 setState(prev => ({ ...prev, queryParams: newCardQueryParams, queryResult: resp }));
               },
               noop
@@ -133,12 +107,12 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
         }}
         pageSizeChanged={(newPageSize: number) => {
           const newCardQueryParams: QueryParamsDto = { ...state.queryParams, pageSize: newPageSize };
-          searchService.queryParams = newCardQueryParams;
-          searchService
-            .getCollectionCards(state.cardFilterParams, newCardQueryParams, state.collectionFilter, state.setFilter)
+          // collectionCardSearchService.queryParams = newCardQueryParams;
+          collectionCardSearchService
+            .getCollectionCards(state.queryFilter, state.collectionsOnly, newCardQueryParams)
             .then(
               (resp: QueryResultDto<CollectionCardListDto>) => {
-                searchService.queryResult = resp;
+                // collectionCardSearchService.queryResult = resp;
                 setState(prev => ({ ...prev, queryParams: newCardQueryParams, queryResult: resp }));
               },
               noop
@@ -150,12 +124,12 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
             sortDirection: direction,
             sortField: fieldName
           };
-          searchService.queryParams = newCardQueryParams;
-          searchService
-            .getCollectionCards(state.cardFilterParams, newCardQueryParams, state.collectionFilter, state.setFilter)
+          // collectionCardSearchService.queryParams = newCardQueryParams;
+          collectionCardSearchService
+            .getCollectionCards(state.queryFilter, state.collectionsOnly, newCardQueryParams)
             .then(
               (resp: QueryResultDto<CollectionCardListDto>) => {
-                searchService.queryResult = resp;
+                // collectionCardSearchService.queryResult = resp;
                 setState(prev => ({ ...prev, queryParams: newCardQueryParams, queryResult: resp }));
               },
               noop
@@ -185,7 +159,7 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
   return (
     <>
       {
-        !collectionServiceAvailable && <ServiceNotAvailableView serviceName="Collection service" />
+        !collectionServiceAvailable && <ServiceNotAvailable serviceName="Collection service" />
       }
       {
         collectionServiceAvailable && loggedIn && (
@@ -199,10 +173,10 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
       }
       {
         collectionServiceAvailable && !loggedIn && (
-          <NotLoggedInView {...props} />
+          <NotLoggedIn {...props} />
         )
       }
     </>
   );
-  // #endregion
+  //#endregion
 }

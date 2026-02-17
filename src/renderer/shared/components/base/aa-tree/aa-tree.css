@@ -1,0 +1,15 @@
+.aa-base-tree {
+  overflow-x: auto;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  height: 100%;
+}
+
+.bp6-tree-root:last-child {
+  margin-bottom: 10px;
+}
+
+.aa-tree-view-item {
+  display: flex;
+  flex-direction: row;
+}

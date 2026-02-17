@@ -1,9 +1,13 @@
 import { Props } from "@blueprintjs/core";
-import { MtgSetTreeDto } from "../../dto";
-import { MtgSetTreeConfigurationViewmodel, MtgSetTreeViewmodel } from "../../viewmodel";
+import { CardQueryFilterDto } from "../../dto";
+import { MtgSetTreeConfigurationViewmodel } from "../../viewmodel";
+import { AdvancedCardSearchViewmodel } from "../../viewmodel/mtg-card/advanced-card-search.viewmodel";
 
 export interface SetTreeViewProps extends Props {
-  cardSets: Array<MtgSetTreeViewmodel>;
+  viewmodel: AdvancedCardSearchViewmodel;
   configuration: MtgSetTreeConfigurationViewmodel;
-  onSetsSelected: (sets: Array<MtgSetTreeDto>) => void;
+
+  search: (dto: CardQueryFilterDto) => void;
+  treeConfigurationChanged: (treeConfiguration: MtgSetTreeConfigurationViewmodel) => void;
+  viewmodelChanged: () => void;
 }

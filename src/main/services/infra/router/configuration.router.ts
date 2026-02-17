@@ -20,7 +20,10 @@ export class ConfigurationRouter implements IRouter {
   // #region IRouteDestinationService methods ---------------------------------
   public setRoutes(router: IRouterService): void {
     router.registerGetRoute(IpcPaths.SYSTEM_SETTINGS, this.getSystemSettings.bind(this) as RouteCallback);
-    router.registerGetRoute(IpcPaths.SYSTEM_SETTINGS_FACTORY_DEFAULT, this.getSystemSettingsFactoryDefault.bind(this) as RouteCallback);
+    router.registerGetRoute(
+      IpcPaths.SYSTEM_SETTINGS_FACTORY_DEFAULT,
+      this.getSystemSettingsFactoryDefault.bind(this) as RouteCallback
+    );
     router.registerGetRoute(IpcPaths.SETTINGS, this.getSettings.bind(this) as RouteCallback);
     router.registerPostRoute(IpcPaths.SYSTEM_SETTINGS, this.saveSystemSettings.bind(this) as RouteCallback);
     router.registerPostRoute(IpcPaths.PREFERENCES, this.savePreferences.bind(this) as RouteCallback);
@@ -40,7 +43,9 @@ export class ConfigurationRouter implements IRouter {
     return this.configurationService.getSettings();
   }
 
-  private saveSystemSettings(request: RoutedRequest<SystemConfigurationDto>): Promise<IResult<SystemConfigurationDto>> {
+  private saveSystemSettings(
+    request: RoutedRequest<SystemConfigurationDto>
+  ): Promise<IResult<SystemConfigurationDto>> {
     return this.configurationService.saveSystemSettings(request.data);
   }
 

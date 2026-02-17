@@ -18,9 +18,9 @@ export function LoginDialogFooter(props: LoginDialogFooterProps): JSX.Element {
     return serviceContainer.sessionService.login(serviceContainer, dto)
       .then(
         (_resp: SessionDto) => {
-          if (props.viewmodel.nonExistinguser) {
+          if (props.viewmodel.nonExistingCredential) {
             saveUserAlert(dto);
-          } else if (props.viewmodel.modifiedPasswordOfExistingUser) {
+          } else if (props.viewmodel.modifiedPasswordOfExistingCrredential) {
             updateUserAlert(dto);
           }
           if (props.onClose) {

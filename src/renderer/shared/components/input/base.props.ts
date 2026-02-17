@@ -8,6 +8,7 @@ export interface BaseProps<Dto extends object> extends Props {
   fieldName: keyof Dto;
   /**
    * The fill attribute of the FormGroup that contains the InputGroup or Select
+   * Default `true`
    */
   fill?: boolean;
   /**
