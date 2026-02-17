@@ -33,6 +33,7 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
   };
   const initialCollectionViewState: CollectionViewState = {
     collectionsOnly: true,
+    expandedNodes: new Set<number>(),
     queryFilter: collectionCardSearchService.queryFilter,
     queryParams: collectionCardSearchService.queryParams,
     queryResult: collectionCardSearchService.queryResult,
@@ -55,7 +56,10 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
     left: (
       <CollectionViewLeft
         currentSelectedSearchTab={state.selectedSearchTab}
+        expandedNodes={state.expandedNodes}
         viewmodel={cardSearchViewmodel}
+        expandedNodesChanged={(expandedNodes: Set<number>) =>
+          setState(prev => ({ ...prev, expandedNodes: expandedNodes }))}
         search={(dto: CardQueryFilterDto, collectionsOnly: boolean) => {
           void collectionCardSearchService
             .getCollectionCards(dto, collectionsOnly, state.queryParams)

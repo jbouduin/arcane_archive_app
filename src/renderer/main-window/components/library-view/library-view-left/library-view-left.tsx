@@ -1,16 +1,10 @@
 import { Tab, Tabs } from "@blueprintjs/core";
-import { usePreferences } from "../../../../hooks";
 import { AdvancedCardSearch } from "../../../../shared/components/advanced-card-search";
 import { SetTreeView } from "../../../../shared/components/set-tree-view/set-tree-view";
 import { CardQueryFilterDto } from "../../../../shared/dto";
-import { MtgSetTreeConfigurationViewmodel } from "../../../../shared/viewmodel";
 import { LibraryViewLeftProps } from "./library-view-left.props";
 
 export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
-  // #region Hooks ------------------------------------------------------------
-  const { preferences } = usePreferences();
-  // #endregion#
-
   // #region Rendering --------------------------------------------------------
   return (
     <div className="mosaic-tile-content-wrapper">
@@ -31,8 +25,9 @@ export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
                 {...props}
                 viewmodel={props.viewmodel}
                 viewmodelChanged={props.viewmodelChanged}
-                configuration={new MtgSetTreeConfigurationViewmodel(preferences.librarySetTreeSettings)}
+                configuration={props.treeConfiguration}
                 search={(dto: CardQueryFilterDto) => props.search(dto, true)}
+                treeConfigurationChanged={props.treeConfigurationChanged}
               />
             )
           }

@@ -1,0 +1,14 @@
+.aa-disabled-tag-div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.aa-select-item {
+  display: flex;
+}
+
+.aa-select-tag {
+  display: flex;
+}

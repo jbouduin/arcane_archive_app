@@ -6,6 +6,8 @@ import { AdvancedCardSearchViewmodel } from "../../viewmodel/mtg-card/advanced-c
 export interface SetTreeViewProps extends Props {
   viewmodel: AdvancedCardSearchViewmodel;
   configuration: MtgSetTreeConfigurationViewmodel;
+
   search: (dto: CardQueryFilterDto) => void;
+  treeConfigurationChanged: (treeConfiguration: MtgSetTreeConfigurationViewmodel) => void;
   viewmodelChanged: () => void;
 }

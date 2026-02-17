@@ -34,11 +34,6 @@
   flex: 1 1 auto;
 }
 
-.tree-view-item {
-  display: flex;
-  flex-direction: row;
-}
-
 .bp6-tab-panel.left-panel-tab-panel {
   display: flex;
   flex-direction: column;
@@ -61,17 +56,6 @@
   padding-top: 5px;
   padding-right: 5px;
   padding-bottom: 10px;
-}
-
-.base-tree {
-  overflow-x: auto;
-  overflow-y: auto;
-  flex: 1 1 auto;
-  height: 100%;
-}
-
-.bp6-tree-root:last-child {
-  margin-bottom: 10px;
 }
 
 .dialog-footer-button-bar {

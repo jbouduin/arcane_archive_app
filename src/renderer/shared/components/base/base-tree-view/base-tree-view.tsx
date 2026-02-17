@@ -1,11 +1,11 @@
+import "./base-tree.css";
+
 import { Tree, TreeNodeInfo } from "@blueprintjs/core";
 import { useCallback, useEffect, useReducer } from "react";
 import { IBaseTreeNodeViewmodel } from "./base-tree-node.viewmodel";
 import { BaseTreeViewProps } from "./base-tree-view.props";
-import { BaseTreeViewReducer, getTreeNodeItemsRecursive } from "./base-tree-view.reducer";
+import { BaseTreeViewReducer } from "./base-tree-view.reducer";
 import { BaseTreeViewAction, NodePath } from "./types";
-
-// TODO store expanded nodes and selected node and check if we solve the bug in basetreeeview with that
 
 // BUG after adding or modifying everything collapses and nothing is selected anymore
 export function BaseTreeView<TData extends IBaseTreeNodeViewmodel, TFilter>(
@@ -37,34 +37,41 @@ export function BaseTreeView<TData extends IBaseTreeNodeViewmodel, TFilter>(
 
   //#region event handlers ----------------------------------------------------
   const handleNodeClick = useCallback(
-    (node: TreeNodeInfo<TData>, nodePath: NodePath) => {
-      const originallySelected = node.isSelected;
-      dispatch({ type: "DESELECT_ALL" });
+    (node: TreeNodeInfo<TData>, nodePath: NodePath, e: React.MouseEvent<HTMLElement>) => {
+      // add e.metaKey, because stupidity never dies...
+      const isCtrl = e.ctrlKey || e.metaKey;
+      const originallySelected = node.isSelected || false;
+
+      if (!isCtrl) {
+        dispatch({ type: "DESELECT_ALL" });
+      }
       dispatch({
-        payload: { path: nodePath, isSelected: originallySelected == null ? true : !originallySelected },
+        payload: { path: nodePath, isSelected: !originallySelected },
         type: "SET_IS_SELECTED"
       });
-      props.onDataSelected(getTreeNodeItemsRecursive<TData>(node, undefined));
+      props.dataSelectionChanged(node.nodeData!, !originallySelected, !isCtrl);
     },
     []
   );
 
   const handleNodeCollapse = useCallback(
-    (_node: TreeNodeInfo<TData>, nodePath: NodePath) => {
+    (node: TreeNodeInfo<TData>, nodePath: NodePath) => {
       dispatch({
         payload: { path: nodePath, isExpanded: false },
         type: "SET_IS_EXPANDED"
       });
+      props.nodeExpandedChanged(node, false);
     },
     []
   );
 
   const handleNodeExpand = useCallback(
-    (_node: TreeNodeInfo<TData>, nodePath: NodePath) => {
+    (node: TreeNodeInfo<TData>, nodePath: NodePath) => {
       dispatch({
         payload: { path: nodePath, isExpanded: true },
         type: "SET_IS_EXPANDED"
       });
+      props.nodeExpandedChanged(node, true);
     },
     []
   );
@@ -73,7 +80,7 @@ export function BaseTreeView<TData extends IBaseTreeNodeViewmodel, TFilter>(
   //#region Rendering ---------------------------------------------------------
   return (
     <Tree
-      className="base-tree"
+      className="aa-base-tree"
       compact={true}
       contents={nodes}
       onNodeClick={handleNodeClick}

@@ -3,7 +3,9 @@ import { CardQueryFilterDto } from "../../dto";
 import { BaseViewmodel } from "../base.viewmodel";
 
 export class AdvancedCardSearchViewmodel extends BaseViewmodel<CardQueryFilterDto> {
+  //#region public properties -------------------------------------------------
   public readonly useCollections: boolean;
+  //#endregion
 
   //#region Constructor & C° --------------------------------------------------
   public constructor(

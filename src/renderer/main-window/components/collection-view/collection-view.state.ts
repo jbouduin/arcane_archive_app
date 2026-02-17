@@ -1,7 +1,8 @@
-import { CollectionCardListDto, CardQueryFilterDto, QueryParamsDto, QueryResultDto } from "../../../shared/dto";
+import { CardQueryFilterDto, CollectionCardListDto, QueryParamsDto, QueryResultDto } from "../../../shared/dto";
 
 export interface CollectionViewState {
   collectionsOnly: boolean;
+  expandedNodes: Set<number>;
   queryFilter: CardQueryFilterDto;
   queryParams: QueryParamsDto;
   queryResult: QueryResultDto<CollectionCardListDto>;

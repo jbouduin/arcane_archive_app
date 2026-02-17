@@ -83,10 +83,3 @@ body {
   /* overflow: hidden; */
 }
 
-/* Used in read-only multi-selects */
-.disabled-tag-div {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 8px;
-}

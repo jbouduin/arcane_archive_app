@@ -1,10 +1,11 @@
 import { noop } from "lodash";
 import { useState } from "react";
 import { Mosaic, MosaicNode } from "react-mosaic-component";
-import { useServices } from "../../../hooks";
+import { usePreferences, useServices } from "../../../hooks";
 import { SortDirection } from "../../../shared/components/base/base-table";
 import { CardQueryFilterDto, LibraryCardListDto, QueryParamsDto, QueryResultDto } from "../../../shared/dto";
 import { CardSortField } from "../../../shared/types";
+import { MtgSetTreeConfigurationViewmodel } from "../../../shared/viewmodel";
 import { LibraryViewCenter } from "./library-view-center";
 import { LibraryViewLeft } from "./library-view-left";
 import { LibraryViewRight } from "./library-view-right";
@@ -14,6 +15,7 @@ import { LibraryViewState } from "./library-view.state";
 export function LibraryView(props: LibraryViewProps): JSX.Element {
   //#region Hooks -------------------------------------------------------------
   const { libraryCardSearchService, viewmodelFactoryService } = useServices();
+  const { preferences } = usePreferences();
   //#endregion
 
   //#region State -------------------------------------------------------------
@@ -33,7 +35,8 @@ export function LibraryView(props: LibraryViewProps): JSX.Element {
     queryResult: libraryCardSearchService.queryResult,
     selectedCard: null,
     selectedSearchTab: libraryCardSearchService.selectedSearchTab,
-    setsOnly: true
+    setsOnly: true,
+    treeConfiguration: new MtgSetTreeConfigurationViewmodel(preferences.librarySetTreeSettings)
   };
   const [mosaicLayout, setMosaicLayout] = useState<MosaicNode<string>>(initialLayout);
   const [state, setState] = useState<LibraryViewState>(initialLibraryViewState);
@@ -50,6 +53,12 @@ export function LibraryView(props: LibraryViewProps): JSX.Element {
       <LibraryViewLeft
         currentSelectedSearchTab={state.selectedSearchTab}
         viewmodel={cardSearchViewmodel}
+        treeConfiguration={state.treeConfiguration}
+        treeConfigurationChanged={
+          (configuration: MtgSetTreeConfigurationViewmodel) => setState(
+            prev => ({ ...prev, treeConfiguration: configuration })
+          )
+        }
         search={(dto: CardQueryFilterDto, setsOnly: boolean) => {
           libraryCardSearchService
             .getLibraryCards(dto, setsOnly, state.queryParams)

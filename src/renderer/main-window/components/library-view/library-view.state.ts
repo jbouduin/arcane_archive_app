@@ -1,4 +1,5 @@
-import { LibraryCardListDto, CardQueryFilterDto, QueryParamsDto, QueryResultDto } from "../../../shared/dto";
+import { CardQueryFilterDto, LibraryCardListDto, QueryParamsDto, QueryResultDto } from "../../../shared/dto";
+import { MtgSetTreeConfigurationViewmodel } from "../../../shared/viewmodel";
 
 export interface LibraryViewState {
   queryFilter: CardQueryFilterDto;
@@ -7,4 +8,5 @@ export interface LibraryViewState {
   selectedCard: number | null;
   selectedSearchTab: string | number;
   setsOnly: boolean;
+  treeConfiguration: MtgSetTreeConfigurationViewmodel;
 }

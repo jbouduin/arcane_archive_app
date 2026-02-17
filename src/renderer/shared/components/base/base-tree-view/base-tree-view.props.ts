@@ -7,5 +7,6 @@ export interface BaseTreeViewProps<TData extends IBaseTreeNodeViewmodel, TFilter
   filterProps: BaseTreeViewFilterProps<TData, TFilter>;
 
   buildTree: (data: Array<TData>, filterProps?: TFilter) => Array<TreeNodeInfo<TData | string>>;
-  onDataSelected: (selectedData: Array<TData>) => void;
+  dataSelectionChanged: (selectedData: TData, selected: boolean, clearOthers: boolean) => void;
+  nodeExpandedChanged: (node: TreeNodeInfo<TData>, selected: boolean) => void;
 }

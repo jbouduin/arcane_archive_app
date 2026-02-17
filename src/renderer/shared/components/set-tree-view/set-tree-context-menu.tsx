@@ -14,7 +14,7 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element 
   return (
     <ContextMenu
       key={`context-menu-${props.cardSetId}`}
-      className="tree-view-item"
+      className="aa-tree-view-item"
       content={
         (
           <Menu key={`menu-${props.cardSetId}`}>

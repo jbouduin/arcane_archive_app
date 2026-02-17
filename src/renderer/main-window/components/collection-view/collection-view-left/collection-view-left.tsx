@@ -21,7 +21,9 @@ export function CollectionViewLeft(props: CollectionViewLeftProps): JSX.Element 
           key="collection-tree-view"
           panel={(
             <CollectionTreeView
+              expandedNodes={props.expandedNodes}
               viewmodel={props.viewmodel}
+              expandedNodesChanged={props.expandedNodesChanged}
               viewmodelChanged={props.viewmodelChanged}
               search={(dto: CardQueryFilterDto) => props.search(dto, true)}
             />

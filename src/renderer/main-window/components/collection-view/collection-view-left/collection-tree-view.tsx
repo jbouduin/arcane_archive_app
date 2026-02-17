@@ -1,23 +1,11 @@
 import { ContextMenu, Divider, Icon, Menu, MenuItem, TreeNodeInfo } from "@blueprintjs/core";
-import { isEqual } from "lodash";
-import { memo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDialogs, usePreferences, useServices } from "../../../../hooks";
-import { BaseTreeView, BaseTreeViewProps } from "../../../../shared/components/base/base-tree-view";
+import { BaseTreeView } from "../../../../shared/components/base/base-tree-view";
 import { CollectionDto } from "../../../../shared/dto";
 import { CollectionTreeViewmodel } from "../../../../shared/viewmodel";
 import { CollectionTreeContextMenu } from "./collection-tree-context.menu";
 import { CollectionTreeViewProps } from "./collection-tree-view.props";
-
-/**
- * This memoization is required because otherwise nodes collapse when selecting a childnode
- */
-/* eslint-disable  @typescript-eslint/no-empty-object-type */
-const TreeView = memo(
-  BaseTreeView<CollectionTreeViewmodel, {}>,
-  (prev: BaseTreeViewProps<CollectionTreeViewmodel, {}>, next: BaseTreeViewProps<CollectionTreeViewmodel, {}>) => {
-    return isEqual(prev.data, next.data);
-  }
-);
 
 export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element {
   //#region Hooks -------------------------------------------------------------
@@ -36,6 +24,12 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
     const viewmodel = viewmodelFactoryService.collectionViewmodelFactory
       .getCollectionTreeViewmodel(dto);
     setCollections([...collections, viewmodel]);
+    if (dto.parentId != null) {
+      props.expandedNodes.add(dto.parentId);
+      props.expandedNodesChanged(props.expandedNodes);
+    }
+    props.viewmodel.dto.collectionIds.splice(0);
+    props.viewmodel.dto.collectionIds.push(dto.id!);
   }
 
   function onCollectionModified(dto: CollectionDto): void {
@@ -70,6 +64,11 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
           .then((resp: number) => {
             if (resp > 0) {
               setCollections(collections.filter((vm: CollectionTreeViewmodel) => vm.id != collection.id));
+              props.viewmodel.dto.collectionIds.filter((id: number) => id != collection.id);
+              if (collection.parentId != null) {
+                props.viewmodel.dto.collectionIds.push(collection.parentId);
+                props.expandedNodesChanged(props.expandedNodes);
+              }
             }
           }
           );
@@ -144,15 +143,33 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
           )
         }
       >
-        <TreeView
+        <BaseTreeView<CollectionTreeViewmodel, object>
           data={collections}
           filterProps={{ filter: {}, applyFilterProps: (data: Array<CollectionTreeViewmodel>) => data }}
           buildTree={buildTree}
-          onDataSelected={
-            (collections: Array<CollectionTreeViewmodel>) => {
-              props.viewmodel.dto.collectionIds = collections.map((value: CollectionTreeViewmodel) => value.id);
+          dataSelectionChanged={
+            (collection: CollectionTreeViewmodel, selected: boolean, clearOthers: boolean) => {
+              if (clearOthers) {
+                props.viewmodel.dto.collectionIds.splice(0);
+              }
+              if (selected) {
+                props.viewmodel.dto.collectionIds.push(collection.id);
+              } else {
+                props.viewmodel.dto.collectionIds =
+                  props.viewmodel.dto.collectionIds.filter((id: number) => id != collection.id);
+              }
               props.viewmodelChanged();
               props.search(props.viewmodel.dtoToSave);
+            }
+          }
+          nodeExpandedChanged={
+            (collection: TreeNodeInfo<CollectionTreeViewmodel>, expanded: boolean) => {
+              if (expanded) {
+                props.expandedNodes.add(collection.nodeData!.id);
+              } else {
+                props.expandedNodes.delete(collection.nodeData!.id);
+              }
+              props.expandedNodesChanged(props.expandedNodes);
             }
           }
         />
@@ -170,7 +187,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
    * @returns an array of {@link TreeNodeInfo}
    */
   function buildTree(
-    data: Array<CollectionTreeViewmodel>, _filterProps: {} | undefined
+    data: Array<CollectionTreeViewmodel>, _filterProps: object | undefined
   ): Array<TreeNodeInfo<CollectionTreeViewmodel>> {
     let result = new Array<TreeNodeInfo<CollectionTreeViewmodel>>();
     if (data.length == 0) {
@@ -238,7 +255,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
             )
           }
           {
-            // LATER find a better solution for the icon the one from the button is not good for the tree
+            // LATER find a better solution for the icon, the one from the button is not good for the tree
             !collection.folder &&
             (
               <Icon
@@ -264,7 +281,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
           </div>
         </CollectionTreeContextMenu>
       ),
-      isExpanded: collection.isExpanded,
+      isExpanded: props.expandedNodes.has(collection.id),
       isSelected: props.viewmodel.dto.collectionIds.includes(collection.id),
       nodeData: collection
     };

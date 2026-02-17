@@ -1,3 +1,5 @@
+import "./aa-select.css";
+
 import { MenuItem, PopoverProps, Tag } from "@blueprintjs/core";
 import { ItemRendererProps } from "@blueprintjs/select";
 import { ReactNode } from "react";
@@ -39,7 +41,7 @@ export function itemRenderer<T>(
       selected={selected}
       shouldDismissPopover={false}
       text={(
-        <div style={{ display: "flex" }}>
+        <div className="aa-select-item">
           {preTextElement?.(item)}
           <HighlightText fullText={item.label} toHighlight={itemProps.query} />
         </div>
@@ -52,17 +54,22 @@ export function tagRenderer<T>(
   item: SelectOption<T>, preTextElement?: (option: SelectOption<T>
   ) => React.ReactNode): ReactNode {
   return (
-    <div key={item.label} style={{ display: "flex" }}>
+    <div key={item.label} className="aa-select-tag">
       {preTextElement?.(item)}
       {item.label}
     </div>
   );
 }
 
-export function renderReadOnlyTags<T>(selectedOptions: Array<SelectOption<T>>): Array<JSX.Element> {
-  return selectedOptions.map((value: SelectOption<T>, idx: number) => {
+export function renderReadOnlyTags<T>(selectedOptions: Array<SelectOption<T>>): JSX.Element {
+  const tags = selectedOptions.map((value: SelectOption<T>, idx: number) => {
     return (<Tag key={"tag_" + idx.toString()}>{tagRenderer(value)}</Tag>);
   });
+  return (
+    <div className="aa-disabled-tag-div">
+      {tags}
+    </div>
+  );
 }
 //#endregion
 
