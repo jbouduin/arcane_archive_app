@@ -43,7 +43,11 @@ export class ScryfallClient extends BaseService implements IScryfallClient {
     });
   }
 
-  private async processRequest(uri: string | URL, resolve: (value: Response | PromiseLike<Response>) => void, reject: (reason?: unknown) => void) {
+  private async processRequest(
+    uri: string | URL,
+    resolve: (value: Response | PromiseLike<Response>) => void,
+    reject: (reason?: unknown) => void
+  ): Promise<void> {
     if (this.configurationService.apiConfiguration != null) {
       const now = Date.now();
       const sleepTime = Math.max(this.nextQuery - now, 0);
@@ -64,7 +68,7 @@ export class ScryfallClient extends BaseService implements IScryfallClient {
     }
   }
 
-  private async processQueue() {
+  private async processQueue(): Promise<void> {
     this.isProcessingQueue = true;
     while (this.requestQueue.length > 0) {
       const request = this.requestQueue.shift();

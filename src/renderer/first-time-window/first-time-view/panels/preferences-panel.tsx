@@ -4,7 +4,7 @@ import { useServices, useSession } from "../../../hooks";
 import { PreferencesDialogBody } from "../../../shared/components/dialogs";
 import { PreferencePanelProps } from "./preferences-panel.props";
 
-export function PreferencesPanel(props: PreferencePanelProps) {
+export function PreferencesPanel(props: PreferencePanelProps): JSX.Element {
   // #region State ------------------------------------------------------------
   const [_forceUpdate, forceUpdate] = useReducer(x => x + 1, 0);
   // #endregion
@@ -15,7 +15,7 @@ export function PreferencesPanel(props: PreferencePanelProps) {
   // #endregion
 
   // #region Event handling ---------------------------------------------------
-  async function backClick() {
+  async function backClick(): Promise<void> {
     if (loggedIn) {
       await serviceContainer.sessionService.logout(serviceContainer);
       props.navigateTo("intro");

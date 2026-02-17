@@ -1,12 +1,13 @@
 import { Menu, MenuItem } from "@blueprintjs/core";
 import { Cell, CellRenderer } from "@blueprintjs/table";
-import * as React from "react";
 import { BaseColumn, CellLookup, ClientSortCallback, ServerSortCallback } from "../base/base-table";
 import { CollectorNumberLookupResult } from "./collector-number-lookup-result";
 
 export class CollectiorNumberColumn<T> extends BaseColumn<T, CollectorNumberLookupResult> {
   // #region SortableColumn abstract methods implementationm ------------------
-  protected renderMenu(clientSortColumn?: ClientSortCallback<T>, serverSortColumn?: ServerSortCallback): React.JSX.Element {
+  protected renderMenu(
+    clientSortColumn?: ClientSortCallback<T>, serverSortColumn?: ServerSortCallback
+  ): React.JSX.Element {
     let sortAsc: (() => void) | undefined = undefined;
     let sortDesc: (() => void) | undefined = undefined;
     if (clientSortColumn) {

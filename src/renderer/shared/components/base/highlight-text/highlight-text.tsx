@@ -1,7 +1,7 @@
 import * as React from "react";
 import { HighlightTextProps } from "./highlight-text.props";
 
-function escapeRegExpChars(text: string) {
+function escapeRegExpChars(text: string): string {
   return text.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }
 

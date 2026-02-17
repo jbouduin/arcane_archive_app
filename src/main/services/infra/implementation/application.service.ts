@@ -150,7 +150,8 @@ export class ApplicationService implements IApplicationService {
   //#region Auxiliary Methods -------------------------------------------------
   /**
    * Preboot sequence:
-   * - read configuration and preferences from the application directory. If not found, the first usage flag remains set.
+   * - read configuration and preferences from the application directory.
+   *   If not found, the first usage flag remains set.
    * - register the IPC channels
    * - set handler for cached images
    * @param configurationService the configuration service

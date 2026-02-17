@@ -1,5 +1,7 @@
 import SQLite from "better-sqlite3";
-import { Kysely, MigrationInfo, MigrationProvider, MigrationResultSet, Migrator, ParseJSONResultsPlugin, SqliteDialect } from "kysely";
+import {
+  Kysely, MigrationInfo, MigrationProvider, MigrationResultSet, Migrator, ParseJSONResultsPlugin, SqliteDialect
+} from "kysely";
 import { inject, singleton } from "tsyringe";
 import { ProgressCallback } from "../../../../common/ipc";
 import { runSerial } from "../../../../common/util";
@@ -35,7 +37,9 @@ export class DatabaseService implements IDatabaseService {
     return this;
   }
 
-  public async migrateToLatest(migrationProvider: MigrationProvider, progressCallback: ProgressCallback): Promise<IDatabaseService> {
+  public async migrateToLatest(
+    migrationProvider: MigrationProvider, progressCallback: ProgressCallback
+  ): Promise<IDatabaseService> {
     const dialect = new SqliteDialect({
       database: new SQLite(this.configurationService.cacheDatabaseFilePath)
     });
@@ -44,7 +48,8 @@ export class DatabaseService implements IDatabaseService {
     });
 
     const migrator = new Migrator({ db: connection, provider: migrationProvider });
-    const migrationsToExecute = (await migrator.getMigrations()).filter((migration: MigrationInfo) => !migration.executedAt);
+    const migrationsToExecute = (await migrator.getMigrations())
+      .filter((migration: MigrationInfo) => !migration.executedAt);
 
     const result = await runSerial<MigrationInfo>(
       migrationsToExecute,

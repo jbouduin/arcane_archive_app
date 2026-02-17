@@ -57,7 +57,7 @@ void app.whenReady().then(async () => {
   );
 
   /*
-   * this used to be const reactDevToolsPath = join(process.env.LOCALAPPDATA, "Google", "Chrome", "User Data", "Default", "Extensions", "fmkadmapgofadopljbjfkapdkoienihi", "5.2.0_0");
+   * This used to be const reactDevTools
    * after putting latest build -> loading failed because electron can not handle V3 manifest
    * so as a hack: downloaded an old version of the dev tools and use that one
    */

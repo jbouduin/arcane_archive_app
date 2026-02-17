@@ -1,9 +1,9 @@
 import { Button, ButtonGroup, DialogBody, DialogFooter } from "@blueprintjs/core";
 import { BaseFirstTimeViewPanelProps } from "./base-first-time-view-panel.props";
 
-export function IntroPanel(props: BaseFirstTimeViewPanelProps) {
+export function IntroPanel(props: BaseFirstTimeViewPanelProps): JSX.Element {
   // #region Rendering --------------------------------------------------------
-  /* eslint-disable @stylistic/jsx-one-expression-per-line */
+  /* eslint-disable @stylistic/jsx-one-expression-per-line, @stylistic/max-len*/
   return (
     <>
       <DialogBody className="first-time-view-panel-body">

@@ -51,7 +51,9 @@ export class CardfaceRepository extends BaseRepository implements ICardfaceRepos
       );
   }
 
-  public getByStatus(status: ScryFallImageStatus, options: queryPageOptions): Promise<IResult<QueryPageResult<CardfaceQueryDto>>> {
+  public getByStatus(
+    status: ScryFallImageStatus, options: queryPageOptions
+  ): Promise<IResult<QueryPageResult<CardfaceQueryDto>>> {
     return this.database
       .selectFrom("cardface")
       .selectAll()
@@ -75,7 +77,9 @@ export class CardfaceRepository extends BaseRepository implements ICardfaceRepos
       );
   }
 
-  public getBySize(size: CachedImageSize, options: queryPageOptions): Promise<IResult<QueryPageResult<CardfaceQueryDto>>> {
+  public getBySize(
+    size: CachedImageSize, options: queryPageOptions
+  ): Promise<IResult<QueryPageResult<CardfaceQueryDto>>> {
     return this.database
       .selectFrom("cardface")
       .selectAll()

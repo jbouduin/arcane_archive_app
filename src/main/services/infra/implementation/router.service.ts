@@ -65,7 +65,9 @@ export class RouterService extends BaseRouter implements IRouterService {
     this.putRoutes.set(path, callback);
   }
 
-  public routeRequest(requestType: IpcChannel, sender: WebContents, request: IpcRequest<unknown>): Promise<IResult<unknown>> {
+  public routeRequest(
+    requestType: IpcChannel, sender: WebContents, request: IpcRequest<unknown>
+  ): Promise<IResult<unknown>> {
     let result: Promise<IResult<unknown>>;
     let routeDictionary: Map<string, RouteCallback>;
     switch (requestType) {

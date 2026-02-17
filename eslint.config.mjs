@@ -22,7 +22,7 @@ export default [
       "no-console": "error",
       // --- typescript-eslint rules ---
       "@typescript-eslint/explicit-function-return-type": [
-        "warn",
+        "error",
         {
           "allowExpressions": true,
           "allowTypedFunctionExpressions": true,
@@ -45,7 +45,7 @@ export default [
       "@stylistic/multiline-comment-style": ["error", "starred-block"],
       "@stylistic/indent": ["error", 2],
       "@stylistic/max-len": [
-        "warn",
+        "error",
         {
           "code": 120,
           "tabWidth": 2,
