@@ -33,8 +33,8 @@ export interface ISessionService {
   //#endregion
 
   //#region Local account storage ---------------------------------------------
-  deleteSavedUser(ipcProxy: IIpcProxy, username: string): Promise<number>;
-  getSavedUserNames(ipcProxy: IIpcProxy): Promise<Array<string>>;
+  deleteSavedCredential(ipcProxy: IIpcProxy, username: string): Promise<number>;
+  getSavedCredentials(ipcProxy: IIpcProxy): Promise<Array<string>>;
   getPassword(ipcProxy: IIpcProxy, username: string): Promise<string>;
   saveCredentials(ipcProxy: IIpcProxy, loginRequest: LoginRequestDto): Promise<void>;
   //#endregion

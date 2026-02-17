@@ -8,14 +8,14 @@ import { LoginDialogBodyProps } from "./login-dialog.props";
 
 export function LoginDialogBody(props: LoginDialogBodyProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
-  const serviceContainer = useServices();
+  const { sessionService, ipcProxy, overlayService } = useServices();
   // #endregion
 
   // #region Event handling ---------------------------------------------------
-  function onSelectUser(userName: string): void {
+  function onSelectCredential(userName: string): void {
     props.viewmodel.dto["user"] = userName;
-    void serviceContainer.sessionService
-      .getPassword(serviceContainer.ipcProxy, userName)
+    void sessionService
+      .getPassword(ipcProxy, userName)
       .then(
         (pwd: string) => {
           props.viewmodel.dto["password"] = pwd;
@@ -26,26 +26,45 @@ export function LoginDialogBody(props: LoginDialogBodyProps): JSX.Element {
       .finally(() => props.viewmodelChanged());
   }
 
-  function onRemoveUser(username: string): void {
-    // LATER ask confirmation
-    void serviceContainer.sessionService
-      .deleteSavedUser(serviceContainer.ipcProxy, username)
-      .then(
-        async () => {
-          props.viewmodel.savedUserNames.delete(username);
-          if (props.viewmodel.savedUserNames.size == 1) {
-            const onlyUser = Array.of(...props.viewmodel.savedUserNames)[0];
-            const password = await serviceContainer.sessionService.getPassword(serviceContainer.ipcProxy, onlyUser);
-            props.viewmodel.dto["user"] = onlyUser;
-            props.viewmodel.dto["password"] = password;
-            props.viewmodel.selectedExistingPassword = password;
-          } else {
-            props.viewmodel.dto["user"] = "";
-            props.viewmodel.dto["password"] = "";
-          }
-        },
-        noop)
-      .finally(() => props.viewmodelChanged());
+  function onRemoveCredential(username: string): void {
+    overlayService.showAlert({
+      isOpen: true,
+      canEscapeKeyCancel: true,
+      canOutsideClickCancel: true,
+      confirmButtonText: "Delete",
+      intent: "danger",
+      cancelButtonText: "Cancel",
+      icon: "trash",
+      children: (
+        <p>
+          Are you sure you want to remove the credentials of
+          <b>
+            {username}
+          </b>
+          from the local storage? This can not be undone.
+        </p>
+      ),
+      onConfirm: () => {
+        sessionService
+          .deleteSavedCredential(ipcProxy, username)
+          .then(
+            async () => {
+              props.viewmodel.savedCredentials.delete(username);
+              if (props.viewmodel.savedCredentials.size == 1) {
+                const onlyCredential = Array.of(...props.viewmodel.savedCredentials)[0];
+                const password = await sessionService.getPassword(ipcProxy, onlyCredential);
+                props.viewmodel.dto["user"] = onlyCredential;
+                props.viewmodel.dto["password"] = password;
+                props.viewmodel.selectedExistingPassword = password;
+              } else {
+                props.viewmodel.dto["user"] = "";
+                props.viewmodel.dto["password"] = "";
+              }
+            },
+            noop)
+          .finally(() => props.viewmodelChanged());
+      },
+    });
   }
   // #endregion
 
@@ -77,7 +96,7 @@ export function LoginDialogBody(props: LoginDialogBodyProps): JSX.Element {
         }}
       />
       {
-        props.viewmodel.savedUserNames.size > 1 && renderExistingUsers()
+        props.viewmodel.savedCredentials.size > 1 && renderExistingUsers()
       }
     </SectionCard>
   );
@@ -90,14 +109,14 @@ export function LoginDialogBody(props: LoginDialogBodyProps): JSX.Element {
         </p>
         <div className="existing-users-div">
           {
-            Array.of(...props.viewmodel.savedUserNames).map((userName: string) => {
+            Array.of(...props.viewmodel.savedCredentials).map((userName: string) => {
               return (
                 <Tag
                   className="existing-user-name-tag"
                   interactive={true}
                   key={userName}
-                  onClick={() => onSelectUser(userName)}
-                  onRemove={() => onRemoveUser(userName)}
+                  onClick={() => onSelectCredential(userName)}
+                  onRemove={() => onRemoveCredential(userName)}
                 >
                   {userName}
                 </Tag>

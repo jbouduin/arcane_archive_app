@@ -172,11 +172,11 @@ export class SessionService implements ISessionService {
   //#endregion
 
   //#region ISessionService Members - Local Account storage -------------------
-  public deleteSavedUser(ipcProxy: IIpcProxy, username: string): Promise<number> {
+  public deleteSavedCredential(ipcProxy: IIpcProxy, username: string): Promise<number> {
     return ipcProxy.deleteData(`${IpcPaths.CREDENTIAL}/${username}`);
   }
 
-  public getSavedUserNames(ipcProxy: IIpcProxy): Promise<Array<string>> {
+  public getSavedCredentials(ipcProxy: IIpcProxy): Promise<Array<string>> {
     return ipcProxy.getData<Array<string>>(IpcPaths.CREDENTIAL);
   }
 
