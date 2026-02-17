@@ -1,13 +1,9 @@
-import { IBaseTreeNodeViewmodel } from "../../components/base/base-tree-view";
 import { MtgSetTreeDto } from "../../dto";
 
-export class MtgSetTreeViewmodel implements IBaseTreeNodeViewmodel {
+export class MtgSetTreeViewmodel {
+  //#region Private fields ----------------------------------------------------
   private readonly _dto: MtgSetTreeDto;
-
-  // #region IBaseTreeNodeViewmodel Members -----------------------------------
-  public isSelected: boolean;
-  public isExpanded: boolean;
-  // #endregion
+  //#endregion
 
   // #region Getters ----------------------------------------------------------
   public get id(): number {
@@ -53,14 +49,11 @@ export class MtgSetTreeViewmodel implements IBaseTreeNodeViewmodel {
   public get dto(): MtgSetTreeDto {
     return this._dto;
   }
-
   // #endregion
 
   // #region Constructor ------------------------------------------------------
   public constructor(dto: MtgSetTreeDto) {
     this._dto = dto;
-    this.isSelected = false;
-    this.isExpanded = false;
   }
   // #endregion
 }

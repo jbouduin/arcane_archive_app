@@ -5,7 +5,7 @@ import { useServices } from "../../../hooks";
 import { MtgSetTreeDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { MtgSetTreeConfigurationViewmodel, MtgSetTreeViewmodel } from "../../viewmodel";
-import { BaseTreeView } from "../base/base-tree-view";
+import { AaTree } from "../base/aa-tree";
 import { CardSetIcon } from "../card-set-icon";
 import { HeaderView } from "./header-view";
 import { SetTreeContextMenu } from "./set-tree-context-menu";
@@ -98,7 +98,7 @@ export function SetTreeView(props: SetTreeViewProps): JSX.Element {
         onCardSetTypeFilterChanged={onCardSetTypeFilterChanged}
         onTextFilterChanged={onTextFilterChanged}
       />
-      <BaseTreeView<MtgSetTreeViewmodel, MtgSetTreeConfigurationViewmodel>
+      <AaTree<MtgSetTreeViewmodel, MtgSetTreeConfigurationViewmodel>
         buildTree={buildTree}
         data={sets}
         filterProps={{ filter: props.configuration, applyFilterProps: applyFilterProps }}
@@ -139,8 +139,7 @@ export function SetTreeView(props: SetTreeViewProps): JSX.Element {
   function buildTree(
     data: Array<MtgSetTreeViewmodel>,
     props?: MtgSetTreeConfigurationViewmodel
-    // TODO we probably can get rid of| string
-  ): Array<TreeNodeInfo<MtgSetTreeViewmodel | string>> {
+  ): Array<TreeNodeInfo<MtgSetTreeViewmodel>> {
     let result: Array<TreeNodeInfo<MtgSetTreeViewmodel>>;
     switch (props?.cardSetGroupBy || "parent") {
       case "parent":

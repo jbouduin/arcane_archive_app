@@ -1,13 +1,9 @@
-import { IBaseTreeNodeViewmodel } from "../../components/base/base-tree-view";
 import { CollectionDto } from "../../dto";
 
-export class CollectionTreeViewmodel implements IBaseTreeNodeViewmodel {
+export class CollectionTreeViewmodel {
+  //#region Private fields ----------------------------------------------------
   private readonly _dto: CollectionDto;
-
-  // #region IBaseTreeNodeViewmodel Members -----------------------------------
-  public isSelected: boolean;
-  public isExpanded: boolean;
-  // #endregion
+  //#endregion
 
   // #region Getters/Setters ---------------------------------------------------
   public get id(): number {
@@ -38,8 +34,6 @@ export class CollectionTreeViewmodel implements IBaseTreeNodeViewmodel {
   // #region Constructor ------------------------------------------------------
   public constructor(dto: CollectionDto) {
     this._dto = dto;
-    this.isSelected = false;
-    this.isExpanded = false;
   }
   // #endregion
 }

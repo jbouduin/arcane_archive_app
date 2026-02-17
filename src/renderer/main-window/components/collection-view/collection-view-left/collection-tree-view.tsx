@@ -1,7 +1,7 @@
 import { ContextMenu, Divider, Icon, Menu, MenuItem, TreeNodeInfo } from "@blueprintjs/core";
 import { useEffect, useState } from "react";
 import { useDialogs, usePreferences, useServices } from "../../../../hooks";
-import { BaseTreeView } from "../../../../shared/components/base/base-tree-view";
+import { AaTree } from "../../../../shared/components/base/aa-tree";
 import { CollectionDto } from "../../../../shared/dto";
 import { CollectionTreeViewmodel } from "../../../../shared/viewmodel";
 import { CollectionTreeContextMenu } from "./collection-tree-context.menu";
@@ -143,7 +143,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
           )
         }
       >
-        <BaseTreeView<CollectionTreeViewmodel, object>
+        <AaTree<CollectionTreeViewmodel, object>
           data={collections}
           filterProps={{ filter: {}, applyFilterProps: (data: Array<CollectionTreeViewmodel>) => data }}
           buildTree={buildTree}

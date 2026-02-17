@@ -1,19 +1,17 @@
-import "./base-tree.css";
+import "./aa-tree.css";
 
 import { Tree, TreeNodeInfo } from "@blueprintjs/core";
 import { useCallback, useEffect, useReducer } from "react";
-import { IBaseTreeNodeViewmodel } from "./base-tree-node.viewmodel";
-import { BaseTreeViewProps } from "./base-tree-view.props";
-import { BaseTreeViewReducer } from "./base-tree-view.reducer";
-import { BaseTreeViewAction, NodePath } from "./types";
+import { AaTreeProps } from "./aa-tree.props";
+import { AaTreeReducer } from "./aa-tree.reducer";
+import { AaTreeAction, NodePath } from "./types";
 
-// BUG after adding or modifying everything collapses and nothing is selected anymore
-export function BaseTreeView<TData extends IBaseTreeNodeViewmodel, TFilter>(
-  props: BaseTreeViewProps<TData, TFilter>
+export function AaTree<TData, TFilter>(
+  props: AaTreeProps<TData, TFilter>
 ): JSX.Element {
   //#region State -------------------------------------------------------------
   const [nodes, dispatch] = useReducer(
-    BaseTreeViewReducer as React.Reducer<Array<TreeNodeInfo<TData>>, BaseTreeViewAction>,
+    AaTreeReducer as React.Reducer<Array<TreeNodeInfo<TData>>, AaTreeAction>,
     undefined,
     () => []);
   //#endregion

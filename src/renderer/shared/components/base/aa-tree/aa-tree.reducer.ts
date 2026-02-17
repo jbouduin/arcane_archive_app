@@ -1,11 +1,10 @@
 import { Tree, TreeNodeInfo } from "@blueprintjs/core";
 import { cloneDeep } from "lodash";
-import { IBaseTreeNodeViewmodel } from "./base-tree-node.viewmodel";
-import { BaseTreeViewAction, NodePath } from "./types";
+import { AaTreeAction, NodePath } from "./types";
 
-export function BaseTreeViewReducer<TData extends IBaseTreeNodeViewmodel>(
+export function AaTreeReducer<TData>(
   state: Array<TreeNodeInfo<TData>> = [],
-  action: BaseTreeViewAction): Array<TreeNodeInfo<TData>> {
+  action: AaTreeAction): Array<TreeNodeInfo<TData>> {
   const newState = cloneDeep(state);
   switch (action.type) {
     case "DESELECT_ALL": {
@@ -13,7 +12,6 @@ export function BaseTreeViewReducer<TData extends IBaseTreeNodeViewmodel>(
         newState,
         (node: TreeNodeInfo<TData>) => {
           node.isSelected = false;
-          node.nodeData!.isSelected = false;
         }
       );
       return newState;
@@ -24,7 +22,6 @@ export function BaseTreeViewReducer<TData extends IBaseTreeNodeViewmodel>(
         action.payload.path,
         (node: TreeNodeInfo<TData>) => {
           node.isExpanded = action.payload.isExpanded;
-          node.nodeData!.isExpanded = action.payload.isExpanded;
         }
       );
     }
@@ -35,7 +32,6 @@ export function BaseTreeViewReducer<TData extends IBaseTreeNodeViewmodel>(
         action.payload.path,
         (node: TreeNodeInfo<TData>) => {
           node.isSelected = action.payload.isSelected;
-          node.nodeData!.isSelected = action.payload.isSelected;
         }
       );
       return newState;
@@ -47,7 +43,7 @@ export function BaseTreeViewReducer<TData extends IBaseTreeNodeViewmodel>(
   }
 }
 
-function forEachNode<TData extends IBaseTreeNodeViewmodel>(
+function forEachNode<TData>(
   nodes: Array<TreeNodeInfo<TData>> | undefined,
   callback: (node: TreeNodeInfo<TData>) => void
 ): void {
@@ -60,7 +56,7 @@ function forEachNode<TData extends IBaseTreeNodeViewmodel>(
   }
 }
 
-function forNodeAtPath<TData extends IBaseTreeNodeViewmodel>(
+function forNodeAtPath<TData>(
   nodes: Array<TreeNodeInfo<TData>>,
   path: NodePath,
   callback: (node: TreeNodeInfo<TData>) => void
@@ -68,7 +64,7 @@ function forNodeAtPath<TData extends IBaseTreeNodeViewmodel>(
   callback(Tree.nodeFromPath(path, nodes));
 }
 
-export function getTreeNodeItemsRecursive<TData extends IBaseTreeNodeViewmodel>(
+export function getTreeNodeItemsRecursive<TData>(
   node: TreeNodeInfo<TData>,
   items?: Array<TData>
 ): Array<TData> {
