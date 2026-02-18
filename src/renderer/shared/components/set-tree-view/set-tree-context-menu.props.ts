@@ -1,8 +1,8 @@
 import { Props } from "@blueprintjs/core";
 import { ReactNode } from "react";
+import { MtgSetTreeDto } from "../../dto";
 
 export interface SetTreeContextMenuProps extends Props {
-  cardSetId: number;
-  cardSetCode: string;
+  cardSet: MtgSetTreeDto;
   children: ReactNode;
 }

@@ -8,5 +8,6 @@ export * from "./profile-dialog";
 export * from "./recover-password-dialog";
 export * from "./register-dialog";
 export * from "./reset-password-dialog";
+export * from "./synchronization-dialog";
 export * from "./system-info-dialog";
 export * from "./system-settings-dialog";

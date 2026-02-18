@@ -15,6 +15,7 @@ import { IMtgCardService } from "./mtg-card.service";
 import { IMtgSetService } from "./mtg-set.service";
 import { IOverlayService } from "./overlay.service";
 import { ISessionService } from "./session.service";
+import { ISynchronizeService } from "./synchronize.service";
 import { IViewmodelFactoryService } from "./viewmodel-factory.service";
 
 export interface IServiceContainer {
@@ -82,6 +83,11 @@ export interface IServiceContainer {
    * Session service
    */
   readonly sessionService: ISessionService;
+
+  /**
+   * Synchronization service
+   */
+  readonly synchronizeService: ISynchronizeService;
 
   /**
    * Service that provides viewmodel factories.

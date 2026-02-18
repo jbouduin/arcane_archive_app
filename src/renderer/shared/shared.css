@@ -58,6 +58,10 @@ body {
   margin-left: 4px;
 }
 
+.bp6-dark table.bp6-html-table tbody tr:first-child td {
+  box-shadow: none;
+}
+
 .mosaic-tile-content-wrapper {
   display: flex;
   flex-direction: column;

@@ -13,11 +13,19 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
   const { preferences } = usePreferences();
   const {
     showChangePasswordDialog, showLoginDialog, showPreferencesDialog,
-    showProfileDialog, showSystemInfoDialog, showSystemSettingsDialog
+    showProfileDialog, showSystemInfoDialog, showSystemSettingsDialog, showSynchronizationDialog
   } = useDialogs();
   // #endregion
 
   //#region Event handling ----------------------------------------------------
+  function adminClick(): void {
+    const props: ToastProps = {
+      message: "Not implemented",
+      intent: "danger"
+    };
+    serviceContainer.overlayService.showToast(props, "admin not implemented");
+  }
+
   function loginClick(): void {
     showLoginDialog(true);
   }
@@ -26,12 +34,8 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
     void serviceContainer.sessionService.logout(serviceContainer);
   }
 
-  function adminClick(): void {
-    const props: ToastProps = {
-      message: "Not implemented",
-      intent: "danger"
-    };
-    serviceContainer.overlayService.showToast(props, "admin not implemented");
+  function synchronizeClick(): void {
+    showSynchronizationDialog();
   }
   //#endregion
 
@@ -119,7 +123,12 @@ export function ButtonBar(props: ButtonBarProps): JSX.Element {
           <MenuItem onClick={() => showSystemSettingsDialog(false)} text="Settings" />
           <MenuItem onClick={() => showSystemInfoDialog(apiInfo)} text="Info" />
           {
-            isSysAdmin && <MenuItem onClick={adminClick} text="Admin" />
+            isSysAdmin && (
+              <>
+                <MenuItem onClick={synchronizeClick} text="Synchronize" />
+                <MenuItem onClick={adminClick} text="Admin" />
+              </>
+            )
           }
         </MenuItem>
       </Menu>

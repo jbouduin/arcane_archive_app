@@ -4,7 +4,7 @@ import { InitializeServiceContainerOptions, ShowToastFn } from "../../types";
 import {
   IArcaneArchiveProxy, IBasicDataService, ICardSymbolService, ICollectionCardSearchService,
   ICollectionService, IConfigurationService, IIpcProxy, ILibraryCardSearchService, ILogService,
-  IMtgSetService, IOverlayService, IServiceContainer, ISessionService, IViewmodelFactoryService
+  IMtgSetService, IOverlayService, IServiceContainer, ISessionService, ISynchronizeService, IViewmodelFactoryService
 } from "../interface";
 import { InitializationResult } from "../types";
 import { ArcaneArchiveProxy } from "./arcane-archive.proxy";
@@ -22,6 +22,7 @@ import { SessionService } from "./session.service";
 import { ViewmodelFactoryService } from "./viewmodel-factory.service";
 import { IMtgCardService } from "../interface/mtg-card.service";
 import { MtgCardService } from "./mtg-card.service";
+import { SynchronizeService } from "./synchronize.service";
 
 export class ServiceContainer implements IServiceContainer {
   //#region Private fields ----------------------------------------------------
@@ -38,6 +39,7 @@ export class ServiceContainer implements IServiceContainer {
   private _mtgSetService: IMtgSetService;
   private _overlayService: IOverlayService;
   private _sessionService: ISessionService;
+  private _synchronizeService: ISynchronizeService;
   private _viewmodelFactoryService: IViewmodelFactoryService;
   //#endregion
 
@@ -94,6 +96,10 @@ export class ServiceContainer implements IServiceContainer {
     return this._sessionService;
   }
 
+  public get synchronizeService(): ISynchronizeService {
+    return this._synchronizeService;
+  }
+
   public get viewmodelFactoryService(): IViewmodelFactoryService {
     return this._viewmodelFactoryService;
   }
@@ -114,6 +120,7 @@ export class ServiceContainer implements IServiceContainer {
     this._mtgSetService = new MtgSetService();
     this._overlayService = new OverlayService();
     this._sessionService = new SessionService();
+    this._synchronizeService = new SynchronizeService();
     this._viewmodelFactoryService = new ViewmodelFactoryService();
   }
   //#endregion
@@ -156,11 +163,12 @@ export class ServiceContainer implements IServiceContainer {
         async (configuration: SettingsDto) => {
           result.settings = configuration;
           this._arcaneArchiveProxy.initialize(configuration.apiConfiguration);
-          // LATER next four services could be skippable (although their initialize doesn't do anything)
+          // LATER next five services could be skippable (although their initialize doesn't do anything)
           this._libraryCardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
           this._mtgCardService.initialize(this._arcaneArchiveProxy);
           this._collectionCardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
           this._collectionService.initialize(this._ipcProxy, this._arcaneArchiveProxy);
+          this._synchronizeService.initialize(this._arcaneArchiveProxy);
           // --- get api status once, automatic refresh is started by the  ---
           const apiStatus = await this._arcaneArchiveProxy.forceRefresh();
           if (apiStatus.get("library") != null) {

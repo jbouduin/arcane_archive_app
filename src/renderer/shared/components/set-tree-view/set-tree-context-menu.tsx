@@ -1,29 +1,28 @@
 import { ContextMenu, Menu, MenuItem } from "@blueprintjs/core";
-import { useApiStatus, useDialogs, useServices, useSession } from "../../../hooks";
+import { useApiStatus, useDialogs, useSession } from "../../../hooks";
 import { SetTreeContextMenuProps } from "./set-tree-context-menu.props";
 
 export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element {
   // #region Hooks ------------------------------------------------------------
-  const { mtgSetService } = useServices();
   const { loggedIn, isSysAdmin } = useSession();
   const { collectionServiceAvailable } = useApiStatus();
-  const { showExportSetDialog, showMtgSetDialog } = useDialogs();
+  const { showExportSetDialog, showMtgSetDialog, showSynchronizeSetDialog } = useDialogs();
   // #endregion
 
   // #region Rendering --------------------------------------------------------
   return (
     <ContextMenu
-      key={`context-menu-${props.cardSetId}`}
+      key={`context-menu-${props.cardSet.id}`}
       className="aa-tree-view-item"
       content={
         (
-          <Menu key={`menu-${props.cardSetId}`}>
+          <Menu key={`menu-${props.cardSet.id}`}>
             <MenuItem
-              key={`prop-${props.cardSetId}`}
+              key={`prop-${props.cardSet.id}`}
               onClick={
                 (e) => {
                   e.preventDefault();
-                  showMtgSetDialog(props.cardSetId);
+                  showMtgSetDialog(props.cardSet.id);
                 }
               }
               text="Properties"
@@ -32,13 +31,13 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element 
               loggedIn &&
               (
                 <MenuItem
-                  key={`export-${props.cardSetId}`}
+                  key={`export-${props.cardSet.id}`}
                   disabled={!collectionServiceAvailable}
                   text="Export to XL"
                   onClick={
                     (e) => {
                       e.preventDefault();
-                      showExportSetDialog(props.cardSetId);
+                      showExportSetDialog(props.cardSet.id);
                     }
                   }
                 />
@@ -48,11 +47,11 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element 
               isSysAdmin &&
               (
                 <MenuItem
-                  key={`sync-${props.cardSetId}`}
+                  key={`sync-${props.cardSet.id}`}
                   onClick={
                     (e) => {
                       e.preventDefault();
-                      void mtgSetService.synchronizeSet(props.cardSetCode);
+                      void showSynchronizeSetDialog(props.cardSet);
                     }
                   }
                   text="Synchronize cards"

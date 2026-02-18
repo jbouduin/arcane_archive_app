@@ -19,6 +19,7 @@ export class MtgSetTreeViewmodel {
   }
 
   public get treeItemLabel(): string {
+    // BUG this should use total set-size
     return `${this._dto.setName} (${this._dto.baseSetSize})`;
   }
 

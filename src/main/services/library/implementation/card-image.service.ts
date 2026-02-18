@@ -48,13 +48,19 @@ export class CardImageService extends BaseService implements ICardImageService {
   public async getImage(url: URL): Promise<Response> {
     // LATER improve error handling
     let result: Promise<Response>;
-    const requestedSize = url.searchParams.get("version") as CachedImageSize || this.configurationService.preferences.cachedImageSize;
+    /**
+     * # BUG if collectornumber contains special characters (like ARN 2†) this
+     * method saves the file with the urlencoded name
+     */
+    const requestedSize = url.searchParams
+      .get("version") as CachedImageSize || this.configurationService.preferences.cachedImageSize;
     const statusParam = url.searchParams.get("status");
     const currentStatus = statusParam
       ? ScryFallImageStatus[statusParam as keyof typeof ScryFallImageStatus]
       : ScryFallImageStatus.UNKNOWN;
     this.logService.trace("Main", "requesting image:", url);
-    const cardfaceResult = await this.cardfaceRepository.findByPathAndSide(`${url.host}/${url.pathname}`, url.searchParams.get("side") as CardSide || "back");
+    const cardfaceResult = await this.cardfaceRepository
+      .findByPathAndSide(`${url.host}/${url.pathname}`, url.searchParams.get("side") as CardSide || "back");
     const recordFound = cardfaceResult.status != EIpcStatus.NotFound;
     const cachedImagePath = this.calculateCachedImagePath(url, requestedSize);
     this.logService.debug("Main", "Found cached image record:", recordFound);

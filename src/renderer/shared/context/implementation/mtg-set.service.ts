@@ -1,6 +1,6 @@
 import { noop } from "lodash";
 import { ExportSetRequest } from "../../../../common/dto";
-import { MtgSetDto, MtgSetTreeDto, SyncParamDto } from "../../dto";
+import { MtgSetDto, MtgSetTreeDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { IArcaneArchiveProxy } from "../interface";
 import { IMtgSetService } from "../interface/mtg-set.service";
@@ -57,22 +57,6 @@ export class MtgSetService implements IMtgSetService {
         },
         noop
       );
-  }
-
-  public async synchronizeSet(setCode: string): Promise<void> {
-    const postData: SyncParamDto = {
-      tasks: [
-        {
-          target: "CARDS_OF_CARD_SET",
-          subTarget: setCode,
-          mode: "NORMAL",
-          dumpData: true
-        }
-      ],
-      allScryfallCatalogs: "SKIP",
-      allCardSets: "SKIP"
-    };
-    void this.arcaneArchiveProxy.postData("library", "/admin/synchronization/partial", postData);
   }
   // #endregion
 };

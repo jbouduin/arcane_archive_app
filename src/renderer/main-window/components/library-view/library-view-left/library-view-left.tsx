@@ -26,6 +26,7 @@ export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
                 viewmodel={props.viewmodel}
                 viewmodelChanged={props.viewmodelChanged}
                 configuration={props.treeConfiguration}
+                // BUG page should be reset to page 0, probably in advancecardsearch also
                 search={(dto: CardQueryFilterDto) => props.search(dto, true)}
                 treeConfigurationChanged={props.treeConfigurationChanged}
               />

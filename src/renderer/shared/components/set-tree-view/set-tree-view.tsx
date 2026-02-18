@@ -240,8 +240,7 @@ export function SetTreeView(props: SetTreeViewProps): JSX.Element {
       label: (
         <SetTreeContextMenu
           key={`cm-${cardSet.code}`}
-          cardSetId={cardSet.id}
-          cardSetCode={cardSet.code}
+          cardSet={cardSet.dto}
         >
           <CardSetIcon keyruneCode={cardSet.keyRuneCode} />
           {cardSet.treeItemLabel}

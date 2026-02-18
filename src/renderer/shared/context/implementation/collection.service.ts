@@ -36,6 +36,11 @@ export class CollectionService implements ICollectionService {
       this.unsubscribeSession = sessionService.subscribeSessionChangeListener(
         (data: SessionChangeEvent | null) => {
           if (data != null) {
+            /**
+             * # BUG: if collection service is not available, this gives an error
+             * Solutions: add noop to loadcollections or subscribe to api status.
+             * The latter is difficult, as we do not know in which order event happen
+             */
             void this.loadCollections();
           } else {
             this.collections = null;

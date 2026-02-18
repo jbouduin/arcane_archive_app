@@ -1,9 +1,9 @@
 export * from "./arcane-archive.proxy";
+export * from "./basic-data.service";
 export * from "./card-symbol.service";
 export * from "./collection-card-search.service";
 export * from "./collection.service";
 export * from "./configuration.service";
-export * from "./basic-data.service";
 export * from "./ipc-proxy";
 export * from "./library-card-search.service";
 export * from "./log.service";
@@ -11,4 +11,5 @@ export * from "./mtg-set.service";
 export * from "./overlay.service";
 export * from "./service-container";
 export * from "./session.service";
+export * from "./synchronize.service";
 export * from "./viewmodel-factory.service";

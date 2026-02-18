@@ -16,7 +16,7 @@ function getExportSetDialogPropsImpl(
   mtgSetViewmodelFactory: IMtgSetViewmodelFactory
 ): Promise<DialogProps.ExportSetDialogProps> {
   return mtgSetService
-    .getSetDetails(cardSetId)
+    .getSetDetails(cardSetId) // LATER check if passing MtgSetTreeDto would be enough
     .then(
       (set: MtgSetDto) => {
         const dialogProps: DialogProps.ExportSetDialogProps = {

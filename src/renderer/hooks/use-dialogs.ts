@@ -6,6 +6,7 @@ import {
 import {
   changePasswordDialogPropsFactory,
   collectionDialogPropsFactory,
+  ExportSetDialogProps, exportSetDialogPropsFactory,
   LoginDialogProps, loginDialogPropsFactory,
   MtgSetDialogProps, mtgSetDialogPropsFactory,
   preferencesDialogPropsFactory,
@@ -13,13 +14,12 @@ import {
   recoverPasswordDialogPropsFactory,
   RegisterDialogProps, registerDialogPropsFactory,
   resetPasswordDialogPropsFactory,
+  SynchronizationDialogProps, synchronizationDialogPropsFactory,
   systemInfoDialogPropsFacotry,
   SystemSettingsDialogProps, systemSettingsDialogPropsFactory
 } from "../shared/components/dialogs";
-import { ExportSetDialogProps, exportSetDialogPropsFactory } from "../shared/components/dialogs/export-set-dialog";
-import { } from "../shared/components/dialogs/register-dialog/register-dialog-factory";
 import { ApiInfoContextType } from "../shared/context";
-import { CollectionDto } from "../shared/dto";
+import { CollectionDto, MtgSetTreeDto } from "../shared/dto";
 import { CollectionType } from "../shared/types";
 import { usePreferences } from "./use-preferences";
 import { useServices } from "./use-services";
@@ -180,6 +180,24 @@ export function useDialogs() {
     );
   }
 
+  function showSynchronizationDialog(): void {
+    void synchronizationDialogPropsFactory
+      .getSynchronizationDialogProps(
+        services.synchronizeService, services.viewmodelFactoryService.synchronizationViewmodelFactory
+      )
+      .then((props: SynchronizationDialogProps) => services.overlayService.openDialog(props));
+  }
+
+  // NOW we have to pass MtgSetTree
+  function showSynchronizeSetDialog(cardSet: MtgSetTreeDto): void {
+    services.overlayService.openDialog(
+      synchronizationDialogPropsFactory.getSynchronizeSetDialogProps(
+        cardSet,
+        services.viewmodelFactoryService.synchronizationViewmodelFactory
+      )
+    );
+  }
+
   function showSystemInfoDialog(apiInfo: ApiInfoContextType): void {
     services.overlayService.openDialog(
       systemInfoDialogPropsFacotry.getSystemInfoDialogProps(
@@ -214,6 +232,8 @@ export function useDialogs() {
     showRecoverPasswordDialog,
     showRegisterDialog,
     showResetPasswordDialog,
+    showSynchronizationDialog,
+    showSynchronizeSetDialog,
     showSystemInfoDialog,
     showSystemSettingsDialog
   };

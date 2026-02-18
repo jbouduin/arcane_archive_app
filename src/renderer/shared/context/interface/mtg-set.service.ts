@@ -11,5 +11,4 @@ export interface IMtgSetService {
   getSetDetails(id: number): Promise<MtgSetDto>;
   getSetTreeDtoById(id: number): MtgSetTreeDto | undefined;
   initialize(arcaneArchiveProxy: IArcaneArchiveProxy): Promise<void>;
-  synchronizeSet(setCode: string): Promise<void>;
 }

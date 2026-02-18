@@ -1,5 +1,5 @@
 import { FormGroup, HTMLSelect } from "@blueprintjs/core";
-import { useMemo } from "react";
+import { CSSProperties, useMemo } from "react";
 import { SelectOption } from "../../../types";
 import { AaHtmlSelectProps } from "./aa-html-select.props";
 import { handleValueChange } from "../value-change-handler";
@@ -16,6 +16,7 @@ export function AaHtmlSelect<Dto extends object, D extends string | number>(
 
   // #region Rendering --------------------------------------------------------
   const fieldName = props.fieldName as string;
+  const style: CSSProperties = props.label ? {} : { margin: "0px" };
   return (
     <FormGroup
       key={fieldName}
@@ -23,6 +24,7 @@ export function AaHtmlSelect<Dto extends object, D extends string | number>(
       labelInfo={props.labelInfo}
       labelFor={`${fieldName}-select`}
       fill={props.fill}
+      style={style}
     >
       <HTMLSelect
         {...props.selectProps}

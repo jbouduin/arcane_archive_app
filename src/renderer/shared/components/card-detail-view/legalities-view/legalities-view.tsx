@@ -3,6 +3,7 @@ import * as React from "react";
 import { compareClassNameProp } from "../../util";
 import { LegalitiesViewProps } from "./legalities-view.props";
 
+// NEXT Add leadership skills
 export const LegalitiesView = React.memo(
   (props: LegalitiesViewProps) => {
     // #region Rendering ------------------------------------------------------

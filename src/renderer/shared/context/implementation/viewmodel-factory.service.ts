@@ -5,9 +5,10 @@ import { CollectionViewmodelFactory } from "../../viewmodel/factory/implementati
 import { MtgCardViewmodelFactory } from "../../viewmodel/factory/implementation/mtg-card-viewmodel.factory";
 import { MtgSetViewmodelFactory } from "../../viewmodel/factory/implementation/mtg-set-viewmodel.factory";
 import { SettingsViewmodelFactory } from "../../viewmodel/factory/implementation/settings-viewmodel.factory";
+import { SynchronizationViewmodelFactory } from "../../viewmodel/factory/implementation/synchronization-viewmodel.factory";
 import {
   IAuthenticationViewmodelFactory, ICollectionViewmodelFactory, IMtgCardViewmodelFactory,
-  IMtgSetViewmodelFactory, ISettingsViewmodelFactory
+  IMtgSetViewmodelFactory, ISettingsViewmodelFactory, ISynchronizationViewmodelFactory
 } from "../../viewmodel/factory/interface";
 import { IBasicDataService, ICollectionService, IMtgSetService, IViewmodelFactoryService } from "../interface";
 
@@ -21,6 +22,7 @@ export class ViewmodelFactoryService implements IViewmodelFactoryService {
   private _mtgCardViewmodelFactory!: IMtgCardViewmodelFactory;
   private _mtgSetViewmodelFactory!: IMtgSetViewmodelFactory;
   private _settingsViewmodelFactory!: ISettingsViewmodelFactory;
+  private _synchronizationViewmodelFactory!: ISynchronizationViewmodelFactory;
   // #endregion
 
   // #region IViewmodelFactoryService Members ---------------------------------
@@ -49,6 +51,11 @@ export class ViewmodelFactoryService implements IViewmodelFactoryService {
   public get settingsViewmodelFactory(): ISettingsViewmodelFactory {
     return this._settingsViewmodelFactory ??
       (this._settingsViewmodelFactory = new SettingsViewmodelFactory());
+  }
+
+  public get synchronizationViewmodelFactory(): ISynchronizationViewmodelFactory {
+    return this._synchronizationViewmodelFactory ??
+      (this._synchronizationViewmodelFactory = new SynchronizationViewmodelFactory(this.basicDataService));
   }
 
   public initialize(
