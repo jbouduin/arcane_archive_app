@@ -26,7 +26,10 @@ export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
                 viewmodel={props.viewmodel}
                 viewmodelChanged={props.viewmodelChanged}
                 configuration={props.treeConfiguration}
-                // BUG page should be reset to page 0, probably in advancecardsearch also
+                /**
+                 * # BUG page should be reset to page 0, probably in advancecardsearch also
+                 * and the page size gets lost when selecting another set in the tree
+                 */
                 search={(dto: CardQueryFilterDto) => props.search(dto, true)}
                 treeConfigurationChanged={props.treeConfigurationChanged}
               />

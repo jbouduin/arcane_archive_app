@@ -46,12 +46,24 @@ export class CardImageService extends BaseService implements ICardImageService {
 
   // #region ICardImageService Members ----------------------------------------
   public async getImage(url: URL): Promise<Response> {
-    // LATER improve error handling
-    let result: Promise<Response>;
     /**
-     * # BUG if collectornumber contains special characters (like ARN 2†) this
-     * method saves the file with the urlencoded name
+     * # LATER improve error handling
+     * - return new Response("Image not found", { status: 404 });
+     *   -> if scryfall returns a 404
+     * - return new Response("Cache write failure", { status: 500 });
+     *   -> if writing file fails, not if writing to database fails
+     * - return new Response("Scryfall unavailable", { status: 503 });
+     *   -> if scryfall is down
+     * - return new Response("To many requests", { status: 429 });
+     *   -> if scryfall returns a 429
+     * - return new Response("Bad image URL", { status: 400 });
+     *   -> if scryfall returns a 400 or parsing fails
+     *
+     * Remark: if there is another file in different size and retrieving a new size fails:
+     *         do not remove the other size and do not touch the database
      */
+
+    let result: Promise<Response>;
     const requestedSize = url.searchParams
       .get("version") as CachedImageSize || this.configurationService.preferences.cachedImageSize;
     const statusParam = url.searchParams.get("status");
@@ -106,6 +118,7 @@ export class CardImageService extends BaseService implements ICardImageService {
     );
     if (url.host == CARD_IMAGE_FACE) {
       const [_cards, setCode, collectorNumber, language] = url.pathname.split("/").filter((p: string) => p != "");
+      const decodedCollectorNumber = decodeURIComponent(collectorNumber);
       const dirName = join(
         cacheDirectory,
         size,
@@ -114,7 +127,7 @@ export class CardImageService extends BaseService implements ICardImageService {
       this.ioService.createDirectoryIfNotExists(dirName);
       result = join(
         dirName,
-        `${collectorNumber.padStart(6, "0")}.${url.searchParams.get("side")}.jpg`
+        `${decodedCollectorNumber.padStart(6, "0")}.${url.searchParams.get("side")}.jpg`
       );
     } else {
       const dirName = join(cacheDirectory, size, this.cardBackCacheDirectory);

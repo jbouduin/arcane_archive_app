@@ -5,20 +5,28 @@ import classNames from "classnames";
 import { memo, useCallback, useEffect, useState } from "react";
 import { IpcPaths } from "../../../../../common/ipc";
 import { CARD_IMAGE_BACK, CARD_IMAGE_FACE } from "../../../../../common/types";
+import { useServices } from "../../../../hooks";
 import { compareClassNameProp } from "../../util";
 import { CardImageViewProps } from "./card-image-view.props";
 import { CardImageViewState } from "./card-image-view.state";
 
 export const CardImageView = memo(
   (props: CardImageViewProps) => {
+    //#region Initialization --------------------------------------------------
     const sizeClassName = props.size == "small" ? "aa-card-image-small" : "aa-card-image-large";
-    // #region State ----------------------------------------------------------
+    //#endregion
+
+    //#region State -----------------------------------------------------------
     const [cardImageState, setCardImageState] = useState<CardImageViewState>(
       { currentDisplayedSide: "front", rotationClass: "" }
     );
-    // #endregion
+    //#endregion
 
-    // #region Event handling -------------------------------------------------
+    //#region Hooks -----------------------------------------------------------
+    const { overlayService } = useServices();
+    //#endregion
+
+    //#region Event handling --------------------------------------------------
     const onFlipClicked = useCallback(
       () => {
         const newState: CardImageViewState = {
@@ -51,9 +59,9 @@ export const CardImageView = memo(
       },
       [cardImageState, props]
     );
-    // #endregion
+    //#endregion
 
-    // #region effect ---------------------------------------------------------
+    //#region effect ----------------------------------------------------------
     useEffect(
       () => {
         setCardImageState({
@@ -63,12 +71,11 @@ export const CardImageView = memo(
       },
       [props]
     );
-    // #endregion
+    //#endregion
 
-    // #region Rendering ------------------------------------------------------
+    //#region Rendering -------------------------------------------------------
     return (
       <div className={sizeClassName}>
-
         <SectionCard
           className="aa-card-image-section-card"
           padded={false}
@@ -76,6 +83,7 @@ export const CardImageView = memo(
           <img
             className={classNames("aa-card-image", cardImageState.rotationClass)}
             src={calculateImageUrl()}
+            onError={() => overlayService.showToast({ message: "Could not load image.", intent: "danger" })}
           />
           <div className="aa-card-image-buttons">
             {
@@ -104,9 +112,9 @@ export const CardImageView = memo(
       }
       return result;
     }
-    // #endregion
+    //#endregion
 
-    // #region Auxiliary Methods ----------------------------------------------
+    //#region Auxiliary Methods -----------------------------------------------
     function calculateImageUrl(): string {
       let result: string;
       if (cardImageState.currentDisplayedSide == "front" || props.cardBackId == null) {
@@ -116,7 +124,6 @@ export const CardImageView = memo(
           `side=${cardImageState.currentDisplayedSide}`,
           `status=${props.imageStatus.toString()}`
         );
-
         result = `${IpcPaths.CACHED_IMAGE}://${CARD_IMAGE_FACE}/cards/${props.setCode}/${props.collectorNumber}/${props.scryfallLanguage}?` +
           queryParams.join("&");
       } else {
@@ -124,7 +131,7 @@ export const CardImageView = memo(
       }
       return result;
     }
-    // #endregion
+    //#endregion
   },
   (prev: CardImageViewProps, next: CardImageViewProps) => {
     // fast path
