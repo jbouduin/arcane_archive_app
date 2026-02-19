@@ -222,27 +222,9 @@ export function SetTreeView(props: SetTreeViewProps): JSX.Element {
   function mapViewModelToTreeItem(cardSet: MtgSetTreeViewmodel): TreeNodeInfo<MtgSetTreeViewmodel> {
     const node: TreeNodeInfo<MtgSetTreeViewmodel> = {
       id: cardSet.id,
-      /**
-       * # BUG this gives an error in the console when selecting any set for the first time after entering the view
-       * Reason: blueprint renders two spans without a key:
-       * <div class="bp6-tree-node-content bp6-tree-node-content-0">
-       *   <span class="bp6-tree-node-caret-none"></span>
-       *   <span class="bp6-tree-node-label">
-       *     <div class="tree-view-item bp6-context-menu">
-       *       <i class="ss ss-pmei ss-undefined aa-card-set-icon-small">
-       *         ::before
-       *       </i>
-       *       Year of the Snake 2025 (5)
-       *     </div>
-       *   </span>
-       * </div>
-       */
       label: (
-        <SetTreeContextMenu
-          key={`cm-${cardSet.code}`}
-          cardSet={cardSet.dto}
-        >
-          <CardSetIcon keyruneCode={cardSet.keyRuneCode} />
+        <SetTreeContextMenu cardSet={cardSet.dto}>
+          <CardSetIcon key={`cm-${cardSet.code}`} keyruneCode={cardSet.keyRuneCode} />
           {cardSet.treeItemLabel}
         </SetTreeContextMenu>
       ),

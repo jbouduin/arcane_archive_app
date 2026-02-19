@@ -1,2 +1,0 @@
-// NOW remove this
-export type SyncTaskTarget = "MTG_JSON_SET_LIST" | "MTG_JSON_CARD_TYPES" | "SCRYFALL_CARD_SYMBOLS" | "RULINGS" | "CARDS_OF_CARD_SET";

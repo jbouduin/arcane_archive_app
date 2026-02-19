@@ -16,7 +16,7 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element 
       className="aa-tree-view-item"
       content={
         (
-          <Menu key={`menu-${props.cardSet.id}`}>
+          <Menu>
             <MenuItem
               key={`prop-${props.cardSet.id}`}
               onClick={

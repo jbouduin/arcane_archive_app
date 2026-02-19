@@ -188,7 +188,6 @@ export function useDialogs() {
       .then((props: SynchronizationDialogProps) => services.overlayService.openDialog(props));
   }
 
-  // NOW we have to pass MtgSetTree
   function showSynchronizeSetDialog(cardSet: MtgSetTreeDto): void {
     services.overlayService.openDialog(
       synchronizationDialogPropsFactory.getSynchronizeSetDialogProps(

@@ -1,11 +1,12 @@
 import "./synchronization-dialog.css";
 
 import { Checkbox, HTMLTable, SectionCard, Tab, Tabs } from "@blueprintjs/core";
+import { Fragment } from "react/jsx-runtime";
 import { SyncTaskViewmodel } from "../../../viewmodel";
+import { BaseDivider } from "../../base/base-divider/base-divider";
 import { AaCheckbox, AaHtmlSelect } from "../../input";
 import { handleBooleanChange } from "../../input/value-change-handler";
 import { SynchronizationDialogBodyProps } from "./synchronization-dialog.props";
-import { BaseDivider } from "../../base/base-divider/base-divider";
 
 export function SynchronizationDialogBody(props: SynchronizationDialogBodyProps): JSX.Element {
   //#region Rendering ---------------------------------------------------------
@@ -17,18 +18,21 @@ export function SynchronizationDialogBody(props: SynchronizationDialogBodyProps)
         viewmodel={props.viewmodel}
         viewmodelChanged={props.viewmodelChanged}
       />
-      <Tabs animate={true} defaultSelectedTabId="non-catalog" renderActiveTabPanelOnly={true}>
+      <Tabs
+        animate={true}
+        defaultSelectedTabId="non-catalog"
+        id="sync-tabs"
+        renderActiveTabPanelOnly={true}
+      >
         <Tab
           id="non-catalog"
-          key="non-catalog"
-          title="General"
           panel={renderTasks(props.viewmodel.nonCatalogTaskViewmodels)}
+          title="General"
         />
         <Tab
           id="catalog"
-          key="catalog"
-          title="Catalogs"
           panel={renderCatalogPanel()}
+          title="Catalogs"
         />
       </Tabs>
     </SectionCard>
@@ -67,7 +71,7 @@ export function SynchronizationDialogBody(props: SynchronizationDialogBodyProps)
 
   function renderTasks(tasks: Array<SyncTaskViewmodel>): JSX.Element {
     const allTasks = tasks.map((task: SyncTaskViewmodel) => (
-      <>
+      <Fragment key={`${task.dto.target}`}>
         <tr>
           <td colSpan={2} className="aa-sync-task-td">
             {task.label}
@@ -97,7 +101,7 @@ export function SynchronizationDialogBody(props: SynchronizationDialogBodyProps)
             <BaseDivider />
           </td>
         </tr>
-      </>
+      </Fragment>
     ));
     return (
       <HTMLTable

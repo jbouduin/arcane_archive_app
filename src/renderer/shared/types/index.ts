@@ -12,5 +12,4 @@ export * from "./scryfall-language-map";
 export * from "./select-option";
 export * from "./show-toast";
 export * from "./sync-task-mode";
-export * from "./sync-task-target";
 export * from "./validation-result";

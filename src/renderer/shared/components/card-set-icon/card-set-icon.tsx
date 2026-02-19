@@ -10,7 +10,7 @@ export function CardSetIcon(props: CardSetIconProps): JSX.Element {
     "ss-" + props.keyruneCode.toLowerCase(),
     "ss-" + props.rarity?.toLowerCase() || "common"
   ];
-  const sizeClassName = props.size == "large"
+  const sizedClassName = props.size == "large"
     ? classNames(baseClassName, "ss-2x", "aa-card-set-icon-large")
     : classNames(baseClassName, "aa-card-set-icon-small");
   //#endregion
@@ -21,8 +21,7 @@ export function CardSetIcon(props: CardSetIconProps): JSX.Element {
    */
   return (
     <i
-      key={`icon-${props.keyruneCode}`}
-      className={sizeClassName}
+      className={sizedClassName}
     >
     </i>
   );
