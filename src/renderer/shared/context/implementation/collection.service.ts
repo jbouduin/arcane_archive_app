@@ -36,12 +36,8 @@ export class CollectionService implements ICollectionService {
       this.unsubscribeSession = sessionService.subscribeSessionChangeListener(
         (data: SessionChangeEvent | null) => {
           if (data != null) {
-            /**
-             * # BUG: if collection service is not available, this gives an error
-             * Solutions: add noop to loadcollections or subscribe to api status.
-             * The latter is difficult, as we do not know in which order event happen
-             */
-            void this.loadCollections();
+            // see loadCollections why we noop here.
+            void this.loadCollections().catch(noop);
           } else {
             this.collections = null;
             this.selectOptions = null;
@@ -133,6 +129,7 @@ export class CollectionService implements ICollectionService {
           });
           return [...this.collections.values()];
         }
+        // no noop here as the treeview handles rejection
       );
   }
 
