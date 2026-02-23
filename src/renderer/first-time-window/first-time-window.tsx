@@ -33,6 +33,11 @@ void (async () => {
   let initialization = await serviceContainer.initialize(
     toastCall,
     {
+      skipCollectionCardSearchService: true,
+      skipCollectionService: true,
+      skipLibraryCardService: true,
+      skipMtgCardService: true,
+      skipSynchronizeService: true,
       skipCardSymbolService: true,
       skipMtgSetService: true,
       skipSessionService: true

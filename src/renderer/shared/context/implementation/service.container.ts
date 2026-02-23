@@ -163,16 +163,25 @@ export class ServiceContainer implements IServiceContainer {
         async (configuration: SettingsDto) => {
           result.settings = configuration;
           this._arcaneArchiveProxy.initialize(configuration.apiConfiguration);
-          // LATER next five services could be skippable (although their initialize doesn't do anything)
-          this._libraryCardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
-          this._mtgCardService.initialize(this._arcaneArchiveProxy);
-          this._collectionCardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
-          this._collectionService.initialize(this._ipcProxy, this._arcaneArchiveProxy);
-          this._synchronizeService.initialize(this._arcaneArchiveProxy);
+          if (!options.skipLibraryCardService) {
+            this._libraryCardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
+          }
+          if (!options.skipMtgCardService) {
+            this._mtgCardService.initialize(this._arcaneArchiveProxy);
+          }
+          if (!options.skipCollectionCardSearchService) {
+            this._collectionCardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
+          }
+          if (!options.skipCollectionService) {
+            this._collectionService.initialize(this._ipcProxy, this._arcaneArchiveProxy);
+          }
+          if (!options.skipSynchronizeService) {
+            this._synchronizeService.initialize(this._arcaneArchiveProxy);
+          }
           // --- get api status once, automatic refresh is started by the  ---
           const apiStatus = await this._arcaneArchiveProxy.forceRefresh();
           if (apiStatus.get("library") != null) {
-            // Skippable services do (may!) not reject
+            // These skippable services do (may!) not reject
             const skippableServices = new Array<Promise<void>>();
             if (!options.skipCardSymbolService) {
               skippableServices.push(this._cardSymbolService.initialize(this._ipcProxy));
