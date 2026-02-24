@@ -44,6 +44,12 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
       <CollectionViewLeft
         viewmodel={viewmodelRef.current}
         viewmodelChanged={() => forceUpdate()}
+        uiStateChanged={() => {
+          collectionCardSearchService.viewDto = {
+            ...collectionCardSearchService.viewDto,
+            uiState: { ...viewmodelRef.current.dto.uiState }
+          };
+        }}
       />
     ),
     center: (

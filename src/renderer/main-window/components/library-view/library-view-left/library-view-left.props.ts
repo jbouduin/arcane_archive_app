@@ -3,5 +3,6 @@ import { LibraryViewViewmodel } from "../../../../shared/viewmodel/desktop/libra
 
 export interface LibraryViewLeftProps extends Props {
   viewmodel: LibraryViewViewmodel;
+  uiStateChanged: () => void;
   viewmodelChanged: () => void;
 }

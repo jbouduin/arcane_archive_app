@@ -1,7 +1,7 @@
-import { QueryParamsDto } from "../../dto";
+import { BaseCardListDto, QueryParamsDto } from "../../dto";
 import { AbstractCardListViewmodel } from "../../viewmodel/abstract-card-list.viewmodel";
 
-export function getGenericTableData<T extends AbstractCardListViewmodel>(
+export function getGenericTableData<Dto extends BaseCardListDto, T extends AbstractCardListViewmodel<Dto>>(
   queryData: Array<T>,
   cardQuery: QueryParamsDto
 ): Array<T> {
@@ -66,7 +66,7 @@ export function getGenericTableData<T extends AbstractCardListViewmodel>(
 }
 
 //#region Auxiliary Methods ---------------------------------------------------
-function sortData<T extends AbstractCardListViewmodel>(
+function sortData<Dto extends BaseCardListDto, T extends AbstractCardListViewmodel<Dto>>(
   a: T,
   b: T,
   compareFn: ((x: T, y: T) => number)

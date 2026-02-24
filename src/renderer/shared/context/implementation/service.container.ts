@@ -24,7 +24,7 @@ import { ViewmodelFactoryService } from "./viewmodel-factory.service";
 import { IMtgCardService } from "../interface/mtg-card.service";
 import { MtgCardService } from "./mtg-card.service";
 import { SynchronizeService } from "./synchronize.service";
-import { CollectionViewDto, LibraryViewDto } from "../../dto/desktop";
+import { CollectionViewDto, LibraryViewDto, UiStateDto } from "../../dto/desktop";
 import { CardQueryFilterDto, CollectionCardListDto, LibraryCardListDto, QueryParamsDto, QueryResultDto } from "../../dto";
 
 export class ServiceContainer implements IServiceContainer {
@@ -159,7 +159,11 @@ export class ServiceContainer implements IServiceContainer {
 
     // --- initialize log service ---
     this._logService.initialize(this._ipcProxy);
-
+    const freshUiState: UiStateDto = {
+      expandedNodes: new Array<string | number>(),
+      selectedNodes: new Array<string | number>(),
+      tableVersion: 0
+    };
     // !!! all services should be able to handle a second initialization call !!!
     await this._configurationService.initialize(this._ipcProxy)
       .then(
@@ -178,7 +182,8 @@ export class ServiceContainer implements IServiceContainer {
                 queryResult: queryResult,
                 selectedSearchTab: 0,
                 selectedCard: null,
-                treeConfiguration: configuration.preferences.librarySetTreeSettings
+                treeConfiguration: configuration.preferences.librarySetTreeSettings,
+                uiState: freshUiState
               };
             };
             this._libraryCardSearchService.initialize(this._arcaneArchiveProxy, viewDtoProvider);
@@ -198,7 +203,8 @@ export class ServiceContainer implements IServiceContainer {
                 queryResult: queryResult,
                 selectedSearchTab: 0,
                 selectedCard: null,
-                selectedCollection: null
+                selectedCollection: null,
+                uiState: freshUiState
               };
             };
             this._collectionCardSearchService.initialize(this._arcaneArchiveProxy, viewDtoProvider);

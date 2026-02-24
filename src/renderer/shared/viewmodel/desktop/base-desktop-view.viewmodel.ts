@@ -13,13 +13,25 @@ export class BaseDesktopViewViewmodel<LDto extends BaseCardListDto, VDto extends
   private readonly searchCallback: (dto: VDto) => Promise<QueryResultDto<LDto>>;
   //#endregion
 
-  //#region Getters/Setters ---------------------------------------------------
+  //#region Getters -----------------------------------------------------------
   public get queryFilterViewmodel(): CardQueryFilterViewmodel {
     return this._queryFilterViewmodel;
   }
 
   public get queryParamsViewmodel(): QueryParamsViewmodel {
     return this._queryParamsViewmodel;
+  }
+
+  public get expandedNodes(): Array<number | string> {
+    return this._dto.uiState.expandedNodes;
+  }
+
+  public get selectedNodes(): Array<number | string> {
+    return this._dto.uiState.selectedNodes;
+  }
+
+  public get tableVersion(): number {
+    return this._dto.uiState.tableVersion;
   }
   //#endregion
 
@@ -48,6 +60,32 @@ export class BaseDesktopViewViewmodel<LDto extends BaseCardListDto, VDto extends
     this._dto.queryResult = await this.searchCallback(this.dtoToSave);
     return this._dto.queryResult;
   }
+
+  public expandNode(node: string | number): void {
+    if (!this._dto.uiState.expandedNodes.includes(node)) {
+      this._dto.uiState.expandedNodes.push(node);
+    }
+  }
+
+  public collapseNode(node: string | number): void {
+    this._dto.uiState.expandedNodes = this._dto.uiState.expandedNodes
+      .filter((value: string | number) => value !== node);
+  }
+
+  public selectNode(node: string | number): void {
+    if (!this._dto.uiState.selectedNodes.includes(node)) {
+      this._dto.uiState.selectedNodes.push(node);
+    }
+  }
+
+  public deselectNode(node: string | number): void {
+    this._dto.uiState.selectedNodes = this._dto.uiState.selectedNodes
+      .filter((value: string | number) => value !== node);
+  }
+
+  public bumpTableVersion(): void {
+    this._dto.uiState.tableVersion++;
+  }
   //#endregion
 
   //#region Auxiliary Methods -------------------------------------------------
@@ -57,7 +95,8 @@ export class BaseDesktopViewViewmodel<LDto extends BaseCardListDto, VDto extends
       queryParams: { ...this._queryParamsViewmodel.dtoToSave },
       queryResult: { ...this._dto.queryResult },
       selectedCard: this._dto.selectedCard,
-      selectedSearchTab: this._dto.selectedSearchTab
+      selectedSearchTab: this._dto.selectedSearchTab,
+      uiState: { ...this._dto.uiState }
     };
   }
   //#endregion

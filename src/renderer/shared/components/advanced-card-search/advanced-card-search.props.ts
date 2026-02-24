@@ -5,5 +5,5 @@ export interface AdvancedCardSearchProps extends Props {
   viewmodel: AdvancedCardSearchViewmodel;
 
   search: () => void;
-  viewmodelChanged: () => void;
+  selectionCriteriaChanged: () => void;
 }

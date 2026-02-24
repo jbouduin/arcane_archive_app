@@ -24,8 +24,17 @@ export function CollectionViewLeft(props: CollectionViewLeftProps): JSX.Element 
           key="collection-tree-view"
           panel={(
             <CollectionTreeView
+              expandedNodes={props.viewmodel.expandedNodes}
               viewmodel={props.viewmodel.queryFilterViewmodel}
-              viewmodelChanged={() => {
+              nodeCollapsed={(node: string | number) => {
+                props.viewmodel.collapseNode(node);
+                props.uiStateChanged();
+              }}
+              nodeExpanded={(node: string | number) => {
+                props.viewmodel.expandNode(node);
+                props.uiStateChanged();
+              }}
+              selectionCriteriaChanged={() => {
                 props.viewmodel.queryParamsViewmodel.dto.pageNumber = 0;
                 props.viewmodel
                   .search()
@@ -55,7 +64,7 @@ export function CollectionViewLeft(props: CollectionViewLeftProps): JSX.Element 
                       noop
                     );
                 }}
-                viewmodelChanged={props.viewmodelChanged}
+                selectionCriteriaChanged={props.viewmodelChanged}
               />
             )
           }

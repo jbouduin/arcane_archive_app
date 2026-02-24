@@ -1,5 +1,4 @@
 import { ContextMenu, Divider, Icon, Menu, MenuItem, TreeNodeInfo } from "@blueprintjs/core";
-import { noop } from "lodash";
 import { useEffect, useState } from "react";
 import { useDialogs, usePreferences, useServices } from "../../../../hooks";
 import { AaTree } from "../../../../shared/components/base/aa-tree";
@@ -26,13 +25,17 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
       .getCollectionTreeViewmodel(dto);
     setCollections([...collections, viewmodel]);
     /**
-     * # NOW if (dto.parentId != null) {
-     * //   props.expandedNodes.add(dto.parentId);
-     * //   props.expandedNodesChanged(props.expandedNodes);
-     * // }
+     * # NOW should wemake this collectionadded bubble up ?
+     * setCollections -> re-renders
+     * selecting the new one -> should also re-render and initiate a search
+     * expanding -> will trigger rerender
+     * and if this bubbles up, shouldn't delete also bubble up, as it
      */
     props.viewmodel.dto.collectionIds.splice(0);
     props.viewmodel.dto.collectionIds.push(dto.id!);
+    if (dto.parentId != null) {
+      props.nodeExpanded(dto.parentId);
+    }
   }
 
   function onCollectionModified(dto: CollectionDto): void {
@@ -68,12 +71,11 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
             if (resp > 0) {
               setCollections(collections.filter((vm: CollectionTreeViewmodel) => vm.id != collection.id));
               props.viewmodel.dto.collectionIds.filter((id: number) => id != collection.id);
-              /**
-               * # NOW if (collection.parentId != null) {
-               * //   props.viewmodel.dto.collectionIds.push(collection.parentId);
-               * //   props.expandedNodesChanged(props.expandedNodes);
-               * // }
-               */
+              if (collection.parentId != null) {
+                if (!props.viewmodel.dto.collectionIds.includes(collection.parentId)) {
+                  props.viewmodel.dto.collectionIds.push(collection.parentId);
+                }
+              }
             }
           }
           );
@@ -163,20 +165,16 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
                 props.viewmodel.dto.collectionIds =
                   props.viewmodel.dto.collectionIds.filter((id: number) => id != collection.id);
               }
-              props.viewmodelChanged();
+              props.selectionCriteriaChanged();
             }
           }
-          nodeExpandedChanged={noop}
-        /**
-         * # NOW (collection: TreeNodeInfo<CollectionTreeViewmodel>, expanded: boolean) => {
-         *   if (expanded) {
-         *       props.expandedNodes.add(collection.nodeData!.id);
-         *             //   } else {
-         *               //     props.expandedNodes.delete(collection.nodeData!.id);
-         *               //   }
-         *               //   props.expandedNodesChanged(props.expandedNodes);
-         *               // }
-         */
+          nodeExpandedChanged={(collection: TreeNodeInfo<CollectionTreeViewmodel>, expanded: boolean) => {
+            if (expanded) {
+              props.nodeExpanded(collection.nodeData!.id);
+            } else {
+              props.nodeCollapsed(collection.nodeData!.id);
+            }
+          }}
         />
       </ContextMenu>
     </>
@@ -274,7 +272,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
           </div>
         </CollectionTreeContextMenu>
       ),
-      // NOW isExpanded: props.expandedNodes.has(collection.id),
+      isExpanded: props.expandedNodes.includes(collection.id),
       isSelected: props.viewmodel.dto.collectionIds.includes(collection.id),
       nodeData: collection
     };

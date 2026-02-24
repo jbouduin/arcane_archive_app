@@ -1,3 +1,4 @@
+import { BaseCardListDto } from "../../dto";
 import { AbstractCardListViewmodel } from "../../viewmodel/abstract-card-list.viewmodel";
 import { GenericTextColumn } from "../base/base-table";
 import { CardSetColumn } from "./card-set-column";
@@ -5,7 +6,7 @@ import { CollectiorNumberColumn } from "./collector-number-column";
 import { ColorIdentityColumn } from "./color-identity-column";
 import { ManaCostColumn } from "./mana-cost-column";
 
-export class SortableColumnsFactory<T extends AbstractCardListViewmodel> {
+export class SortableColumnsFactory<Dto extends BaseCardListDto, T extends AbstractCardListViewmodel<Dto>> {
   //#region Factory methods ---------------------------------------------------
   public getCollectorNumberColumn(columNumber: number): CollectiorNumberColumn<T> {
     return new CollectiorNumberColumn<T>(

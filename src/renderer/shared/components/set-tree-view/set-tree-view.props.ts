@@ -5,6 +5,10 @@ import { AdvancedCardSearchViewmodel } from "../../viewmodel/mtg-card/advanced-c
 export interface SetTreeViewProps extends Props {
   viewmodel: AdvancedCardSearchViewmodel;
   configuration: MtgSetTreeConfigurationViewmodel;
+  expandedNodes: Array<number | string>;
 
-  viewmodelChanged: () => void;
+  nodeCollapsed: (node: string | number) => void;
+  nodeExpanded: (node: string | number) => void;
+  selectionCriteriaChanged: () => void;
+  uiStateChanged: () => void;
 }

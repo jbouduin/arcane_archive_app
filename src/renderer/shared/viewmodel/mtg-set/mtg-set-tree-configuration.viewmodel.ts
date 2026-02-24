@@ -9,10 +9,6 @@ export class MtgSetTreeConfigurationViewmodel {
   private _cardSetFilterValue: string | null;
   //#endregion
 
-  //#region public properties -------------------------------------------------
-  public expandedNodeIds: Set<string | number>;
-  // #endregion
-
   // #region Getters/Setters --------------------------------------------------
   public get cardSetSort(): CardSetSort {
     return this._cardSetSort;
@@ -49,7 +45,6 @@ export class MtgSetTreeConfigurationViewmodel {
     this._cardSetGroupBy = dto.cardSetGroupBy;
     this._cardSetTypeFilter = new Set<string>(dto.cardSetTypeFilter);
     this._cardSetFilterValue = null;
-    this.expandedNodeIds = new Set<string | number>();
   }
   // #endregion
 

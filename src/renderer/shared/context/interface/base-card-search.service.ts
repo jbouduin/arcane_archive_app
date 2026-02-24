@@ -6,7 +6,7 @@ export type ViewDtoProvider<LDto extends BaseCardListDto, VDto extends BaseDeskt
   (queryParams: QueryParamsDto, queryFilter: CardQueryFilterDto, queryResult: QueryResultDto<LDto>) => VDto;
 
 export interface IBaseCardSearchService<LDto extends BaseCardListDto, VDto extends BaseDesktopViewDto<LDto>> {
-  readonly viewDto: VDto;
+  viewDto: VDto;
 
   search(viewDto: VDto): Promise<QueryResultDto<LDto>>;
   initialize(

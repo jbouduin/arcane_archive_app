@@ -40,6 +40,14 @@ export function LibraryView(props: LibraryViewProps): JSX.Element {
       <LibraryViewLeft
         viewmodel={viewModelRef.current}
         viewmodelChanged={() => forceUpdate()}
+        uiStateChanged={() => {
+          libraryCardSearchService.viewDto = {
+            ...libraryCardSearchService.viewDto,
+            uiState: { ...viewModelRef.current.dto.uiState },
+            treeConfiguration: viewModelRef.current.dto.treeConfiguration
+          };
+          forceUpdate();
+        }}
       />
     ),
     b: (

@@ -25,9 +25,19 @@ export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
           panel={
             (
               <SetTreeView
-                {...props}
+                configuration={props.viewmodel.treeConfiguration}
+                expandedNodes={props.viewmodel.expandedNodes}
                 viewmodel={props.viewmodel.queryFilterViewmodel}
-                viewmodelChanged={() => {
+                uiStateChanged={props.uiStateChanged}
+                nodeCollapsed={(node: string | number) => {
+                  props.viewmodel.collapseNode(node);
+                  props.uiStateChanged();
+                }}
+                nodeExpanded={(node: string | number) => {
+                  props.viewmodel.expandNode(node);
+                  props.uiStateChanged();
+                }}
+                selectionCriteriaChanged={() => {
                   props.viewmodel.queryParamsViewmodel.dto.pageNumber = 0;
                   props.viewmodel
                     .search()
@@ -36,7 +46,7 @@ export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
                       noop
                     );
                 }}
-                configuration={props.viewmodel.treeConfiguration}
+
               />
             )
           }
@@ -59,7 +69,7 @@ export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
                       noop
                     );
                 }}
-                viewmodelChanged={props.viewmodelChanged}
+                selectionCriteriaChanged={props.viewmodelChanged}
               />
             )
           }

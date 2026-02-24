@@ -2,6 +2,7 @@ import { BaseCardListDto } from "../base-card-list.dto";
 import { CardQueryFilterDto } from "../card-query-filter.dto";
 import { QueryParamsDto } from "../query-params.dto";
 import { QueryResultDto } from "../query-result.dto";
+import { UiStateDto } from "./ui-state.dto";
 
 export type BaseDesktopViewDto<T extends BaseCardListDto> = {
   queryFilter: CardQueryFilterDto;
@@ -9,9 +10,5 @@ export type BaseDesktopViewDto<T extends BaseCardListDto> = {
   queryResult: QueryResultDto<T>;
   selectedCard: T | null;
   selectedSearchTab: string | number;
-  // NOW selected nodes (reason: some nodes can be selected, but just be a folder)
-
-  // NOW expanded nodes
-
-  // NOW card table version (reason: it is used to re-render the table as cellRendererDependencies)
+  uiState: UiStateDto;
 };

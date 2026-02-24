@@ -38,7 +38,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
             fieldName="collectionIds"
             label="Collection"
             viewmodel={searchViewmodel}
-            viewmodelChanged={props.viewmodelChanged}
+            viewmodelChanged={props.selectionCriteriaChanged}
             idExtractor={(value: CollectionDto) => value.id}
           />
         )
@@ -48,7 +48,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         fieldName="cardSetIds"
         label="Card Set"
         viewmodel={searchViewmodel}
-        viewmodelChanged={props.viewmodelChanged}
+        viewmodelChanged={props.selectionCriteriaChanged}
         idExtractor={(value: MtgSetTreeDto) => value.id}
         preTextElement={setImageRenderer}
       />
@@ -61,14 +61,14 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         viewmodel={searchViewmodel}
         idExtractor={(value: string) => value}
         itemLabel={(item: string) => item}
-        viewmodelChanged={props.viewmodelChanged}
+        viewmodelChanged={props.selectionCriteriaChanged}
       />
       {/* --- Card Colors --- */}
       <AaClientSelect
         fieldName="cardColors"
         label="Card Color"
         viewmodel={searchViewmodel}
-        viewmodelChanged={props.viewmodelChanged}
+        viewmodelChanged={props.selectionCriteriaChanged}
         idExtractor={(value: AppColorDto) => value.code}
         preTextElement={colorSymbolRenderer}
       />
@@ -77,7 +77,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         fieldName="producedManaColors"
         label="Produced Mana"
         viewmodel={searchViewmodel}
-        viewmodelChanged={props.viewmodelChanged}
+        viewmodelChanged={props.selectionCriteriaChanged}
         idExtractor={(value: AppColorDto) => value.code}
         preTextElement={colorSymbolRenderer}
       />
@@ -86,7 +86,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         fieldName="identityColors"
         label="Identity Color"
         viewmodel={searchViewmodel}
-        viewmodelChanged={props.viewmodelChanged}
+        viewmodelChanged={props.selectionCriteriaChanged}
         idExtractor={(value: AppColorDto) => value.code}
         preTextElement={colorSymbolRenderer}
       />
@@ -95,7 +95,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         fieldName="rarities"
         label="Rarity"
         viewmodel={searchViewmodel}
-        viewmodelChanged={props.viewmodelChanged}
+        viewmodelChanged={props.selectionCriteriaChanged}
         idExtractor={(value: string) => value}
       />
       {/* --- game format --- */}
@@ -103,7 +103,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         fieldName="gameFormats"
         label="Game Format"
         viewmodel={searchViewmodel}
-        viewmodelChanged={props.viewmodelChanged}
+        viewmodelChanged={props.selectionCriteriaChanged}
         idExtractor={(value: string) => value}
       />
       {/* --- Types --- */}
@@ -111,7 +111,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         fieldName="types"
         label="Card Type"
         viewmodel={searchViewmodel}
-        viewmodelChanged={props.viewmodelChanged}
+        viewmodelChanged={props.selectionCriteriaChanged}
         idExtractor={(value: string) => value}
       />
       {/* --- Super-types --- */}
@@ -119,7 +119,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         fieldName="superTypes"
         label="Super-type"
         viewmodel={searchViewmodel}
-        viewmodelChanged={props.viewmodelChanged}
+        viewmodelChanged={props.selectionCriteriaChanged}
         idExtractor={(value: string) => value}
       />
       {/* --- sub-types --- */}
@@ -131,14 +131,14 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         viewmodel={searchViewmodel}
         idExtractor={(value: string) => value}
         itemLabel={(item: string) => item}
-        viewmodelChanged={props.viewmodelChanged}
+        viewmodelChanged={props.selectionCriteriaChanged}
       />
       {/* --- Power --- */}
       <AaClientSelect
         fieldName="powers"
         label="Power"
         viewmodel={searchViewmodel}
-        viewmodelChanged={props.viewmodelChanged}
+        viewmodelChanged={props.selectionCriteriaChanged}
         idExtractor={(value: string) => value}
       />
       {/* --- Thoughness --- */}
@@ -146,7 +146,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         fieldName="toughnesses"
         label="Toughness"
         viewmodel={searchViewmodel}
-        viewmodelChanged={props.viewmodelChanged}
+        viewmodelChanged={props.selectionCriteriaChanged}
         idExtractor={(value: string) => value}
       />
       {/* --- Abilities --- */}
@@ -158,7 +158,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         viewmodel={searchViewmodel}
         idExtractor={(value: string) => value}
         itemLabel={(item: string) => item}
-        viewmodelChanged={props.viewmodelChanged}
+        viewmodelChanged={props.selectionCriteriaChanged}
       />
       {/* --- Keywords --- */}
       <AaServerSelect
@@ -169,7 +169,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         viewmodel={searchViewmodel}
         idExtractor={(value: string) => value}
         itemLabel={(item: string) => item}
-        viewmodelChanged={props.viewmodelChanged}
+        viewmodelChanged={props.selectionCriteriaChanged}
       />
       <Button
         icon="search"

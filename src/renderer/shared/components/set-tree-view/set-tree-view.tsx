@@ -27,23 +27,22 @@ export function SetTreeView(props: SetTreeViewProps): JSX.Element {
   //#region Event Handling ----------------------------------------------------
   function onTextFilterChanged(textFilterValue: string): void {
     props.configuration.cardSetFilterValue = textFilterValue;
-    props.viewmodelChanged();
+    props.uiStateChanged();
   };
 
   function onCardSetSortChanged(cardSetSort: CardSetSort): void {
     props.configuration.cardSetSort = cardSetSort;
-    props.viewmodelChanged();
+    props.uiStateChanged();
   };
 
   function onCardSetGroupByChanged(cardSetGroupBy: CardSetGroupBy): void {
     props.configuration.cardSetGroupBy = cardSetGroupBy;
-
-    props.viewmodelChanged();
+    props.uiStateChanged();
   };
 
   function onCardSetTypeFilterChanged(cardSetType: string): void {
     props.configuration.toggleCardSetFilterType(cardSetType);
-    props.viewmodelChanged();
+    props.uiStateChanged();
   };
 
   function applyFilterProps(
@@ -113,7 +112,7 @@ export function SetTreeView(props: SetTreeViewProps): JSX.Element {
             } else {
               props.viewmodel.dto.cardSetIds = props.viewmodel.dto.cardSetIds.filter((id: number) => id != set.id);
             }
-            props.viewmodelChanged();
+            props.selectionCriteriaChanged();
           }
         }
         nodeExpandedChanged={
@@ -123,11 +122,11 @@ export function SetTreeView(props: SetTreeViewProps): JSX.Element {
               idToUse = node.nodeData!.code;
             }
             if (expanded) {
-              props.configuration.expandedNodeIds.add(idToUse);
+              props.nodeExpanded(idToUse);
             } else {
-              props.configuration.expandedNodeIds.delete(idToUse);
+              props.nodeCollapsed(idToUse);
             }
-            props.viewmodelChanged();
+            props.uiStateChanged();
           }
         }
       />
@@ -191,7 +190,7 @@ export function SetTreeView(props: SetTreeViewProps): JSX.Element {
         isSelected: false,
         nodeData: viewmodelFactoryService.mtgSetViewmodelFactory.getGroupMtgSetTreeViewmodel(group),
         childNodes: childNodes.sort(sortViewmodelfunction).map(mapViewModelToTreeItem),
-        isExpanded: props.configuration.expandedNodeIds.has(group)
+        isExpanded: props.expandedNodes.includes(group)
       };
       return groupNode;
     });
@@ -228,7 +227,7 @@ export function SetTreeView(props: SetTreeViewProps): JSX.Element {
           {cardSet.treeItemLabel}
         </SetTreeContextMenu>
       ),
-      isExpanded: props.configuration.expandedNodeIds.has(cardSet.id ? cardSet.id : cardSet.code),
+      isExpanded: props.expandedNodes.includes(cardSet.id ? cardSet.id : cardSet.code),
       isSelected: props.viewmodel.dto.cardSetIds.includes(cardSet.id),
       nodeData: cardSet
     };
