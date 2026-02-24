@@ -109,7 +109,6 @@ export function CollectionViewCenter(props: CollectionViewCenterProps): JSX.Elem
         sortableColumnDefinitions={sortableColumnDefinitions}
         sortType="server"
       />
-      {/* NOW pagingview is passed exactly the same props as in libraryview -> pass viewmodel and viewmodelchanged  */}
       <PagingView
         hasMore={props.viewmodel.dto.queryResult.hasMore}
         currentPageNumber={props.viewmodel.dto.queryResult.currentPageNumber}
