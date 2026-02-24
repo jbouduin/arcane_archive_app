@@ -6,9 +6,7 @@ import { AaTreeProps } from "./aa-tree.props";
 import { AaTreeReducer } from "./aa-tree.reducer";
 import { AaTreeAction, NodePath } from "./types";
 
-export function AaTree<TData, TFilter>(
-  props: AaTreeProps<TData, TFilter>
-): JSX.Element {
+export function AaTree<TData, TFilter>(props: AaTreeProps<TData, TFilter>): JSX.Element {
   //#region State -------------------------------------------------------------
   const [nodes, dispatch] = useReducer(
     AaTreeReducer as React.Reducer<Array<TreeNodeInfo<TData>>, AaTreeAction>,

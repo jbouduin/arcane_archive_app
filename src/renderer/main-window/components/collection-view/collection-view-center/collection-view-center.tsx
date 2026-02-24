@@ -1,4 +1,4 @@
-import { isEqual } from "lodash";
+import { isEqual, noop } from "lodash";
 import { memo, useMemo } from "react";
 import { useServices } from "../../../../hooks";
 import {
@@ -14,7 +14,7 @@ import { CollectionViewCenterProps } from "./collection-view-center.props";
 
 const MemoCardTableView = memo(
   CardTableView<CollectionCardListViewmodel>,
-  (prev, next) => prev.version == next.version && isEqual(prev.data, next.data) &&
+  (prev, next) => /* prev.version == next.version && */ isEqual(prev.data, next.data) &&
     isEqual(prev.sortableColumnDefinitions, next.sortableColumnDefinitions)
 );
 
@@ -69,12 +69,12 @@ export function CollectionViewCenter(props: CollectionViewCenterProps): JSX.Elem
   );
   const tableData = useMemo(
     () => getGenericTableData(
-      props.queryResult.resultList
+      props.viewmodel.dto.queryResult.resultList
         .map((dto: CollectionCardListDto) =>
           viewmodelFactoryService.mtgCardViewmodelFactory.getCollectionCardlistViewmodel(dto)
         ),
-      props.cardQueryParams),
-    [props.cardQueryParams, props.queryResult, props.version]
+      props.viewmodel.queryParamsViewmodel.dto),
+    [props.viewmodel.queryParamsViewmodel, props.viewmodel.dtoToSave.queryResult,]
   );
   // #endregion
 
@@ -84,27 +84,52 @@ export function CollectionViewCenter(props: CollectionViewCenterProps): JSX.Elem
       <MemoCardTableView
         // bodyContextMenuRenderer={(context: MenuContext) => contextMenu(context)}
         data={tableData}
-        version={props.version}
-        onServerColumnSort={(columName: CardSortField, sortDirection: SortDirection) =>
-          props.sortChanged(columName, sortDirection)}
+        // version={props.version}
+        onServerColumnSort={(columName: CardSortField, sortDirection: SortDirection) => {
+          props.viewmodel.queryParamsViewmodel.dto.sortField = columName;
+          props.viewmodel.queryParamsViewmodel.dto.sortDirection = sortDirection;
+          props.viewmodel.search()
+            .then(
+              () => props.viewmodelChanged(),
+              noop
+            );
+        }}
         onDataSelected={
           (cards?: Array<CollectionCardListViewmodel>) => {
             if (cards && cards.length > 0) {
-              props.cardSelected(cards[0].cardId, cards[0].collectionId);
+              props.viewmodel.dto.selectedCard = cards[0].dto;
+              props.viewmodel.dto.selectedCollection = cards[0].collectionId;
             } else {
-              props.cardSelected(null, null);
+              props.viewmodel.dto.selectedCard = null;
+              props.viewmodel.dto.selectedCollection = null;
             }
+            props.viewmodelChanged();
           }
         }
         sortableColumnDefinitions={sortableColumnDefinitions}
         sortType="server"
       />
+      {/* NOW pagingview is passed exactly the same props as in libraryview -> pass viewmodel and viewmodelchanged  */}
       <PagingView
-        currentPageNumber={props.queryResult.currentPageNumber}
-        currentPageSize={props.queryResult.currentPageSize}
-        hasMore={props.queryResult.hasMore}
-        currentPageChanged={props.pageNumberChanged}
-        currentPageSizeChanged={props.pageSizeChanged}
+        hasMore={props.viewmodel.dto.queryResult.hasMore}
+        currentPageNumber={props.viewmodel.dto.queryResult.currentPageNumber}
+        currentPageSize={props.viewmodel.dto.queryResult.currentPageSize}
+        currentPageChanged={(newPage: number) => {
+          props.viewmodel.queryParamsViewmodel.dto.pageNumber = newPage;
+          props.viewmodel.search()
+            .then(
+              () => props.viewmodelChanged(),
+              noop
+            );
+        }}
+        currentPageSizeChanged={(newPageSize: number) => {
+          props.viewmodel.queryParamsViewmodel.dto.pageSize = newPageSize;
+          props.viewmodel.search()
+            .then(
+              () => props.viewmodelChanged(),
+              noop
+            );
+        }}
       />
     </div>
   );

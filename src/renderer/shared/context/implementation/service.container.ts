@@ -4,7 +4,8 @@ import { InitializeServiceContainerOptions, ShowToastFn } from "../../types";
 import {
   IArcaneArchiveProxy, IBasicDataService, ICardSymbolService, ICollectionCardSearchService,
   ICollectionService, IConfigurationService, IIpcProxy, ILibraryCardSearchService, ILogService,
-  IMtgSetService, IOverlayService, IServiceContainer, ISessionService, ISynchronizeService, IViewmodelFactoryService
+  IMtgSetService, IOverlayService, IServiceContainer, ISessionService, ISynchronizeService, IViewmodelFactoryService,
+  ViewDtoProvider
 } from "../interface";
 import { InitializationResult } from "../types";
 import { ArcaneArchiveProxy } from "./arcane-archive.proxy";
@@ -23,6 +24,8 @@ import { ViewmodelFactoryService } from "./viewmodel-factory.service";
 import { IMtgCardService } from "../interface/mtg-card.service";
 import { MtgCardService } from "./mtg-card.service";
 import { SynchronizeService } from "./synchronize.service";
+import { CollectionViewDto, LibraryViewDto } from "../../dto/desktop";
+import { CardQueryFilterDto, CollectionCardListDto, LibraryCardListDto, QueryParamsDto, QueryResultDto } from "../../dto";
 
 export class ServiceContainer implements IServiceContainer {
   //#region Private fields ----------------------------------------------------
@@ -164,13 +167,41 @@ export class ServiceContainer implements IServiceContainer {
           result.settings = configuration;
           this._arcaneArchiveProxy.initialize(configuration.apiConfiguration);
           if (!options.skipLibraryCardService) {
-            this._libraryCardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
+            const viewDtoProvider: ViewDtoProvider<LibraryCardListDto, LibraryViewDto> = (
+              queryParams: QueryParamsDto,
+              queryFilter: CardQueryFilterDto,
+              queryResult: QueryResultDto<LibraryCardListDto>
+            ) => {
+              return {
+                queryFilter: queryFilter,
+                queryParams: queryParams,
+                queryResult: queryResult,
+                selectedSearchTab: 0,
+                selectedCard: null,
+                treeConfiguration: configuration.preferences.librarySetTreeSettings
+              };
+            };
+            this._libraryCardSearchService.initialize(this._arcaneArchiveProxy, viewDtoProvider);
           }
           if (!options.skipMtgCardService) {
             this._mtgCardService.initialize(this._arcaneArchiveProxy);
           }
           if (!options.skipCollectionCardSearchService) {
-            this._collectionCardSearchService.initialize(this._arcaneArchiveProxy, configuration.preferences);
+            const viewDtoProvider: ViewDtoProvider<CollectionCardListDto, CollectionViewDto> = (
+              queryParams: QueryParamsDto,
+              queryFilter: CardQueryFilterDto,
+              queryResult: QueryResultDto<CollectionCardListDto>
+            ) => {
+              return {
+                queryFilter: queryFilter,
+                queryParams: queryParams,
+                queryResult: queryResult,
+                selectedSearchTab: 0,
+                selectedCard: null,
+                selectedCollection: null
+              };
+            };
+            this._collectionCardSearchService.initialize(this._arcaneArchiveProxy, viewDtoProvider);
           }
           if (!options.skipCollectionService) {
             this._collectionService.initialize(this._ipcProxy, this._arcaneArchiveProxy);

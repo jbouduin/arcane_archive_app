@@ -1,6 +1,6 @@
 import { Tab, Tabs } from "@blueprintjs/core";
+import { noop } from "lodash";
 import { AdvancedCardSearch } from "../../../../shared/components/advanced-card-search";
-import { CardQueryFilterDto } from "../../../../shared/dto";
 import { CollectionTreeView } from "./collection-tree-view";
 import { CollectionViewLeftProps } from "./collection-view-left.props";
 
@@ -12,8 +12,11 @@ export function CollectionViewLeft(props: CollectionViewLeftProps): JSX.Element 
         animate={true}
         className="left-panel-tabs"
         renderActiveTabPanelOnly={true}
-        selectedTabId={props.currentSelectedSearchTab}
-        onChange={props.selectedSearchTabChanged}
+        selectedTabId={props.viewmodel.dto.selectedSearchTab}
+        onChange={(newSelectedSearchTab: string | number) => {
+          props.viewmodel.dto.selectedSearchTab = newSelectedSearchTab;
+          props.viewmodelChanged();
+        }}
       >
         <Tab
           className="left-panel-tab-panel"
@@ -21,11 +24,16 @@ export function CollectionViewLeft(props: CollectionViewLeftProps): JSX.Element 
           key="collection-tree-view"
           panel={(
             <CollectionTreeView
-              expandedNodes={props.expandedNodes}
-              viewmodel={props.viewmodel}
-              expandedNodesChanged={props.expandedNodesChanged}
-              viewmodelChanged={props.viewmodelChanged}
-              search={(dto: CardQueryFilterDto) => props.search(dto, true)}
+              viewmodel={props.viewmodel.queryFilterViewmodel}
+              viewmodelChanged={() => {
+                props.viewmodel.queryParamsViewmodel.dto.pageNumber = 0;
+                props.viewmodel
+                  .search()
+                  .then(
+                    () => props.viewmodelChanged(),
+                    noop
+                  );
+              }}
             />
           )}
           title="Collections"
@@ -37,9 +45,17 @@ export function CollectionViewLeft(props: CollectionViewLeftProps): JSX.Element 
           panel={
             (
               <AdvancedCardSearch
-                viewmodel={props.viewmodel}
+                viewmodel={props.viewmodel.queryFilterViewmodel}
+                search={() => {
+                  props.viewmodel.queryParamsViewmodel.dto.pageNumber = 0;
+                  props.viewmodel
+                    .search()
+                    .then(
+                      () => props.viewmodelChanged(),
+                      noop
+                    );
+                }}
                 viewmodelChanged={props.viewmodelChanged}
-                search={(dto: CardQueryFilterDto) => props.search(dto, false)}
               />
             )
           }

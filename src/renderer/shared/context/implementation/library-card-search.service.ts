@@ -1,8 +1,9 @@
-import { LibraryCardListDto, CardQueryFilterDto, QueryParamsDto, QueryResultDto } from "../../dto";
+import { LibraryCardListDto, QueryResultDto } from "../../dto";
+import { LibraryViewDto } from "../../dto/desktop";
 import { ILibraryCardSearchService } from "../interface";
 import { BaseCardSearchService } from "./base-card-search.service";
 
-export class LibraryCardSearchService extends BaseCardSearchService<LibraryCardListDto>
+export class LibraryCardSearchService extends BaseCardSearchService<LibraryCardListDto, LibraryViewDto>
   implements ILibraryCardSearchService {
   //#region Constructor & C° --------------------------------------------------
   public constructor() {
@@ -11,15 +12,19 @@ export class LibraryCardSearchService extends BaseCardSearchService<LibraryCardL
   //#endregion
 
   //#region ICardSearchParamService Members -----------------------------------
-  public getLibraryCards(
-    filterParams: CardQueryFilterDto, setsOnly: boolean, queryParams: QueryParamsDto
-  ): Promise<QueryResultDto<LibraryCardListDto>> {
-    return this.getCards(
+  public async search(viewDto: LibraryViewDto): Promise<QueryResultDto<LibraryCardListDto>> {
+    const result: QueryResultDto<LibraryCardListDto> = await this.newGetCards(
       "/public/card/library",
-      setsOnly ? "set" : "advanced",
-      filterParams,
-      queryParams
+      viewDto.selectedSearchTab == 0 ? "set" : "advanced",
+      viewDto
     );
+
+    this.viewDto = {
+      ...viewDto,
+      queryResult: result
+    };
+
+    return result;
   }
   //#endregion
 }

@@ -1,4 +1,5 @@
 import { ContextMenu, Divider, Icon, Menu, MenuItem, TreeNodeInfo } from "@blueprintjs/core";
+import { noop } from "lodash";
 import { useEffect, useState } from "react";
 import { useDialogs, usePreferences, useServices } from "../../../../hooks";
 import { AaTree } from "../../../../shared/components/base/aa-tree";
@@ -24,10 +25,12 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
     const viewmodel = viewmodelFactoryService.collectionViewmodelFactory
       .getCollectionTreeViewmodel(dto);
     setCollections([...collections, viewmodel]);
-    if (dto.parentId != null) {
-      props.expandedNodes.add(dto.parentId);
-      props.expandedNodesChanged(props.expandedNodes);
-    }
+    /**
+     * # NOW if (dto.parentId != null) {
+     * //   props.expandedNodes.add(dto.parentId);
+     * //   props.expandedNodesChanged(props.expandedNodes);
+     * // }
+     */
     props.viewmodel.dto.collectionIds.splice(0);
     props.viewmodel.dto.collectionIds.push(dto.id!);
   }
@@ -65,10 +68,12 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
             if (resp > 0) {
               setCollections(collections.filter((vm: CollectionTreeViewmodel) => vm.id != collection.id));
               props.viewmodel.dto.collectionIds.filter((id: number) => id != collection.id);
-              if (collection.parentId != null) {
-                props.viewmodel.dto.collectionIds.push(collection.parentId);
-                props.expandedNodesChanged(props.expandedNodes);
-              }
+              /**
+               * # NOW if (collection.parentId != null) {
+               * //   props.viewmodel.dto.collectionIds.push(collection.parentId);
+               * //   props.expandedNodesChanged(props.expandedNodes);
+               * // }
+               */
             }
           }
           );
@@ -159,19 +164,19 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
                   props.viewmodel.dto.collectionIds.filter((id: number) => id != collection.id);
               }
               props.viewmodelChanged();
-              props.search(props.viewmodel.dtoToSave);
             }
           }
-          nodeExpandedChanged={
-            (collection: TreeNodeInfo<CollectionTreeViewmodel>, expanded: boolean) => {
-              if (expanded) {
-                props.expandedNodes.add(collection.nodeData!.id);
-              } else {
-                props.expandedNodes.delete(collection.nodeData!.id);
-              }
-              props.expandedNodesChanged(props.expandedNodes);
-            }
-          }
+          nodeExpandedChanged={noop}
+        /**
+         * # NOW (collection: TreeNodeInfo<CollectionTreeViewmodel>, expanded: boolean) => {
+         *   if (expanded) {
+         *       props.expandedNodes.add(collection.nodeData!.id);
+         *             //   } else {
+         *               //     props.expandedNodes.delete(collection.nodeData!.id);
+         *               //   }
+         *               //   props.expandedNodesChanged(props.expandedNodes);
+         *               // }
+         */
         />
       </ContextMenu>
     </>
@@ -255,7 +260,6 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
             )
           }
           {
-            // LATER find a better solution for the icon, the one from the button is not good for the tree
             !collection.folder &&
             (
               <Icon
@@ -265,23 +269,12 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
               />
             )
           }
-          {/* {
-            !collection.folder && collectionSvg &&
-            (
-              <SvgRenderer
-                height={16}
-                key="svg"
-                svg={collectionSvg}
-                width={16}
-              />
-            )
-          } */}
           <div key="name" style={{ alignContent: "center" }}>
             {collection.name}
           </div>
         </CollectionTreeContextMenu>
       ),
-      isExpanded: props.expandedNodes.has(collection.id),
+      // NOW isExpanded: props.expandedNodes.has(collection.id),
       isSelected: props.viewmodel.dto.collectionIds.includes(collection.id),
       nodeData: collection
     };

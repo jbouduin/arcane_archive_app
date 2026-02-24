@@ -27,22 +27,23 @@ export function SetTreeView(props: SetTreeViewProps): JSX.Element {
   //#region Event Handling ----------------------------------------------------
   function onTextFilterChanged(textFilterValue: string): void {
     props.configuration.cardSetFilterValue = textFilterValue;
-    props.treeConfigurationChanged(props.configuration);
+    props.viewmodelChanged();
   };
 
   function onCardSetSortChanged(cardSetSort: CardSetSort): void {
     props.configuration.cardSetSort = cardSetSort;
-    props.treeConfigurationChanged(props.configuration);
+    props.viewmodelChanged();
   };
 
   function onCardSetGroupByChanged(cardSetGroupBy: CardSetGroupBy): void {
     props.configuration.cardSetGroupBy = cardSetGroupBy;
-    props.treeConfigurationChanged(props.configuration);
+
+    props.viewmodelChanged();
   };
 
   function onCardSetTypeFilterChanged(cardSetType: string): void {
     props.configuration.toggleCardSetFilterType(cardSetType);
-    props.treeConfigurationChanged(props.configuration);
+    props.viewmodelChanged();
   };
 
   function applyFilterProps(
@@ -113,7 +114,6 @@ export function SetTreeView(props: SetTreeViewProps): JSX.Element {
               props.viewmodel.dto.cardSetIds = props.viewmodel.dto.cardSetIds.filter((id: number) => id != set.id);
             }
             props.viewmodelChanged();
-            props.search(props.viewmodel.dtoToSave);
           }
         }
         nodeExpandedChanged={
@@ -127,7 +127,7 @@ export function SetTreeView(props: SetTreeViewProps): JSX.Element {
             } else {
               props.configuration.expandedNodeIds.delete(idToUse);
             }
-            props.treeConfigurationChanged(props.configuration);
+            props.viewmodelChanged();
           }
         }
       />

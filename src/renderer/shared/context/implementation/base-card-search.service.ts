@@ -1,96 +1,73 @@
-import { PreferencesDto } from "../../../../common/dto";
-import { CardQueryFilterDto, QueryParamsDto, QueryResultDto } from "../../dto";
-import { IArcaneArchiveProxy } from "../interface";
+import { BaseCardListDto, CardQueryFilterDto, QueryParamsDto, QueryResultDto } from "../../dto";
+import { BaseDesktopViewDto } from "../../dto/desktop";
+import { IArcaneArchiveProxy, ViewDtoProvider } from "../interface";
 
 export type SearchMode = "set" | "collection" | "advanced";
 
-export abstract class BaseCardSearchService<T> {
+export abstract class BaseCardSearchService<LDto extends BaseCardListDto, VDto extends BaseDesktopViewDto<LDto>> {
   //#region Protected fields --------------------------------------------------
   protected arcaneArchiveProxy!: IArcaneArchiveProxy;
   //#endregion
 
   //#region Private fields: Library Search criteria ---------------------------
-  private _queryFilter: CardQueryFilterDto;
-  private _queryParams: QueryParamsDto;
-  private _queryResult: QueryResultDto<T>;
-  private _selectedSearchTab: string | number;
+  private _viewDto!: VDto;
   //#endregion
 
   //#region ICardSearchParamService Library Search Getters/Setters ------------
-  public get queryFilter(): CardQueryFilterDto {
-    return this._queryFilter;
+  public get viewDto(): VDto {
+    return this._viewDto;
   }
 
-  public get queryParams(): QueryParamsDto {
-    return this._queryParams;
-  }
-
-  public get queryResult(): QueryResultDto<T> {
-    return this._queryResult;
-  }
-
-  public get selectedSearchTab(): string | number {
-    return this._selectedSearchTab;
-  }
-
-  public set selectedSearchTab(value: string | number) {
-    this._selectedSearchTab = value;
+  public set viewDto(dto: VDto) {
+    this._viewDto = dto;
   }
   //#endregion
 
   //#region Constructor & C° --------------------------------------------------
   protected constructor() {
-    this._queryParams = {
-      pageNumber: 0,
-      pageSize: 100,
-      sortField: "collectorNumberSortValue",
-      sortDirection: "ASC",
-    };
-    this._queryResult = {
-      currentPageNumber: 0,
-      currentPageSize: 50,
-      hasMore: false,
-      resultList: new Array<T>()
-    };
-    this._selectedSearchTab = 0;
-    this._queryFilter = this.createEmptyQueryFilter();
   }
   //#endregion
 
   //#region Public methods ----------------------------------------------------
-  public initialize(arcaneArchiveProxy: IArcaneArchiveProxy, preferences: PreferencesDto): void {
+  public initialize(arcaneArchiveProxy: IArcaneArchiveProxy,
+    viewDtoProvider: ViewDtoProvider<LDto, VDto>): void {
     this.arcaneArchiveProxy = arcaneArchiveProxy;
-    this._queryParams.pageSize = preferences.defaultPageSize;
-    this._queryParams.sortField = preferences.defaultCardSortField;
-    this._queryParams.sortDirection = preferences.defaultCardSortDirection;
+    const defaultQueryParams: QueryParamsDto = {
+      pageNumber: 0,
+      pageSize: 50,
+      sortField: "collectorNumberSortValue",
+      sortDirection: "ASC",
+    };
+    const defaultQueryResult: QueryResultDto<LDto> = {
+      currentPageNumber: 0,
+      currentPageSize: 50,
+      hasMore: false,
+      resultList: new Array<LDto>()
+    };
+    this._viewDto = viewDtoProvider(defaultQueryParams, this.createEmptyQueryFilter(), defaultQueryResult);
   }
   //#endregion
 
   //#region Auxiliary Methods -------------------------------------------------
-  protected async getCards(
+  protected async newGetCards(
     path: string,
     searchMode: SearchMode,
-    queryFilter: CardQueryFilterDto,
-    queryParams: QueryParamsDto
-  ): Promise<QueryResultDto<T>> {
-    let result: QueryResultDto<T>;
-    this._queryFilter = queryFilter;
-    this._queryParams = queryParams;
-
-    const params = this.buildSearchParams(searchMode, queryFilter);
+    viewDto: VDto,
+  ): Promise<QueryResultDto<LDto>> {
+    let result: QueryResultDto<LDto>;
+    const params = this.buildSearchParams(searchMode, viewDto.queryFilter);
     if (params.size > 0) {
-      params.append("pn", queryParams.pageNumber.toString());
-      params.append("ps", queryParams.pageSize.toString());
-      params.append("sort", `${queryParams.sortField}:${queryParams.sortDirection}`);
-      this._queryResult = await this.arcaneArchiveProxy
-        .getData<QueryResultDto<T>>("library", path + "?" + params.toString());
-      result = this._queryResult;
+      params.append("pn", viewDto.queryParams.pageNumber.toString());
+      params.append("ps", viewDto.queryParams.pageSize.toString());
+      params.append("sort", `${viewDto.queryParams.sortField}:${viewDto.queryParams.sortDirection}`);
+      result = await this.arcaneArchiveProxy
+        .getData<QueryResultDto<LDto>>("library", path + "?" + params.toString());
     } else {
       result = {
         currentPageNumber: 0,
-        currentPageSize: queryParams.pageSize,
+        currentPageSize: viewDto.queryParams.pageSize,
         hasMore: false,
-        resultList: new Array<T>()
+        resultList: new Array<LDto>()
       };
     }
     return result;

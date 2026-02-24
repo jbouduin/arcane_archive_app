@@ -1,8 +1,9 @@
-import { CollectionCardListDto, CardQueryFilterDto, QueryParamsDto, QueryResultDto } from "../../dto";
+import { CollectionCardListDto, QueryResultDto } from "../../dto";
+import { CollectionViewDto } from "../../dto/desktop";
 import { ICollectionCardSearchService } from "../interface";
 import { BaseCardSearchService } from "./base-card-search.service";
 
-export class CollectionCardSearchService extends BaseCardSearchService<CollectionCardListDto>
+export class CollectionCardSearchService extends BaseCardSearchService<CollectionCardListDto, CollectionViewDto>
   implements ICollectionCardSearchService {
   //#region Constructor -------------------------------------------------------
   public constructor() {
@@ -11,15 +12,19 @@ export class CollectionCardSearchService extends BaseCardSearchService<Collectio
   //#endregion
 
   //#region ICardSearchParamService Members -----------------------------------
-  public getCollectionCards(
-    filterParams: CardQueryFilterDto, collectionsOnly: boolean, queryParams: QueryParamsDto
-  ): Promise<QueryResultDto<CollectionCardListDto>> {
-    return this.getCards(
+  public async search(viewDto: CollectionViewDto): Promise<QueryResultDto<CollectionCardListDto>> {
+    const result: QueryResultDto<CollectionCardListDto> = await this.newGetCards(
       "/auth/card/collection",
-      collectionsOnly ? "collection" : "advanced",
-      filterParams,
-      queryParams
+      viewDto.selectedSearchTab == 0 ? "collection" : "advanced",
+      viewDto
     );
+
+    this.viewDto = {
+      ...viewDto,
+      queryResult: result
+    };
+
+    return result;
   }
   //#endregion
 }

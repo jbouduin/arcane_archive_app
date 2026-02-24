@@ -3,12 +3,19 @@ import { CollectionCardListDto } from "../../dto";
 import { AbstractCardListViewmodel } from "../abstract-card-list.viewmodel";
 
 export class CollectionCardListViewmodel extends AbstractCardListViewmodel {
+  // NOW store dto in superclass (same for Librarycardlist)
+  private readonly _dto: CollectionCardListDto;
+
   //#region Public properties -------------------------------------------------
   public readonly language: string;
   public readonly quantity: number;
   public readonly collection: string;
   public readonly collectionId: number;
   //#endregion
+
+  public get dto(): CollectionCardListDto {
+    return this._dto;
+  }
 
   //#region Constructor & C° --------------------------------------------------
   public constructor(
@@ -18,6 +25,7 @@ export class CollectionCardListViewmodel extends AbstractCardListViewmodel {
     dto: CollectionCardListDto
   ) {
     super(basicDataService, mtgSetService, dto);
+    this._dto = dto;
     this.language = basicDataService.getLanguage(dto.language)?.buttonText || "?";
     this.quantity = dto.quantity;
     this.collection = collectionService.getCollectionById(dto.collectionId)?.code || "unknown";

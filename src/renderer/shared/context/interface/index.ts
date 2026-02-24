@@ -1,4 +1,5 @@
 export * from "./arcane-archive.proxy";
+export * from "./base-card-search.service";
 export * from "./basic-data.service";
 export * from "./card-symbol.service";
 export * from "./collection-card-search.service";

@@ -2,12 +2,15 @@ import {
   AuthenticationViewmodelFactory
 } from "../../viewmodel/factory/implementation/authentication-viewmodel.factory";
 import { CollectionViewmodelFactory } from "../../viewmodel/factory/implementation/collection-viewmodel.factory";
+import { DesktopViewmodelFactory } from "../../viewmodel/factory/implementation/desktop-viewmodel.factory";
 import { MtgCardViewmodelFactory } from "../../viewmodel/factory/implementation/mtg-card-viewmodel.factory";
 import { MtgSetViewmodelFactory } from "../../viewmodel/factory/implementation/mtg-set-viewmodel.factory";
 import { SettingsViewmodelFactory } from "../../viewmodel/factory/implementation/settings-viewmodel.factory";
-import { SynchronizationViewmodelFactory } from "../../viewmodel/factory/implementation/synchronization-viewmodel.factory";
 import {
-  IAuthenticationViewmodelFactory, ICollectionViewmodelFactory, IMtgCardViewmodelFactory,
+  SynchronizationViewmodelFactory
+} from "../../viewmodel/factory/implementation/synchronization-viewmodel.factory";
+import {
+  IAuthenticationViewmodelFactory, ICollectionViewmodelFactory, IDesktopViewmodelFactory, IMtgCardViewmodelFactory,
   IMtgSetViewmodelFactory, ISettingsViewmodelFactory, ISynchronizationViewmodelFactory
 } from "../../viewmodel/factory/interface";
 import { IBasicDataService, ICollectionService, IMtgSetService, IViewmodelFactoryService } from "../interface";
@@ -19,6 +22,7 @@ export class ViewmodelFactoryService implements IViewmodelFactoryService {
   private mtgSetService!: IMtgSetService;
   private _authenticationViewmodelFactory!: IAuthenticationViewmodelFactory;
   private _collectionViewmodelFactory!: ICollectionViewmodelFactory;
+  private _desktopViewmodelFactory!: IDesktopViewmodelFactory;
   private _mtgCardViewmodelFactory!: IMtgCardViewmodelFactory;
   private _mtgSetViewmodelFactory!: IMtgSetViewmodelFactory;
   private _settingsViewmodelFactory!: ISettingsViewmodelFactory;
@@ -34,6 +38,13 @@ export class ViewmodelFactoryService implements IViewmodelFactoryService {
   public get collectionViewmodelFactory(): ICollectionViewmodelFactory {
     return this._collectionViewmodelFactory ??
       (this._collectionViewmodelFactory = new CollectionViewmodelFactory());
+  }
+
+  public get desktopViewmodelFactory(): IDesktopViewmodelFactory {
+    return this._desktopViewmodelFactory ??
+      (this._desktopViewmodelFactory =
+        new DesktopViewmodelFactory(this.basicDataService, this.collectionService, this.mtgSetService)
+      );
   }
 
   public get mtgSetViewmodelFactory(): IMtgSetViewmodelFactory {

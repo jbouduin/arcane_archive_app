@@ -1,8 +1,7 @@
 import {
-  IAuthenticationViewmodelFactory, ICollectionViewmodelFactory, IMtgCardViewmodelFactory,
-  IMtgSetViewmodelFactory, ISettingsViewmodelFactory
+  IAuthenticationViewmodelFactory, ICollectionViewmodelFactory, IDesktopViewmodelFactory, IMtgCardViewmodelFactory,
+  IMtgSetViewmodelFactory, ISettingsViewmodelFactory, ISynchronizationViewmodelFactory
 } from "../../viewmodel/factory/interface";
-import { ISynchronizationViewmodelFactory } from "../../viewmodel/factory/interface/synchronization-viewmodel.factory";
 import { IBasicDataService } from "./basic-data.service";
 import { ICollectionService } from "./collection.service";
 import { IMtgSetService } from "./mtg-set.service";
@@ -14,6 +13,7 @@ export interface IViewmodelFactoryService {
   readonly mtgCardViewmodelFactory: IMtgCardViewmodelFactory;
   readonly settingsViewmodelFactory: ISettingsViewmodelFactory;
   readonly synchronizationViewmodelFactory: ISynchronizationViewmodelFactory;
+  readonly desktopViewmodelFactory: IDesktopViewmodelFactory;
 
   initialize(
     displayValueService: IBasicDataService,

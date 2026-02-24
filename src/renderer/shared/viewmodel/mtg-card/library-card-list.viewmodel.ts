@@ -3,15 +3,23 @@ import { LanguageDto, LibraryCardListDto } from "../../dto";
 import { AbstractCardListViewmodel } from "../abstract-card-list.viewmodel";
 
 export class LibraryCardListViewmodel extends AbstractCardListViewmodel {
+  private readonly _dto: LibraryCardListDto;
   //#region Public properties -------------------------------------------------
   public readonly languages: string;
-  public readonly languageArray: Array<string>;
+  public get languageArray(): Array<string> {
+    return this._dto.languages;
+  }
+
+  public get dto(): LibraryCardListDto {
+    return this._dto;
+  }
   // #endregion
 
   // #region Constructor ------------------------------------------------------
   public constructor(basicDataService: IBasicDataService, mtgSetService: IMtgSetService, dto: LibraryCardListDto) {
     super(basicDataService, mtgSetService, dto);
-    this.languageArray = dto.languages;
+    this._dto = dto;
+
     this.languages = dto.languages
       .map((lng: string) => basicDataService.getLanguage(lng))
       .filter((lng: LanguageDto | undefined) => lng != undefined)

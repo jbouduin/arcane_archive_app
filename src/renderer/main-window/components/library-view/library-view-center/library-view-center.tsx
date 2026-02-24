@@ -1,5 +1,5 @@
 import { MenuContext } from "@blueprintjs/table";
-import { isEqual } from "lodash";
+import { isEqual, noop } from "lodash";
 import { memo, useMemo } from "react";
 import { useServices } from "../../../../hooks/use-services";
 import {
@@ -56,12 +56,12 @@ export const LibraryViewCenter = memo(
     );
     const tableData = useMemo(
       () => getGenericTableData(
-        props.queryResult.resultList
+        props.viewmodel.dto.queryResult.resultList
           .map((dto: LibraryCardListDto) =>
             viewmodelFactoryService.mtgCardViewmodelFactory.getLibraryCardListViewmodel(dto)
           ),
-        props.cardQueryParams),
-      [props.cardQueryParams, props.queryResult]
+        props.viewmodel.queryParamsViewmodel.dto),
+      [props.viewmodel.queryParamsViewmodel, props.viewmodel.dtoToSave.queryResult]
     );
     // #endregion
 
@@ -78,28 +78,49 @@ export const LibraryViewCenter = memo(
             />
           )}
           data={tableData}
-          version={0}
-          onServerColumnSort={(columName: CardSortField, sortDirection: SortDirection) =>
-            props.sortChanged(columName, sortDirection)}
-          onDataSelected={
-            (cards?: Array<LibraryCardListViewmodel>) => {
-              props.cardSelected(cards && cards.length > 0 ? cards[0].cardId : null);
-            }
-          }
+          // version={0}
+          onServerColumnSort={(columName: CardSortField, sortDirection: SortDirection) => {
+            props.viewmodel.queryParamsViewmodel.dto.sortField = columName;
+            props.viewmodel.queryParamsViewmodel.dto.sortDirection = sortDirection;
+            props.viewmodel.search()
+              .then(
+                () => props.viewmodelChanged(),
+                noop
+              );
+          }}
+          onDataSelected={(cards?: Array<LibraryCardListViewmodel>) => {
+            props.viewmodel.dto.selectedCard = cards && cards.length > 0 ? cards[0].dto : null;
+            props.viewmodelChanged();
+          }}
           sortableColumnDefinitions={sortableColumnDefinitions}
           sortType="server"
         />
         <PagingView
-          hasMore={props.queryResult.hasMore}
-          currentPageNumber={props.queryResult.currentPageNumber}
-          currentPageSize={props.queryResult.currentPageSize}
-          currentPageChanged={(newPage: number) => props.pageNumberChanged(newPage)}
-          currentPageSizeChanged={(newPageSize: number) => props.pageSizeChanged(newPageSize)}
+          hasMore={props.viewmodel.dto.queryResult.hasMore}
+          currentPageNumber={props.viewmodel.dto.queryResult.currentPageNumber}
+          currentPageSize={props.viewmodel.dto.queryResult.currentPageSize}
+          currentPageChanged={(newPage: number) => {
+            props.viewmodel.queryParamsViewmodel.dto.pageNumber = newPage;
+            props.viewmodel.search()
+              .then(
+                () => props.viewmodelChanged(),
+                noop
+              );
+          }}
+          currentPageSizeChanged={(newPageSize: number) => {
+            props.viewmodel.queryParamsViewmodel.dto.pageSize = newPageSize;
+            props.viewmodel.search()
+              .then(
+                () => props.viewmodelChanged(),
+                noop
+              );
+          }}
         />
       </div>
     );
     // #endregion
   },
-  (prev: LibraryViewCenterProps, next: LibraryViewCenterProps) => {
-    return isEqual(prev.cardQueryParams, next.cardQueryParams) && isEqual(prev.queryResult, next.queryResult);
+  (_prev: LibraryViewCenterProps, _next: LibraryViewCenterProps) => {
+    return false; //isEqual(prev.viewmodel.dtoToSave.queryParams, next.viewmodel.dtoToSave.queryParams) &&
+    //isEqual(prev.viewmodel.dtoToSave.queryResult, next.viewmodel.dtoToSave.queryResult);
   });

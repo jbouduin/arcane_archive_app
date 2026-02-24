@@ -1,7 +1,7 @@
 import { Tab, Tabs } from "@blueprintjs/core";
+import { noop } from "lodash";
 import { AdvancedCardSearch } from "../../../../shared/components/advanced-card-search";
 import { SetTreeView } from "../../../../shared/components/set-tree-view/set-tree-view";
-import { CardQueryFilterDto } from "../../../../shared/dto";
 import { LibraryViewLeftProps } from "./library-view-left.props";
 
 export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
@@ -11,9 +11,12 @@ export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
       <Tabs
         animate={true}
         className="left-panel-tabs"
-        selectedTabId={props.currentSelectedSearchTab}
+        selectedTabId={props.viewmodel.dto.selectedSearchTab}
         renderActiveTabPanelOnly={true}
-        onChange={props.selectedSearchTabChanged}
+        onChange={(newSelectedSearchTab: string | number) => {
+          props.viewmodel.dto.selectedSearchTab = newSelectedSearchTab;
+          props.viewmodelChanged();
+        }}
       >
         <Tab
           className="left-panel-tab-panel"
@@ -23,15 +26,17 @@ export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
             (
               <SetTreeView
                 {...props}
-                viewmodel={props.viewmodel}
-                viewmodelChanged={props.viewmodelChanged}
-                configuration={props.treeConfiguration}
-                /**
-                 * # BUG page should be reset to page 0, probably in advancecardsearch also
-                 * and the page size gets lost when selecting another set in the tree
-                 */
-                search={(dto: CardQueryFilterDto) => props.search(dto, true)}
-                treeConfigurationChanged={props.treeConfigurationChanged}
+                viewmodel={props.viewmodel.queryFilterViewmodel}
+                viewmodelChanged={() => {
+                  props.viewmodel.queryParamsViewmodel.dto.pageNumber = 0;
+                  props.viewmodel
+                    .search()
+                    .then(
+                      () => props.viewmodelChanged(),
+                      noop
+                    );
+                }}
+                configuration={props.viewmodel.treeConfiguration}
               />
             )
           }
@@ -44,9 +49,17 @@ export function LibraryViewLeft(props: LibraryViewLeftProps): JSX.Element {
           panel={
             (
               <AdvancedCardSearch
-                viewmodel={props.viewmodel}
+                viewmodel={props.viewmodel.queryFilterViewmodel}
+                search={() => {
+                  props.viewmodel.queryParamsViewmodel.dto.pageNumber = 0;
+                  props.viewmodel
+                    .search()
+                    .then(
+                      () => props.viewmodelChanged(),
+                      noop
+                    );
+                }}
                 viewmodelChanged={props.viewmodelChanged}
-                search={(dto: CardQueryFilterDto) => props.search(dto, false)}
               />
             )
           }

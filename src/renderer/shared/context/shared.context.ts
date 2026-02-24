@@ -1,7 +1,6 @@
 import { createContext } from "react";
 import { ArcaneArchiveServer } from "../../../common/types";
 import { ApiInfoDto } from "../dto";
-import { ServiceContainer } from "./implementation/service.container";
 import { IServiceContainer } from "./interface";
 import { ApiInfoContextType, PreferencesContextType, SessionContextType } from "./types";
 
@@ -15,6 +14,6 @@ export const ApiStatusContext = createContext<ApiInfoContextType>(
     deckServiceAvailable: false
   }
 );
-export const ServiceContainerContext = createContext<IServiceContainer>(new ServiceContainer());
+export const ServiceContainerContext = createContext<IServiceContainer | undefined>(undefined);
 export const SessionContext = createContext<SessionContextType | undefined>(undefined);
 export const PreferencesContext = createContext<PreferencesContextType | undefined>(undefined);

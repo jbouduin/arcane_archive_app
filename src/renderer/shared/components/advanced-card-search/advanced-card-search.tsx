@@ -58,7 +58,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         label="Card Name"
         server="library"
         serverBaseUrl="/public/catalog/CARD_NAMES/item"
-        viewmodel={props.viewmodel}
+        viewmodel={searchViewmodel}
         idExtractor={(value: string) => value}
         itemLabel={(item: string) => item}
         viewmodelChanged={props.viewmodelChanged}
@@ -128,7 +128,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         label="Sub-type"
         server="library"
         serverBaseUrl="/public/card-sub-type"
-        viewmodel={props.viewmodel}
+        viewmodel={searchViewmodel}
         idExtractor={(value: string) => value}
         itemLabel={(item: string) => item}
         viewmodelChanged={props.viewmodelChanged}
@@ -155,7 +155,7 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         label="Ability"
         server="library"
         serverBaseUrl="/public/catalog/KEYWORD_ABILITIES/item"
-        viewmodel={props.viewmodel}
+        viewmodel={searchViewmodel}
         idExtractor={(value: string) => value}
         itemLabel={(item: string) => item}
         viewmodelChanged={props.viewmodelChanged}
@@ -166,14 +166,14 @@ export function AdvancedCardSearch(props: AdvancedCardSearchProps): JSX.Element 
         label="Action"
         server="library"
         serverBaseUrl="/public/catalog/KEYWORD_ACTIONS/item"
-        viewmodel={props.viewmodel}
+        viewmodel={searchViewmodel}
         idExtractor={(value: string) => value}
         itemLabel={(item: string) => item}
         viewmodelChanged={props.viewmodelChanged}
       />
       <Button
         icon="search"
-        onClick={() => props.search(searchViewmodel.dtoToSave)}
+        onClick={() => props.search()}
       >
         Search
       </Button>
