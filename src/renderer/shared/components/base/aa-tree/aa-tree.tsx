@@ -19,7 +19,8 @@ export function AaTree<TData, TFilter>(props: AaTreeProps<TData, TFilter>): JSX.
     () => {
       const nodes = props.filterProps
         ? props.buildTree(
-          props.filterProps.applyFilterProps(props.data, props.filterProps.filter), props.filterProps.filter
+          props.filterProps.applyFilterProps(props.data, props.filterProps.filter),
+          props.filterProps.filter
         )
         : props.buildTree(props.data, undefined);
       dispatch({
@@ -27,7 +28,7 @@ export function AaTree<TData, TFilter>(props: AaTreeProps<TData, TFilter>): JSX.
         payload: nodes
       });
     },
-    [props.filterProps, props.data]
+    [props.filterProps, props.data, props.buildTree]
   );
   //#endregion
 
@@ -47,7 +48,7 @@ export function AaTree<TData, TFilter>(props: AaTreeProps<TData, TFilter>): JSX.
       });
       props.nodeSelectedChanged(node!, !originallySelected, !isCtrl);
     },
-    []
+    [props.nodeSelectedChanged]
   );
 
   const handleNodeCollapse = useCallback(
@@ -58,7 +59,7 @@ export function AaTree<TData, TFilter>(props: AaTreeProps<TData, TFilter>): JSX.
       });
       props.nodeExpandedChanged(node, false);
     },
-    []
+    [props.nodeExpandedChanged]
   );
 
   const handleNodeExpand = useCallback(
@@ -69,7 +70,7 @@ export function AaTree<TData, TFilter>(props: AaTreeProps<TData, TFilter>): JSX.
       });
       props.nodeExpandedChanged(node, true);
     },
-    []
+    [props.nodeExpandedChanged]
   );
   //#endregion
 

@@ -74,7 +74,7 @@ export function CollectionViewCenter(props: CollectionViewCenterProps): JSX.Elem
           viewmodelFactoryService.mtgCardViewmodelFactory.getCollectionCardlistViewmodel(dto)
         ),
       props.viewmodel.queryParamsViewmodel.dto),
-    [props.viewmodel.queryParamsViewmodel, props.viewmodel.dtoToSave.queryResult,]
+    [props.viewmodel.dto.queryResult]
   );
   // #endregion
 

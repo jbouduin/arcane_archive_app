@@ -14,13 +14,14 @@ import { SetTreeViewProps } from "./set-tree-view.props";
 export function SetTreeView(props: SetTreeViewProps): JSX.Element {
   //#region Hooks -------------------------------------------------------------
   const { mtgSetService, viewmodelFactoryService } = useServices();
+  const { allSets } = mtgSetService;
   //#endregion
 
   //#region Memoization -------------------------------------------------------
   const sets = useMemo(
-    () => mtgSetService.allSets
+    () => allSets
       .map((set: MtgSetTreeDto) => viewmodelFactoryService.mtgSetViewmodelFactory.getMtgSetTreeViewmodel(set)),
-    []
+    [allSets]
   );
   //#endregion
 
