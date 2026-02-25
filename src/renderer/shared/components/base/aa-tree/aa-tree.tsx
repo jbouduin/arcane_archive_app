@@ -45,7 +45,7 @@ export function AaTree<TData, TFilter>(props: AaTreeProps<TData, TFilter>): JSX.
         payload: { path: nodePath, isSelected: !originallySelected },
         type: "SET_IS_SELECTED"
       });
-      props.dataSelectionChanged(node.nodeData!, !originallySelected, !isCtrl);
+      props.nodeSelectedChanged(node!, !originallySelected, !isCtrl);
     },
     []
   );

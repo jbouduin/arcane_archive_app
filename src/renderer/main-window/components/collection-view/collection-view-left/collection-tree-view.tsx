@@ -24,15 +24,9 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
     const viewmodel = viewmodelFactoryService.collectionViewmodelFactory
       .getCollectionTreeViewmodel(dto);
     setCollections([...collections, viewmodel]);
-    /**
-     * # NOW should wemake this collectionadded bubble up ?
-     * setCollections -> re-renders
-     * selecting the new one -> should also re-render and initiate a search
-     * expanding -> will trigger rerender
-     * and if this bubbles up, shouldn't delete also bubble up, as it
-     */
     props.viewmodel.dto.collectionIds.splice(0);
     props.viewmodel.dto.collectionIds.push(dto.id!);
+    props.selectionCriteriaChanged();
     if (dto.parentId != null) {
       props.nodeExpanded(dto.parentId);
     }
@@ -70,7 +64,7 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
           .then((resp: number) => {
             if (resp > 0) {
               setCollections(collections.filter((vm: CollectionTreeViewmodel) => vm.id != collection.id));
-              props.viewmodel.dto.collectionIds.filter((id: number) => id != collection.id);
+              props.viewmodel.dto.collectionIds.splice(0);
               if (collection.parentId != null) {
                 if (!props.viewmodel.dto.collectionIds.includes(collection.parentId)) {
                   props.viewmodel.dto.collectionIds.push(collection.parentId);
@@ -154,25 +148,25 @@ export function CollectionTreeView(props: CollectionTreeViewProps): JSX.Element 
           data={collections}
           filterProps={{ filter: {}, applyFilterProps: (data: Array<CollectionTreeViewmodel>) => data }}
           buildTree={buildTree}
-          dataSelectionChanged={
-            (collection: CollectionTreeViewmodel, selected: boolean, clearOthers: boolean) => {
+          nodeSelectedChanged={
+            (node: TreeNodeInfo<CollectionTreeViewmodel>, selected: boolean, clearOthers: boolean) => {
               if (clearOthers) {
                 props.viewmodel.dto.collectionIds.splice(0);
               }
               if (selected) {
-                props.viewmodel.dto.collectionIds.push(collection.id);
+                props.viewmodel.dto.collectionIds.push(node.nodeData!.id);
               } else {
                 props.viewmodel.dto.collectionIds =
-                  props.viewmodel.dto.collectionIds.filter((id: number) => id != collection.id);
+                  props.viewmodel.dto.collectionIds.filter((id: number) => id != node.nodeData!.id);
               }
               props.selectionCriteriaChanged();
             }
           }
-          nodeExpandedChanged={(collection: TreeNodeInfo<CollectionTreeViewmodel>, expanded: boolean) => {
+          nodeExpandedChanged={(node: TreeNodeInfo<CollectionTreeViewmodel>, expanded: boolean) => {
             if (expanded) {
-              props.nodeExpanded(collection.nodeData!.id);
+              props.nodeExpanded(node.nodeData!.id);
             } else {
-              props.nodeCollapsed(collection.nodeData!.id);
+              props.nodeCollapsed(node.nodeData!.id);
             }
           }}
         />

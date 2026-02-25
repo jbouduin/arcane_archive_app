@@ -41,10 +41,11 @@ export function LibraryView(props: LibraryViewProps): JSX.Element {
         viewmodel={viewModelRef.current}
         viewmodelChanged={() => forceUpdate()}
         uiStateChanged={() => {
+          // update UI state by merging into current viewDto
           libraryCardSearchService.viewDto = {
             ...libraryCardSearchService.viewDto,
-            uiState: { ...viewModelRef.current.dto.uiState },
-            treeConfiguration: viewModelRef.current.dto.treeConfiguration
+            uiState: viewModelRef.current.dtoToSave.uiState,
+            treeConfiguration: viewModelRef.current.dtoToSave.treeConfiguration
           };
           forceUpdate();
         }}

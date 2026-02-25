@@ -1,4 +1,4 @@
-import { cloneDeep, noop } from "lodash";
+import { cloneDeep } from "lodash";
 import { useReducer, useRef, useState } from "react";
 import { Mosaic, MosaicNode } from "react-mosaic-component";
 import { useApiStatus, useServices, useSession } from "../../../hooks";
@@ -45,9 +45,10 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
         viewmodel={viewmodelRef.current}
         viewmodelChanged={() => forceUpdate()}
         uiStateChanged={() => {
+          // persist the new UI state only, by merging it into the current viewDto
           collectionCardSearchService.viewDto = {
             ...collectionCardSearchService.viewDto,
-            uiState: { ...viewmodelRef.current.dto.uiState }
+            uiState: { ...viewmodelRef.current.dtoToSave.uiState }
           };
         }}
       />
@@ -62,19 +63,16 @@ export function CollectionView(props: CollectionViewProps): JSX.Element {
       <CollectionViewRight
         cardLanguageId={viewmodelRef.current.dto.selectedCard?.id || null}
         collectionId={viewmodelRef.current.dto.selectedCollection}
-        onQuantityChanged={noop}
-      /**
-       * # NOW (qty: number) => {
-       * //   const changedOne: CollectionCardListDto | undefined =
-       * //     state.queryResult.resultList
-       * //       .find((ccl: CollectionCardListDto) =>
-       * //         ccl.id == state.selectedCard && ccl.collectionId == state.selectedCollection);
-       * //   if (changedOne != null) {
-       * //     changedOne.quantity = qty;
-       * //   }
-       * //   setState(prev => ({ ...prev, version: prev.version + 1 }));
-       * // }
-       */
+        onQuantityChanged={(cardLanguageId: number, collectionId: number, totalQuantity: number) => {
+          viewmodelRef.current.updateCollectionCardQuantity(cardLanguageId, collectionId, totalQuantity);
+          // persist the modified result list and ui state
+          collectionCardSearchService.viewDto = {
+            ...collectionCardSearchService.viewDto,
+            queryResult: viewmodelRef.current.dtoToSave.queryResult,
+            uiState: viewmodelRef.current.dtoToSave.uiState
+          };
+          forceUpdate();
+        }}
       />
     )
   };

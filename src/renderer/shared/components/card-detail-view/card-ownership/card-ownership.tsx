@@ -82,7 +82,10 @@ export function CardOwnership(props: CardownershipProps): JSX.Element {
               "update",
               cardConditions);
           forceUpdate();
-          props.onQuantityChanged(collectionCardViewmodel.current.totalQuantity);
+          props.onQuantityChanged(
+            props.cardLanguageId,
+            props.collectionId,
+            collectionCardViewmodel.current.totalQuantity);
         },
         noop
       );

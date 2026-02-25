@@ -26,4 +26,26 @@ export class CollectionViewViewmodel extends BaseDesktopViewViewmodel<Collection
     super(dto, useCollections, basicDataService, collectionService, mtgSetService, searchCallback);
   }
   //#endregion
+
+  //#region Public methods ----------------------------------------------------
+  /**
+   * Update a {@link CollectionCardListDto} with the new total quantity and bump the table version.
+   *
+   * If the total quantity did not change, nothing happens.
+   *
+   * @param cardLanguageId the card language id
+   * @param collectionId   the collection id
+   * @param totalQuantity  the new total quantity
+   */
+  public updateCollectionCardQuantity(cardLanguageId: number, collectionId: number, totalQuantity: number): void {
+    const changedOne: CollectionCardListDto | undefined =
+      this._dto.queryResult.resultList
+        .find((ccl: CollectionCardListDto) =>
+          ccl.id == cardLanguageId && ccl.collectionId == collectionId);
+    if (changedOne != null && changedOne.quantity != totalQuantity) {
+      changedOne.quantity = totalQuantity;
+      this.bumpTableVersion();
+    }
+  }
+  //#endregion
 }

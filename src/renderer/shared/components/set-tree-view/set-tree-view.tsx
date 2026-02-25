@@ -1,9 +1,9 @@
 import { TreeNodeInfo } from "@blueprintjs/core";
 import { upperFirst } from "lodash";
+import { useMemo } from "react";
 import { CardSetGroupBy, CardSetSort } from "../../../../common/types";
 import { useServices } from "../../../hooks";
 import { MtgSetTreeDto } from "../../dto";
-import { SelectOption } from "../../types";
 import { MtgSetTreeConfigurationViewmodel, MtgSetTreeViewmodel } from "../../viewmodel";
 import { AaTree } from "../base/aa-tree";
 import { CardSetIcon } from "../card-set-icon";
@@ -13,15 +13,15 @@ import { SetTreeViewProps } from "./set-tree-view.props";
 
 export function SetTreeView(props: SetTreeViewProps): JSX.Element {
   //#region Hooks -------------------------------------------------------------
-  const { viewmodelFactoryService } = useServices();
+  const { mtgSetService, viewmodelFactoryService } = useServices();
   //#endregion
 
-  //#region initialization ----------------------------------------------------
-  const sets = props.viewmodel
-    .getSelectOptions<MtgSetTreeDto>("cardSetIds")
-    .map((value: SelectOption<MtgSetTreeDto>) =>
-      viewmodelFactoryService.mtgSetViewmodelFactory.getMtgSetTreeViewmodel(value.value)
-    );
+  //#region Memoization -------------------------------------------------------
+  const sets = useMemo(
+    () => mtgSetService.allSets
+      .map((set: MtgSetTreeDto) => viewmodelFactoryService.mtgSetViewmodelFactory.getMtgSetTreeViewmodel(set)),
+    []
+  );
   //#endregion
 
   //#region Event Handling ----------------------------------------------------
@@ -102,17 +102,20 @@ export function SetTreeView(props: SetTreeViewProps): JSX.Element {
         buildTree={buildTree}
         data={sets}
         filterProps={{ filter: props.configuration, applyFilterProps: applyFilterProps }}
-        dataSelectionChanged={
-          (set: MtgSetTreeViewmodel, selected: boolean, clearOthers: boolean) => {
+        nodeSelectedChanged={
+          (node: TreeNodeInfo<MtgSetTreeViewmodel>, selected: boolean, clearOthers: boolean) => {
             if (clearOthers) {
               props.viewmodel.dto.cardSetIds.splice(0);
             }
-            if (selected) {
-              props.viewmodel.dto.cardSetIds.push(set.id);
-            } else {
-              props.viewmodel.dto.cardSetIds = props.viewmodel.dto.cardSetIds.filter((id: number) => id != set.id);
+            const set: MtgSetTreeViewmodel = node.nodeData!;
+            if (set.id != 0) {
+              if (selected) {
+                props.viewmodel.dto.cardSetIds.push(set.id);
+              } else {
+                props.viewmodel.dto.cardSetIds = props.viewmodel.dto.cardSetIds.filter((id: number) => id != set.id);
+              }
+              props.selectionCriteriaChanged();
             }
-            props.selectionCriteriaChanged();
           }
         }
         nodeExpandedChanged={

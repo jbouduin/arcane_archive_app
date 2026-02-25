@@ -89,6 +89,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
               {props.mode == "collection" && (
                 <CardOwnership
                   cardCode={cardViewmodel.code}
+                  cardLanguageId={props.cardLanguageId}
                   collectionId={props.collectionId}
                   language={currentLanguage.language}
                   onQuantityChanged={props.onQuantityChanged!}

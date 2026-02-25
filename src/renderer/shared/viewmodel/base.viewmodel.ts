@@ -47,15 +47,31 @@ export abstract class BaseViewmodel<Dto extends object> {
     return this._dto;
   }
 
+  // TODO check all overrides
   /**
-   * The `dto` that is passed to the commit button click event in the `DefaultDialogFooter`.
+   * A snapshot `dto` (detached) that is passed to the commit button click event in the `DefaultDialogFooter`.
    *
-   * Default _`this.\_dto`_
+   * Default `clonedeep(this._dto)`
    *
-   * Override this one if there are child viewmodels.
+   * It is required to override this one if there are child viewmodels.. Make sure that the method returns a
+   * completely detached dto.
+   *
+   * Example:
+   * ```
+   * return {
+   *   queryFilter: this._queryFilterViewmodel.dtoToSave, // Safe
+   *   queryParams: this._queryParamsViewmodel.dtoToSave, // Safe
+   *   queryResult: {
+   *     // spread the dto, taking all the primitives: Safe
+   *     ...this._dto.queryResult,
+   *     // and add detached array for the result list
+   *     resultList: new Array<LDto>(...this._dto.queryResult.resultList)
+   *   }
+   * }
+   * ```
    */
   public get dtoToSave(): Dto {
-    return this._dto;
+    return cloneDeep(this._dto);
   }
 
   public get hasChanges(): boolean {

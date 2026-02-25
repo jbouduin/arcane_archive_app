@@ -82,21 +82,31 @@ export class BaseDesktopViewViewmodel<LDto extends BaseCardListDto, VDto extends
     this._dto.uiState.selectedNodes = this._dto.uiState.selectedNodes
       .filter((value: string | number) => value !== node);
   }
-
-  public bumpTableVersion(): void {
-    this._dto.uiState.tableVersion++;
-  }
   //#endregion
 
   //#region Auxiliary Methods -------------------------------------------------
+  protected bumpTableVersion(): void {
+    this._dto.uiState.tableVersion++;
+  }
+
+  /**
+   * returns a completely "detached" BaseDesktopViewDto<LDto>
+   */
   protected get baseDesktopDtoSnapshot(): BaseDesktopViewDto<LDto> {
     return {
-      queryFilter: { ...this._queryFilterViewmodel.dtoToSave },
-      queryParams: { ...this._queryParamsViewmodel.dtoToSave },
-      queryResult: { ...this._dto.queryResult },
+      queryFilter: this._queryFilterViewmodel.dtoToSave,
+      queryParams: this._queryParamsViewmodel.dtoToSave,
+      queryResult: {
+        ...this._dto.queryResult,
+        resultList: new Array<LDto>(...this._dto.queryResult.resultList)
+      },
       selectedCard: this._dto.selectedCard,
       selectedSearchTab: this._dto.selectedSearchTab,
-      uiState: { ...this._dto.uiState }
+      uiState: {
+        selectedNodes: new Array<number | string>(...this._dto.uiState.selectedNodes),
+        expandedNodes: new Array<number | string>(...this._dto.uiState.expandedNodes),
+        tableVersion: this._dto.uiState.tableVersion
+      }
     };
   }
   //#endregion

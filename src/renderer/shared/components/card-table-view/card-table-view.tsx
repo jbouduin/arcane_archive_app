@@ -20,7 +20,7 @@ export function CardTableView<T>(props: CardTableViewProps<T>): JSX.Element {
          * # BUG it looks like not all cells are re-rendered when required.
          * e.g. Mana Cost, Rarity (all non standard text columns ???)
          */
-        cellRendererDependencies={[props.data, props.sortedIndexMap]} // , props.version
+        cellRendererDependencies={[props.data, props.sortedIndexMap, props.version]}
         children={getTableChildren(props.sortableColumnDefinitions, props.sortType)}
         numRows={props.data?.length ?? 0}
         onSelection={

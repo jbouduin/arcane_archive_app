@@ -69,6 +69,7 @@ export const LibraryViewCenter = memo(
     return (
       <div className="mosaic-tile-content-wrapper">
         <MemoCardTableView
+          version={props.viewmodel.dto.uiState.tableVersion}
           bodyContextMenuRenderer={(context: MenuContext) => (
             <ContextMenu
               collections={collectionService.getCollections()}

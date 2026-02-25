@@ -14,7 +14,7 @@ import { CollectionViewCenterProps } from "./collection-view-center.props";
 
 const MemoCardTableView = memo(
   CardTableView<CollectionCardListViewmodel>,
-  (prev, next) => /* prev.version == next.version && */ isEqual(prev.data, next.data) &&
+  (prev, next) => prev.version == next.version && isEqual(prev.data, next.data) &&
     isEqual(prev.sortableColumnDefinitions, next.sortableColumnDefinitions)
 );
 
@@ -84,7 +84,7 @@ export function CollectionViewCenter(props: CollectionViewCenterProps): JSX.Elem
       <MemoCardTableView
         // bodyContextMenuRenderer={(context: MenuContext) => contextMenu(context)}
         data={tableData}
-        // version={props.version}
+        version={props.viewmodel.dto.uiState.tableVersion}
         onServerColumnSort={(columName: CardSortField, sortDirection: SortDirection) => {
           props.viewmodel.queryParamsViewmodel.dto.sortField = columName;
           props.viewmodel.queryParamsViewmodel.dto.sortDirection = sortDirection;

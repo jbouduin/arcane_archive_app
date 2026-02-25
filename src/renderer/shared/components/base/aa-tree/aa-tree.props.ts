@@ -6,6 +6,6 @@ export interface AaTreeProps<TData, TFilter> {
   filterProps: AaTreeFilterProps<TData, TFilter>;
 
   buildTree: (data: Array<TData>, filterProps?: TFilter) => Array<TreeNodeInfo<TData>>;
-  dataSelectionChanged: (selectedData: TData, selected: boolean, clearOthers: boolean) => void;
+  nodeSelectedChanged: (node: TreeNodeInfo<TData>, selected: boolean, clearOthers: boolean) => void;
   nodeExpandedChanged: (node: TreeNodeInfo<TData>, selected: boolean) => void;
 }
