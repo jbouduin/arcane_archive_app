@@ -47,7 +47,6 @@ export abstract class BaseViewmodel<Dto extends object> {
     return this._dto;
   }
 
-  // TODO check all overrides
   /**
    * A snapshot `dto` (detached) that is passed to the commit button click event in the `DefaultDialogFooter`.
    *

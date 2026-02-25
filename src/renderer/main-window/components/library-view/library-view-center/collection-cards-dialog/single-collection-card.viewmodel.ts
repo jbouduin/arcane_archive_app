@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import { ScryFallImageStatus } from "../../../../../../common/enums";
 import {
   CollectionCardDto, CollectionCardQuantityDto, CollectionDto,
@@ -60,9 +61,9 @@ export class SingleCollectionCardViewmodel extends BaseViewmodel<SingleCollectio
   //#endregion
 
   //#region Override Getters/Setters ------------------------------------------
-  override get dtoToSave(): SingleCollectionCardDto {
+  public override get dtoToSave(): SingleCollectionCardDto {
     return {
-      libraryCard: this.dto.libraryCard,
+      libraryCard: cloneDeep(this.dto.libraryCard),
       collectionCards: this.collectionCardViewmodels
         .filter((vm: CollectionCardViewmodel) => vm.hasChanges)
         .map((vm: CollectionCardViewmodel) => vm.dtoToSave)

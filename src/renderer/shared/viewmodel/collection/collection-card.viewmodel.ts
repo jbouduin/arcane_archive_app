@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import { ScryFallImageStatus } from "../../../../common/enums";
 import { CollectionCardDto, CollectionCardQuantityDto } from "../../dto";
 import { CardConditionDto } from "../../dto/card-condition.dto";
@@ -43,8 +44,7 @@ export class CollectionCardViewmodel extends BaseViewmodel<CollectionCardDto> {
   //#region BaseViewmodel Members ---------------------------------------------
   override get dtoToSave(): CollectionCardDto {
     return {
-      ...this._dto,
-      // quantities: this.getChangedQuantityViewmodels().map((vm: CollectionCardQuantityViewmodel) => vm.dto)
+      ...cloneDeep(this._dto),
       quantities: this._allQuantitiesViewmodels
         .filter((vm: CollectionCardQuantityViewmodel) => vm.hasChanges || vm.quantity > 0)
         .map((vm: CollectionCardQuantityViewmodel) => vm.dtoToSave)

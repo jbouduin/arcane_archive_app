@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import { IBasicDataService } from "../../context";
 import { SyncRequest, SyncTaskDto } from "../../dto";
 import { BaseViewmodel } from "../base.viewmodel";
@@ -19,7 +20,7 @@ export class SynchronizeSetViewmodel extends BaseViewmodel<SyncRequest> {
 
   public override get dtoToSave(): SyncRequest {
     return {
-      ...this.dto,
+      ...cloneDeep(this._dto),
       tasks: [this._syncSetTaskViewModel.dtoToSave]
     };
   }
