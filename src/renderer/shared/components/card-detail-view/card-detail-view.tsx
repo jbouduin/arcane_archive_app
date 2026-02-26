@@ -140,7 +140,7 @@ export function CardDetailView(props: CardDetailViewProps): JSX.Element {
           cardLayout={card.layout}
           cachedImageSize={preferences.cachedImageSize}
           cardBackId={card.cardBackId}
-          setCode={card.layout != "TOKEN" ? card.setCode : card.tokenSetCode}
+          setCode={card.code.split(".")[0]}
           collectorNumber={card.collectorNumber}
           scryfallLanguage={ScryfallLanguageMap.get(currentLanguage.language) || "en"}
           size="large"
