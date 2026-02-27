@@ -1,13 +1,12 @@
 import { Button, ButtonGroup, IconName, InputGroup, Menu, MenuDivider, MenuItem, Popover } from "@blueprintjs/core";
-import { memo, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useServices } from "../../../hooks";
 import { IBasicDataService } from "../../context";
-import { compareClassNameProp } from "../util";
 import { HeaderViewProps } from "./header-view.props";
 
 type PopoverKey = "card-set-group-by-menu" | "card-set-sort-menu" | "card-set-type-filter-menu";
 
-function headerView(props: HeaderViewProps): JSX.Element {
+export function HeaderView(props: HeaderViewProps): JSX.Element {
   // #region State ------------------------------------------------------------
   /**
    * The text filter component itself does not use state. Propagating the change
@@ -207,17 +206,3 @@ function headerView(props: HeaderViewProps): JSX.Element {
   // #endregion
 }
 
-/*
- * This is just a test on memoization
- * probably not a big gain for the heaer view component
- */
-export const HeaderView = memo(headerView, (prev: HeaderViewProps, next: HeaderViewProps) => {
-  // fast path
-  if (prev === next) return true;
-
-  return prev.cardSetGroupBy === next.cardSetGroupBy &&
-    prev.cardSetSort === next.cardSetSort &&
-    prev.cardSetTypeFilter.size === next.cardSetTypeFilter.size &&
-    Array.from(prev.cardSetTypeFilter).every(item => next.cardSetTypeFilter.has(item)) &&
-    compareClassNameProp(prev.className, next.className);
-});
