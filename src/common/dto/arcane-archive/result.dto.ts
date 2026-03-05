@@ -2,8 +2,8 @@ import { ValidationErrorDto } from "./validation-error.dto";
 
 export type ResultDto<T> = {
   data: T;
-  errors: Array<string>;
+  errors: Array<string> | null;
   status: string;
-  successMessage: string;
-  validationErrors: Array<ValidationErrorDto>;
+  successMessage: string | null;
+  validationErrors: Array<ValidationErrorDto> | null; // NOW make nullable
 };

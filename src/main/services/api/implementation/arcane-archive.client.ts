@@ -191,11 +191,12 @@ export class ArcaneArchiveClient extends BaseService implements IArcaneArchiveCl
   }
 
   private processErrorResponse<T>(path: string, response: ResultDto<T>): Promise<ResultDto<T>> {
-    let message: Array<string>;
+    let message: Array<string> = ["HTTP Status " + response.status];
     if (response.errors) {
-      message = response.errors;
-    } else {
-      message = response.validationErrors.map((v: ValidationErrorDto) => v.errorMessage);
+      message.push(...response.errors);
+    }
+    if (response.validationErrors != null && response.validationErrors.length > 0) {
+      message.push(...response.validationErrors.map((v: ValidationErrorDto) => v.errorMessage));
     }
     this.logService.error("API", "Error", ...message);
     return Promise.reject(new Error(`Server error: ${response.status}`));

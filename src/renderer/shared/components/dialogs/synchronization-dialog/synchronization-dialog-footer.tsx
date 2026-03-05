@@ -11,6 +11,11 @@ export function SynchronizationDialogFooter(props: SynchronizationDialogFooterPr
 
   //#region Event Handling ----------------------------------------------------
   function synchronizeClicck(e: React.SyntheticEvent<HTMLElement, Event>, dto: SyncRequest): Promise<void> {
+    /**
+     * # TODO if this is a full sync or all card sync, response takes a long time to come back.
+     * this means: UI becomes available again, but the success message that the request has been created
+     * comes later.
+     */
     return synchronizeService.synchronize(dto)
       .then(
         () => {

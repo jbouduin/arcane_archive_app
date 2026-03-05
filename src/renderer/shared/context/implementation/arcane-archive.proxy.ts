@@ -273,8 +273,9 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
       let message: Array<string> | null = null;
       if (response.errors) {
         message = response.errors;
-      } else if (response.validationErrors?.length > 0) {
-        message = response.validationErrors.map((v: ValidationErrorDto) => v.errorMessage);
+      }
+      if (response.validationErrors != null && response.validationErrors.length > 0) {
+        message?.push(...response.validationErrors.map((v: ValidationErrorDto) => v.errorMessage));
       }
 
       if (!suppressErrorMessage) {
