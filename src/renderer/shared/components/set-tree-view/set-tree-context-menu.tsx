@@ -28,7 +28,7 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element 
               text="Properties"
             />
             {
-              loggedIn &&
+              loggedIn && (props.cardSet.baseSetSize + props.cardSet.totalSetSize > 0) &&
               (
                 <MenuItem
                   key={`export-${props.cardSet.id}`}
@@ -44,7 +44,7 @@ export function SetTreeContextMenu(props: SetTreeContextMenuProps): JSX.Element 
               )
             }
             {
-              isSysAdmin &&
+              isSysAdmin && (props.cardSet.baseSetSize + props.cardSet.totalSetSize > 0) &&
               (
                 <MenuItem
                   key={`sync-${props.cardSet.id}`}

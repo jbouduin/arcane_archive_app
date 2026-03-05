@@ -4,6 +4,7 @@ export type MtgSetTreeDto = {
   setName: string;
   parentId: number | null;
   baseSetSize: number;
+  totalSetSize: number;
   keyruneCode: string;
   type: string;
   releaseDate: Date;

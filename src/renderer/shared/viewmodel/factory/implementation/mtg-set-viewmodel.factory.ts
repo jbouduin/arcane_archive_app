@@ -43,7 +43,8 @@ export class MtgSetViewmodelFactory implements IMtgSetViewmodelFactory {
       releaseDate: new Date(),
       setName: group,
       code: group,
-      tokenSetCode: null
+      tokenSetCode: null,
+      totalSetSize: 0
     };
     return new MtgSetTreeViewmodel(dto);
   }
