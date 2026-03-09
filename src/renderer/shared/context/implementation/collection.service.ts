@@ -4,7 +4,7 @@ import { IpcPaths } from "../../../../common/ipc";
 import { CollectionCardDto, CollectionDto } from "../../dto";
 import { SelectOption } from "../../types";
 import { IArcaneArchiveProxy, ICollectionService, IIpcProxy, IOverlayService, ISessionService } from "../interface";
-import { SessionChangeEvent } from "../types";
+import { ArcaneArchiveRequestOptions, SessionChangeEvent } from "../types";
 
 export class CollectionService implements ICollectionService {
   //#region Private fields ----------------------------------------------------
@@ -37,7 +37,7 @@ export class CollectionService implements ICollectionService {
         (data: SessionChangeEvent | null) => {
           if (data != null) {
             // see loadCollections why we noop here.
-            void this.loadCollections().catch(noop);
+            void this.loadCollections({ suppressErrorMessage: true, suppressSplashScreen: true }).catch(noop);
           } else {
             this.collections = null;
             this.selectOptions = null;
@@ -113,9 +113,9 @@ export class CollectionService implements ICollectionService {
     }
   }
 
-  public loadCollections(): Promise<Array<CollectionDto>> {
+  public loadCollections(options?: ArcaneArchiveRequestOptions): Promise<Array<CollectionDto>> {
     return this.arcaneArchiveProxy
-      .getData<Array<CollectionDto>>("collection", "/auth/collection/all")
+      .getData<Array<CollectionDto>>("collection", "/auth/collection/all", options)
       .then(
         (resp: Array<CollectionDto>) => {
           this.collections = new Map<number, CollectionDto>();

@@ -26,6 +26,7 @@ import { MtgCardService } from "./mtg-card.service";
 import { SynchronizeService } from "./synchronize.service";
 import { CollectionViewDto, LibraryViewDto, UiStateDto } from "../../dto/desktop";
 import { CardQueryFilterDto, CollectionCardListDto, LibraryCardListDto, QueryParamsDto, QueryResultDto } from "../../dto";
+import { ProgressCallbackValue } from "../../../../common/ipc";
 
 export class ServiceContainer implements IServiceContainer {
   //#region Private fields ----------------------------------------------------
@@ -142,9 +143,12 @@ export class ServiceContainer implements IServiceContainer {
     this._arcaneArchiveProxy.initializeSubscriptions(this._sessionService, this._configurationService);
     this._ipcProxy.initializeSubscriptions(this._configurationService);
     this._sessionService.initializeSubscriptions(this._arcaneArchiveProxy, this._ipcProxy);
-
     this._collectionService.initializeSubscriptions(this._sessionService);
 
+    this._arcaneArchiveProxy.setSplashScreenFunctions(
+      (cbv: ProgressCallbackValue) => this._overlayService.showSplashScreen(cbv),
+      () => this._overlayService.hideSplashSceen()
+    );
     // --- show toast "interceptor" to be used during initialization ---
     const initializationShowToast: ShowToastFn = (props: ToastProps, _key?: string) => {
       if (props.intent == "warning" || props.intent == "danger") {

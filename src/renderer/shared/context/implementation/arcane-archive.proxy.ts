@@ -10,6 +10,7 @@ import { ApiInfoDto } from "../../dto";
 import { ShowToastFn } from "../../types";
 import { IArcaneArchiveProxy, IConfigurationService, ISessionService } from "../interface";
 import { ApiStatus, ApiStatusChangeListener, ArcaneArchiveRequestOptions, InvalidSessionListener, SessionChangeEvent } from "../types";
+import { ProgressCallbackValue } from "../../../../common/ipc";
 
 export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
   //#region Private fields ----------------------------------------------------
@@ -23,6 +24,8 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
   private refreshing: Promise<void> | null;
   private statusChangeListeners: Array<ApiStatusChangeListener>;
   private showToast!: ShowToastFn;
+  private showSplashScreen!: (value: ProgressCallbackValue) => void;
+  private hideSplashScreen!: () => void;
   private unsubscribeSession: (() => void) | null;
   private unsubscribeSystemConfiguration: (() => void) | null;
   //#endregion
@@ -73,6 +76,11 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
 
   public setShowToast(showToast: ShowToastFn): void {
     this.showToast = showToast;
+  }
+
+  public setSplashScreenFunctions(show: (value: ProgressCallbackValue) => void, hide: () => void): void {
+    this.showSplashScreen = show;
+    this.hideSplashScreen = hide;
   }
   //#endregion
 
@@ -330,6 +338,19 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
     data: Req | null,
     options?: ArcaneArchiveRequestOptions
   ): Promise<Res> {
+    // --- splash logic start ---
+    let splashShown = false;
+    const suppressSplashScreen: boolean = options?.suppressSplashScreen || false;
+
+    const splashTimeout = suppressSplashScreen
+      ? null
+      : setTimeout(
+        () => {
+          splashShown = true;
+          this.showSplashScreen(options?.progressCallBackValue ? options.progressCallBackValue : "Hold on...");
+        }, 1000
+      );
+
     if (this.getLogLevel(server) <= 1) {
       // eslint-disable-next-line no-console
       console.log({ verb: verb, server: server, path: path, data: data });
@@ -345,7 +366,7 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
       : false;
     let result: Promise<Res>;
     try {
-      return fetch(
+      result = fetch(
         this.buildPath(server, path),
         {
           method: verb,
@@ -379,7 +400,16 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
         result = this.processRejection<Res>(server, path, new Error("Unknown error"), suppressErrorMessage);
       }
     }
-    return result;
+
+    // --- ensure splash cleanup ---
+    return result.finally(() => {
+      if (splashTimeout) {
+        clearTimeout(splashTimeout);
+      }
+      if (splashShown) {
+        this.hideSplashScreen();
+      }
+    });
   }
 
   private buildPath(server: ArcaneArchiveServer, path: string): string {
@@ -409,7 +439,12 @@ export class ArcaneArchiveProxy implements IArcaneArchiveProxy {
           return this.getData<ApiInfoDto>(
             server,
             "/public/system/info",
-            { suppressSuccessMessage: true, suppressErrorMessage: true, suppressInvalidSessionHandling: server == "library" }
+            {
+              suppressSuccessMessage: true,
+              suppressErrorMessage: true,
+              suppressSplashScreen: true,
+              suppressInvalidSessionHandling: server == "library",
+            }
           )
             .then(
               (info: ApiInfoDto) => this._apiStatus.set(server, info),

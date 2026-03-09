@@ -205,4 +205,3 @@ export function HeaderView(props: HeaderViewProps): JSX.Element {
   }
   // #endregion
 }
-

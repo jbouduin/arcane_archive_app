@@ -48,7 +48,9 @@ export class OverlayService implements IOverlayService {
 
   //#region IOverlayService Members: blueprint overlays  ----------------------
   public hideSplashSceen(): void {
-    this.setSplashScreen(null);
+    if (this.setSplashScreen) {
+      this.setSplashScreen(null);
+    }
   }
 
   public openDialog<Dto extends object, Vm extends BaseViewmodel<Dto>>(
@@ -85,7 +87,9 @@ export class OverlayService implements IOverlayService {
   }
 
   public showSplashScreen(value: ProgressCallbackValue): void {
-    this.setSplashScreen(value);
+    if (this.setSplashScreen) {
+      this.setSplashScreen(value);
+    }
   }
 
   public showToast(toastProps: ToastProps, key?: string): void {

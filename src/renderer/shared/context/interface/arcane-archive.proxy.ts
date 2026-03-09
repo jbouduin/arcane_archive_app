@@ -1,4 +1,5 @@
 import { ApiConfigurationDto } from "../../../../common/dto";
+import { ProgressCallbackValue } from "../../../../common/ipc";
 import { ArcaneArchiveServer } from "../../../../common/types";
 import { ApiInfoDto } from "../../dto";
 import { ShowToastFn } from "../../types";
@@ -14,6 +15,7 @@ export interface IArcaneArchiveProxy {
   initialize(apiConfiguration: ApiConfigurationDto | null): void;
   initializeSubscriptions(sessionService: ISessionService, configurationService: IConfigurationService): void;
   setShowToast(showToast: ShowToastFn): void;
+  setSplashScreenFunctions(show: (value: ProgressCallbackValue) => void, hide: () => void): void;
   //#endregion
 
   //#region Data methods ------------------------------------------------------

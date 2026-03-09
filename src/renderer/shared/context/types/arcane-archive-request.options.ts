@@ -1,3 +1,5 @@
+import { ProgressCallbackValue } from "../../../../common/ipc";
+
 export type ArcaneArchiveRequestOptions = {
   /**
    * Suppress showing a toast with the success message from the response.
@@ -19,4 +21,13 @@ export type ArcaneArchiveRequestOptions = {
    * <p>If passed make sure the Abort Exception is handled.
    */
   signal?: AbortSignal;
+  /**
+   * Do not show the splash screen, even if response time goes over 1 sec
+   */
+  suppressSplashScreen?: boolean;
+  /**
+   * Progress call back value, used when displaying the splash screen for long running requests.
+   * (Response time > 1 second). When not provided, the splash screen displays "Hold on..."
+   */
+  progressCallBackValue?: ProgressCallbackValue;
 };
