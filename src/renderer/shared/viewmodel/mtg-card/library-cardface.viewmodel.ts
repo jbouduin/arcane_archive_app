@@ -17,7 +17,7 @@ export class LibraryCardfaceViewmodel extends AbstractCardViewmodel {
   public readonly printedName: string;
   public readonly printedTypeLine: string;
   public readonly printedText: string;
-  public readonly imageUri: string | undefined;
+  // public readonly imageUri: string | undefined;
   // #endregion
 
   // #region Constructor ------------------------------------------------------
@@ -36,13 +36,9 @@ export class LibraryCardfaceViewmodel extends AbstractCardViewmodel {
     this.printedName = faceLanguageDto.name;
     this.printedTypeLine = faceLanguageDto.typeLine;
     this.printedText = faceLanguageDto.text;
-    /**
-     * # LATER: large is not correct! size should come from preferences. To be corrected once the problem with
-     * Aetherdrift emblems is solved. and we need to fall-back on another value if large is not there
-     */
-    this.imageUri = faceLanguageDto.externalReferences
-      .find((extRef: ExternalReferenceDetailDto) => extRef.source == "SCRYFALL" && extRef.detail == "LARGE")
-      ?.value;
+    // this.imageUri = faceLanguageDto.externalReferences
+    //   .find((extRef: ExternalReferenceDetailDto) => extRef.source == "SCRYFALL" && extRef.detail == "LARGE")
+    //   ?.value;
   }
   // #endregion
 }

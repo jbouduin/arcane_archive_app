@@ -10,7 +10,7 @@ export function SynchronizeSetDialogFooter(props: SynchronizeSetDialogFooterProp
   //#endregion
 
   //#region Event Handling ----------------------------------------------------
-  function synchronizeClicck(e: React.SyntheticEvent<HTMLElement, Event>, dto: SyncRequest): Promise<void> {
+  function synchronizeClick(e: React.SyntheticEvent<HTMLElement, Event>, dto: SyncRequest): Promise<void> {
     return synchronizeService.synchronize(dto)
       .then(
         () => {
@@ -29,7 +29,7 @@ export function SynchronizeSetDialogFooter(props: SynchronizeSetDialogFooterProp
       showResetButton={false}
       commitButtonLabel="Synchronize"
       commitButtonIcon="refresh"
-      onCommitButtonClick={synchronizeClicck}
+      onCommitButtonClick={synchronizeClick}
     />
   );
   //#endregion

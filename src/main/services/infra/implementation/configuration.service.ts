@@ -144,7 +144,7 @@ export class ConfigurationService extends BaseService implements IConfigurationS
   //#region Auxiliary methods - factory defaults ------------------------------
   private createSystemSettingsFactoryDefault(): SystemConfigurationDto {
     const result: SystemConfigurationDto = {
-      // LATER this should be an environment variable
+      // LATER this should be a build variable
       discovery: "http://localhost:5402/api/public/discover",
       dataConfiguration: {
         rootDataDirectory: this.ioService.defaultDataDirectory,
