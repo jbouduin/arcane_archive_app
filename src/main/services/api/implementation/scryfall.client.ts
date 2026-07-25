@@ -56,7 +56,7 @@ export class ScryfallClient extends BaseService implements IScryfallClient {
       await this.sleep(sleepTime);
       this.logService.debug("Main", `fetch ${uri}`);
       try {
-        const result = await fetch(uri);
+        const result = await fetch(uri, { headers: { "User-Agent": "ArcaneArchive/1.0", "Accept": "*/*" } });
         this.logService.debug("Main", `retrieved ${uri} -> status: ${result.status}`);
         // LATER if not 200 reject
         resolve(result);
